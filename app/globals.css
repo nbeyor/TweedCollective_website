@@ -12,35 +12,122 @@
   body {
     font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+
+  /* Typography */
+  h1 {
+    @apply font-display text-4xl md:text-5xl lg:text-6xl font-medium text-neutral-charcoal;
+  }
+
+  h2 {
+    @apply font-display text-3xl md:text-4xl font-medium text-neutral-charcoal;
+  }
+
+  h3 {
+    @apply font-display text-2xl font-medium text-neutral-charcoal;
+  }
+
+  h4 {
+    @apply font-display text-xl font-medium text-neutral-charcoal;
+  }
+
+  .body-large {
+    @apply text-lg leading-relaxed;
+  }
+
+  .body {
+    @apply text-base leading-relaxed;
+  }
+
+  .caption {
+    @apply text-xs uppercase tracking-wider font-medium;
+  }
+
+  .mono {
+    @apply font-mono text-sm;
+  }
 }
 
 @layer components {
+  /* Buttons */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary-sage text-neutral-cream font-medium transition-all duration-300 hover:bg-primary-sage/90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-navy-900 font-semibold py-3 px-6 rounded-lg border border-navy-200 transition-all duration-200;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg bg-neutral-stone text-neutral-charcoal font-medium transition-all duration-300 hover:bg-neutral-stone/80 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
+
   .btn-outline {
-    @apply bg-transparent hover:bg-primary-50 text-primary-600 font-semibold py-3 px-6 rounded-lg border border-primary-600 transition-all duration-200;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg border-2 border-primary-sage text-primary-sage font-medium transition-all duration-300 hover:bg-primary-sage/5 disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
-  .section-padding {
-    @apply py-16 md:py-24;
+
+  .btn-text {
+    @apply inline-flex items-center justify-center px-4 py-2 text-primary-sage font-medium transition-colors duration-300 hover:text-primary-sage/80 disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+
+  /* Links */
+  .link {
+    @apply text-primary-sage hover:text-primary-sage/80 transition-colors duration-300 underline underline-offset-4;
   }
-  
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow;
   }
-  
+
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply hover:shadow-lg transition-shadow duration-300;
+  }
+
+  /* Forms */
+  .form-input {
+    @apply w-full px-4 py-2 rounded-lg border border-neutral-stone focus:outline-none focus:border-primary-sage transition-colors duration-300;
+  }
+
+  .form-select {
+    @apply w-full px-4 py-2 rounded-lg border border-neutral-stone focus:outline-none focus:border-primary-sage transition-colors duration-300 bg-white;
+  }
+
+  .form-checkbox {
+    @apply w-4 h-4 rounded border-2 border-neutral-stone text-primary-sage focus:ring-primary-sage focus:ring-offset-2;
+  }
+
+  .form-radio {
+    @apply w-4 h-4 border-2 border-neutral-stone text-primary-sage focus:ring-primary-sage focus:ring-offset-2;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-neutral-charcoal mb-1;
+  }
+
+  .form-helper {
+    @apply mt-1 text-sm text-neutral-warm-gray;
+  }
+
+  .form-error {
+    @apply mt-1 text-sm text-red-500;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary-sage/10 text-primary-sage;
+  }
+
+  .badge-secondary {
+    @apply bg-neutral-stone text-neutral-charcoal;
+  }
+
+  /* Containers */
+  .section {
+    @apply py-12 md:py-20;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
