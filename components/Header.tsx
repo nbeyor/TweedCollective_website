@@ -28,8 +28,8 @@ export default function Header() {
 
   return (
     <header 
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md py-4' : 'bg-transparent py-6'
+      className={`fixed w-full z-[9999] transition-all duration-300 ${
+        isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-4' : 'bg-transparent py-6'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -38,7 +38,7 @@ export default function Header() {
           <Link href="/" className="relative">
             <div className="flex items-center">
               <Logo 
-                animated={!isScrolled} 
+                animated={true} 
                 size="sm" 
                 className="mr-2"
               />
