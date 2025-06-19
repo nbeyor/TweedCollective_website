@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Logo from './Logo'
 
 const navigation = [
   { name: 'Partners', href: '/partners' },
@@ -36,57 +37,11 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="relative">
             <div className="flex items-center">
-              {/* Animated Logo */}
-              <div className="w-8 h-8 relative mr-2">
-                <svg
-                  viewBox="0 0 40 40"
-                  className={`absolute inset-0 transition-all duration-700 ${
-                    isScrolled ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                  }`}
-                >
-                  <path
-                    d="M20 2C10.059 2 2 10.059 2 20s8.059 18 18 18 18-8.059 18-18S29.941 2 20 2zm0 4c7.732 0 14 6.268 14 14s-6.268 14-14 14S6 27.732 6 20 12.268 6 20 6z"
-                    className="fill-primary-sage"
-                  />
-                  <path
-                    d="M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z"
-                    className="fill-primary-terra"
-                  >
-                    <animate
-                      attributeName="d"
-                      dur="8s"
-                      repeatCount="indefinite"
-                      values="M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z;
-                              M20 12c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 3c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5z;
-                              M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z"
-                    />
-                  </path>
-                </svg>
-                <svg
-                  viewBox="0 0 40 40"
-                  className={`absolute inset-0 transition-all duration-700 ${
-                    isScrolled ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
-                  }`}
-                >
-                  <path
-                    d="M20 2C10.059 2 2 10.059 2 20s8.059 18 18 18 18-8.059 18-18S29.941 2 20 2zm0 4c7.732 0 14 6.268 14 14s-6.268 14-14 14S6 27.732 6 20 12.268 6 20 6z"
-                    className="fill-neutral-cream"
-                  />
-                  <path
-                    d="M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z"
-                    className="fill-primary-coral"
-                  >
-                    <animate
-                      attributeName="d"
-                      dur="8s"
-                      repeatCount="indefinite"
-                      values="M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z;
-                              M20 12c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 3c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5z;
-                              M20 10c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 4c3.314 0 6 2.686 6 6s-2.686 6-6 6-6-2.686-6-6 2.686-6 6-6z"
-                    />
-                  </path>
-                </svg>
-              </div>
+              <Logo 
+                animated={!isScrolled} 
+                size="sm" 
+                className="mr-2"
+              />
               <span className={`font-display text-lg transition-colors duration-300 ${
                 isScrolled ? 'text-neutral-charcoal' : 'text-neutral-cream'
               }`}>

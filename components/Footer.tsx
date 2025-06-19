@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Logo from './Logo'
 
 const Footer = () => {
   return (
@@ -11,12 +12,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 relative">
-                <div className="absolute inset-0 border-2 border-neutral-cream rounded-lg overflow-hidden opacity-80">
-                  <div className="absolute w-full h-[2px] top-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-primary-coral to-transparent" />
-                  <div className="absolute h-full w-[2px] left-1/2 -translate-x-1/2 bg-gradient-to-b from-transparent via-primary-sage to-transparent" />
-                </div>
-              </div>
+              <Logo animated={false} size="sm" />
               <span className="text-xl font-medium">Tweed Collective</span>
             </Link>
             <p className="text-neutral-stone/80 max-w-xs">
