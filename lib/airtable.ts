@@ -148,7 +148,7 @@ export const getOperators = async (): Promise<Operator[]> => {
       name: record.get('Name') as string,
       linkedin: record.get('LinkedIn') as string,
       photo: (record.get('Headshot') as any[])?.[0]?.url,
-      expertise: (record.get('Expertise') as string[]) ?? [],
+      expertise: (record.get('ExpertiseTags') as string[]) ?? [],
     }));
   } catch (error) {
     console.error('Error fetching operators:', error);
