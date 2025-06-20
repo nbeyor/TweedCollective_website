@@ -136,7 +136,7 @@ export const getProjects = async (): Promise<Project[]> => {
   }
 }
 
-// New function to get operators
+// Fetches all records from the "Operators" table.
 export const getOperators = async (): Promise<Operator[]> => {
   const currentBase = getBase();
   if (!currentBase) return [];
