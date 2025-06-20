@@ -6,10 +6,11 @@ import { usePathname } from 'next/navigation'
 import Logo from './Logo'
 
 const navigation = [
-  { name: 'Partners', href: '/partners' },
-  { name: 'Projects', href: '/projects' },
+  { name: 'About', href: '/about' },
+  { name: 'Services', href: '/services' },
+  { name: 'Team', href: '/team' },
+  { name: 'Case Studies', href: '/projects' },
   { name: 'Tools', href: '/tools' },
-  { name: 'Insights', href: '/insights' },
   { name: 'Contact', href: '/contact' },
 ]
 
@@ -28,8 +29,8 @@ export default function Header() {
 
   return (
     <header 
-      className={`fixed w-full z-[9999] transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-4' : 'bg-transparent py-6'
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-cream/95 backdrop-blur-sm shadow-sophisticated py-4' : 'bg-transparent py-6'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -40,12 +41,12 @@ export default function Header() {
               <Logo 
                 animated={true} 
                 size="sm" 
-                className="mr-2"
+                className="mr-3"
               />
-              <span className={`font-display text-lg transition-colors duration-300 ${
-                isScrolled ? 'text-neutral-charcoal' : 'text-neutral-cream'
+              <span className={`font-display text-lg font-semibold transition-colors duration-300 ${
+                isScrolled ? 'text-charcoal' : 'text-cream'
               }`}>
-                Tweed
+                Tweed Collective
               </span>
             </div>
           </Link>
@@ -59,11 +60,11 @@ export default function Header() {
                 className={`text-sm font-medium transition-colors duration-300 ${
                   pathname === item.href
                     ? isScrolled
-                      ? 'text-primary-sage'
-                      : 'text-primary-coral'
+                      ? 'text-sage'
+                      : 'text-coral'
                     : isScrolled
-                    ? 'text-neutral-charcoal hover:text-primary-sage'
-                    : 'text-neutral-cream hover:text-primary-coral'
+                    ? 'text-charcoal hover:text-sage'
+                    : 'text-cream hover:text-coral'
                 }`}
               >
                 {item.name}
@@ -71,14 +72,22 @@ export default function Header() {
             ))}
           </div>
 
+          {/* CTA Button */}
+          <div className="hidden md:block">
+            <Link href="/contact" className="btn-primary text-sm">
+              Book a Call
+            </Link>
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             <svg
               className={`w-6 h-6 transition-colors duration-300 ${
-                isScrolled ? 'text-neutral-charcoal' : 'text-neutral-cream'
+                isScrolled ? 'text-charcoal' : 'text-cream'
               }`}
               fill="none"
               viewBox="0 0 24 24"
@@ -109,21 +118,30 @@ export default function Header() {
             isMenuOpen ? 'max-h-96 mt-4' : 'max-h-0'
           }`}
         >
-          <div className="py-2 space-y-1">
+          <div className="py-2 space-y-1 bg-cream/95 backdrop-blur-sm rounded-lg">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
                   pathname === item.href
-                    ? 'bg-primary-sage/10 text-primary-sage'
-                    : 'text-neutral-charcoal hover:bg-primary-sage/5 hover:text-primary-sage'
+                    ? 'bg-sage/10 text-sage'
+                    : 'text-charcoal hover:bg-sage/5 hover:text-sage'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
+            <div className="px-3 py-2">
+              <Link 
+                href="/contact" 
+                className="btn-primary w-full text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Book a Call
+              </Link>
+            </div>
           </div>
         </div>
       </div>

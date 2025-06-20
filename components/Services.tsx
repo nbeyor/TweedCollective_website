@@ -1,101 +1,159 @@
 import React from 'react'
 import Link from 'next/link'
+import { ArrowRight, Target, Users, Rocket } from 'lucide-react'
 
 const Services = () => {
   const services = [
     {
       title: "Operations",
-      subtitle: "Put the engine in 'execution'",
-      description: "We parachute in CRO, COO, or RevOps teams for 6-18 months, running sprints that move pipeline and product—hands on the wheel, P&L in view.",
-      outputs: ["100-day GTM plan", "KPI dashboards", "Org builds"],
-      kpis: ["≥50% YoY MRR", "CAC/LTV ≤ 3:1"]
+      subtitle: "Revenue run-rate doubled within 100 days",
+      description: "We embed proven C-suite talent directly into your team, running sprints that move pipeline and product—hands on the wheel, P&L in view.",
+      icon: Target,
+      outcomes: ["100-day GTM plan", "KPI dashboards", "Org builds"],
+      metrics: ["≥50% YoY MRR", "CAC/LTV ≤ 3:1"],
+      color: "sage"
     },
     {
-      title: "Advisory",
-      subtitle: "High-leverage strategic counsel",
+      title: "Advisory", 
+      subtitle: "Investment decisions made with 90% confidence",
       description: "Commercial diligence, pricing models, AI readiness audits, and board advisory that turn ambiguity into conviction.",
-      outputs: ["Investment memos", "TAM heatmaps", "Regulatory risk matrices"]
+      icon: Users,
+      outcomes: ["Investment memos", "TAM heatmaps", "Regulatory risk matrices"],
+      metrics: ["90% decision confidence", "3x faster due diligence"],
+      color: "terra"
     },
     {
       title: "Incubation",
-      subtitle: "From idea to fundable entity",
-      description: "We co-found, prototype, and seed emerging plays at the edge of AI × health.",
-      outputs: ["Problem validation", "MVP (<4 mo, <$250k)", "Seed round packaging"]
+      subtitle: "Zero-to-MVP in under 4 months, <$250K spend",
+      description: "We co-found, prototype, and seed emerging plays at the edge of AI × health, from concept to fundable entity.",
+      icon: Rocket,
+      outcomes: ["Problem validation", "MVP development", "Seed round packaging"],
+      metrics: ["<4 months to MVP", "<$250K development cost"],
+      color: "coral"
     }
   ]
 
+  const getColorClasses = (color: string) => {
+    switch (color) {
+      case 'sage':
+        return {
+          border: 'border-sage',
+          badge: 'badge-primary',
+          icon: 'text-sage'
+        }
+      case 'terra':
+        return {
+          border: 'border-terra',
+          badge: 'badge-terra',
+          icon: 'text-terra'
+        }
+      case 'coral':
+        return {
+          border: 'border-coral',
+          badge: 'badge-coral',
+          icon: 'text-coral'
+        }
+      default:
+        return {
+          border: 'border-sage',
+          badge: 'badge-primary',
+          icon: 'text-sage'
+        }
+    }
+  }
+
   return (
-    <section className="py-20">
+    <section className="section bg-gradient-subtle">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="mb-4">Our Three Pillars</h2>
-          <p className="body-large text-neutral-warm-gray max-w-2xl mx-auto">
+          <p className="body-large max-w-2xl mx-auto">
             Comprehensive support across the growth journey, from strategic planning to hands-on execution.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <div 
-              key={service.title}
-              className="bg-white rounded-lg p-8 shadow-md hover:shadow-lg transition-shadow border-l-4 border-primary-sage"
-            >
-              <div className="mb-6">
-                <h3 className="mb-2">{service.title}</h3>
-                <p className="text-primary-coral italic">{service.subtitle}</p>
-              </div>
-
-              <p className="text-neutral-warm-gray mb-6">
-                {service.description}
-              </p>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="caption text-primary-sage mb-2">Key Outputs</p>
-                  <ul className="space-y-1">
-                    {service.outputs.map((output, i) => (
-                      <li key={i} className="text-sm text-neutral-warm-gray flex items-center">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary-sage/40 mr-2" />
-                        {output}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {service.kpis && (
-                  <div>
-                    <p className="caption text-primary-sage mb-2">KPI Targets</p>
-                    <ul className="space-y-1">
-                      {service.kpis.map((kpi, i) => (
-                        <li key={i} className="text-sm text-neutral-warm-gray flex items-center">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary-sage/40 mr-2" />
-                          {kpi}
-                        </li>
-                      ))}
-                    </ul>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {services.map((service) => {
+            const IconComponent = service.icon
+            const colorClasses = getColorClasses(service.color)
+            
+            return (
+              <div 
+                key={service.title}
+                className="card group hover:scale-105 transition-transform duration-300"
+              >
+                <div className="p-8">
+                  {/* Icon and Title */}
+                  <div className="mb-6">
+                    <div className={`w-16 h-16 rounded-xl bg-${service.color}/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <IconComponent className={`w-8 h-8 ${colorClasses.icon}`} />
+                    </div>
+                    <h3 className="mb-2">{service.title}</h3>
+                    <p className={`text-${service.color} font-medium`}>{service.subtitle}</p>
                   </div>
-                )}
+
+                  <p className="body mb-6 text-balance">
+                    {service.description}
+                  </p>
+
+                  {/* Outcomes */}
+                  <div className="space-y-4">
+                    <div>
+                      <p className="caption mb-3">Key Outcomes</p>
+                      <ul className="space-y-2">
+                        {service.outcomes.map((outcome, i) => (
+                          <li key={i} className="text-sm text-warm-gray flex items-start">
+                            <span className={`w-1.5 h-1.5 rounded-full bg-${service.color}/40 mr-3 mt-2 flex-shrink-0`} />
+                            {outcome}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="caption mb-3">Target Metrics</p>
+                      <ul className="space-y-2">
+                        {service.metrics.map((metric, i) => (
+                          <li key={i} className="text-sm">
+                            <span className={`${colorClasses.badge} text-xs`}>
+                              {metric}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
-        <div className="mt-16 text-center">
+        {/* Engagement Models */}
+        <div className="text-center">
           <h3 className="mb-8">Engagement Models</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <div className="p-6 bg-neutral-stone/30 rounded-lg">
-              <p className="font-medium mb-2">Retainer + Equity</p>
-              <p className="text-sm text-neutral-warm-gray">(favored)</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="card p-6 text-center">
+              <div className="data-metric text-2xl mb-2">Retainer + Equity</div>
+              <p className="text-small text-warm-gray">Our preferred model for long-term partnerships</p>
             </div>
-            <div className="p-6 bg-neutral-stone/30 rounded-lg">
-              <p className="font-medium mb-2">Fixed-scope Project</p>
-              <p className="text-sm text-neutral-warm-gray">For targeted needs</p>
+            <div className="card p-6 text-center">
+              <div className="data-metric text-2xl mb-2">Fixed-scope Project</div>
+              <p className="text-small text-warm-gray">For targeted, specific needs</p>
             </div>
-            <div className="p-6 bg-neutral-stone/30 rounded-lg">
-              <p className="font-medium mb-2">Studio Co-found</p>
-              <p className="text-sm text-neutral-warm-gray">(Tweed takes sweat equity)</p>
+            <div className="card p-6 text-center">
+              <div className="data-metric text-2xl mb-2">Studio Co-found</div>
+              <p className="text-small text-warm-gray">Tweed takes sweat equity in new ventures</p>
             </div>
           </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-16">
+          <Link href="/services" className="btn-primary inline-flex items-center space-x-2">
+            <span>Explore All Services</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>

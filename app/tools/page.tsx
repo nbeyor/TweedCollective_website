@@ -1,4 +1,6 @@
 import React from 'react'
+import Link from 'next/link'
+import { ArrowRight, Upload, Target, BarChart3, Zap } from 'lucide-react'
 
 const tools = [
   {
@@ -51,79 +53,140 @@ const tools = [
   }
 ]
 
-export default function Tools() {
+export default function ToolsPage() {
   return (
-    <div className="pt-32 pb-20">
+    <div className="pt-32">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 mb-20">
-        <h1 className="mb-6">Operator Toolkit</h1>
-        <p className="body-large text-neutral-warm-gray max-w-2xl">
-          Battle-tested frameworks, templates, and tools we use to accelerate health-tech companies.
-        </p>
-      </section>
-
-      {/* Tools Grid */}
-      <section className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {tools.map((tool) => (
-            <div 
-              key={tool.name}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-            >
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h3>{tool.name}</h3>
-                  <span className="text-sm font-medium text-primary-coral">{tool.category}</span>
-                </div>
-
-                <p className="text-neutral-warm-gray mb-8">
-                  {tool.description}
-                </p>
-
-                <div className="space-y-6">
-                  <div>
-                    <p className="caption text-primary-sage mb-3">Key Features</p>
-                    <ul className="grid grid-cols-2 gap-2">
-                      {tool.features.map((feature, i) => (
-                        <li 
-                          key={i}
-                          className="flex items-center text-sm text-neutral-warm-gray"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary-sage mr-2" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <p className="caption text-primary-sage mb-2">Case Study</p>
-                    <p className="text-sm text-neutral-warm-gray">
-                      {tool.useCase}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-neutral-stone">
-                  <button className="btn-secondary w-full">
-                    Request Access
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+      <section className="section bg-gradient-subtle">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="mb-6">Our Tools</h1>
+            <p className="body-large mb-8">
+              Self-serve dashboards and AI-powered tools to accelerate your health-tech growth journey.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 mt-20">
-        <div className="bg-neutral-stone/30 rounded-lg p-8 md:p-12">
+      {/* AI Sprint Planner */}
+      <section className="section">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="mb-6">AI Sprint Planner</h2>
+                <p className="body-large mb-6">
+                  Upload your goals and get a 100-day roadmap in seconds. Our AI analyzes your business 
+                  context and creates a customized execution plan.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-sage/20 rounded-full flex items-center justify-center">
+                      <Upload className="w-4 h-4 text-sage" />
+                    </div>
+                    <span className="text-warm-gray">Upload your business goals and metrics</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-sage/20 rounded-full flex items-center justify-center">
+                      <Target className="w-4 h-4 text-sage" />
+                    </div>
+                    <span className="text-warm-gray">AI generates a 100-day execution plan</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-sage/20 rounded-full flex items-center justify-center">
+                      <BarChart3 className="w-4 h-4 text-sage" />
+                    </div>
+                    <span className="text-warm-gray">Track progress with built-in KPIs</span>
+                  </div>
+                </div>
+
+                <Link href="/tools/sprint-planner" className="btn-primary inline-flex items-center space-x-2">
+                  <span>Launch AI Sprint Planner</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="card p-8">
+                <div className="bg-gradient-to-br from-sage/10 to-terra/10 rounded-lg p-6 mb-6">
+                  <h3 className="mb-4">Sample Output</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-warm-gray">Week 1-4</span>
+                      <span className="badge-primary">Foundation</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-warm-gray">Week 5-8</span>
+                      <span className="badge-terra">Execution</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-warm-gray">Week 9-12</span>
+                      <span className="badge-coral">Optimization</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="data-metric text-2xl mb-2">100% Free</div>
+                  <p className="text-small text-warm-gray">No credit card required</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coming Soon Tools */}
+      <section className="section bg-stone/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="mb-8">More Tools Coming Soon</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="card p-6 text-center">
+                <div className="w-16 h-16 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="w-8 h-8 text-sage" />
+                </div>
+                <h3 className="mb-2">Revenue Dashboard</h3>
+                <p className="text-sm text-warm-gray mb-4">
+                  Real-time revenue analytics and forecasting for health-tech companies
+                </p>
+                <span className="badge-secondary">Coming Q2 2024</span>
+              </div>
+
+              <div className="card p-6 text-center">
+                <div className="w-16 h-16 bg-terra/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-8 h-8 text-terra" />
+                </div>
+                <h3 className="mb-2">Market Intelligence</h3>
+                <p className="text-sm text-warm-gray mb-4">
+                  AI-powered market analysis and competitive intelligence
+                </p>
+                <span className="badge-secondary">Coming Q3 2024</span>
+              </div>
+
+              <div className="card p-6 text-center">
+                <div className="w-16 h-16 bg-coral/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-8 h-8 text-coral" />
+                </div>
+                <h3 className="mb-2">Team Builder</h3>
+                <p className="text-sm text-warm-gray mb-4">
+                  AI-assisted hiring and team scaling recommendations
+                </p>
+                <span className="badge-secondary">Coming Q4 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section">
+        <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="mb-4">Need a Custom Tool?</h2>
-            <p className="body-large text-neutral-warm-gray mb-8">
-              Our operators can help you build custom frameworks and tools tailored to your specific needs.
-            </p>
-            <button className="btn-primary">Schedule a Call</button>
+            <h2 className="mb-8">Need custom tools for your business?</h2>
+            <Link href="/contact" className="btn-primary text-lg px-8 py-4">
+              Let's Build Together
+            </Link>
           </div>
         </div>
       </section>
