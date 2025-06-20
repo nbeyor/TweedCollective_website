@@ -1,11 +1,19 @@
 import React from 'react'
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
+import OperatorCarousel from '@/components/OperatorCarousel'
+import { getOperators } from '@/lib/airtable'
 
-export default function Home() {
+export default async function Home() {
+  // Fetch operators from Airtable
+  const operators = await getOperators();
+
   return (
     <>
       <Hero />
+      
+      {/* Operating Partners Carousel */}
+      <OperatorCarousel operators={operators} />
       
       {/* What We Do */}
       <Services />

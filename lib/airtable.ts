@@ -9,8 +9,8 @@ function getBase(): Airtable.Base | null {
     return base;
   }
 
-  const apiKey = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
+  const apiKey = process.env.AIRTABLE_TOKEN;
+  const baseId = process.env.AIRTABLE_BASE;
 
   // If credentials are not in env, log a warning and set base to null
   if (!apiKey || !baseId) {
@@ -62,6 +62,23 @@ export interface Service {
   category: string
   features: string[]
   outcomes: string[]
+}
+
+// New types for operators and updated projects
+export interface Operator {
+  id: string;
+  name: string;
+  linkedin: string;
+  photo?: string;
+  expertise: string[];
+}
+
+export interface ProjectRecord {
+  id: string;
+  company: string;
+  pillar: string;
+  headline: string;
+  operators: string[];
 }
 
 const checkAirtableConfig = () => {
@@ -116,6 +133,46 @@ export const getProjects = async (): Promise<Project[]> => {
   } catch (error) {
     console.error('Error fetching projects:', error)
     return []
+  }
+}
+
+// New function to get operators
+export const getOperators = async (): Promise<Operator[]> => {
+  const currentBase = getBase();
+  if (!currentBase) return [];
+
+  try {
+    const records = await currentBase('Operators').select().all();
+    return records.map(record => ({
+      id: record.id,
+      name: record.get('Name') as string,
+      linkedin: record.get('LinkedIn') as string,
+      photo: (record.get('Headshot') as any[])?.[0]?.url,
+      expertise: (record.get('Expertise') as string[]) ?? [],
+    }));
+  } catch (error) {
+    console.error('Error fetching operators:', error);
+    return [];
+  }
+}
+
+// New function to get project records
+export const getProjectRecords = async (): Promise<ProjectRecord[]> => {
+  const currentBase = getBase();
+  if (!currentBase) return [];
+
+  try {
+    const records = await currentBase('Projects').select().all();
+    return records.map(record => ({
+      id: record.id,
+      company: record.get('Company') as string,
+      pillar: record.get('Pillar') as string,
+      headline: record.get('Headline') as string,
+      operators: (record.get('Operators') as string[]) ?? [],
+    }));
+  } catch (error) {
+    console.error('Error fetching project records:', error);
+    return [];
   }
 }
 
