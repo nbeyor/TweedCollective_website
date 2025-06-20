@@ -1,12 +1,29 @@
 import Airtable from 'airtable'
 
-const airtable_api_key = process.env.AIRTABLE_API_KEY
-const airtable_base_id = process.env.AIRTABLE_BASE_ID
+// A singleton to hold the base connection
+let base: Airtable.Base | null = null;
 
-let base: Airtable.Base;
-if (airtable_api_key && airtable_base_id) {
-  const airtable = new Airtable({ apiKey: airtable_api_key });
-  base = airtable.base(airtable_base_id);
+function getBase(): Airtable.Base | null {
+  // If base is already initialized, return it
+  if (base) {
+    return base;
+  }
+
+  const apiKey = process.env.AIRTABLE_API_KEY;
+  const baseId = process.env.AIRTABLE_BASE_ID;
+
+  // If credentials are not in env, log a warning and set base to null
+  if (!apiKey || !baseId) {
+    // This warning is helpful for debugging deployment issues.
+    console.warn('Airtable API Key or Base ID is not configured. Airtable fetching will be skipped.');
+    return null;
+  }
+  
+  // Initialize Airtable and the base
+  const airtable = new Airtable({ apiKey });
+  base = airtable.base(baseId);
+  
+  return base;
 }
 
 const handleAirtableError = (err: any, type: string) => {
@@ -57,9 +74,11 @@ const checkAirtableConfig = () => {
 
 // Helper functions to fetch data
 export const getPartners = async (): Promise<Partner[]> => {
-  if (!checkAirtableConfig()) return [];
+  const currentBase = getBase();
+  if (!currentBase) return [];
+
   try {
-    const records = await base('Partners').select().all()
+    const records = await currentBase('Partners').select().all()
     return records.map(record => ({
       id: record.id,
       name: record.get('Name') as string,
@@ -78,9 +97,11 @@ export const getPartners = async (): Promise<Partner[]> => {
 }
 
 export const getProjects = async (): Promise<Project[]> => {
-  if (!checkAirtableConfig()) return [];
+  const currentBase = getBase();
+  if (!currentBase) return [];
+
   try {
-    const records = await base('Projects').select().all()
+    const records = await currentBase('Projects').select().all()
     return records.map(record => ({
       id: record.id,
       name: record.get('Name') as string,
@@ -99,9 +120,10 @@ export const getProjects = async (): Promise<Project[]> => {
 }
 
 export const getServices = async (): Promise<Service[]> => {
-  if (!checkAirtableConfig()) return [];
+  const currentBase = getBase();
+  if (!currentBase) return [];
   try {
-    const records = await base('Services').select().all()
+    const records = await currentBase('Services').select().all()
     return records.map(record => ({
       id: record.id,
       name: record.get('Name') as string,
@@ -124,9 +146,14 @@ export const submitContactForm = async (data: {
   message: string
   service?: string
 }) => {
-  if (!checkAirtableConfig()) return { success: false, error: 'Airtable not configured' };
+  const currentBase = getBase();
+  if (!currentBase) {
+    console.error('Airtable not configured, form submission failed.');
+    return { success: false, error: 'Airtable not configured' };
+  }
+
   try {
-    await base('Contact Submissions').create([
+    await currentBase('Contact Submissions').create([
       {
         fields: {
           Name: data.name,
