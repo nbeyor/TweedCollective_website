@@ -1,5 +1,5 @@
 import React from 'react'
-import Logo from '@/components/Logo'
+import TweedLogo from '@/components/ui/tweed-logo'
 
 export default function LogoTest() {
   return (
@@ -13,16 +13,16 @@ export default function LogoTest() {
             <h2 className="mb-8">Animated Logo</h2>
             <div className="flex flex-col items-center space-y-8">
               <div>
-                <p className="text-sm text-neutral-warm-gray mb-4">Small (40px)</p>
-                <Logo animated={true} size="sm" />
+                <p className="text-sm text-neutral-warm-gray mb-4">Small (32px)</p>
+                <TweedLogo animated={true} size={32} />
               </div>
               <div>
                 <p className="text-sm text-neutral-warm-gray mb-4">Medium (80px)</p>
-                <Logo animated={true} size="md" />
+                <TweedLogo animated={true} size={80} />
               </div>
               <div>
                 <p className="text-sm text-neutral-warm-gray mb-4">Large (128px)</p>
-                <Logo animated={true} size="lg" />
+                <TweedLogo animated={true} size={128} />
               </div>
             </div>
           </div>
@@ -32,16 +32,16 @@ export default function LogoTest() {
             <h2 className="mb-8">Static Logo</h2>
             <div className="flex flex-col items-center space-y-8">
               <div>
-                <p className="text-sm text-neutral-warm-gray mb-4">Small (40px)</p>
-                <Logo animated={false} size="sm" />
+                <p className="text-sm text-neutral-warm-gray mb-4">Small (32px)</p>
+                <TweedLogo animated={false} size={32} />
               </div>
               <div>
                 <p className="text-sm text-neutral-warm-gray mb-4">Medium (80px)</p>
-                <Logo animated={false} size="md" />
+                <TweedLogo animated={false} size={80} />
               </div>
               <div>
                 <p className="text-sm text-neutral-warm-gray mb-4">Large (128px)</p>
-                <Logo animated={false} size="lg" />
+                <TweedLogo animated={false} size={128} />
               </div>
             </div>
           </div>
@@ -54,7 +54,7 @@ export default function LogoTest() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="mb-4">Header (Animated when not scrolled)</h3>
               <div className="flex items-center space-x-2">
-                <Logo animated={true} size="sm" />
+                <TweedLogo animated={true} size={32} />
                 <span className="font-display text-lg">Tweed</span>
               </div>
             </div>
@@ -62,7 +62,7 @@ export default function LogoTest() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="mb-4">Footer (Static)</h3>
               <div className="flex items-center space-x-2">
-                <Logo animated={false} size="sm" />
+                <TweedLogo animated={false} size={32} />
                 <span className="font-display text-lg">Tweed Collective</span>
               </div>
             </div>
@@ -70,7 +70,27 @@ export default function LogoTest() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="mb-4">Large Display</h3>
               <div className="flex justify-center">
-                <Logo animated={true} size="lg" />
+                <TweedLogo animated={true} size={128} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* With Text Examples */}
+        <div className="mt-20">
+          <h2 className="text-center mb-8">With Text Examples</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="mb-4">Animated with Text</h3>
+              <div className="flex justify-center">
+                <TweedLogo animated={true} size={80} withText={true} />
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="mb-4">Static with Text</h3>
+              <div className="flex justify-center">
+                <TweedLogo animated={false} size={80} withText={true} />
               </div>
             </div>
           </div>

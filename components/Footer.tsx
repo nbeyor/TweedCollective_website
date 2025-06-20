@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import Logo from './Logo'
+import TweedLogo from './ui/tweed-logo'
 
 const Footer = () => {
   return (
@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center space-x-2">
-              <Logo animated={false} size="sm" />
+              <TweedLogo animated={false} size={32} />
               <span className="text-xl font-medium">Tweed Collective</span>
             </Link>
             <p className="text-stone/80 max-w-xs">

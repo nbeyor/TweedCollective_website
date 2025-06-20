@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import Logo from './Logo'
+import TweedLogo from './ui/tweed-logo'
 
 const navigation = [
   { name: 'About', href: '/about' },
@@ -37,18 +37,12 @@ export default function Header() {
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative">
-            <div className="flex items-center">
-              <Logo 
-                animated={true} 
-                size="sm" 
-                className="mr-3"
-              />
-              <span className={`font-display text-lg font-semibold transition-colors duration-300 ${
-                isScrolled ? 'text-charcoal' : 'text-cream'
-              }`}>
-                Tweed Collective
-              </span>
-            </div>
+            <TweedLogo 
+              animated={true} 
+              size={32} 
+              className="mr-3"
+              withText={true}
+            />
           </Link>
 
           {/* Desktop Navigation */}
