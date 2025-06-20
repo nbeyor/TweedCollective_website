@@ -34,9 +34,7 @@ module.exports = {
         'neutral-stone': '#E8E4DD',
       },
       fontFamily: {
-        'display': ['"Playfair Display"', 'Georgia', 'serif'],
         'sans': ['"Space Grotesk"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'mono': ['"JetBrains Mono"', '"SF Mono"', 'Monaco', 'monospace'],
       },
       fontSize: {
         'hero': ['clamp(3rem, 8vw, 5rem)', { lineHeight: '1.1', fontWeight: '600' }],

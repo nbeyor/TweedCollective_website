@@ -27,6 +27,9 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Don't show CTA button on contact page
+  const showCTA = pathname !== '/contact'
+
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -55,10 +58,10 @@ export default function Header() {
                   pathname === item.href
                     ? isScrolled
                       ? 'text-sage'
-                      : 'text-coral'
+                      : 'text-sage'
                     : isScrolled
                     ? 'text-charcoal hover:text-sage'
-                    : 'text-cream hover:text-coral'
+                    : 'text-cream hover:text-sage'
                 }`}
               >
                 {item.name}
@@ -67,11 +70,13 @@ export default function Header() {
           </div>
 
           {/* CTA Button */}
-          <div className="hidden md:block">
-            <Link href="/contact" className="btn-primary text-sm">
-              Book a Call
-            </Link>
-          </div>
+          {showCTA && (
+            <div className="hidden md:block">
+              <Link href="/contact" className="btn-primary text-sm">
+                Book a Call
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -127,15 +132,17 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
-            <div className="px-3 py-2">
-              <Link 
-                href="/contact" 
-                className="btn-primary w-full text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Book a Call
-              </Link>
-            </div>
+            {showCTA && (
+              <div className="px-3 py-2">
+                <Link 
+                  href="/contact" 
+                  className="btn-primary w-full text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Book a Call
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

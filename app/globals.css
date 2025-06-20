@@ -15,19 +15,19 @@
 
   /* Typography */
   h1 {
-    @apply font-display text-hero text-charcoal font-semibold;
+    @apply font-sans text-hero text-charcoal font-semibold;
   }
 
   h2 {
-    @apply font-display text-h2 text-charcoal font-semibold;
+    @apply font-sans text-h2 text-charcoal font-semibold;
   }
 
   h3 {
-    @apply font-display text-h3 text-charcoal font-medium;
+    @apply font-sans text-h3 text-charcoal font-medium;
   }
 
   h4 {
-    @apply font-display text-xl text-charcoal font-medium;
+    @apply font-sans text-xl text-charcoal font-medium;
   }
 
   .body-large {
@@ -43,11 +43,11 @@
   }
 
   .mono {
-    @apply font-mono text-data text-sage font-medium;
+    @apply font-sans text-data text-sage font-medium;
   }
 
   .data-metric {
-    @apply font-mono text-data text-sage font-medium;
+    @apply font-sans text-data text-sage font-medium;
   }
 }
 

@@ -49,7 +49,7 @@ const TweedLogo = ({ animated = true, size = 80, className = "", withText = fals
     return (
       <div className="flex items-center gap-4">
         {LogoMark}
-        <span className="font-display font-semibold text-xl text-charcoal">
+        <span className="font-sans font-semibold text-xl text-charcoal">
           TWEED COLLECTIVE
         </span>
       </div>

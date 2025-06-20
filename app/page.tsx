@@ -1,22 +1,40 @@
 import React from 'react'
 import Hero from '@/components/Hero'
-import PartnerCarousel from '@/components/PartnerCarousel'
 import Services from '@/components/Services'
-import CaseStudies from '@/components/CaseStudies'
 
 export default function Home() {
   return (
     <>
       <Hero />
       
-      {/* Operating Partners Carousel */}
-      <PartnerCarousel />
-
       {/* What We Do */}
       <Services />
 
-      {/* Signature Projects */}
-      <CaseStudies />
+      {/* Logo Carousel - Placeholder */}
+      <section className="section bg-stone/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="mb-4">Trusted by Health-Tech Leaders</h2>
+            <p className="body-large text-warm-gray">
+              Companies we've helped scale and accelerate
+            </p>
+          </div>
+          <div className="flex items-center justify-center space-x-12 opacity-50">
+            <div className="w-32 h-16 bg-stone rounded-lg flex items-center justify-center">
+              <span className="text-sm text-warm-gray">Logo 1</span>
+            </div>
+            <div className="w-32 h-16 bg-stone rounded-lg flex items-center justify-center">
+              <span className="text-sm text-warm-gray">Logo 2</span>
+            </div>
+            <div className="w-32 h-16 bg-stone rounded-lg flex items-center justify-center">
+              <span className="text-sm text-warm-gray">Logo 3</span>
+            </div>
+            <div className="w-32 h-16 bg-stone rounded-lg flex items-center justify-center">
+              <span className="text-sm text-warm-gray">Logo 4</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Live Tools */}
       <section className="section bg-gradient-animated">
@@ -39,7 +57,7 @@ export default function Home() {
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="mb-8">Need revenue acceleration?</h2>
             <a href="/contact" className="btn-primary text-lg px-8 py-4">
-              Book a 30-min call
+              Book a Call
             </a>
           </div>
         </div>

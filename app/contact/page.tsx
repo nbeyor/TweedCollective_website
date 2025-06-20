@@ -1,44 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useContactForm } from '@/hooks/useAirtable'
-import { Mail, Phone, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react'
+import React from 'react'
+import { Mail, MapPin } from 'lucide-react'
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    service: '',
-    message: ''
-  })
-
-  const { submitForm, loading, error, success } = useContactForm()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await submitForm(formData)
-      setFormData({ name: '', email: '', company: '', service: '', message: '' })
-    } catch (err) {
-      // Error is handled by the hook
-    }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
-
   return (
     <div className="pt-32">
       {/* Hero Section */}
       <section className="section bg-gradient-subtle">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="mb-6">Let's Talk</h1>
+            <h1 className="mb-6">Get in Touch</h1>
             <p className="body-large mb-8">
               Ready to accelerate your health-tech company's growth? We'd love to hear about your challenges and opportunities.
             </p>
@@ -46,207 +18,75 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Contact Form Section */}
+      {/* Contact Information */}
       <section className="section">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Contact Form */}
-              <div>
-                <h2 className="mb-6">Get in Touch</h2>
-                
-                {success && (
-                  <div className="mb-6 p-4 bg-sage/10 border border-sage/20 rounded-lg flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-sage" />
-                    <p className="text-sage">Thank you! We'll get back to you within 24 hours.</p>
-                  </div>
-                )}
-
-                {error && (
-                  <div className="mb-6 p-4 bg-coral/10 border border-coral/20 rounded-lg flex items-center space-x-3">
-                    <AlertCircle className="w-5 h-5 text-coral" />
-                    <p className="text-coral">Something went wrong. Please try again or contact us directly.</p>
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="form-label">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="form-input"
-                        placeholder="Your full name"
-                        required
-                      />
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Contact Details */}
+              <div className="space-y-8">
+                <div>
+                  <h2 className="mb-6">Contact Information</h2>
+                  
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-sage/10 rounded-lg flex items-center justify-center">
+                        <Mail className="w-6 h-6 text-sage" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-charcoal mb-1">Email</p>
+                        <a 
+                          href="mailto:hello@tweedcollective.ai" 
+                          className="text-sage hover:text-sage/80 text-lg font-medium"
+                        >
+                          hello@tweedcollective.ai
+                        </a>
+                      </div>
                     </div>
-                    <div>
-                      <label htmlFor="email" className="form-label">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="form-input"
-                        placeholder="your.email@company.com"
-                        required
-                      />
+                    
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-terra/10 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-6 h-6 text-terra" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-charcoal mb-1">Location</p>
+                        <p className="text-warm-gray text-lg">
+                          Los Angeles, California
+                        </p>
+                        <p className="text-warm-gray text-sm">
+                          In the heart of the growing health-tech ecosystem
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div>
-                    <label htmlFor="company" className="form-label">
-                      Company
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="form-input"
-                      placeholder="Your company name"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="service" className="form-label">
-                      Service Interest
-                    </label>
-                    <select
-                      id="service"
-                      name="service"
-                      value={formData.service}
-                      onChange={handleChange}
-                      className="form-select"
-                    >
-                      <option value="">Select a service</option>
-                      <option value="operations">Operations</option>
-                      <option value="advisory">Advisory</option>
-                      <option value="incubation">Incubation</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="form-label">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      rows={6}
-                      className="form-input"
-                      placeholder="Tell us about your business challenges and how we can help..."
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="btn-primary w-full"
-                  >
-                    {loading ? 'Sending...' : 'Send Message'}
-                  </button>
-                </form>
+                </div>
+
+                <div className="bg-stone/30 p-6 rounded-lg">
+                  <h3 className="mb-4">Why Los Angeles?</h3>
+                  <p className="text-sm text-warm-gray mb-4">
+                    LA is rapidly becoming a hub for health-tech innovation, with world-class research institutions, 
+                    a growing biotech corridor, and access to both Silicon Valley and San Diego's life sciences expertise.
+                  </p>
+                  <p className="text-sm text-warm-gray">
+                    Our location gives us unique access to talent, capital, and partnerships that drive successful health-tech scaling.
+                  </p>
+                </div>
               </div>
 
-              {/* Contact Information */}
-              <div>
-                <h2 className="mb-6">Contact Information</h2>
-                
-                <div className="space-y-8">
-                  <div>
-                    <h3 className="mb-4">Get in Touch</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-sage/10 rounded-lg flex items-center justify-center">
-                          <Mail className="w-5 h-5 text-sage" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-charcoal">Email</p>
-                          <a href="mailto:hello@tweedcollective.com" className="text-sage hover:text-sage/80">
-                            hello@tweedcollective.com
-                          </a>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-sage/10 rounded-lg flex items-center justify-center">
-                          <Phone className="w-5 h-5 text-sage" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-charcoal">Phone</p>
-                          <a href="tel:+1234567890" className="text-sage hover:text-sage/80">
-                            +1 (234) 567-890
-                          </a>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-sage/10 rounded-lg flex items-center justify-center">
-                          <MapPin className="w-5 h-5 text-sage" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-charcoal">Location</p>
-                          <p className="text-warm-gray">San Francisco, CA</p>
-                        </div>
-                      </div>
+              {/* LA Tech Ecosystem Image Placeholder */}
+              <div className="relative">
+                <div className="bg-gradient-to-br from-sage/20 to-terra/20 rounded-2xl p-8 h-96 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-24 h-24 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <MapPin className="w-12 h-12 text-sage" />
                     </div>
-                  </div>
-
-                  <div>
-                    <h3 className="mb-4">Office Hours</h3>
-                    <div className="flex items-center space-x-3 mb-4">
-                      <Clock className="w-5 h-5 text-sage" />
-                      <div>
-                        <p className="text-warm-gray"><strong>Monday - Friday:</strong> 9:00 AM - 6:00 PM PST</p>
-                        <p className="text-warm-gray"><strong>Saturday:</strong> By appointment</p>
-                        <p className="text-warm-gray"><strong>Sunday:</strong> Closed</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="mb-4">Response Time</h3>
-                    <p className="text-warm-gray">
-                      We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly.
+                    <h3 className="text-xl font-semibold mb-2">Los Angeles Tech Ecosystem</h3>
+                    <p className="text-warm-gray text-sm">
+                      Health-tech innovation hub with access to world-class talent and capital
                     </p>
-                  </div>
-
-                  <div className="card p-6">
-                    <h3 className="mb-3">What to Expect</h3>
-                    <ul className="space-y-2 text-warm-gray">
-                      <li className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-sage" />
-                        <span>Initial consultation within 24 hours</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-sage" />
-                        <span>Custom proposal within 1 week</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-sage" />
-                        <span>Project kickoff within 2 weeks</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-sage" />
-                        <span>Regular progress updates</span>
-                      </li>
-                    </ul>
+                    <p className="text-xs text-warm-gray mt-2">
+                      [Image placeholder - LA skyline with health-tech overlay]
+                    </p>
                   </div>
                 </div>
               </div>
@@ -256,12 +96,22 @@ export default function ContactPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="section bg-stone/30">
+      <section className="section bg-sage">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="mb-8">Ready to accelerate your growth?</h2>
-            <a href="mailto:hello@tweedcollective.com" className="btn-primary text-lg px-8 py-4">
-              Schedule a Call
+          <div className="text-center">
+            <h2 className="text-3xl font-semibold text-cream mb-6">
+              Ready to Start the Conversation?
+            </h2>
+            <p className="body-large text-cream/90 mb-8 max-w-2xl mx-auto">
+              Whether you're looking to scale operations, need strategic advisory, or want to explore new ventures, 
+              we're here to help accelerate your health-tech journey.
+            </p>
+            <a 
+              href="mailto:hello@tweedcollective.ai"
+              className="btn-primary bg-cream text-charcoal hover:bg-cream/90 inline-flex items-center space-x-2"
+            >
+              <Mail className="w-4 h-4" />
+              <span>Send us an email</span>
             </a>
           </div>
         </div>

@@ -14,22 +14,6 @@ export default function AboutPage() {
               We're a fractional-operator platform that helps growth-stage health-tech companies 
               and their investors accelerate revenue and scale through hands-on execution and AI-driven strategy.
             </p>
-            <div className="inline-flex items-center space-x-8 px-6 py-3 bg-cream/80 backdrop-blur-sm rounded-full shadow-sophisticated">
-              <div className="flex items-center space-x-2">
-                <span className="data-metric">20+</span>
-                <span className="text-small text-warm-gray">years expertise</span>
-              </div>
-              <div className="w-px h-4 bg-stone"></div>
-              <div className="flex items-center space-x-2">
-                <span className="data-metric">$50M+</span>
-                <span className="text-small text-warm-gray">client value generated</span>
-              </div>
-              <div className="w-px h-4 bg-stone"></div>
-              <div className="flex items-center space-x-2">
-                <span className="data-metric">15+</span>
-                <span className="text-small text-warm-gray">companies accelerated</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
