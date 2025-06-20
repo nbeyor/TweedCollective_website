@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { usePartners } from '@/hooks/useAirtable'
 import { Linkedin, Mail, ExternalLink } from 'lucide-react'
