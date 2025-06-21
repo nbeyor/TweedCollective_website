@@ -147,7 +147,7 @@ export const getOperators = async (): Promise<Operator[]> => {
       id: record.id,
       name: record.get('Name') as string,
       linkedin: record.get('LinkedIn') as string,
-      photo: (record.get('Headshot') as any[])?.[0]?.url,
+      photo: ((record.get('Headshot') as any[])?.[0]?.url) || (record.get('HeadshotURL') as string) || undefined,
       expertise: (record.get('ExpertiseTags') as string[]) ?? [],
     }));
   } catch (error) {
