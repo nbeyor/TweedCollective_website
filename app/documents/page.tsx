@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2 } from 'lucide-react'
+import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2, Dna } from 'lucide-react'
 
 // Document metadata - add new documents here
 const documents = [
@@ -39,6 +39,18 @@ const documents = [
     thumbnail: '/img/documents/ai-framework.svg',
     href: '/documents/ai-integration-framework',
     featured: false,
+  },
+  {
+    id: 'salmon-ai-genomics',
+    title: 'Strategic AI for Salmon Genetic Improvement',
+    description: 'Turn 2.5 generations of genomic+phenotypic data into a predictive asset; move from "records" → "moat."',
+    category: 'Executive Briefing',
+    icon: Dna,
+    date: '2024-12',
+    readTime: '30 min',
+    thumbnail: '/img/documents/salmon-ai.svg',
+    href: '/documents/salmon-ai-genomics',
+    featured: true,
   },
 ]
 
