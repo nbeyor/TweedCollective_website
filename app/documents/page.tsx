@@ -18,8 +18,8 @@ const documents = [
   },
   {
     id: 'vibe-coding-pe-life-sciences',
-    title: 'VIBE Coding in PE & Life Sciences',
-    description: 'How next-gen coding agents reshape product velocity, talent, and value creation in PE-backed life sciences companies.',
+    title: 'The Evolution of VIBE Coding in Enterprise - for PE Investors',
+    description: 'How next-gen coding agents reshape product velocity, talent, and value creation in PE-backed companies.',
     category: 'Executive Briefing',
     icon: Code2,
     date: '2024-12',
@@ -65,15 +65,10 @@ export default function DocumentsPage() {
         </div>
       </section>
 
-      {/* Featured Documents */}
+      {/* Documents Grid */}
       {featuredDocs.length > 0 && (
         <section className="section">
           <div className="container mx-auto">
-            <div className="flex items-center justify-between mb-10">
-              <h2>Featured Resources</h2>
-              <span className="caption text-warm-gray/60">{featuredDocs.length} featured</span>
-            </div>
-            
             <div className="grid md:grid-cols-2 gap-8">
               {featuredDocs.map((doc, index) => (
                 <FeaturedDocumentCard key={doc.id} document={doc} index={index} />
@@ -82,22 +77,6 @@ export default function DocumentsPage() {
           </div>
         </section>
       )}
-
-      {/* All Documents Grid */}
-      <section className="section bg-stone/30">
-        <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <h2>All Resources</h2>
-            <span className="caption text-warm-gray/60">{documents.length} documents</span>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {documents.map((doc, index) => (
-              <DocumentCard key={doc.id} document={doc} index={index} />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="section">

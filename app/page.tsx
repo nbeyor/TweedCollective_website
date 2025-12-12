@@ -46,23 +46,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Live Tools */}
-      <section className="section bg-gradient-animated relative">
-        {/* Purple Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-purple-600/8"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="mb-6 text-cream">Try our AI Sprint Planner</h3>
-            <p className="body-large mb-8 text-cream/90">
-              Upload your goals and get a 100-day roadmap in seconds
-            </p>
-            <a href="/tools" className="btn-primary bg-cream text-charcoal hover:bg-cream/90">
-              Launch Tool
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="section">
         <div className="container mx-auto px-4">

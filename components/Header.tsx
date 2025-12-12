@@ -12,7 +12,6 @@ const navigation = [
   { name: 'Operators', href: '/operators' },
   { name: 'Projects', href: '/projects' },
   { name: 'Documents', href: '/documents' },
-  { name: 'Tools', href: '/tools' },
 ]
 
 export default function Header() {
@@ -43,12 +42,23 @@ export default function Header() {
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative group">
-            <TweedLogo 
-              animated={true} 
-              size={36} 
-              className="mr-3"
-              withText={true}
-            />
+            <div className="flex items-center gap-3">
+              <TweedLogo 
+                animated={true} 
+                size={36} 
+                className="mr-3"
+                withText={false}
+              />
+              <span className={`font-sans font-semibold text-lg tracking-tight transition-colors ${
+                pathname?.startsWith('/documents') 
+                  ? 'text-cream' 
+                  : isScrolled 
+                    ? 'text-charcoal' 
+                    : 'text-cream'
+              }`}>
+                Tweed Collective
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation - Pill Container */}

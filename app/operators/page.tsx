@@ -1,10 +1,54 @@
 import React from 'react'
-import { getOperators, Operator } from '@/lib/airtable'
-import { Linkedin, Mail, ExternalLink, ArrowRight } from 'lucide-react'
+import { Linkedin, Mail, ArrowRight } from 'lucide-react'
+
+// Static operator data
+const operators = [
+  {
+    id: '1',
+    name: 'Bob Battista',
+    title: 'Head of Commercial, Salt AI',
+    expertise: ['Life sciences go-to-market', 'Medical intelligence platforms', 'Commercial strategy', 'Enterprise AI adoption'],
+    photo: '/img/placeholder-headshot.svg',
+    bio: 'Expert in commercial strategy and go-to-market execution for life sciences companies, with deep experience in medical intelligence platforms and enterprise AI adoption.'
+  },
+  {
+    id: '2',
+    name: 'Sibel Sayiner',
+    title: 'VP, Business Operations & Analytics, Marley Medical',
+    subtitle: '(prev. BCG, Propeller Health)',
+    expertise: ['Digital health ops', 'Data-driven commercialization', 'Chronic disease virtual care', 'Payer/provider strategy'],
+    photo: '/img/placeholder-headshot.svg',
+    bio: 'Former BCG consultant and Propeller Health executive specializing in digital health operations, data-driven commercialization, and payer/provider strategy for chronic disease virtual care platforms.'
+  },
+  {
+    id: '3',
+    name: 'Stuart John',
+    title: 'First American',
+    expertise: ['Enterprise data platforms', 'Title & escrow tech', 'Large-scale systems modernization'],
+    photo: '/img/placeholder-headshot.svg',
+    bio: 'Expert in enterprise data platforms and large-scale systems modernization, with deep experience in title & escrow technology and complex system transformations.'
+  },
+  {
+    id: '4',
+    name: 'Syuzi Pakhchyan',
+    title: 'Head of Innovation & Emerging Experiences, Target',
+    subtitle: '(prev. Design Director, BCG Digital Ventures)',
+    expertise: ['Wearable tech & emerging interfaces', 'Experience design', 'Retail innovation', 'Fashion–technology convergence'],
+    photo: '/img/placeholder-headshot.svg',
+    bio: 'Former Design Director at BCG Digital Ventures, now leading innovation at Target. Specializes in wearable technology, emerging interfaces, and the convergence of fashion and technology.'
+  },
+  {
+    id: '5',
+    name: 'Amy Zhang',
+    title: 'Marketing Strategy & Growth',
+    subtitle: '(formerly Senior Growth Architect, BCG Digital Ventures)',
+    expertise: ['Growth marketing', 'Go-to-market for SaaS', 'Digital experiments & performance', 'Mission-driven brand strategy'],
+    photo: '/img/placeholder-headshot.svg',
+    bio: 'Former Senior Growth Architect at BCG Digital Ventures specializing in growth marketing, SaaS go-to-market strategies, digital experimentation, and mission-driven brand development.'
+  }
+]
 
 export default async function OperatorsPage() {
-  const operators = await getOperators();
-
   return (
     <div className="pt-28">
       {/* Hero Section */}
@@ -29,20 +73,9 @@ export default async function OperatorsPage() {
       <section className="section">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {operators.length > 0 ? (
-              operators.map((operator, index) => (
-                <OperatorCard key={operator.id} operator={operator} index={index} />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-16">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-stone/50 flex items-center justify-center">
-                  <span className="text-3xl">👥</span>
-                </div>
-                <p className="body-large text-warm-gray">
-                  Our network of operating partners and advisors will be featured here soon.
-                </p>
-              </div>
-            )}
+            {operators.map((operator, index) => (
+              <OperatorCard key={operator.id} operator={operator} index={index} />
+            ))}
           </div>
         </div>
       </section>
@@ -100,31 +133,21 @@ export default async function OperatorsPage() {
   )
 }
 
-function OperatorCard({ operator, index }: { operator: Operator; index: number }) {
-  const { name, photo, expertise, linkedin } = operator;
+function OperatorCard({ operator, index }: { operator: any; index: number }) {
+  const { name, title, subtitle, expertise, photo, bio } = operator;
   
   return (
     <div 
-      className="card group cursor-pointer"
+      className="card group"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Image */}
       <div className="relative h-72 bg-gradient-to-br from-sage/10 to-terra/10 overflow-hidden">
-        {photo ? (
-          <img
-            src={photo}
-            alt={name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="w-24 h-24 bg-cream rounded-2xl shadow-inner flex items-center justify-center">
-              <span className="text-4xl font-serif text-sage/60">
-                {name.split(' ').map(n => n[0]).join('')}
-              </span>
-            </div>
-          </div>
-        )}
+        <img
+          src={photo}
+          alt={name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -132,7 +155,7 @@ function OperatorCard({ operator, index }: { operator: Operator; index: number }
         {/* Expertise Tags */}
         {expertise && expertise.length > 0 && (
           <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
-            {expertise.slice(0, 3).map((skill, idx) => (
+            {expertise.slice(0, 3).map((skill: string, idx: number) => (
               <span 
                 key={idx} 
                 className="badge bg-cream/95 text-charcoal shadow-sm"
@@ -146,25 +169,31 @@ function OperatorCard({ operator, index }: { operator: Operator; index: number }
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="mb-3 group-hover:text-sage transition-colors">{name}</h3>
+        <h3 className="mb-2 group-hover:text-sage transition-colors">{name}</h3>
+        <p className="text-sm font-medium text-warm-gray mb-1">{title}</p>
+        {subtitle && (
+          <p className="text-xs text-warm-gray/70 mb-4">{subtitle}</p>
+        )}
         
-        {/* Social Links */}
-        <div className="flex items-center gap-4">
-          {linkedin && (
-            <a
-              href={linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-warm-gray hover:text-sage transition-colors group/link"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Linkedin className="icon-md" />
-              <span className="text-sm font-medium group-hover/link:underline underline-offset-2">
-                LinkedIn
-              </span>
-            </a>
-          )}
-        </div>
+        {bio && (
+          <p className="body-small text-warm-gray mb-4">{bio}</p>
+        )}
+        
+        {expertise && expertise.length > 0 && (
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-warm-gray/60 mb-2 uppercase tracking-wider">Expertise</p>
+            <div className="flex flex-wrap gap-2">
+              {expertise.map((skill: string, idx: number) => (
+                <span 
+                  key={idx} 
+                  className="badge-secondary text-xs"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
