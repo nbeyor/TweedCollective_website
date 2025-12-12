@@ -622,56 +622,160 @@ const slides: Slide[] = [
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Industry Research & Reports</h3>
             <ol className="list-decimal list-inside space-y-1 ml-4">
-              <li>Stack Overflow Developer Survey 2025 - AI adoption statistics</li>
-              <li>GitLab Research (2024) - "78% of teams have integrated AI-assisted coding tools"</li>
-              <li>GitHub Research - "Measuring GitHub Copilot's Impact on Productivity" (Communications of the ACM, March 2024)</li>
-              <li>Accenture Randomized Controlled Trial - GitHub Copilot productivity metrics (8.69% increase in PRs, 84% increase in successful builds)</li>
-              <li>Opsera Research - "GitHub Copilot Adoption Trends: Insights from Real Data" (time to PR: 9.6 to 2.4 days)</li>
+              <li>
+                <a href="https://survey.stackoverflow.co/2025" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Stack Overflow Developer Survey 2025 - AI adoption statistics
+                </a>
+              </li>
+              <li>
+                <a href="https://about.gitlab.com/blog/2024/01/16/ai-assisted-coding-tools-research/" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  GitLab Research (2024) - "78% of teams have integrated AI-assisted coding tools"
+                </a>
+              </li>
+              <li>
+                <a href="https://github.blog/2024-03-06-measuring-github-copilots-impact-on-productivity/" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  GitHub Research - "Measuring GitHub Copilot's Impact on Productivity" (Communications of the ACM, March 2024)
+                </a>
+              </li>
+              <li>
+                <a href="https://www.accenture.com/us-en/insights/technology/github-copilot-productivity-study" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Accenture Randomized Controlled Trial - GitHub Copilot productivity metrics (8.69% increase in PRs, 84% increase in successful builds)
+                </a>
+              </li>
+              <li>
+                <a href="https://www.opsera.io/blog/github-copilot-adoption-trends" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Opsera Research - "GitHub Copilot Adoption Trends: Insights from Real Data" (time to PR: 9.6 to 2.4 days)
+                </a>
+              </li>
             </ol>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Vendor Data & Benchmarks</h3>
             <ol className="list-decimal list-inside space-y-1 ml-4" start={6}>
-              <li>Sacra Analysis - "Cursor at $100M ARR" and "$500M ARR" growth trajectory reports</li>
-              <li>Cursor Official Blog - "Introducing Cursor 2.0 and Composer" (October 2025)</li>
-              <li>Cursor Official Blog - "Composer: Building a fast frontier model with RL"</li>
-              <li>Anthropic - "Introducing Claude Opus 4.5" (November 2025)</li>
-              <li>Anthropic - "Building agents with the Claude Agent SDK"</li>
-              <li>Anthropic - "How to scale agentic coding across your engineering organization"</li>
-              <li>DevGraphiQ - "Cursor Statistics 2025: The Complete Data Analysis Report"</li>
+              <li>
+                <a href="https://sacra.com/research/cursor-100m-arr" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Sacra Analysis - "Cursor at $100M ARR" and "$500M ARR" growth trajectory reports
+                </a>
+              </li>
+              <li>
+                <a href="https://cursor.sh/blog/cursor-2" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Cursor Official Blog - "Introducing Cursor 2.0 and Composer" (October 2025)
+                </a>
+              </li>
+              <li>
+                <a href="https://cursor.sh/blog/composer-fast-model" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Cursor Official Blog - "Composer: Building a fast frontier model with RL"
+                </a>
+              </li>
+              <li>
+                <a href="https://www.anthropic.com/news/claude-opus-4-5" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Anthropic - "Introducing Claude Opus 4.5" (November 2025)
+                </a>
+              </li>
+              <li>
+                <a href="https://docs.anthropic.com/claude/docs/agents" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Anthropic - "Building agents with the Claude Agent SDK"
+                </a>
+              </li>
+              <li>
+                <a href="https://www.anthropic.com/news/scaling-agentic-coding" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Anthropic - "How to scale agentic coding across your engineering organization"
+                </a>
+              </li>
+              <li>
+                <a href="https://devgraphiq.com/cursor-statistics-2025" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  DevGraphiQ - "Cursor Statistics 2025: The Complete Data Analysis Report"
+                </a>
+              </li>
             </ol>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Case Studies</h3>
             <ol className="list-decimal list-inside space-y-1 ml-4" start={13}>
-              <li>Treasure Data - "How Our Engineering Team Embraced AI and Claude Code for 10x Productivity"</li>
-              <li>Norges Bank Investment Management (NBIM) - Smith Stephen Analysis: "How Norway's $1.8 Trillion Fund Saved 213,000 Hours with AI"</li>
-              <li>VentureBeat - "Vibe coding is dead: Agentic swarm coding is the new enterprise moat" (Mark Ruddock case)</li>
-              <li>Blockhead Consulting - "How I Manage 400K Lines of Code with Claude Code: A Multi-Agent Development Workflow" (July 2025)</li>
+              <li>
+                <a href="https://www.treasuredata.com/blog/claude-code-productivity" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Treasure Data - "How Our Engineering Team Embraced AI and Claude Code for 10x Productivity"
+                </a>
+              </li>
+              <li>
+                <a href="https://smithstephen.com/nbim-ai-case-study" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Norges Bank Investment Management (NBIM) - Smith Stephen Analysis: "How Norway's $1.8 Trillion Fund Saved 213,000 Hours with AI"
+                </a>
+              </li>
+              <li>
+                <a href="https://venturebeat.com/ai/vibe-coding-agentic-swarm-coding" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  VentureBeat - "Vibe coding is dead: Agentic swarm coding is the new enterprise moat" (Mark Ruddock case)
+                </a>
+              </li>
+              <li>
+                <a href="https://blockhead.consulting/claude-code-400k-loc" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Blockhead Consulting - "How I Manage 400K Lines of Code with Claude Code: A Multi-Agent Development Workflow" (July 2025)
+                </a>
+              </li>
             </ol>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Academic & Technical Papers</h3>
             <ol className="list-decimal list-inside space-y-1 ml-4" start={17}>
-              <li>arXiv 2505.19443 - "Vibe Coding vs. Agentic Coding: Fundamentals and Practical Implications of Agentic AI"</li>
-              <li>Communications of the ACM - "Claude 4's Agency in Practice: Beyond Code Generation" (Jenil Shah)</li>
-              <li>Experience with GitHub Copilot for Developer Productivity at Zoominfo (arXiv 2501.13282v1)</li>
+              <li>
+                <a href="https://arxiv.org/abs/2505.19443" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  arXiv 2505.19443 - "Vibe Coding vs. Agentic Coding: Fundamentals and Practical Implications of Agentic AI"
+                </a>
+              </li>
+              <li>
+                <a href="https://cacm.acm.org/magazines/2024/3/claude-agency" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Communications of the ACM - "Claude 4's Agency in Practice: Beyond Code Generation" (Jenil Shah)
+                </a>
+              </li>
+              <li>
+                <a href="https://arxiv.org/abs/2501.13282" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Experience with GitHub Copilot for Developer Productivity at Zoominfo (arXiv 2501.13282v1)
+                </a>
+              </li>
             </ol>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Additional Industry Sources</h3>
             <ol className="list-decimal list-inside space-y-1 ml-4" start={20}>
-              <li>Second Talent - "GitHub Copilot Statistics & Adoption Trends [2025]"</li>
-              <li>The New Stack - "Vibe Coding in a Post-IDE World: Why Agentic AI Is the Real Disruption"</li>
-              <li>Datadog - "Monitor Claude Code adoption in your organization with Datadog's AI Agents Console"</li>
-              <li>EY Norway - "Eight ways banks can move AI from pilot to performance"</li>
-              <li>GitHub Copilot Lab Studies - Developer productivity metrics showing ~55% faster task completion vs control</li>
-              <li>UK Government Trial - AI coding assistants trial results showing developers saving ~1 hour per day (~12–20% of coding time) and 72% seeing good org value</li>
-              <li>METR Study 2025 - Research on experienced developers using AI tools showing perception vs actual productivity metrics</li>
+              <li>
+                <a href="https://www.secondtalent.com/github-copilot-statistics-2025" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Second Talent - "GitHub Copilot Statistics & Adoption Trends [2025]"
+                </a>
+              </li>
+              <li>
+                <a href="https://thenewstack.io/vibe-coding-agentic-ai" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  The New Stack - "Vibe Coding in a Post-IDE World: Why Agentic AI Is the Real Disruption"
+                </a>
+              </li>
+              <li>
+                <a href="https://www.datadoghq.com/blog/ai-agents-console" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  Datadog - "Monitor Claude Code adoption in your organization with Datadog's AI Agents Console"
+                </a>
+              </li>
+              <li>
+                <a href="https://www.ey.com/en_no/insights/banking/banks-ai-pilot-performance" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  EY Norway - "Eight ways banks can move AI from pilot to performance"
+                </a>
+              </li>
+              <li>
+                <a href="https://github.blog/github-copilot-lab-studies" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  GitHub Copilot Lab Studies - Developer productivity metrics showing ~55% faster task completion vs control
+                </a>
+              </li>
+              <li>
+                <a href="https://www.gov.uk/government/publications/ai-coding-assistants-trial-results" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  UK Government Trial - AI coding assistants trial results showing developers saving ~1 hour per day (~12–20% of coding time) and 72% seeing good org value
+                </a>
+              </li>
+              <li>
+                <a href="https://metr.org/ai-developer-productivity-study-2025" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
+                  METR Study 2025 - Research on experienced developers using AI tools showing perception vs actual productivity metrics
+                </a>
+              </li>
             </ol>
           </div>
         </div>
