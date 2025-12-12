@@ -121,41 +121,44 @@ export default function PresentationLayout({
         </div>
         
         {/* Navigation Controls - Moved to Top */}
-        <div className="flex items-center gap-4 flex-1 justify-center">
+        <div className="flex items-center gap-3 flex-1 justify-center max-w-2xl mx-auto">
           <button
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Previous slide"
           >
-            <ChevronLeft className="icon-md" />
-            <span className="hidden sm:inline text-sm">Previous</span>
+            <ChevronLeft className="w-5 h-5" />
+            <span className="text-sm">Previous</span>
           </button>
           
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-cream/60 font-mono">{currentSlide + 1}</span>
+          <div className="flex items-center gap-2.5 px-4">
+            <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-right">{currentSlide + 1}</span>
             <div className="flex items-center gap-1.5">
               {slides.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  className={`rounded-full transition-all duration-300 ${
                     index === currentSlide 
-                      ? 'w-6 bg-sage' 
-                      : 'bg-cream/30 hover:bg-cream/50'
+                      ? 'w-6 h-2 bg-sage' 
+                      : 'w-2 h-2 bg-cream/30 hover:bg-cream/50'
                   }`}
+                  aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
-            <span className="text-sm text-cream/60 font-mono">{totalSlides}</span>
+            <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-left">{totalSlides}</span>
           </div>
           
           <button
             onClick={nextSlide}
             disabled={currentSlide === totalSlides - 1}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Next slide"
           >
-            <span className="hidden sm:inline text-sm">Next</span>
-            <ChevronRight className="icon-md" />
+            <span className="text-sm">Next</span>
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
         

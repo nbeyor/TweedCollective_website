@@ -759,37 +759,16 @@ function TimelineSlide() {
 
 // Adoption Stance Component
 function AdoptionStanceSlide() {
-  const [stanceIndex, setStanceIndex] = useState(2)
-
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
       <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 04 — Change Management</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances: A PE Framework</h2>
 
-      <div className="mb-6">
-        <div className="flex items-center gap-4 mb-4">
-          <span className="text-xs text-cream/40">Level 1</span>
-          <input
-            type="range"
-            min="0"
-            max="3"
-            value={stanceIndex}
-            onChange={(e) => setStanceIndex(parseInt(e.target.value))}
-            className="flex-1 accent-sage"
-          />
-          <span className="text-xs text-cream/40">Level 4</span>
-        </div>
-      </div>
-
       <div className="space-y-4">
         {stanceData.map((stance, index) => (
           <div
             key={index}
-            className={`p-5 rounded-xl border transition-all ${
-              stanceIndex === index
-                ? 'border-sage bg-sage/10'
-                : 'border-cream/20 bg-cream/5 opacity-60'
-            }`}
+            className="p-5 rounded-xl border border-cream/20 bg-cream/5"
           >
             <div className="flex items-center justify-between mb-3">
               <div>
