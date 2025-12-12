@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
 import { Code2, TrendingUp, Users, Target, Zap, Shield, BarChart3, Clock, CheckCircle2 } from 'lucide-react'
 
@@ -364,6 +364,11 @@ const slides: Slide[] = [
     content: <AdoptionStanceSlide />
   },
   {
+    id: 'kpis',
+    title: 'KPIs & Targets',
+    content: <KPIsSlide />
+  },
+  {
     id: 'nbim',
     title: 'NBIM Case Study',
     content: (
@@ -648,6 +653,9 @@ const slides: Slide[] = [
               <li>The New Stack - "Vibe Coding in a Post-IDE World: Why Agentic AI Is the Real Disruption"</li>
               <li>Datadog - "Monitor Claude Code adoption in your organization with Datadog's AI Agents Console"</li>
               <li>EY Norway - "Eight ways banks can move AI from pilot to performance"</li>
+              <li>GitHub Copilot Lab Studies - Developer productivity metrics showing ~55% faster task completion vs control</li>
+              <li>UK Government Trial - AI coding assistants trial results showing developers saving ~1 hour per day (~12–20% of coding time) and 72% seeing good org value</li>
+              <li>METR Study 2025 - Research on experienced developers using AI tools showing perception vs actual productivity metrics</li>
             </ol>
           </div>
         </div>
@@ -778,14 +786,129 @@ function AdoptionStanceSlide() {
             </div>
             <div className="p-4 rounded-lg border-l-4 border-purple-500 bg-purple-500/10">
               <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Perspective</div>
-              <div className="text-xs text-cream/70 space-y-1 mb-2">
-                <p><strong className="text-cream/80">When to use:</strong> {stance.whenToUse}</p>
-                <p><strong className="text-cream/80">Risk:</strong> {stance.risk}</p>
-                <p><strong className="text-cream/80">Outcome:</strong> {stance.outcome}</p>
+              <div className="text-xs text-cream space-y-1 mb-2">
+                <p><strong className="text-cream">When to use:</strong> {stance.whenToUse}</p>
+                <p><strong className="text-cream">Risk:</strong> {stance.risk}</p>
+                <p><strong className="text-cream">Outcome:</strong> {stance.outcome}</p>
               </div>
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+// KPIs Slide Component
+function KPIsSlide() {
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center">
+      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 05 — KPIs & Targets</div>
+      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">KPIs & Targets for VIBE Coding Adoption (Q4 2025 Benchmarks)</h2>
+
+      <div className="space-y-4 mb-6">
+        {/* Individual Productivity */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <Clock className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">1. Individual Productivity</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Lead time per story / feature per dev; PR throughput per dev.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target (6–12 months):</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• <strong className="text-cream">25–40% reduction</strong> in median lead time for AI-assisted work</li>
+                <li>• <strong className="text-cream">30%+ increase</strong> in completed tickets / PRs per engineer (normalized)</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor: GitHub Copilot lab studies show devs completing tasks ~55% faster vs control. UK gov trial saw developers save about 1 hour per day (~12–20% of coding time).</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tool Use */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <Zap className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">2. Tool Use</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Adoption & intensity of VIBE tool usage.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• <strong className="text-cream">80%+</strong> of eligible devs using tools weekly</li>
+                <li>• <strong className="text-cream">50–60%</strong> using them daily</li>
+                <li>• VIBE tools active on <strong className="text-cream">&gt;70%</strong> of active repos</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor: In the UK gov trial, 72% of developers saw good org value; the majority preferred not to go back to pre-AI workflows.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Agents Managed */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <Users className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">3. Agents Managed</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Human–agent leverage and automation.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• <strong className="text-cream">2–5 active agent workflows</strong> per squad (e.g., refactorers, test-writers, migration bots)</li>
+                <li>• <strong className="text-cream">20–30%</strong> of PRs initially drafted by agents (human-reviewed)</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor: Enterprise case studies and Cursor / Claude-code anecdotes report agents routinely handling multi-file refactors and feature scaffolding, with teams describing "tasks that took days now completed in minutes."</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Code Quality */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <Shield className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">4. Code Quality</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Defects, reopens, and reliability of AI-assisted code.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• <strong className="text-cream">10–20% reduction</strong> in post-release incidents / bug reopens in AI-assisted modules</li>
+                <li>• Maintain or <strong className="text-cream">improve test coverage</strong> in areas with heavy agent use</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor: GitHub reports 85% of Copilot users feel more confident in code quality and more satisfied overall. UK gov trial used cautious acceptance (only ~15% of AI code accepted unchanged) but still saw net productivity and perceived quality gains.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Segmentation */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <BarChart3 className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">5. Segmentation: AI vs Non-AI Code</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Share and performance of AI-assisted code.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• Track % of <strong className="text-cream">new / modified LOC</strong> tagged as AI-assisted; aim for <strong className="text-cream">40–60%</strong> of new code being AI-assisted in high-adoption teams</li>
+                <li>• Ensure <strong className="text-cream">defect rates are equal or lower</strong> vs non-AI segments</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor: UK gov trial showed most code still edited by humans (high review discipline), but meaningful time savings even with conservative acceptance.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Team Perception */}
+        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="flex items-start gap-3 mb-3">
+            <Target className="w-5 h-5 text-sage mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-cream mb-2">6. Team Perception & UX</h3>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Developer sentiment, cognitive load, UX friction.</p>
+              <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
+              <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
+                <li>• <strong className="text-cream">70–80%</strong> of devs reporting they are faster and less cognitively taxed with VIBE tools</li>
+                <li>• <strong className="text-cream">Net promoter / satisfaction score</strong> ≥ +30 for the tools</li>
+              </ul>
+              <p className="text-xs text-cream/60 italic">Market anchor (two-sided story): GitHub's research: strong perceived gains; most devs report feeling more productive and happier with their workflow. 2025 METR study: experienced devs using AI tools were actually ~19% slower, though they believed they were ~20% more productive—underscoring the need to triangulate perception with hard metrics.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -859,6 +982,54 @@ function ValueCreationSlide() {
 }
 
 export default function VIBECodingPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === 'TweedCollectiveDocuments') {
+      setIsAuthenticated(true)
+      setError('')
+    } else {
+      setError('Incorrect password. Please try again.')
+      setPassword('')
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
+        <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5">
+          <h2 className="text-2xl font-serif text-cream mb-2">Password Required</h2>
+          <p className="text-sm text-cream/70 mb-6">This document is password protected. Please enter the password to continue.</p>
+          <form onSubmit={handlePasswordSubmit}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                setError('')
+              }}
+              placeholder="Enter password"
+              className="w-full px-4 py-3 rounded-lg border border-cream/20 bg-cream/10 text-cream placeholder-cream/40 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 mb-4"
+              autoFocus
+            />
+            {error && (
+              <p className="text-sm text-red-400 mb-4">{error}</p>
+            )}
+            <button
+              type="submit"
+              className="w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
+            >
+              Access Document
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <PresentationLayout
       title="The Evolution of VIBE Coding in Enterprise"

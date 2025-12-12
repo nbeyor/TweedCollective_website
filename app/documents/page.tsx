@@ -144,11 +144,19 @@ function FeaturedDocumentCard({ document, index }: { document: Document; index: 
     >
       {/* Thumbnail */}
       <div className="relative w-full md:w-72 h-48 md:h-auto flex-shrink-0 bg-gradient-to-br from-sage/15 to-terra/15 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-20 h-20 rounded-2xl bg-cream/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Icon className="w-10 h-10 text-sage" />
+        {document.thumbnail ? (
+          <img 
+            src={document.thumbnail} 
+            alt={document.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-2xl bg-cream/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Icon className="w-10 h-10 text-sage" />
+            </div>
           </div>
-        </div>
+        )}
         {/* Category Badge */}
         <div className="absolute top-4 left-4">
           <span className="badge bg-cream/95 text-charcoal shadow-sm">
@@ -188,11 +196,19 @@ function DocumentCard({ document, index }: { document: Document; index: number }
     >
       {/* Thumbnail */}
       <div className="relative h-44 bg-gradient-to-br from-sage/10 to-terra/10 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 rounded-xl bg-cream/90 shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Icon className="w-8 h-8 text-sage" />
+        {document.thumbnail ? (
+          <img 
+            src={document.thumbnail} 
+            alt={document.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-xl bg-cream/90 shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Icon className="w-8 h-8 text-sage" />
+            </div>
           </div>
-        </div>
+        )}
         
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
