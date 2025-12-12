@@ -1,17 +1,17 @@
 import React from 'react'
 import Link from 'next/link'
-import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2, Dna } from 'lucide-react'
+import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2 } from 'lucide-react'
 
 // Document metadata - add new documents here
 const documents = [
   {
     id: 'health-tech-market-2024',
-    title: 'Health-Tech Market Landscape 2024',
-    description: 'Comprehensive analysis of the health-tech market trends, emerging technologies, and investment opportunities shaping the industry.',
+    title: 'Health-Tech Market Landscape: Entering 2026',
+    description: 'Investment themes across stages (seed/venture/growth/buyout) and segments (pharmatech/provider-payor/consumer).',
     category: 'Market Research',
     icon: BarChart3,
-    date: '2024-01',
-    readTime: '15 min',
+    date: '2025-12',
+    readTime: '20 min',
     thumbnail: '/img/documents/market-landscape.svg',
     href: '/documents/health-tech-market-2024',
     featured: true,
@@ -39,18 +39,6 @@ const documents = [
     thumbnail: '/img/documents/ai-framework.svg',
     href: '/documents/ai-integration-framework',
     featured: false,
-  },
-  {
-    id: 'salmon-ai-genomics',
-    title: 'Strategic AI for Salmon Genetic Improvement',
-    description: 'Turn 2.5 generations of genomic+phenotypic data into a predictive asset; move from "records" → "moat."',
-    category: 'Executive Briefing',
-    icon: Dna,
-    date: '2024-12',
-    readTime: '30 min',
-    thumbnail: '/img/documents/salmon-ai.svg',
-    href: '/documents/salmon-ai-genomics',
-    featured: true,
   },
 ]
 

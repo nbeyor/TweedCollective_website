@@ -120,7 +120,7 @@ const slides: Slide[] = [
     content: (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cream/20 bg-cream/5 mb-6">
-          <span className="text-xs uppercase tracking-wider text-cream/60">For Private Equity Investors in Life Sciences</span>
+          <span className="text-xs uppercase tracking-wider text-cream/60">For Private Equity Investors</span>
         </div>
         <h1 className="text-4xl md:text-6xl font-serif font-light text-cream mb-4 leading-tight">
           The Evolution of VIBE Coding in Enterprise
@@ -963,10 +963,9 @@ function ValueCreationSlide() {
       <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
         <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">The PE Value Creation Equation</div>
         <p className="text-sm text-cream/80">
-          In life sciences, where product cycles are long and regulatory timelines are fixed, software velocity becomes 
-          a critical differentiator. Companies that build and iterate faster on clinical trial systems, patient platforms, 
-          regulatory tools, and commercial analytics gain months of advantage in bringing products to market. The question 
-          isn't "How many developers can we save?" but "How much faster can we reach $100M ARR?"
+          In portfolio companies, where product cycles are long and regulatory timelines are fixed, software velocity becomes 
+          a critical differentiator. Companies that build and iterate faster gain months of advantage in bringing products to market. 
+          The question isn't "How many developers can we save?" but "How much faster can we reach $100M ARR?"
         </p>
       </div>
     </div>
