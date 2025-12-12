@@ -88,7 +88,7 @@ export default function PresentationLayout({
   const prevSlide = () => setCurrentSlide(prev => Math.max(prev - 1, 0))
 
   return (
-    <div className="min-h-screen bg-charcoal text-cream flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-charcoal text-cream flex flex-col relative overflow-hidden" style={{ paddingTop: '80px' }}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0" style={{
@@ -101,7 +101,7 @@ export default function PresentationLayout({
       </div>
       
       {/* Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-warm-gray/20 z-50">
+      <div className="fixed top-0 left-0 right-0 h-1 bg-warm-gray/20 z-[60]">
         <div 
           className="h-full bg-gradient-to-r from-sage to-terra transition-all duration-300 ease-out"
           style={{ width: `${progress}%` }}
@@ -109,13 +109,14 @@ export default function PresentationLayout({
       </div>
 
       {/* Top Navigation */}
-      <nav className="relative z-40 px-6 py-4 flex items-center justify-between">
+      <nav className="relative z-30 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link 
             href="/" 
-            className="flex items-center gap-2 text-cream/60 hover:text-cream transition-colors"
+            className="flex items-center gap-2 text-cream/60 hover:text-cream transition-colors relative z-50"
+            style={{ pointerEvents: 'auto', zIndex: 50 }}
           >
-            <Home className="icon-md" />
+            <Home className="w-5 h-5" />
             <span className="hidden sm:inline text-sm">Home</span>
           </Link>
         </div>
