@@ -63,8 +63,8 @@ export default function Header() {
           <div 
             className={`hidden lg:flex items-center px-2 py-1.5 rounded-full transition-all duration-500 ${
               isScrolled 
-                ? 'bg-purple-900/80 border border-purple-800/50 backdrop-blur-sm' 
-                : 'bg-purple-900/60 backdrop-blur-sm border border-purple-700/40'
+                ? 'bg-sky-300/80 border border-sky-400/50 backdrop-blur-sm' 
+                : 'bg-sky-300/60 backdrop-blur-sm border border-sky-400/40'
             }`}
           >
             {navigation.map((item, index) => {
@@ -75,8 +75,8 @@ export default function Header() {
                   href={item.href}
                   className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                     isActive
-                      ? 'text-cream bg-purple-700/50'
-                      : 'text-cream/80 hover:text-cream hover:bg-purple-800/40'
+                      ? 'text-charcoal bg-sky-400/60'
+                      : 'text-charcoal/80 hover:text-charcoal hover:bg-sky-400/40'
                   }`}
                 >
                   {item.name}
