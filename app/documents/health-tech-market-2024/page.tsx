@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
-import { BarChart3, TrendingUp, Zap, Target, Users, Building2, Heart, Pill, CreditCard, Seedling, Rocket, Growth, Briefcase, FlaskConical, Stethoscope, ShoppingCart } from 'lucide-react'
+import { BarChart3, TrendingUp, Zap, Target, Users, Sprout, Rocket, ArrowUp, Briefcase, FlaskConical, Stethoscope, ShoppingCart } from 'lucide-react'
 
 // Define slides
 const slides: Slide[] = [
@@ -333,7 +333,7 @@ const slides: Slide[] = [
 function StageSlide({ stage }: { stage: 'seed' | 'venture' | 'growth' | 'buyout' }) {
   const stageData = {
     seed: {
-      icon: Seedling,
+      icon: Sprout,
       title: 'Seed Stage',
       description: 'Product-market fit, early validation',
       themes: [
@@ -371,7 +371,7 @@ function StageSlide({ stage }: { stage: 'seed' | 'venture' | 'growth' | 'buyout'
       ]
     },
     growth: {
-      icon: Growth,
+      icon: ArrowUp,
       title: 'Growth Stage',
       description: 'Market expansion, profitability',
       themes: [
