@@ -13,7 +13,7 @@ const timelineData = [
     source: 'GitHub/Microsoft',
     innovation: 'AI pair programmer with real-time code suggestions. Pioneered acceptance rate (30%) as value metric.',
     metrics: [
-      '55% faster task completion',
+      '15-25% productivity uplift',
       '84% increase in successful builds',
       'Source: Accenture RCT Study'
     ],
@@ -111,6 +111,144 @@ const stanceData = [
     outcome: 'Requires: Strong executive sponsor, significant change management support. Example: NBIM (Norway\'s $1.8T fund) made AI proficiency mandatory—saved 213,000 hours annually, equivalent of 100+ FTEs.'
   }
 ]
+
+// Adoption Stances Detailed Component
+function AdoptionStancesDetailedSlide() {
+  const stances = [
+    {
+      level: 1,
+      title: 'Passive / Opt-In',
+      subtitle: '"Use it if you want"',
+      characteristics: [
+        'Zero mandate',
+        'Usage limited to motivated developers'
+      ],
+      messaging: '"Experiment safely; we support learning."',
+      changeMgmt: 'Light governance; no workflow change',
+      risks: 'Uneven adoption → uneven productivity → fragmentation. Hard to measure ROI.'
+    },
+    {
+      level: 2,
+      title: 'Structured Pilot',
+      subtitle: '"Let\'s test viability"',
+      characteristics: [
+        'Focused teams, defined KPIs',
+        '6–12 week evaluation',
+        'Onboarding and safety rails in place'
+      ],
+      messaging: '"We\'re testing value creation."',
+      implications: [
+        'Clear KPIs: cycle time, defect rate, PR throughput, onboarding speed',
+        'Requires training and usage discipline'
+      ],
+      risks: null
+    },
+    {
+      level: 3,
+      title: 'Inevitable & Incremental Rollout',
+      subtitle: '"We are adopting; pace TBD"',
+      characteristics: [
+        'Assumes VIBE Coding is the future',
+        'Scaling plan across teams with continuous expansion'
+      ],
+      messaging: '"This is the new standard; we will support your transition."',
+      implications: [
+        'Multi-quarter roadmap',
+        'Skills transition plans',
+        'Platform engineering involvement'
+      ],
+      risks: null
+    },
+    {
+      level: 4,
+      title: 'Top-Down Mandate',
+      subtitle: '"Everyone uses this now"',
+      characteristics: [
+        'Leadership-declared transformation',
+        'Agents integrated into all workflows',
+        'Large organizational shift'
+      ],
+      messaging: '"This is essential to remain competitive."',
+      implications: [
+        'Strong training, onboarding, governance',
+        'Resistance management + cultural shift',
+        'Immediate ROI but high initial disruption'
+      ],
+      caseStudy: 'Market Case Study: Sovereign Bank of Norway (Norges Bank) - Rolled out top-down. Reported dramatic engineering productivity improvements. Framing: "Strategic necessity," not experiment.',
+      risks: null
+    }
+  ]
+
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center">
+      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 03 — Adoption Stances Detailed</div>
+      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances: Detailed Framework</h2>
+
+      <div className="space-y-4">
+        {stances.map((stance, index) => (
+          <div
+            key={index}
+            className="p-5 rounded-xl border border-cream/20 bg-cream/5"
+          >
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-cream">Stance {stance.level} — {stance.title} ({stance.subtitle})</h3>
+            </div>
+            
+            <div className="space-y-3 text-xs text-cream/70">
+              <div>
+                <strong className="text-cream">Characteristics:</strong>
+                <ul className="ml-4 mt-1 space-y-1">
+                  {stance.characteristics.map((char, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-sage mt-1">•</span>
+                      <span>{char}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <strong className="text-cream">Messaging:</strong> {stance.messaging}
+              </div>
+              
+              {stance.changeMgmt && (
+                <div>
+                  <strong className="text-cream">Change-Mgmt Needs:</strong> {stance.changeMgmt}
+                </div>
+              )}
+              
+              {stance.implications && (
+                <div>
+                  <strong className="text-cream">Implications:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    {stance.implications.map((imp, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-sage mt-1">•</span>
+                        <span>{imp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {stance.risks && (
+                <div>
+                  <strong className="text-cream">Risks:</strong> {stance.risks}
+                </div>
+              )}
+              
+              {stance.caseStudy && (
+                <div className="p-3 rounded-lg border-l-4 border-purple-500 bg-purple-500/10 mt-2">
+                  <strong className="text-purple-300">{stance.caseStudy}</strong>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 // Define slides
 const slides: Slide[] = [
@@ -367,6 +505,11 @@ const slides: Slide[] = [
     )
   },
   {
+    id: 'stances-detailed',
+    title: 'Adoption Stances Detailed',
+    content: <AdoptionStancesDetailedSlide />
+  },
+  {
     id: 'stances',
     title: 'Change Management',
     content: <AdoptionStanceSlide />
@@ -563,24 +706,6 @@ const slides: Slide[] = [
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-cream mb-4">Real-World Examples</h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10">
-              <p className="text-sm text-cream/80">
-                <strong>Treasure Data (80% adoption):</strong> Tasks that took 2-3 weeks now complete in 1 day. 
-                Team pursuing projects that were previously unthinkable while maintaining quality.
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10">
-              <p className="text-sm text-cream/80">
-                <strong>400K Lines of Code:</strong> Single developer managing project approaching 400,000 LOC using 
-                multi-agent Claude Code workflow with 4 parallel agents.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* PE Insight Box */}
         <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
           <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Portfolio Company Action Items</div>
@@ -763,7 +888,7 @@ const slides: Slide[] = [
               </li>
               <li>
                 <a href="https://github.blog/github-copilot-lab-studies" target="_blank" rel="noopener noreferrer" className="text-cream/80 hover:text-cream hover:underline transition-colors">
-                  GitHub Copilot Lab Studies - Developer productivity metrics showing ~55% faster task completion vs control
+                  GitHub Copilot Lab Studies - Developer productivity metrics showing 15-25% productivity uplift vs control
                 </a>
               </li>
               <li>
@@ -915,7 +1040,7 @@ function KPIsSlide() {
                 <li>• <strong className="text-cream">25–40% reduction</strong> in median lead time for AI-assisted work</li>
                 <li>• <strong className="text-cream">30%+ increase</strong> in completed tickets / PRs per engineer (normalized)</li>
               </ul>
-              <p className="text-xs text-cream/60 italic">Market anchor: GitHub Copilot lab studies show devs completing tasks ~55% faster vs control. UK gov trial saw developers save about 1 hour per day (~12–20% of coding time).</p>
+              <p className="text-xs text-cream/60 italic">Market anchor: GitHub Copilot lab studies show 15-25% productivity uplift vs control. UK gov trial saw developers save about 1 hour per day (~12–20% of coding time).</p>
             </div>
           </div>
         </div>
@@ -929,9 +1054,7 @@ function KPIsSlide() {
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Adoption & intensity of VIBE tool usage.</p>
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
               <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
-                <li>• <strong className="text-cream">80%+</strong> of eligible devs using tools weekly</li>
-                <li>• <strong className="text-cream">50–60%</strong> using them daily</li>
-                <li>• VIBE tools active on <strong className="text-cream">&gt;70%</strong> of active repos</li>
+                <li>• <strong className="text-cream">100%</strong> of eligible devs using tools daily</li>
               </ul>
               <p className="text-xs text-cream/60 italic">Market anchor: In the UK gov trial, 72% of developers saw good org value; the majority preferred not to go back to pre-AI workflows.</p>
             </div>
@@ -947,8 +1070,7 @@ function KPIsSlide() {
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Human–agent leverage and automation.</p>
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
               <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
-                <li>• <strong className="text-cream">2–5 active agent workflows</strong> per squad (e.g., refactorers, test-writers, migration bots)</li>
-                <li>• <strong className="text-cream">20–30%</strong> of PRs initially drafted by agents (human-reviewed)</li>
+                <li>• Track and start at <strong className="text-cream">&gt;1</strong> active agent workflow per squad</li>
               </ul>
               <p className="text-xs text-cream/60 italic">Market anchor: Enterprise case studies and Cursor / Claude-code anecdotes report agents routinely handling multi-file refactors and feature scaffolding, with teams describing "tasks that took days now completed in minutes."</p>
             </div>
@@ -964,8 +1086,7 @@ function KPIsSlide() {
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Defects, reopens, and reliability of AI-assisted code.</p>
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
               <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
-                <li>• <strong className="text-cream">10–20% reduction</strong> in post-release incidents / bug reopens in AI-assisted modules</li>
-                <li>• Maintain or <strong className="text-cream">improve test coverage</strong> in areas with heavy agent use</li>
+                <li>• Start at <strong className="text-cream">parity</strong> with non-AI code, then show <strong className="text-cream">continuous improvement</strong> over time</li>
               </ul>
               <p className="text-xs text-cream/60 italic">Market anchor: GitHub reports 85% of Copilot users feel more confident in code quality and more satisfied overall. UK gov trial used cautious acceptance (only ~15% of AI code accepted unchanged) but still saw net productivity and perceived quality gains.</p>
             </div>
@@ -981,8 +1102,7 @@ function KPIsSlide() {
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Share and performance of AI-assisted code.</p>
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
               <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
-                <li>• Track % of <strong className="text-cream">new / modified LOC</strong> tagged as AI-assisted; aim for <strong className="text-cream">40–60%</strong> of new code being AI-assisted in high-adoption teams</li>
-                <li>• Ensure <strong className="text-cream">defect rates are equal or lower</strong> vs non-AI segments</li>
+                <li>• Start at <strong className="text-cream">60%</strong> of new code being AI-assisted, then increase over time</li>
               </ul>
               <p className="text-xs text-cream/60 italic">Market anchor: UK gov trial showed most code still edited by humans (high review discipline), but meaningful time savings even with conservative acceptance.</p>
             </div>
@@ -998,8 +1118,7 @@ function KPIsSlide() {
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Metric:</strong> Developer sentiment, cognitive load, UX friction.</p>
               <p className="text-xs text-cream/70 mb-2"><strong className="text-cream">Target:</strong></p>
               <ul className="text-xs text-cream/70 ml-4 mb-2 space-y-1">
-                <li>• <strong className="text-cream">70–80%</strong> of devs reporting they are faster and less cognitively taxed with VIBE tools</li>
-                <li>• <strong className="text-cream">Net promoter / satisfaction score</strong> ≥ +30 for the tools</li>
+                <li>• <strong className="text-cream">90%</strong> of devs reporting positive perception (won't get met, but serves as conversation starter to inform how to make the toolset better)</li>
               </ul>
               <p className="text-xs text-cream/60 italic">Market anchor (two-sided story): GitHub's research: strong perceived gains; most devs report feeling more productive and happier with their workflow. 2025 METR study: experienced devs using AI tools were actually ~19% slower, though they believed they were ~20% more productive—underscoring the need to triangulate perception with hard metrics.</p>
             </div>
