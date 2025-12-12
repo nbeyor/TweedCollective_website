@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3 } from 'lucide-react'
+import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2 } from 'lucide-react'
 
 // Document metadata - add new documents here
 const documents = [
@@ -17,15 +17,15 @@ const documents = [
     featured: true,
   },
   {
-    id: 'revenue-acceleration-playbook',
-    title: 'Revenue Acceleration Playbook',
-    description: 'A tactical guide for health-tech startups to accelerate revenue growth through proven strategies and frameworks.',
-    category: 'Playbook',
-    icon: BookOpen,
-    date: '2024-02',
-    readTime: '20 min',
-    thumbnail: '/img/documents/playbook.svg',
-    href: '/documents/revenue-acceleration-playbook',
+    id: 'vibe-coding-pe-life-sciences',
+    title: 'VIBE Coding in PE & Life Sciences',
+    description: 'How next-gen coding agents reshape product velocity, talent, and value creation in PE-backed life sciences companies.',
+    category: 'Executive Briefing',
+    icon: Code2,
+    date: '2024-12',
+    readTime: '25 min',
+    thumbnail: '/img/documents/vibe-coding.svg',
+    href: '/documents/vibe-coding-pe-life-sciences',
     featured: true,
   },
   {
