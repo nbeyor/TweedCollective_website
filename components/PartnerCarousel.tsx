@@ -1,22 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { usePartners } from '@/hooks/useAirtable'
 import { ChevronLeft, ChevronRight, Linkedin } from 'lucide-react'
+import { Partner } from '@/lib/airtable'
 
-interface Partner {
-  id: string
-  name: string
-  title: string
-  company: string
-  bio: string
-  image?: string
-  linkedin?: string
-  expertise: string[]
+interface PartnerCarouselProps {
+  partners: Partner[]
 }
 
-export default function PartnerCarousel() {
-  const { partners, loading, error } = usePartners()
+export default function PartnerCarousel({ partners }: PartnerCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   // Auto-advance carousel
@@ -38,22 +30,7 @@ export default function PartnerCarousel() {
     setCurrentIndex((prev) => (prev - 1 + partners.length) % partners.length)
   }
 
-  if (loading) {
-    return (
-      <section className="section bg-stone/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-center mb-12">Our Operating Partners</h2>
-          <div className="flex justify-center">
-            <div className="animate-pulse">
-              <div className="w-64 h-80 bg-stone rounded-lg"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  if (error || partners.length === 0) {
+  if (partners.length === 0) {
     return (
       <section className="section bg-stone/30">
         <div className="container mx-auto px-4">
@@ -87,7 +64,7 @@ export default function PartnerCarousel() {
               className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-cream/90 backdrop-blur-sm rounded-full shadow-sophisticated flex items-center justify-center hover:bg-cream transition-colors"
               aria-label="Previous partner"
             >
-              <ChevronLeft className="w-6 h-6 text-charcoal" />
+              <ChevronLeft className="icon-lg text-charcoal" />
             </button>
 
             <button
@@ -95,7 +72,7 @@ export default function PartnerCarousel() {
               className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-cream/90 backdrop-blur-sm rounded-full shadow-sophisticated flex items-center justify-center hover:bg-cream transition-colors"
               aria-label="Next partner"
             >
-              <ChevronRight className="w-6 h-6 text-charcoal" />
+              <ChevronRight className="icon-lg text-charcoal" />
             </button>
 
             {/* Partner Card */}
@@ -147,9 +124,9 @@ export default function PartnerCarousel() {
                         href={currentPartner.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-2 text-sage hover:text-sage/80 transition-colors"
+                        className="inline-flex items-center gap-2 text-sage hover:text-sage/80 transition-colors"
                       >
-                        <Linkedin className="w-5 h-5" />
+                        <Linkedin className="icon-md" />
                         <span className="text-sm">LinkedIn</span>
                       </a>
                     )}
@@ -176,4 +153,4 @@ export default function PartnerCarousel() {
       </div>
     </section>
   )
-} 
+}
