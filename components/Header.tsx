@@ -52,9 +52,7 @@ export default function Header() {
               <span className={`font-sans font-semibold text-lg tracking-tight transition-colors ${
                 pathname?.startsWith('/documents') 
                   ? 'text-cream' 
-                  : isScrolled 
-                    ? 'text-charcoal' 
-                    : 'text-cream'
+                  : 'text-charcoal'
               }`}>
                 Tweed Collective
               </span>

@@ -181,7 +181,6 @@ function AdoptionStancesDetailedSlide() {
 
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
-      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 03 — Adoption Stances Detailed</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances: Detailed Framework</h2>
 
       <div className="space-y-4">
@@ -307,7 +306,6 @@ const slides: Slide[] = [
     title: 'Definition',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 01 — Definition</div>
         <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">What is VIBE Coding?</h2>
         
         <p className="text-cream/80 mb-8 max-w-3xl text-lg leading-relaxed">
@@ -387,7 +385,6 @@ const slides: Slide[] = [
     title: 'Enterprise Adoption',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 03 — Enterprise Adoption</div>
         <h2 className="text-3xl md:text-4xl font-serif text-cream mb-4">Critical Integration Points</h2>
         <p className="text-cream/60 mb-8 max-w-3xl">
           While these tools appear simple ('just pick up the tool'), successful enterprise deployment requires addressing four critical integration points:
@@ -524,7 +521,6 @@ const slides: Slide[] = [
     title: 'NBIM Case Study',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 05 — Case Study</div>
         <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">NBIM: Top-Down Mandate at Scale</h2>
 
         {/* 3 Metric Cards */}
@@ -620,7 +616,6 @@ const slides: Slide[] = [
     title: 'Organizational Impact',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 07 — Organizational Impact</div>
         <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Talent & Operating Model Implications</h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -916,7 +911,6 @@ function TimelineSlide() {
 
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
-      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 02 — Tool Evolution</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-4">The Path from Autocomplete to Autonomous Development</h2>
       
       <div className="mb-6">
@@ -990,7 +984,6 @@ function TimelineSlide() {
 function AdoptionStanceSlide() {
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
-      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 04 — Change Management</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances: A PE Framework</h2>
 
       <div className="space-y-4">
@@ -1024,7 +1017,6 @@ function AdoptionStanceSlide() {
 function KPIsSlide() {
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
-      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 05 — KPIs & Targets</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">KPIs & Targets for VIBE Coding Adoption (Q4 2025 Benchmarks)</h2>
 
       <div className="space-y-4 mb-6">
@@ -1133,7 +1125,6 @@ function KPIsSlide() {
 function ValueCreationSlide() {
   return (
     <div className="min-h-[50vh] flex flex-col justify-center">
-      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 06 — Value Creation</div>
       <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Beyond Cost Reduction: The Growth Acceleration Play</h2>
 
       <div className="grid md:grid-cols-2 gap-6 mb-6">
