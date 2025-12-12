@@ -112,19 +112,54 @@ export default function PresentationLayout({
       <nav className="relative z-40 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link 
-            href="/documents" 
+            href="/" 
             className="flex items-center gap-2 text-cream/60 hover:text-cream transition-colors"
           >
             <Home className="icon-md" />
-            <span className="hidden sm:inline text-sm">Back to Documents</span>
+            <span className="hidden sm:inline text-sm">Home</span>
           </Link>
         </div>
         
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-cream/40 mr-4">
-            {currentSlide + 1} / {totalSlides}
-          </span>
+        {/* Navigation Controls - Moved to Top */}
+        <div className="flex items-center gap-4 flex-1 justify-center">
+          <button
+            onClick={prevSlide}
+            disabled={currentSlide === 0}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronLeft className="icon-md" />
+            <span className="hidden sm:inline text-sm">Previous</span>
+          </button>
           
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-cream/60 font-mono">{currentSlide + 1}</span>
+            <div className="flex items-center gap-1.5">
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentSlide 
+                      ? 'w-6 bg-sage' 
+                      : 'bg-cream/30 hover:bg-cream/50'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-sm text-cream/60 font-mono">{totalSlides}</span>
+          </div>
+          
+          <button
+            onClick={nextSlide}
+            disabled={currentSlide === totalSlides - 1}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <span className="hidden sm:inline text-sm">Next</span>
+            <ChevronRight className="icon-md" />
+          </button>
+        </div>
+        
+        <div className="flex items-center gap-2">
           <button
             onClick={toggleFullscreen}
             className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-cream/10 transition-all"
@@ -148,43 +183,6 @@ export default function PresentationLayout({
           {slide.content}
         </div>
       </main>
-
-      {/* Navigation Controls */}
-      <div className="relative z-40 px-6 py-4 flex items-center justify-between">
-        <button
-          onClick={prevSlide}
-          disabled={currentSlide === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-        >
-          <ChevronLeft className="icon-md" />
-          <span className="hidden sm:inline text-sm">Previous</span>
-        </button>
-        
-        <div className="flex-1 flex justify-center">
-          <div className="flex items-center gap-1.5">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? 'w-6 bg-sage' 
-                    : 'bg-cream/30 hover:bg-cream/50'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-        
-        <button
-          onClick={nextSlide}
-          disabled={currentSlide === totalSlides - 1}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-cream/60 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-        >
-          <span className="hidden sm:inline text-sm">Next</span>
-          <ChevronRight className="icon-md" />
-        </button>
-      </div>
 
       {/* Slide Menu Overlay */}
       <div 

@@ -9,11 +9,15 @@ const Hero = () => {
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 bg-pattern opacity-40" />
       
+      {/* Purple Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-purple-600/8"></div>
+      
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-sage/5 rounded-full animate-float"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-terra/5 rounded-full animate-float animation-delay-1000"></div>
-        <div className="absolute bottom-40 left-20 w-28 h-28 bg-coral/5 rounded-full animate-float animation-delay-2000"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-500/10 rounded-full animate-float"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-purple-600/8 rounded-full animate-float animation-delay-1000"></div>
+        <div className="absolute bottom-40 left-20 w-28 h-28 bg-sage/5 rounded-full animate-float animation-delay-2000"></div>
+        <div className="absolute bottom-60 right-40 w-20 h-20 bg-purple-400/6 rounded-full animate-float animation-delay-500"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

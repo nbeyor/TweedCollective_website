@@ -60,8 +60,10 @@ const Services = () => {
   }
 
   return (
-    <section className="section bg-gradient-subtle">
-      <div className="container mx-auto px-4">
+    <section className="section bg-gradient-subtle relative">
+      {/* Purple Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/3 via-transparent to-purple-600/5"></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
           <h2 className="mb-4">Our Three Pillars</h2>
         </div>

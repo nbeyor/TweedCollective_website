@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
-import { Code2, TrendingUp, Users, Target, Zap, Shield, BarChart3, Clock, CheckCircle2 } from 'lucide-react'
+import { Code2, TrendingUp, Users, Target, Zap, Shield, BarChart3, Clock, CheckCircle2, Settings, Lock, Eye, Workflow, UserCog, Timer, GraduationCap } from 'lucide-react'
 
 // Timeline data - updated with new content
 const timelineData = [
@@ -257,7 +257,9 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">🔧</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 flex items-center justify-center mb-3">
+              <Settings className="w-6 h-6 text-purple-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Infrastructure Layer</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -279,7 +281,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">🔒</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 flex items-center justify-center mb-3">
+              <Lock className="w-6 h-6 text-purple-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Security & Governance</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -301,7 +305,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">📊</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 flex items-center justify-center mb-3">
+              <Eye className="w-6 h-6 text-green-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Observability</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -323,7 +329,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">⚙️</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 flex items-center justify-center mb-3">
+              <Workflow className="w-6 h-6 text-green-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Workflow Integration</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -474,7 +482,9 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">👥</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 flex items-center justify-center mb-3">
+              <UserCog className="w-6 h-6 text-purple-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Role Evolution</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -492,7 +502,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">⏰</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 flex items-center justify-center mb-3">
+              <Timer className="w-6 h-6 text-green-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">24-Hour Dev Cycle</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -510,7 +522,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">📊</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 flex items-center justify-center mb-3">
+              <BarChart3 className="w-6 h-6 text-purple-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">New Metrics</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -528,7 +542,9 @@ const slides: Slide[] = [
             </ul>
           </div>
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <div className="text-2xl mb-3">🎓</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/30 flex items-center justify-center mb-3">
+              <GraduationCap className="w-6 h-6 text-green-400" />
+            </div>
             <h3 className="text-sm font-semibold text-cream mb-3">Hiring Shifts</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li className="flex items-start gap-2">
@@ -780,16 +796,13 @@ function AdoptionStanceSlide() {
                 <h3 className="text-sm font-semibold text-cream">Level {stance.level}: {stance.title}</h3>
                 <p className="text-xs text-cream/60 mt-1">{stance.description}</p>
               </div>
-              <span className="px-3 py-1 rounded-full border border-sage/50 bg-sage/10 text-xs text-sage uppercase tracking-wider">
-                {stance.badge}
-              </span>
             </div>
             <div className="p-4 rounded-lg border-l-4 border-purple-500 bg-purple-500/10">
               <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Perspective</div>
               <div className="text-xs text-cream space-y-1 mb-2">
-                <p><strong className="text-cream">When to use:</strong> {stance.whenToUse}</p>
-                <p><strong className="text-cream">Risk:</strong> {stance.risk}</p>
-                <p><strong className="text-cream">Outcome:</strong> {stance.outcome}</p>
+                <p><strong className="text-cream">When to use:</strong> <span className="text-cream">{stance.whenToUse}</span></p>
+                <p><strong className="text-cream">Risk:</strong> <span className="text-cream">{stance.risk}</span></p>
+                <p><strong className="text-cream">Outcome:</strong> <span className="text-cream">{stance.outcome}</span></p>
               </div>
             </div>
           </div>

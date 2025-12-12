@@ -19,8 +19,10 @@ export default async function Home() {
       <Services />
 
       {/* Logo Carousel - Placeholder */}
-      <section className="section bg-stone/30">
-        <div className="container mx-auto px-4">
+      <section className="section bg-stone/30 relative">
+        {/* Purple Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/4 via-transparent to-purple-600/4"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="mb-4">Trusted by Health-Tech Leaders</h2>
             <p className="body-large text-warm-gray">
@@ -45,8 +47,10 @@ export default async function Home() {
       </section>
 
       {/* Live Tools */}
-      <section className="section bg-gradient-animated">
-        <div className="container mx-auto px-4">
+      <section className="section bg-gradient-animated relative">
+        {/* Purple Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-purple-600/8"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="mb-6 text-cream">Try our AI Sprint Planner</h3>
             <p className="body-large mb-8 text-cream/90">
