@@ -1,404 +1,116 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
-import { Code2, TrendingUp, Users, Target, Zap } from 'lucide-react'
+import { Code2, TrendingUp, Users, Target, Zap, Shield, BarChart3, Clock, CheckCircle2 } from 'lucide-react'
 
-// Timeline data
+// Timeline data - updated with new content
 const timelineData = [
   {
     id: 0,
-    era: '2021–2023',
-    name: 'GitHub Copilot',
-    positioning: 'Autocomplete era: comments & partial code → runnable functions.',
-    metric: '20–55% faster',
-    metricDetail: 'coding tasks in controlled studies',
-    anecdote: 'Teams reported ~40% of new code coming from comments + expansions, with big gains on tests & boilerplate.',
-    detailTitle: 'GitHub Copilot · The Autocomplete Era',
-    detailCopy: 'Copilot embedded LLMs into existing IDEs and workflows. It proved that large language models could eliminate much of the boilerplate and help developers move faster without changing how teams structure codebases.',
-    quant: [
-      '20–55% faster completion of typical coding tasks in controlled studies.',
-      '20–30% fewer defects per LOC for teams that paired Copilot with good test coverage.',
-      'Material reduction in "blank-page" time for new features and test suites.'
+    tool: 'GitHub Copilot',
+    date: 'June 2021',
+    source: 'GitHub/Microsoft',
+    innovation: 'AI pair programmer with real-time code suggestions. Pioneered acceptance rate (30%) as value metric.',
+    metrics: [
+      '55% faster task completion',
+      '84% increase in successful builds',
+      'Source: Accenture RCT Study'
     ],
-    anecdoteList: [
-      'Developers reporting 40% of new code written via comments + Copilot expansions.',
-      'One large enterprise cut unit test authoring time by ~60% on new services.'
-    ]
+    anecdote: 'Accenture study: 70% reduction in mental effort on repetitive tasks. 90% of developers reported feeling more fulfilled.'
   },
   {
     id: 1,
-    era: '2023–2024',
-    name: 'Cursor',
-    positioning: 'First LLM-native IDE with deep repo context and agentic tooling.',
-    metric: '2–4× faster',
-    metricDetail: 'feature development in early team reports',
-    anecdote: 'Startups reported shipping full greenfield products in weeks rather than quarters.',
-    detailTitle: 'Cursor · The Agentic IDE',
-    detailCopy: 'Cursor moved from completion to collaboration. By indexing the repo and offering multi-file edits, it turned the IDE into a conversation with a knowledgeable teammate who understands architecture and patterns.',
-    quant: [
-      '2–4× faster delivery of typical features in early pilots.',
-      '50–70% reduction in refactor time for large-scale code cleanup.',
-      '70–90% faster onboarding reported by teams using Cursor to explain legacy code.'
+    tool: 'Cursor',
+    date: 'April 2023',
+    source: 'Anysphere',
+    innovation: 'First AI-native IDE with deep codebase understanding. "Shadow Workspace" for testing changes in isolation.',
+    metrics: [
+      '$4M → $500M ARR in 18 months',
+      '40% developer speed increase',
+      'Source: Sacra, DevGraphiQ'
     ],
-    anecdoteList: [
-      'Small teams shipping net-new products in <4 weeks, using Cursor to generate the bulk of implementation and tests.',
-      'Engineers using Cursor to untangle and modernize complex legacy services over a single weekend.'
-    ]
+    anecdote: 'Fastest SaaS to $100M ARR (12 months). One team: 50% reduction in style-related PR comments after enforcing Cursor rules.'
   },
   {
     id: 2,
-    era: '2024',
-    name: 'Claude 3.5 Sonnet & Claude Code',
-    positioning: 'Reasoning breakthrough: full-repo tasks, strong multi-file coherence.',
-    metric: '3–6× faster',
-    metricDetail: 'multi-file tasks vs. prior tools',
-    anecdote: 'Famous for "feels like a senior engineer" and handling end-to-end microservices.',
-    detailTitle: 'Claude 3.5 Sonnet & Claude Code · The Reasoning Jump',
-    detailCopy: 'Claude 3.5 improved reasoning quality and context handling dramatically. With Claude Code, it could take entire epics—implement a feature, refactor a subsystem, write tests and docs—and handle them in a single, guided conversation.',
-    quant: [
-      '3–6× speedup on complex, multi-file changes compared to earlier generation tools.',
-      'Notable reductions in subtle logic bugs thanks to better reasoning and self-correction.',
-      'Higher success rates on full-feature builds from natural-language specs.'
+    tool: 'Cursor 2.0 + Composer',
+    date: 'October 2025',
+    source: 'Anysphere',
+    innovation: 'Multi-agent interface (8 parallel agents). Custom Composer model optimized for speed. Plan Mode with background execution.',
+    metrics: [
+      '4× faster than comparable models',
+      '<30 sec typical task completion',
+      'Source: Cursor Blog'
     ],
-    anecdoteList: [
-      'Teams asking Claude to design and implement new microservices—schemas, endpoints, tests, and docs—in a handful of prompts.',
-      'Claude helping teams finally address legacy code issues they had postponed for years.'
-    ]
+    anecdote: 'Can run 8 agents simultaneously on different parts of codebase. Developers report "instant" feel for mid-sized refactors.'
   },
   {
     id: 3,
-    era: 'Late 2024–2025',
-    name: 'Dedicated Claude Code Mode',
-    positioning: 'Repo-centric agents with stronger planning + verification loops.',
-    metric: '5–10× throughput',
-    metricDetail: 'on routine development workloads',
-    anecdote: 'Stories of "25 hours of continuous agent coding" rebuilding entire reporting stacks.',
-    detailTitle: 'Claude Code · Dedicated Coding Agents',
-    detailCopy: 'Claude Code formalized the idea of a coding-specialist agent. It moved beyond suggestions into managing full workflows: planning tasks, editing multiple files, running tests, and iterating with minimal prompting.',
-    quant: [
-      '5–10× throughput on routine development (CRUD features, integrations, test coverage).',
-      'Consistent improvements in defect discovery before human review, especially where tests existed.',
-      'Material reduction in dev time spent on glue code, SDK updates, and migrations.'
+    tool: 'Claude Code',
+    date: 'September 2024',
+    source: 'Anthropic',
+    innovation: 'Extended autonomous sessions (7+ hours). Agentic search understanding entire codebases without manual context selection.',
+    metrics: [
+      '10× productivity gains reported',
+      '2-3 weeks → 1 day task compression',
+      'Source: Treasure Data Case'
     ],
-    anecdoteList: [
-      'Teams reporting continuous agent runs that rebuilt entire reporting platforms over a weekend.',
-      'Engineers using Claude Code to migrate large codebases between frameworks with minimal manual intervention.'
-    ]
+    anecdote: 'Treasure Data engineer built MCP server in 1 day (normally 2-3 weeks). Entrepreneur built 50+ React components during 6-hour flight—18 dev-days of work.'
   },
   {
     id: 4,
-    era: '2025+',
-    name: 'Opus 4.5 & Agentic Suites',
-    positioning: 'Orchestrated agents that open branches, self-review, and raise PRs.',
-    metric: '8–12× improvement',
-    metricDetail: 'for end-to-end feature workflows in early pilots',
-    anecdote: 'Agents implementing complex data pipelines and integrations in days instead of months.',
-    detailTitle: 'Opus 4.5 & Modern Agentic Suites · Towards Autonomous Branches',
-    detailCopy: 'With models like Opus 4.5 and coordinated agent frameworks, we enter a phase where agents can own entire branches: plan work, implement changes, run tests, self-review, and raise PRs for human approval.',
-    quant: [
-      '8–12× improvement in throughput for full-stack feature delivery under structured pilots.',
-      '90%+ automation of repetitive integration work: dependency updates, SDK migrations, and schema-aligned transformations.',
-      'Greater predictability in delivery timelines thanks to agents working continuously between human checkpoints.'
+    tool: 'Claude Opus 4.5',
+    date: 'November 2025',
+    source: 'Anthropic',
+    innovation: 'Best-in-class reasoning and agentic capability. Self-improving agents that refine autonomously. Effort parameter for token optimization.',
+    metrics: [
+      '50-65% fewer tokens vs Sonnet 4.5',
+      '15% improvement on Terminal Bench',
+      'Source: Anthropic Release Notes'
     ],
-    anecdoteList: [
-      'Agent swarms standing up complex data harmonization pipelines for biopharma analytics in <48 hours.',
-      'Senior engineers supervising multiple agent-driven branches in parallel, effectively multiplying individual leverage.'
-    ]
+    anecdote: 'Scored higher than any human candidate on Anthropic\'s 2-hour performance engineering test. Self-improving agents reached peak performance in 4 iterations (other models couldn\'t match after 10).'
   }
 ]
 
 const stanceData = [
   {
-    title: 'Passive / Opt-In',
-    badge: 'Low Commitment',
-    detail: 'Offer tools to interested engineers with minimal structure. This surfaces enthusiasts, but adoption is uneven and ROI is hard to quantify. Messaging: "Feel free to use these if you\'re curious and compliant."'
+    level: 1,
+    title: 'Optional/Voluntary',
+    badge: '10-30% Adoption',
+    description: 'Tools are available if compliant and interested',
+    whenToUse: 'Extremely early-stage exploration with minimal conviction.',
+    risk: 'Those who need it most resist it most. Difficult to measure ROI or justify continued investment.',
+    outcome: 'Often fizzles without creating competitive advantage.'
   },
   {
+    level: 2,
     title: 'Structured Pilot',
-    badge: 'Recommended Starting Point',
-    detail: 'Pick 1–2 squads, define KPIs (cycle time, PR throughput, defect rate, onboarding speed), and run a 6–12 week experiment. Treat this as discovery: what does 3–5× velocity actually look like here, in this codebase, under this regulatory burden?'
+    badge: '40-60% Adoption',
+    description: 'Let\'s test systematically, then decide based on data',
+    whenToUse: 'Board wants proof before broader rollout. Select 1-2 teams, run 8-12 week pilot with clear success metrics.',
+    risk: 'Momentum loss during review period. Pilot teams may not represent broader organization.',
+    outcome: 'Best for: Conservative boards or companies with compliance-heavy environments.'
   },
   {
-    title: 'Inevitable & Incremental Rollout',
-    badge: 'Transformation Program',
-    detail: 'Assume VIBE tools are part of your future. Establish a multi-quarter rollout roadmap across teams, with continuous training and playbook refinement. Messaging: "This is the new standard; we will support your transition."'
+    level: 3,
+    title: 'Incremental Rollout (Recommended)',
+    badge: '60-80% Adoption',
+    description: 'These are inevitable. Roll out incrementally without discontinuity',
+    whenToUse: 'High conviction on value. Start with early adopters, expand continuously based on capability. Assumes long-term commitment from day one.',
+    risk: 'Moderate investment, high ROI.',
+    outcome: '60-80% adoption in 6 months. Organic champion network. Sweet spot for most portfolio companies—balances speed with learning.'
   },
   {
-    title: 'Top-Down Mandate',
-    badge: 'High Impact / High Change',
-    detail: 'Leadership declares agents as mandatory for development workflows, backed with heavy enablement and governance. You get the fastest normalization and largest gains—but also the most cultural shock if unprepared.'
+    level: 4,
+    title: 'Aggressive Top-Down',
+    badge: '80-95% Adoption',
+    description: 'Mandatory adoption. AI proficiency tied to performance reviews',
+    whenToUse: 'Existential competitive threat or post-acquisition integration. Fastest time to organizational impact.',
+    risk: 'Initial resistance and friction.',
+    outcome: 'Requires: Strong executive sponsor, significant change management support. Example: NBIM (Norway\'s $1.8T fund) made AI proficiency mandatory—saved 213,000 hours annually, equivalent of 100+ FTEs.'
   }
 ]
-
-const operatorPoints = [
-  'Senior engineers spend more time managing agents: decomposing work, reviewing PRs, shaping architecture.',
-  'Fewer people writing boilerplate; more focused on systems thinking and product impact.',
-  'New roles emerge: agent "shepherds", model/prompt owners, and validation engineers for regulated workflows.',
-  'The effective workday becomes 24/7 as agents continue tasks between human review cycles.'
-]
-
-const pePoints = [
-  'You get more roadmap per FTE: engineering becomes a lever for revenue and product velocity, not just a cost line.',
-  'Talent strategy shifts from "how many" to "what mix": senior orchestrators + a smaller bench of implementers.',
-  'You can integrate acquired teams faster by deploying a shared agentic toolchain and playbook.',
-  'Retention risk changes: high-leverage engineers who master agents become uniquely valuable—but also more mobile.'
-]
-
-// Interactive Timeline Component
-function TimelineSlide() {
-  const [selectedId, setSelectedId] = useState(0)
-  const selectedData = timelineData[selectedId]
-
-  return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
-      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Tool Evolution Timeline</h2>
-      <p className="text-cream/60 mb-8 max-w-2xl">
-        From "autocomplete on steroids" to agents that can own an entire feature—from spec to PR—
-        with 3–10× velocity gains on real-world workloads.
-      </p>
-
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <div className="md:col-span-2 space-y-4">
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-cream/40 uppercase tracking-wider">Early</span>
-            <input
-              type="range"
-              min="0"
-              max="4"
-              value={selectedId}
-              onChange={(e) => setSelectedId(parseInt(e.target.value))}
-              className="flex-1 accent-sage"
-            />
-            <span className="text-xs text-cream/40 uppercase tracking-wider">Now</span>
-          </div>
-
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sage/30">
-            {timelineData.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => setSelectedId(item.id)}
-                className={`flex-shrink-0 w-64 p-4 rounded-xl border transition-all ${
-                  selectedId === item.id
-                    ? 'border-sage bg-sage/10 shadow-lg scale-105'
-                    : 'border-cream/20 bg-cream/5 hover:border-cream/30'
-                }`}
-              >
-                <div className="text-xs text-cream/50 mb-1">{item.era}</div>
-                <div className="text-sm font-semibold text-cream mb-1">{item.name}</div>
-                <div className="text-xs text-cream/60 mb-2">{item.positioning}</div>
-                <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-sage/10 border border-sage/30 text-xs text-sage mb-2">
-                  <span className="font-mono">{item.metric}</span>
-                  <span className="text-cream/50">· {item.metricDetail}</span>
-                </div>
-                <div className="text-xs text-cream/50">{item.anecdote}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-5 rounded-xl border border-dashed border-cream/30 bg-cream/5">
-          <h3 className="text-sm font-semibold text-cream mb-3">{selectedData.detailTitle}</h3>
-          <p className="text-xs text-cream/70 mb-4">{selectedData.detailCopy}</p>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h4 className="text-xs uppercase tracking-wider text-cream/50 mb-2">Quantified Impact</h4>
-              <ul className="space-y-1.5">
-                {selectedData.quant.map((q, i) => (
-                  <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                    <span className="text-sage mt-0.5">●</span>
-                    <span>{q}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xs uppercase tracking-wider text-cream/50 mb-2">Market Anecdote</h4>
-              <ul className="space-y-1.5">
-                {selectedData.anecdoteList.map((a, i) => (
-                  <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                    <span className="text-sage mt-0.5">●</span>
-                    <span>{a}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Adoption Stance Component
-function AdoptionStanceSlide() {
-  const [stanceIndex, setStanceIndex] = useState(1)
-  const stance = stanceData[stanceIndex]
-
-  return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
-      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances & Change Management</h2>
-      <p className="text-cream/60 mb-8 max-w-2xl">
-        Whether you see VIBE tools as "promising" or "inevitable" determines how aggressively
-        you roll them out—and how you manage the culture shock.
-      </p>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-1 p-5 rounded-xl border border-cream/20 bg-cream/5">
-          <div className="text-xs uppercase tracking-wider text-cream/50 mb-4">Choose stance</div>
-          <div className="space-y-4">
-            <div>
-              <input
-                type="range"
-                min="0"
-                max="3"
-                value={stanceIndex}
-                onChange={(e) => setStanceIndex(parseInt(e.target.value))}
-                className="w-full accent-sage mb-2"
-              />
-              <div className="flex justify-between text-xs text-cream/50">
-                <span>Opt-In</span>
-                <span>Pilot</span>
-                <span>Inevitable</span>
-                <span>Mandate</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-cream">{stance.title}</span>
-              <span className="px-2 py-1 rounded-full border border-sage/50 bg-sage/10 text-xs text-sage uppercase tracking-wider">
-                {stance.badge}
-              </span>
-            </div>
-            <p className="text-xs text-cream/60">
-              <strong className="text-cream/80">{stance.title}:</strong> {stance.detail}
-            </p>
-          </div>
-        </div>
-
-        <div className="md:col-span-2 space-y-4">
-          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-2">Case Study</h3>
-            <h4 className="text-sm font-semibold text-cream mb-2">Norges-style Top-Down Approach</h4>
-            <p className="text-xs text-cream/60 mb-3">
-              A sovereign wealth institution publicly described an aggressive, top-down stance on coding assistants:
-              leadership framed them as <strong className="text-cream/80">strategic, not optional</strong>, and made support and training a core part
-              of the rollout.
-            </p>
-            <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full border border-sage/30 bg-sage/10 text-xs text-sage mb-3">
-              Outcome <span className="font-mono text-xs">3–10×</span>
-            </div>
-            <ul className="space-y-1.5">
-              {['Fast normalization of agents across teams—no "have vs. have-not" squads.', 'Strong central enablement (training, templates, approved patterns).', 'Clear message: "This is how we build now."'].map((item, i) => (
-                <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                  <span className="text-sage mt-0.5">●</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-2">Implications by Stance</h3>
-            <p className="text-xs text-cream/60 mb-3">As you move from opt-in to mandate:</p>
-            <ul className="space-y-1.5">
-              {['Messaging shifts from "feel free to try" to "this is our standard."', 'Change management shifts from light coaching to a structured transformation program.', 'Measurement shifts from anecdotes to tracked KPIs across the portfolio.', 'Risk shifts from missed upside to potential mis-implementation—governance matters.'].map((item, i) => (
-                <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                  <span className="text-sage mt-0.5">●</span>
-                  <span><strong className="text-cream/80">{item.split(':')[0]}</strong>{item.split(':')[1]}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Value Creation Component
-function ValueCreationSlide() {
-  const [viewMode, setViewMode] = useState<'operator' | 'pe'>('operator')
-  const [barsAnimated, setBarsAnimated] = useState(false)
-
-  useEffect(() => {
-    setTimeout(() => setBarsAnimated(true), 200)
-  }, [])
-
-  const valueData = [
-    { label: 'Headcount reduction', width: 1 },
-    { label: 'Roadmap velocity', width: 5 },
-    { label: 'Quality / reliability', width: 4 },
-    { label: 'M&A integration speed', width: 4 }
-  ]
-
-  return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
-      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Value Creation & Talent Mix</h2>
-      <p className="text-cream/60 mb-8 max-w-2xl">
-        The question is not "how many engineers can I cut?"—it's "how fast can I hit product and
-        revenue milestones that used to be impossible?"
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-          <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-4">From Cost Line Item to Growth Engine</h3>
-          <div className="space-y-4">
-            {valueData.map((item, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="text-xs text-cream/60 w-32 flex-shrink-0">{item.label}</div>
-                <div className="flex-1 h-2 rounded-full bg-charcoal/50 overflow-hidden border border-cream/10">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-sage via-terra to-ochre transition-all duration-1000"
-                    style={{ width: barsAnimated ? `${item.width * 20}%` : '0%' }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-cream/50 mt-4">
-            For PE investors, the interesting upside is accelerated top-line growth:
-            <strong className="text-cream/80"> faster digital product launches, faster integration of add-ons, and fewer costly surprises</strong>
-            in engineering-heavy assets.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-          <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-4">Talent Mix · From Typing to Orchestrating Agents</h3>
-          <div className="inline-flex rounded-full border border-cream/20 overflow-hidden mb-4">
-            <button
-              onClick={() => setViewMode('operator')}
-              className={`px-3 py-1 text-xs uppercase tracking-wider transition-all ${
-                viewMode === 'operator'
-                  ? 'bg-sage/20 text-sage border-r border-cream/20'
-                  : 'text-cream/50 hover:text-cream/70'
-              }`}
-            >
-              Operator Lens
-            </button>
-            <button
-              onClick={() => setViewMode('pe')}
-              className={`px-3 py-1 text-xs uppercase tracking-wider transition-all ${
-                viewMode === 'pe'
-                  ? 'bg-sage/20 text-sage'
-                  : 'text-cream/50 hover:text-cream/70'
-              }`}
-            >
-              PE Lens
-            </button>
-          </div>
-          <ul className="space-y-2">
-            {(viewMode === 'operator' ? operatorPoints : pePoints).map((point, i) => (
-              <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                <span className="text-sage mt-0.5">⟶</span>
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 // Define slides
 const slides: Slide[] = [
@@ -408,223 +120,535 @@ const slides: Slide[] = [
     content: (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cream/20 bg-cream/5 mb-6">
-          <div className="w-2 h-2 rounded-full bg-gradient-to-br from-sage to-terra shadow-lg shadow-sage/50" />
-          <span className="text-xs uppercase tracking-wider text-cream/60">VIBE Coding · Executive Briefing</span>
+          <span className="text-xs uppercase tracking-wider text-cream/60">For Private Equity Investors in Life Sciences</span>
         </div>
-        <h1 className="text-4xl md:text-6xl font-serif font-light text-cream mb-6 leading-tight">
-          From Code to Agents
+        <h1 className="text-4xl md:text-6xl font-serif font-light text-cream mb-4 leading-tight">
+          The Evolution of VIBE Coding in Enterprise
         </h1>
-        <p className="text-xl md:text-2xl text-cream/70 mb-4 max-w-2xl">
-          VIBE Coding in PE-backed Life Sciences
+        <p className="text-xl md:text-2xl text-cream/70 mb-8 max-w-2xl">
+          A Strategic Framework for Accelerating Product Development in Portfolio Companies
         </p>
-        <p className="text-sm text-cream/50 max-w-xl">
-          How next-gen coding agents reshape product velocity, talent, and value creation.
-        </p>
+        
+        {/* PE Insight Box */}
+        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-purple-500 bg-purple-500/10 mb-8 text-left">
+          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Why This Matters</div>
+          <p className="text-sm text-cream/80 leading-relaxed">
+            In life sciences companies, where product development cycles are long and regulatory timelines are fixed, 
+            software velocity has become a critical differentiator. This presentation examines how agentic coding tools 
+            are fundamentally changing the economics of software development—and why treating this as a growth acceleration 
+            play rather than cost reduction unlocks significantly more value.
+          </p>
+        </div>
+
+        {/* 3 Metric Cards */}
+        <div className="grid md:grid-cols-3 gap-4 w-full max-w-4xl">
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">84%</div>
+            <div className="text-xs text-cream/60 mb-2">Developer Adoption 2025</div>
+            <div className="text-xs text-cream/50">Up from 76% in 2024</div>
+            <div className="text-[10px] text-cream/40 mt-2">Stack Overflow Survey 2025</div>
+          </div>
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">78%</div>
+            <div className="text-xs text-cream/60 mb-2">Market Penetration</div>
+            <div className="text-xs text-cream/50">Of teams integrated AI-assisted coding</div>
+            <div className="text-[10px] text-cream/40 mt-2">GitLab Research 2024</div>
+          </div>
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">$500M</div>
+            <div className="text-xs text-cream/60 mb-2">Fastest SaaS Growth</div>
+            <div className="text-xs text-cream/50">Cursor ARR in 18 months</div>
+            <div className="text-[10px] text-cream/40 mt-2">Sacra Analysis 2025</div>
+          </div>
+        </div>
       </div>
     )
   },
   {
     id: 'definition',
-    title: 'What Is VIBE Coding?',
+    title: 'Definition',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">01 · What Is VIBE Coding?</h2>
-        <p className="text-cream/60 mb-8 max-w-2xl">
-          A shift from "writing code" to "specifying behavior" in natural language,
-          with agents that understand your systems, data, and constraints.
+        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 01 — Definition</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">What is VIBE Coding?</h2>
+        
+        <p className="text-cream/80 mb-8 max-w-3xl text-lg leading-relaxed">
+          VIBE Coding (Vision-Intent-Based Engineering) represents a shift where developers describe desired outcomes 
+          in natural language, and AI systems generate functional code. Unlike traditional pair programming, VIBE coding 
+          emphasizes intuitive, human-in-the-loop interaction through conversational workflows that support rapid iteration 
+          and creative exploration.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 p-6 rounded-xl border border-cream/20 bg-gradient-to-br from-cream/5 to-cream/0 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-sage/10 to-transparent opacity-50" />
-            <div className="relative">
-              <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Definition</div>
-              <p className="text-sm text-cream/80 mb-4">
-                <strong className="text-cream">VIBE Coding</strong> (Voice-, Instruction-, Behavior-, Environment-based Coding)
-                is a development paradigm where engineers describe intent in natural language and
-                <strong className="text-cream"> context-aware agents</strong> generate, refactor, test, and document code
-                across an entire codebase.
-              </p>
-              <p className="text-xs text-cream/60 mb-4">
-                Agents work inside or alongside the IDE, using repository context, architecture,
-                test suites, and policies to continuously plan → code → test → fix.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['Natural-language first', 'Agentic, not just autocomplete', 'Full-repo awareness', 'Continuous verification'].map((pill, i) => (
-                  <span key={i} className="px-2 py-1 rounded-full border border-cream/20 bg-cream/5 text-xs text-cream/70">
-                    {pill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="space-y-6">
-            <div>
-              <strong className="text-xs text-cream/80 mb-2 block">Key characteristics</strong>
-              <ul className="space-y-2">
-                {[
-                  'Agentic loops that propose plans, write code, run tests, and iterate.',
-                  'Deep repository + infra context (monorepos, data models, APIs, IaC).',
-                  'IDE-native or LLM-native environments (e.g., Cursor, Claude Code).',
-                  'Emphasis on specifying behavior and constraints, not syntax.'
-                ].map((item, i) => (
-                  <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                    <span className="text-sage mt-0.5">●</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-cream mb-4">The Spectrum of AI Coding Assistance</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+              <h4 className="text-sm font-semibold text-cream mb-3">VIBE Coding</h4>
+              <ul className="space-y-2 text-sm text-cream/70">
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Prompt-based, human-guided</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Rapid prototyping focus</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Developer maintains full control</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Best for exploration & MVPs</span>
+                </li>
               </ul>
             </div>
-            <div>
-              <strong className="text-xs text-cream/80 mb-2 block">Why this matters for PE-backed life sciences</strong>
-              <ul className="space-y-2">
-                {[
-                  'Accelerates regulated digital builds: e-clinical, analytics, safety, RWD pipelines.',
-                  'Compresses integration timelines in M&A-heavy rollup strategies.',
-                  'Improves quality and reproducibility in safety-critical systems.',
-                  'Turns engineering from a bottleneck into a valuation lever.'
-                ].map((item, i) => (
-                  <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                    <span className="text-sage mt-0.5">●</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
+            <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+              <h4 className="text-sm font-semibold text-cream mb-3">Agentic Coding</h4>
+              <ul className="space-y-2 text-sm text-cream/70">
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Goal-driven autonomous agents</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Multi-step execution</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Minimal human intervention</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span>Excels at complex refactors</span>
+                </li>
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* PE Insight Box */}
+        <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
+          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Implications</div>
+          <p className="text-sm text-cream/80">
+            This isn't just faster coding—it's a fundamental shift in software economics. Portfolio companies can now 
+            build features that were previously economically unviable, compress 12-month roadmaps into 6 months, and 
+            reach revenue milestones with dramatically less capital burn.
+          </p>
         </div>
       </div>
     )
   },
   {
     id: 'timeline',
-    title: 'Tool Evolution Timeline',
+    title: 'Tool Evolution',
     content: <TimelineSlide />
   },
   {
-    id: 'integration',
-    title: 'Beyond "Just Pick Up the Tool"',
+    id: 'enterprise',
+    title: 'Enterprise Adoption',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">03 · Beyond "Just Pick Up the Tool"</h2>
-        <p className="text-cream/60 mb-8 max-w-2xl">
-          Value doesn't come from installing a plugin—it comes from how agents connect to your
-          repos, CI/CD, data, and governance model.
+        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 03 — Enterprise Adoption</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-4">Critical Integration Points</h2>
+        <p className="text-cream/60 mb-8 max-w-3xl">
+          While these tools appear simple ('just pick up the tool'), successful enterprise deployment requires addressing four critical integration points:
         </p>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-3">How VIBE Tools Fit Your Stack</h3>
-            <p className="text-xs text-cream/60 mb-4">Think of them as a new execution layer in your SDLC—not a toy gadget.</p>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <strong className="text-xs text-cream/80 mb-2 block">Toolchain integration</strong>
-                <ul className="space-y-1.5">
-                  {['IDE integration (VS Code / JetBrains / Cursor-native).', 'Secure repo indexing (GitHub / GitLab / on-prem).', 'Branch & PR workflows (agents proposing changes, you approve).', 'CI/CD hooks: tests, linters, static analysis as guardrails.'].map((item, i) => (
-                    <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                      <span className="text-sage mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <strong className="text-xs text-cream/80 mb-2 block">Data & governance</strong>
-                <ul className="space-y-1.5">
-                  {['Separation of PHI/PII; private or on-prem LLM endpoints.', 'Policy-aware coding (infra, security, regulatory constraints).', 'Audit trails for AI-generated code & decisions.', 'Alignment with GxP / 21 CFR Part 11 where relevant.'].map((item, i) => (
-                    <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                      <span className="text-sage mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <p className="text-xs text-cream/50 mt-4">
-              Without this wiring, tools look magical in demos but stall in production—especially in regulated life sciences.
-            </p>
-          </div>
-          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
-            <h3 className="text-xs uppercase tracking-wider text-cream/50 mb-3">Deployment & Publishing Questions</h3>
-            <p className="text-xs text-cream/60 mb-4">Mapping these upfront avoids the "we have licenses, but nobody uses them" trap.</p>
-            <ul className="space-y-2">
-              {[
-                'Where do agents run? Local, cloud, VPC, or hybrid?',
-                'How do they access secrets, environment configs, and test data?',
-                'Who owns configuration: platform team, central AI team, tribes/squads?',
-                'How do we version models and prompt configurations over time?',
-                'What\'s our roll-back strategy if an agentic refactor goes wrong?'
-              ].map((item, i) => (
-                <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                  <span className="text-sage mt-0.5">•</span>
-                  <span>{item}</span>
-                </li>
-              ))}
+            <div className="text-2xl mb-3">🔧</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Infrastructure Layer</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>IDE/CLI/Web integration points</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Codebase access & semantic search</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>CI/CD pipeline integration</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Compute resources (cloud vs on-prem)</span>
+              </li>
             </ul>
-            <p className="text-xs text-cream/50 mt-4">
-              For a PE-backed company, these decisions impact integration timelines post-acquisition
-              and the ability to scale a common engineering "operating model" across the platform.
-            </p>
           </div>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">🔒</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Security & Governance</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Code privacy & data residency</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Access controls by role/team</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Audit logging of AI-generated code</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Sandboxed execution environments</span>
+              </li>
+            </ul>
+          </div>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">📊</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Observability</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Adoption metrics & usage analytics</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Cost tracking (tokens, API calls)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Quality metrics (bug rates, test coverage)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Performance monitoring (latency, errors)</span>
+              </li>
+            </ul>
+          </div>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">⚙️</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Workflow Integration</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Code review processes for AI output</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Testing strategy (unit, integration, E2E)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Documentation & knowledge management</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>Deployment pipelines & rollback</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* PE Insight Box */}
+        <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
+          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Due Diligence Checkpoint</div>
+          <p className="text-sm text-cream/80">
+            Assess portfolio companies on these four dimensions. Companies that address governance and observability early 
+            scale adoption faster and show measurable ROI within 90 days. Those that don't often stall at 20-30% adoption 
+            with unclear value capture.
+          </p>
         </div>
       </div>
     )
   },
   {
     id: 'stances',
-    title: 'Adoption Stances',
+    title: 'Change Management',
     content: <AdoptionStanceSlide />
   },
   {
+    id: 'nbim',
+    title: 'NBIM Case Study',
+    content: (
+      <div className="min-h-[50vh] flex flex-col justify-center">
+        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 05 — Case Study</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">NBIM: Top-Down Mandate at Scale</h2>
+
+        {/* 3 Metric Cards */}
+        <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">213K</div>
+            <div className="text-xs text-cream/60 mb-2">Hours Saved Annually</div>
+            <div className="text-xs text-cream/50">Equivalent of 100+ FTE employees</div>
+            <div className="text-[10px] text-cream/40 mt-2">NBIM Reports, Smith Stephen Analysis</div>
+          </div>
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">$1.8T</div>
+            <div className="text-xs text-cream/60 mb-2">Assets Under Management</div>
+            <div className="text-xs text-cream/50">Managed by only 670 employees</div>
+            <div className="text-[10px] text-cream/40 mt-2">Norges Bank Investment Management</div>
+          </div>
+          <div className="p-5 rounded-xl border border-sage/30 bg-sage/10">
+            <div className="text-3xl font-serif text-sage mb-1">50%</div>
+            <div className="text-xs text-cream/60 mb-2">Competitive Advantage</div>
+            <div className="text-xs text-cream/50">"50% ahead of non-AI competitors"</div>
+            <div className="text-[10px] text-cream/40 mt-2">CEO Nicolai Tangen, Semafor</div>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-cream mb-4">The Approach</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+              <h4 className="text-sm font-semibold text-cream mb-3">Leadership Strategy</h4>
+              <ul className="space-y-2 text-sm text-cream/70">
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>Mandatory Adoption:</strong> AI proficiency required for promotion and hiring</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>CEO Championship:</strong> Tangen personally drove adoption ("running around like a maniac")</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>Cultural Shift:</strong> From voluntary to mandatory competency</span>
+                </li>
+              </ul>
+            </div>
+            <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+              <h4 className="text-sm font-semibold text-cream mb-3">Governance Framework</h4>
+              <ul className="space-y-2 text-sm text-cream/70">
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>Human-in-Loop:</strong> All AI outputs require human review</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>Clear Boundaries:</strong> Personal/trading data excluded</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-sage mt-1">•</span>
+                  <span><strong>Trust Building:</strong> Guardrails gave skeptics confidence</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Anecdote Box */}
+        <div className="p-5 rounded-xl border border-amber-500/50 bg-amber-500/10 mb-6">
+          <div className="text-xs uppercase tracking-wider text-amber-300 mb-2">Results</div>
+          <p className="text-sm text-cream/80">
+            Multilingual reports (16 languages) that took days now complete in minutes. NBIM scaled back hiring plans 
+            while managing increasing AUM. CEO's view: "Companies not using AI will never catch up."
+          </p>
+        </div>
+
+        {/* PE Insight Box */}
+        <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
+          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Takeaway</div>
+          <p className="text-sm text-cream/80">
+            NBIM's success wasn't about unlimited resources or proprietary technology. It was about treating AI adoption 
+            as a change management challenge, not just a technology problem. The lesson: executive sponsorship and mandatory 
+            adoption (with governance) drives faster results than voluntary approaches.
+          </p>
+        </div>
+      </div>
+    )
+  },
+  {
     id: 'value',
-    title: 'Value Creation & Talent',
+    title: 'Value Creation',
     content: <ValueCreationSlide />
   },
   {
-    id: 'closing',
-    title: 'PE Lens',
+    id: 'impact',
+    title: 'Organizational Impact',
     content: (
       <div className="min-h-[50vh] flex flex-col justify-center">
-        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">06 · What This Means for PE-Backed Life Sciences</h2>
-        <p className="text-cream/60 mb-8 max-w-2xl">
-          Treat VIBE Coding as a lever on valuation, not a tooling curiosity. The firms that move first will
-          pull forward revenue, integration, and innovation by multiple years.
-        </p>
+        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 07 — Organizational Impact</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Talent & Operating Model Implications</h2>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
-            <strong className="text-xs text-cream/80 mb-3 block">A simple playbook for investors & boards</strong>
-            <ul className="space-y-2 mb-4">
-              {[
-                'Identify portfolio companies where engineering is the primary bottleneck to growth or integration.',
-                'Assess current data, repo, and CI/CD maturity—are they ready for agentic workflows?',
-                'Back 1–2 "lighthouse" implementations with clear KPIs and a 3–6 month horizon.',
-                'Codify what works into a playbook: patterns, guardrails, training, and metrics.',
-                'Scale the playbook across the platform to create a differentiated "VIBE-ready" operating model.'
-              ].map((item, i) => (
-                <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                  <span className="text-green-400 mt-0.5">✔</span>
-                  <span>{item}</span>
-                </li>
-              ))}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">👥</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Role Evolution</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>From Typing to Orchestration:</strong> Developers manage AI agents, not write every line</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Skill Shift:</strong> Prompting, context management, review &gt; syntax memorization</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Higher-Level Focus:</strong> Architecture, system design, business logic</span>
+              </li>
             </ul>
-            <p className="text-xs text-cream/50">
-              The right question for any asset isn't "can we reduce developers?", but:
-              <strong className="text-cream/80"> "What does our roadmap look like if we deliver 2–3 years of engineering in the next 12 months?"</strong>
-            </p>
           </div>
-          <div className="p-5 rounded-xl border border-blue-500/50 bg-blue-500/10">
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Board-level takeaway</div>
-            <p className="text-xs text-cream/60">
-              <strong className="text-cream/80">VIBE Coding tools are inevitable.</strong> The only real choice for a PE platform is whether to
-              <strong className="text-cream/80"> experiment slowly and opportunistically</strong>, or to
-              <strong className="text-cream/80"> deliberately build an advantage</strong> in how portfolio companies harness agents for code, data,
-              and product delivery.
-              <br /><br />
-              The upside is not marginal efficiency; it's
-              <strong className="text-cream/80"> time-to-value compression on critical digital bets</strong>—which is where most of the multiple
-              expansion will come from in modern life sciences.
-            </p>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">⏰</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">24-Hour Dev Cycle</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Always-On Agents:</strong> Development continues while humans sleep</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Background Execution:</strong> Long-running refactors in parallel</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Global Velocity:</strong> Work never stops across time zones</span>
+              </li>
+            </ul>
+          </div>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">📊</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">New Metrics</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Beyond LOC:</strong> Feature velocity, test coverage, time to market</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Agent Efficiency:</strong> Acceptance rates, iteration counts</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Business Value:</strong> Revenue impact, competitive positioning</span>
+              </li>
+            </ul>
+          </div>
+          <div className="p-5 rounded-xl border border-cream/20 bg-cream/5">
+            <div className="text-2xl mb-3">🎓</div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Hiring Shifts</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Hire for Judgment:</strong> System thinking &gt; coding speed</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>AI Fluency:</strong> Prompt engineering becomes core skill</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span><strong>Junior Acceleration:</strong> New grads productive faster with AI assist</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-cream mb-4">Real-World Examples</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10">
+              <p className="text-sm text-cream/80">
+                <strong>Treasure Data (80% adoption):</strong> Tasks that took 2-3 weeks now complete in 1 day. 
+                Team pursuing projects that were previously unthinkable while maintaining quality.
+              </p>
+            </div>
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10">
+              <p className="text-sm text-cream/80">
+                <strong>400K Lines of Code:</strong> Single developer managing project approaching 400,000 LOC using 
+                multi-agent Claude Code workflow with 4 parallel agents.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* PE Insight Box */}
+        <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
+          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Portfolio Company Action Items</div>
+          <ul className="space-y-2 text-sm text-cream/80">
+            <li className="flex items-start gap-2">
+              <span className="text-purple-300 mt-1">•</span>
+              <span><strong>Assess Current State:</strong> What % of dev team uses AI tools? What's blocking higher adoption?</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-300 mt-1">•</span>
+              <span><strong>Set Stance:</strong> Choose adoption approach based on competitive urgency and organizational readiness</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-300 mt-1">•</span>
+              <span><strong>Implement Observability:</strong> Track adoption, cost, quality metrics from day one</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-300 mt-1">•</span>
+              <span><strong>Invest in Training:</strong> Prompt engineering, agent management, code review of AI output</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-300 mt-1">•</span>
+              <span><strong>Communicate Value:</strong> Frame as growth acceleration, not headcount reduction</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 'sources',
+    title: 'Sources & Citations',
+    content: (
+      <div className="min-h-[50vh] flex flex-col justify-center">
+        <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">References</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-cream mb-8">Sources & Citations</h2>
+
+        <div className="space-y-6 text-sm text-cream/70 max-w-4xl">
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Industry Research & Reports</h3>
+            <ol className="list-decimal list-inside space-y-1 ml-4">
+              <li>Stack Overflow Developer Survey 2025 - AI adoption statistics</li>
+              <li>GitLab Research (2024) - "78% of teams have integrated AI-assisted coding tools"</li>
+              <li>GitHub Research - "Measuring GitHub Copilot's Impact on Productivity" (Communications of the ACM, March 2024)</li>
+              <li>Accenture Randomized Controlled Trial - GitHub Copilot productivity metrics (8.69% increase in PRs, 84% increase in successful builds)</li>
+              <li>Opsera Research - "GitHub Copilot Adoption Trends: Insights from Real Data" (time to PR: 9.6 to 2.4 days)</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Vendor Data & Benchmarks</h3>
+            <ol className="list-decimal list-inside space-y-1 ml-4" start={6}>
+              <li>Sacra Analysis - "Cursor at $100M ARR" and "$500M ARR" growth trajectory reports</li>
+              <li>Cursor Official Blog - "Introducing Cursor 2.0 and Composer" (October 2025)</li>
+              <li>Cursor Official Blog - "Composer: Building a fast frontier model with RL"</li>
+              <li>Anthropic - "Introducing Claude Opus 4.5" (November 2025)</li>
+              <li>Anthropic - "Building agents with the Claude Agent SDK"</li>
+              <li>Anthropic - "How to scale agentic coding across your engineering organization"</li>
+              <li>DevGraphiQ - "Cursor Statistics 2025: The Complete Data Analysis Report"</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Case Studies</h3>
+            <ol className="list-decimal list-inside space-y-1 ml-4" start={13}>
+              <li>Treasure Data - "How Our Engineering Team Embraced AI and Claude Code for 10x Productivity"</li>
+              <li>Norges Bank Investment Management (NBIM) - Smith Stephen Analysis: "How Norway's $1.8 Trillion Fund Saved 213,000 Hours with AI"</li>
+              <li>VentureBeat - "Vibe coding is dead: Agentic swarm coding is the new enterprise moat" (Mark Ruddock case)</li>
+              <li>Blockhead Consulting - "How I Manage 400K Lines of Code with Claude Code: A Multi-Agent Development Workflow" (July 2025)</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Academic & Technical Papers</h3>
+            <ol className="list-decimal list-inside space-y-1 ml-4" start={17}>
+              <li>arXiv 2505.19443 - "Vibe Coding vs. Agentic Coding: Fundamentals and Practical Implications of Agentic AI"</li>
+              <li>Communications of the ACM - "Claude 4's Agency in Practice: Beyond Code Generation" (Jenil Shah)</li>
+              <li>Experience with GitHub Copilot for Developer Productivity at Zoominfo (arXiv 2501.13282v1)</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Additional Industry Sources</h3>
+            <ol className="list-decimal list-inside space-y-1 ml-4" start={20}>
+              <li>Second Talent - "GitHub Copilot Statistics & Adoption Trends [2025]"</li>
+              <li>The New Stack - "Vibe Coding in a Post-IDE World: Why Agentic AI Is the Real Disruption"</li>
+              <li>Datadog - "Monitor Claude Code adoption in your organization with Datadog's AI Agents Console"</li>
+              <li>EY Norway - "Eight ways banks can move AI from pilot to performance"</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -632,13 +656,214 @@ const slides: Slide[] = [
   }
 ]
 
+// Interactive Timeline Component
+function TimelineSlide() {
+  const [selectedId, setSelectedId] = useState(0)
+  const selectedData = timelineData[selectedId]
+
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center">
+      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 02 — Tool Evolution</div>
+      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-4">The Path from Autocomplete to Autonomous Development</h2>
+      
+      <div className="mb-6">
+        <div className="flex items-center gap-4 mb-4">
+          <span className="text-xs text-cream/40 uppercase tracking-wider">Early</span>
+          <input
+            type="range"
+            min="0"
+            max="4"
+            value={selectedId}
+            onChange={(e) => setSelectedId(parseInt(e.target.value))}
+            className="flex-1 accent-sage"
+          />
+          <span className="text-xs text-cream/40 uppercase tracking-wider">Now</span>
+        </div>
+
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sage/30 mb-6">
+          {timelineData.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setSelectedId(item.id)}
+              className={`flex-shrink-0 w-64 p-4 rounded-xl border transition-all ${
+                selectedId === item.id
+                  ? 'border-sage bg-sage/10 shadow-lg scale-105'
+                  : 'border-cream/20 bg-cream/5 hover:border-cream/30'
+              }`}
+            >
+              <div className="text-xs text-cream/50 mb-1">{item.tool}</div>
+              <div className="text-xs text-cream/40 mb-2">{item.date}</div>
+              <div className="text-sm font-semibold text-cream mb-2">{item.tool}</div>
+              <div className="text-xs text-cream/60 mb-3">{item.innovation}</div>
+              <div className="space-y-1 mb-2">
+                {item.metrics.slice(0, 2).map((m, i) => (
+                  <div key={i} className="text-xs text-sage">{m}</div>
+                ))}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-4 gap-4">
+        <div className="md:col-span-3 p-5 rounded-xl border border-cream/20 bg-cream/5">
+          <div className="text-xs text-cream/50 mb-2">Tool & Date</div>
+          <div className="text-sm font-semibold text-cream mb-1">{selectedData.tool}</div>
+          <div className="text-xs text-cream/60 mb-4">{selectedData.date} · {selectedData.source}</div>
+          
+          <div className="text-xs text-cream/50 mb-2">Key Innovation</div>
+          <p className="text-sm text-cream/70 mb-4">{selectedData.innovation}</p>
+          
+          <div className="text-xs text-cream/50 mb-2">Productivity Metric</div>
+          <ul className="space-y-1 mb-4">
+            {selectedData.metrics.map((m, i) => (
+              <li key={i} className="text-sm text-cream/70 flex items-start gap-2">
+                <span className="text-sage mt-1">•</span>
+                <span>{m}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="p-5 rounded-xl border border-amber-500/30 bg-amber-500/10">
+          <div className="text-xs text-cream/50 mb-2">Splashy Anecdote</div>
+          <p className="text-sm text-cream/80">{selectedData.anecdote}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Adoption Stance Component
+function AdoptionStanceSlide() {
+  const [stanceIndex, setStanceIndex] = useState(2)
+
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center">
+      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 04 — Change Management</div>
+      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Adoption Stances: A PE Framework</h2>
+
+      <div className="mb-6">
+        <div className="flex items-center gap-4 mb-4">
+          <span className="text-xs text-cream/40">Level 1</span>
+          <input
+            type="range"
+            min="0"
+            max="3"
+            value={stanceIndex}
+            onChange={(e) => setStanceIndex(parseInt(e.target.value))}
+            className="flex-1 accent-sage"
+          />
+          <span className="text-xs text-cream/40">Level 4</span>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {stanceData.map((stance, index) => (
+          <div
+            key={index}
+            className={`p-5 rounded-xl border transition-all ${
+              stanceIndex === index
+                ? 'border-sage bg-sage/10'
+                : 'border-cream/20 bg-cream/5 opacity-60'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-sm font-semibold text-cream">Level {stance.level}: {stance.title}</h3>
+                <p className="text-xs text-cream/60 mt-1">{stance.description}</p>
+              </div>
+              <span className="px-3 py-1 rounded-full border border-sage/50 bg-sage/10 text-xs text-sage uppercase tracking-wider">
+                {stance.badge}
+              </span>
+            </div>
+            <div className="p-4 rounded-lg border-l-4 border-purple-500 bg-purple-500/10">
+              <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">PE Perspective</div>
+              <div className="text-xs text-cream/70 space-y-1 mb-2">
+                <p><strong className="text-cream/80">When to use:</strong> {stance.whenToUse}</p>
+                <p><strong className="text-cream/80">Risk:</strong> {stance.risk}</p>
+                <p><strong className="text-cream/80">Outcome:</strong> {stance.outcome}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Value Creation Component
+function ValueCreationSlide() {
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center">
+      <div className="text-xs uppercase tracking-wider text-cream/50 mb-2">Section 06 — Value Creation</div>
+      <h2 className="text-3xl md:text-4xl font-serif text-cream mb-6">Beyond Cost Reduction: The Growth Acceleration Play</h2>
+
+      <div className="grid md:grid-cols-2 gap-6 mb-6">
+        <div className="p-6 rounded-xl border-2 border-red-500/50 bg-red-500/10">
+          <h3 className="text-lg font-semibold text-red-300 mb-4">❌ The Cost Reduction Trap</h3>
+          <div className="space-y-3 mb-4">
+            <p className="text-sm text-cream/80"><strong>Questions Asked:</strong></p>
+            <ul className="space-y-1 text-sm text-cream/70 ml-4">
+              <li>• "How many developers can we avoid hiring?"</li>
+              <li>• "Can we reduce engineering headcount?"</li>
+              <li>• "What's the cost per seat we're saving?"</li>
+            </ul>
+            <p className="text-sm text-cream/80 mt-4"><strong>Why This Fails:</strong></p>
+            <ul className="space-y-1 text-sm text-cream/70 ml-4">
+              <li>• Growth companies depend on technology buildouts</li>
+              <li>• Best engineers leave when growth slows</li>
+              <li>• Misses compounding value of faster iteration</li>
+            </ul>
+          </div>
+          <div className="p-3 rounded-lg bg-red-500/20 border border-red-500/30">
+            <p className="text-xs text-cream/80"><strong>Outcome:</strong> Modest cost savings at the expense of market position and talent retention.</p>
+          </div>
+        </div>
+
+        <div className="p-6 rounded-xl border-2 border-green-500/50 bg-green-500/10">
+          <h3 className="text-lg font-semibold text-green-300 mb-4">✅ The Growth Acceleration Play</h3>
+          <div className="space-y-3 mb-4">
+            <p className="text-sm text-cream/80"><strong>Questions Asked:</strong></p>
+            <ul className="space-y-1 text-sm text-cream/70 ml-4">
+              <li>• "How fast can we hit product milestones?"</li>
+              <li>• "Can we compress 12 months into 6?"</li>
+              <li>• "What features become economically viable?"</li>
+              <li>• "How do we accelerate time-to-market?"</li>
+            </ul>
+            <p className="text-sm text-cream/80 mt-4"><strong>Why This Works:</strong></p>
+            <ul className="space-y-1 text-sm text-cream/70 ml-4">
+              <li>• Higher quality code with fewer bugs</li>
+              <li>• 40-55% faster development timelines</li>
+              <li>• Enable previously impossible builds</li>
+              <li>• Reach revenue targets ahead of schedule</li>
+            </ul>
+          </div>
+          <div className="p-3 rounded-lg bg-green-500/20 border border-green-500/30">
+            <p className="text-xs text-cream/80"><strong>Outcome:</strong> Accelerated revenue growth, faster market capture, competitive moats through product velocity.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* PE Insight Box */}
+      <div className="p-5 rounded-xl border-l-4 border-purple-500 bg-purple-500/10">
+        <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">The PE Value Creation Equation</div>
+        <p className="text-sm text-cream/80">
+          In life sciences, where product cycles are long and regulatory timelines are fixed, software velocity becomes 
+          a critical differentiator. Companies that build and iterate faster on clinical trial systems, patient platforms, 
+          regulatory tools, and commercial analytics gain months of advantage in bringing products to market. The question 
+          isn't "How many developers can we save?" but "How much faster can we reach $100M ARR?"
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function VIBECodingPage() {
   return (
     <PresentationLayout
-      title="From Code to Agents: VIBE Coding in PE-backed Life Sciences"
-      subtitle="Executive Briefing"
+      title="The Evolution of VIBE Coding in Enterprise"
+      subtitle="A Strategic Framework for Accelerating Product Development in Portfolio Companies"
       slides={slides}
     />
   )
 }
-
