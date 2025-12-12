@@ -10,7 +10,7 @@ const TweedLogo = ({ animated = true, size = 80, className = "", withText = fals
   
   const LogoMark = (
     <div 
-      className={`${logoClass} ${className}`}
+      className={`${logoClass} ${className} flex-shrink-0`}
       style={{ width: size, height: size }}
     >
       {animated ? (
@@ -47,10 +47,10 @@ const TweedLogo = ({ animated = true, size = 80, className = "", withText = fals
 
   if (withText) {
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {LogoMark}
-        <span className="font-sans font-semibold text-xl text-charcoal">
-          TWEED COLLECTIVE
+        <span className="font-sans font-semibold text-lg tracking-tight text-charcoal">
+          Tweed Collective
         </span>
       </div>
     );
@@ -59,4 +59,4 @@ const TweedLogo = ({ animated = true, size = 80, className = "", withText = fals
   return LogoMark;
 };
 
-export default TweedLogo; 
+export default TweedLogo;

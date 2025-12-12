@@ -4,14 +4,15 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import TweedLogo from './ui/tweed-logo'
+import { ChevronRight } from 'lucide-react'
 
 const navigation = [
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
-  { name: 'Team', href: '/team' },
-  { name: 'Case Studies', href: '/projects' },
+  { name: 'Operators', href: '/operators' },
+  { name: 'Projects', href: '/projects' },
+  { name: 'Documents', href: '/documents' },
   { name: 'Tools', href: '/tools' },
-  { name: 'Contact', href: '/contact' },
 ]
 
 export default function Header() {
@@ -32,114 +33,137 @@ export default function Header() {
 
   return (
     <header 
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-cream/95 backdrop-blur-sm shadow-sophisticated py-4' : 'bg-transparent py-6'
+      className={`fixed w-full z-50 transition-all duration-500 ease-out ${
+        isScrolled 
+          ? 'bg-cream/98 backdrop-blur-md shadow-[0_1px_0_rgba(139,159,126,0.15)] py-3' 
+          : 'bg-transparent py-5'
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 lg:px-8">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="relative">
+          <Link href="/" className="relative group">
             <TweedLogo 
               animated={true} 
-              size={32} 
+              size={36} 
               className="mr-3"
               withText={true}
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`text-sm font-medium transition-colors duration-300 ${
-                  pathname === item.href
-                    ? isScrolled
-                      ? 'text-sage'
-                      : 'text-sage'
-                    : isScrolled
-                    ? 'text-charcoal hover:text-sage'
-                    : 'text-cream hover:text-sage'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Desktop Navigation - Pill Container */}
+          <div 
+            className={`hidden lg:flex items-center px-2 py-1.5 rounded-full transition-all duration-500 ${
+              isScrolled 
+                ? 'bg-stone/40 border border-stone/50' 
+                : 'bg-charcoal/10 backdrop-blur-sm border border-cream/20'
+            }`}
+          >
+            {navigation.map((item, index) => {
+              const isActive = pathname === item.href
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
+                    isActive
+                      ? isScrolled
+                        ? 'text-sage bg-sage/10'
+                        : 'text-cream bg-cream/15'
+                      : isScrolled
+                        ? 'text-charcoal/70 hover:text-charcoal hover:bg-stone/50'
+                        : 'text-cream/80 hover:text-cream hover:bg-cream/10'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )
+            })}
           </div>
 
           {/* CTA Button */}
           {showCTA && (
-            <div className="hidden md:block">
-              <Link href="/contact" className="btn-primary text-sm">
-                Book a Call
+            <div className="hidden lg:block">
+              <Link 
+                href="/contact" 
+                className={`group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                  isScrolled
+                    ? 'bg-sage text-cream hover:bg-sage/90 shadow-sm hover:shadow-md'
+                    : 'bg-cream text-charcoal hover:bg-cream/90 shadow-lg'
+                }`}
+              >
+                <span>Book a Call</span>
+                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
           )}
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className={`lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ${
+              isScrolled 
+                ? 'bg-stone/50 hover:bg-stone' 
+                : 'bg-cream/10 hover:bg-cream/20'
+            }`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
-            <svg
-              className={`w-6 h-6 transition-colors duration-300 ${
-                isScrolled ? 'text-charcoal' : 'text-cream'
-              }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            <div className="relative w-5 h-5 flex items-center justify-center">
+              <span
+                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
+                  isScrolled ? 'bg-charcoal' : 'bg-cream'
+                } ${isMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`}
+              />
+              <span
+                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
+                  isScrolled ? 'bg-charcoal' : 'bg-cream'
+                } ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}
+              />
+              <span
+                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
+                  isScrolled ? 'bg-charcoal' : 'bg-cream'
+                } ${isMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`}
+              />
+            </div>
           </button>
         </nav>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Slide Down Panel */}
         <div
-          className={`md:hidden transition-all duration-300 overflow-hidden ${
-            isMenuOpen ? 'max-h-96 mt-4' : 'max-h-0'
+          className={`lg:hidden transition-all duration-500 ease-out overflow-hidden ${
+            isMenuOpen ? 'max-h-[32rem] opacity-100 mt-4' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="py-2 space-y-1 bg-cream/95 backdrop-blur-sm rounded-lg">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === item.href
-                    ? 'bg-sage/10 text-sage'
-                    : 'text-charcoal hover:bg-sage/5 hover:text-sage'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            {showCTA && (
-              <div className="px-3 py-2">
-                <Link 
-                  href="/contact" 
-                  className="btn-primary w-full text-center"
+          <div className="py-4 px-2 bg-cream/98 backdrop-blur-md rounded-2xl border border-stone/30 shadow-lg">
+            <div className="space-y-1">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                    pathname === item.href
+                      ? 'bg-sage/10 text-sage'
+                      : 'text-charcoal/80 hover:bg-stone/50 hover:text-charcoal'
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Book a Call
+                  <span>{item.name}</span>
+                  <ChevronRight className={`w-4 h-4 transition-colors ${
+                    pathname === item.href ? 'text-sage' : 'text-charcoal/30'
+                  }`} />
+                </Link>
+              ))}
+            </div>
+            
+            {showCTA && (
+              <div className="mt-4 pt-4 border-t border-stone/30 px-2">
+                <Link 
+                  href="/contact" 
+                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage/90 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span>Book a Call</span>
+                  <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
             )}
@@ -148,4 +172,4 @@ export default function Header() {
       </div>
     </header>
   )
-} 
+}

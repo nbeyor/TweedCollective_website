@@ -40,7 +40,7 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="mt-8">
-                  <Link href="/team" className="btn-outline inline-flex items-center space-x-2">
+                  <Link href="/operators" className="btn-outline inline-flex items-center space-x-2">
                     <span>Meet Our Team</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>

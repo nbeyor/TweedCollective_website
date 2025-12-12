@@ -1,18 +1,23 @@
-'use client'
-
 import React from 'react'
-import { usePartners } from '@/hooks/useAirtable'
-import { Linkedin, Mail, ExternalLink } from 'lucide-react'
+import { getOperators, Operator } from '@/lib/airtable'
+import { Linkedin, Mail, ExternalLink, ArrowRight } from 'lucide-react'
 
-export default function TeamPage() {
+export default async function OperatorsPage() {
+  const operators = await getOperators();
+
   return (
-    <div className="pt-32">
+    <div className="pt-28">
       {/* Hero Section */}
-      <section className="section bg-gradient-subtle">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="mb-6">Our Team</h1>
-            <p className="body-large mb-8">
+      <section className="section bg-gradient-subtle relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 bg-pattern opacity-50" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-sage/5 to-transparent" />
+        
+        <div className="container mx-auto relative z-10">
+          <div className="max-w-3xl">
+            <span className="caption mb-4 block">Our Network</span>
+            <h1 className="mb-6">Operating Partners</h1>
+            <p className="body-large max-w-2xl">
               Meet our network of proven C-suite talent and fractional operators with deep expertise 
               in health-tech scaling and revenue acceleration.
             </p>
@@ -20,47 +25,71 @@ export default function TeamPage() {
         </div>
       </section>
 
-      {/* Team Members */}
+      {/* Operators Grid */}
       <section className="section">
-        <div className="container mx-auto px-4">
-          <TeamMembers />
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {operators.length > 0 ? (
+              operators.map((operator, index) => (
+                <OperatorCard key={operator.id} operator={operator} index={index} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-16">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-stone/50 flex items-center justify-center">
+                  <span className="text-3xl">👥</span>
+                </div>
+                <p className="body-large text-warm-gray">
+                  Our network of operating partners and advisors will be featured here soon.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Join the Network */}
       <section className="section bg-stone/30">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
+            <span className="caption mb-4 block">Expand Our Network</span>
             <h2 className="mb-6">Join Our Network</h2>
-            <p className="body-large mb-8">
+            <p className="body-large mb-12 max-w-2xl mx-auto">
               We're always looking for exceptional operators and advisors who share our passion 
               for accelerating health-tech innovation.
             </p>
-            <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-              <div className="card p-6 text-center">
-                <h4 className="mb-2">For Operators</h4>
-                <p className="text-sm text-warm-gray mb-4">
-                  Join our network of fractional C-suite talent
+            
+            <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <div className="card p-8 text-center hover:-translate-y-1 transition-transform duration-300">
+                <div className="w-14 h-14 mx-auto mb-5 rounded-xl bg-sage/10 flex items-center justify-center">
+                  <span className="text-2xl">🎯</span>
+                </div>
+                <h4 className="mb-3">For Operators</h4>
+                <p className="body-small mb-6">
+                  Join our network of fractional C-suite talent and work with leading health-tech companies.
                 </p>
                 <a 
-                  href="mailto:hello@tweedcollective.com" 
-                  className="btn-outline inline-flex items-center space-x-2"
+                  href="mailto:hello@tweedcollective.ai" 
+                  className="btn-outline w-full justify-center"
                 >
-                  <Mail className="w-4 h-4" />
+                  <Mail className="icon-sm" />
                   <span>Get in Touch</span>
                 </a>
               </div>
-              <div className="card p-6 text-center">
-                <h4 className="mb-2">For Companies</h4>
-                <p className="text-sm text-warm-gray mb-4">
-                  Access our network of proven operators
+              
+              <div className="card p-8 text-center hover:-translate-y-1 transition-transform duration-300">
+                <div className="w-14 h-14 mx-auto mb-5 rounded-xl bg-terra/10 flex items-center justify-center">
+                  <span className="text-2xl">🚀</span>
+                </div>
+                <h4 className="mb-3">For Companies</h4>
+                <p className="body-small mb-6">
+                  Access our network of proven operators to accelerate your growth trajectory.
                 </p>
                 <a 
                   href="/contact" 
-                  className="btn-primary inline-flex items-center space-x-2"
+                  className="btn-primary w-full justify-center"
                 >
                   <span>Book a Call</span>
-                  <ExternalLink className="w-4 h-4" />
+                  <ArrowRight className="icon-sm" />
                 </a>
               </div>
             </div>
@@ -71,164 +100,72 @@ export default function TeamPage() {
   )
 }
 
-function TeamMembers() {
-  const { partners, loading, error } = usePartners()
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="animate-pulse">
-            <div className="w-full h-80 bg-stone rounded-lg mb-4"></div>
-            <div className="h-4 bg-stone rounded mb-2"></div>
-            <div className="h-3 bg-stone rounded w-2/3"></div>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  if (error || partners.length === 0) {
-    return (
-      <div className="text-center">
-        <p className="text-warm-gray mb-8">
-          Our team of operating partners and advisors will be featured here.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Placeholder team members */}
-          <TeamMemberCard
-            name="Nate Johnson"
-            title="Founder & CEO"
-            company="Tweed Collective"
-            bio="20+ years building and scaling health-tech companies. Former CRO at multiple successful startups."
-            expertise={["Revenue Operations", "Go-to-Market", "Team Building"]}
-            linkedin="https://linkedin.com/in/natejohnson"
-            email="nate@tweedcollective.com"
-          />
-          <TeamMemberCard
-            name="Sarah Chen"
-            title="Fractional CRO"
-            company="Tweed Collective"
-            bio="Former VP of Sales at leading biotech companies. Expert in scaling revenue operations and building high-performing teams."
-            expertise={["Sales Operations", "Revenue Strategy", "Team Leadership"]}
-            linkedin="https://linkedin.com/in/sarahchen"
-            email="sarah@tweedcollective.com"
-          />
-          <TeamMemberCard
-            name="Michael Rodriguez"
-            title="Fractional COO"
-            company="Tweed Collective"
-            bio="Operational leader with experience scaling multiple health-tech companies from $1M to $50M+ ARR."
-            expertise={["Operations", "Process Optimization", "Strategic Planning"]}
-            linkedin="https://linkedin.com/in/michaelrodriguez"
-            email="michael@tweedcollective.com"
-          />
-        </div>
-      </div>
-    )
-  }
-
+function OperatorCard({ operator, index }: { operator: Operator; index: number }) {
+  const { name, photo, expertise, linkedin } = operator;
+  
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {partners.map((partner) => (
-        <TeamMemberCard
-          key={partner.id}
-          name={partner.name}
-          title={partner.title}
-          company={partner.company}
-          bio={partner.bio}
-          expertise={partner.expertise}
-          linkedin={partner.linkedin}
-          image={partner.image}
-        />
-      ))}
-    </div>
-  )
-}
-
-interface TeamMemberCardProps {
-  name: string
-  title: string
-  company: string
-  bio: string
-  expertise: string[]
-  linkedin?: string
-  email?: string
-  image?: string
-}
-
-function TeamMemberCard({ 
-  name, 
-  title, 
-  company, 
-  bio, 
-  expertise, 
-  linkedin, 
-  email, 
-  image 
-}: TeamMemberCardProps) {
-  return (
-    <div className="card group hover:scale-105 transition-transform duration-300">
+    <div 
+      className="card group cursor-pointer"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
       {/* Image */}
-      <div className="relative h-64 bg-gradient-to-br from-sage/20 to-terra/20 overflow-hidden">
-        {image ? (
+      <div className="relative h-72 bg-gradient-to-br from-sage/10 to-terra/10 overflow-hidden">
+        {photo ? (
           <img
-            src={image}
+            src={photo}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="w-24 h-24 bg-sage/20 rounded-full flex items-center justify-center">
-              <span className="text-3xl font-display text-sage">
+            <div className="w-24 h-24 bg-cream rounded-2xl shadow-inner flex items-center justify-center">
+              <span className="text-4xl font-serif text-sage/60">
                 {name.split(' ').map(n => n[0]).join('')}
               </span>
             </div>
           </div>
         )}
         
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
         {/* Expertise Tags */}
-        <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-          {expertise.slice(0, 2).map((skill, index) => (
-            <span key={index} className="badge-primary text-xs">
-              {skill}
-            </span>
-          ))}
-        </div>
+        {expertise && expertise.length > 0 && (
+          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+            {expertise.slice(0, 3).map((skill, idx) => (
+              <span 
+                key={idx} 
+                className="badge bg-cream/95 text-charcoal shadow-sm"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="mb-1">{name}</h3>
-        <p className="text-sage font-medium mb-1">{title}</p>
-        <p className="text-warm-gray text-sm mb-4">{company}</p>
+        <h3 className="mb-3 group-hover:text-sage transition-colors">{name}</h3>
         
-        <p className="body text-sm mb-4 line-clamp-3">{bio}</p>
-
         {/* Social Links */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           {linkedin && (
             <a
               href={linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 text-sage hover:text-sage/80 transition-colors"
+              className="inline-flex items-center gap-2 text-warm-gray hover:text-sage transition-colors group/link"
+              onClick={(e) => e.stopPropagation()}
             >
-              <Linkedin className="w-4 h-4" />
-              <span className="text-sm">LinkedIn</span>
-            </a>
-          )}
-          {email && (
-            <a
-              href={`mailto:${email}`}
-              className="inline-flex items-center space-x-2 text-sage hover:text-sage/80 transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              <span className="text-sm">Email</span>
+              <Linkedin className="icon-md" />
+              <span className="text-sm font-medium group-hover/link:underline underline-offset-2">
+                LinkedIn
+              </span>
             </a>
           )}
         </div>
       </div>
     </div>
   )
-} 
+}
