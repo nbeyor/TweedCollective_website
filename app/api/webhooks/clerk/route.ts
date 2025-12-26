@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     try {
       // Send email notification to admin
       await resend.emails.send({
-        from: 'Tweed Collective <notifications@tweedcollective.ai>',
+        from: 'Tweed Collective <onboarding@resend.dev>',
         to: ADMIN_EMAIL,
         subject: `New User Signup: ${name}`,
         html: `
