@@ -21,6 +21,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Document ID required' }, { status: 400 })
     }
 
+    // Admins have access to all documents
+    const isAdmin = user.privateMetadata?.isAdmin === true ||
+                    user.publicMetadata?.role === 'admin'
+    
+    if (isAdmin) {
+      return NextResponse.json({ hasAccess: true, userId })
+    }
+
     // Get document access from user's private metadata
     const documentAccess = user.privateMetadata?.documentAccess as string[] | undefined
     
