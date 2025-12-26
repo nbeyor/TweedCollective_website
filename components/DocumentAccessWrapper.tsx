@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from '@clerk/nextjs'
+import { useAuth, SignUpButton, SignInButton } from '@clerk/nextjs'
 import Link from 'next/link'
-import { Lock, ArrowLeft } from 'lucide-react'
+import { Lock, ArrowLeft, Mail, UserPlus } from 'lucide-react'
 
 interface DocumentAccessWrapperProps {
   documentId: string
@@ -62,33 +62,64 @@ export default function DocumentAccessWrapper({ documentId, children }: Document
     return (
       <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
         <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/20 flex items-center justify-center">
-            <Lock className="w-8 h-8 text-red-400" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-purple-500/20 flex items-center justify-center">
+            <Lock className="w-8 h-8 text-purple-400" />
           </div>
-          <h2 className="text-2xl font-serif text-cream mb-2">Access Restricted</h2>
-          <p className="text-sm text-cream/70 mb-6">
-            {userId 
-              ? "You don't have access to this document. Please contact your administrator to request access."
-              : "Please sign in to access this document."
-            }
-          </p>
-          <div className="space-y-3">
-            {!userId && (
-              <Link
-                href="/sign-in"
-                className="block w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
-              >
-                Sign In
-              </Link>
-            )}
-            <Link
-              href="/documents"
-              className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Documents</span>
-            </Link>
-          </div>
+          
+          {userId ? (
+            // User is signed in but doesn't have access
+            <>
+              <h2 className="text-2xl font-serif text-cream mb-2">Access Not Available</h2>
+              <p className="text-sm text-cream/70 mb-6">
+                Access is not available to this user. If you believe you should have access to this document, 
+                please request access below.
+              </p>
+              <div className="space-y-3">
+                <a
+                  href="mailto:hello@tweedcollective.ai?subject=Document%20Access%20Request&body=I%20would%20like%20to%20request%20access%20to%20the%20document."
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-purple-600 text-cream font-semibold hover:bg-purple-700 transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Request Access</span>
+                </a>
+                <Link
+                  href="/documents"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Documents</span>
+                </Link>
+              </div>
+            </>
+          ) : (
+            // User is not signed in
+            <>
+              <h2 className="text-2xl font-serif text-cream mb-2">Sign In Required</h2>
+              <p className="text-sm text-cream/70 mb-6">
+                This document requires authentication. Please sign in or create an account to access this content.
+              </p>
+              <div className="space-y-3">
+                <SignUpButton mode="modal">
+                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-purple-600 text-cream font-semibold hover:bg-purple-700 transition-colors">
+                    <UserPlus className="w-4 h-4" />
+                    <span>Sign Up</span>
+                  </button>
+                </SignUpButton>
+                <SignInButton mode="modal">
+                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors">
+                    <span>Sign In</span>
+                  </button>
+                </SignInButton>
+                <Link
+                  href="/documents"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Documents</span>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     )

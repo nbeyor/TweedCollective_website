@@ -64,8 +64,8 @@ export default function Header() {
           <div 
             className={`hidden lg:flex items-center px-2 py-1.5 rounded-full transition-all duration-500 ${
               isScrolled 
-                ? 'bg-sky-300/80 border border-sky-400/50 backdrop-blur-sm' 
-                : 'bg-sky-300/60 backdrop-blur-sm border border-sky-400/40'
+                ? 'bg-purple-900/80 border border-purple-800/50 backdrop-blur-sm' 
+                : 'bg-purple-900/60 backdrop-blur-sm border border-purple-700/40'
             }`}
           >
             {navigation.map((item, index) => {
@@ -76,8 +76,8 @@ export default function Header() {
                   href={item.href}
                   className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                     isActive
-                      ? 'text-charcoal bg-sky-400/60'
-                      : 'text-charcoal/80 hover:text-charcoal hover:bg-sky-400/40'
+                      ? 'text-cream bg-purple-700/50'
+                      : 'text-cream/80 hover:text-cream hover:bg-purple-800/40'
                   }`}
                 >
                   {item.name}
@@ -106,7 +106,7 @@ export default function Header() {
                 <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   isScrolled
                     ? 'text-charcoal hover:bg-stone/50'
-                    : 'text-charcoal hover:bg-cream/20'
+                    : 'text-cream hover:bg-cream/20'
                 }`}>
                   Sign In
                 </button>
@@ -114,8 +114,8 @@ export default function Header() {
               <SignUpButton mode="modal">
                 <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   isScrolled
-                    ? 'bg-sky-300 text-charcoal hover:bg-sky-400 shadow-sm'
-                    : 'bg-sky-300 text-charcoal hover:bg-sky-400 shadow-md'
+                    ? 'bg-purple-600 text-cream hover:bg-purple-700 shadow-sm'
+                    : 'bg-purple-600 text-cream hover:bg-purple-700 shadow-md'
                 }`}>
                   Sign Up
                 </button>
@@ -197,7 +197,7 @@ export default function Header() {
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors bg-sky-300 text-charcoal hover:bg-sky-400">
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors bg-purple-600 text-cream hover:bg-purple-700">
                     Sign Up
                   </button>
                 </SignUpButton>
