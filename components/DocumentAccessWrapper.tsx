@@ -1,17 +1,19 @@
 'use client'
 
 import React from 'react'
-import { useAuth, SignUpButton, SignInButton } from '@clerk/nextjs'
+import { useAuth, useUser, SignUpButton, SignInButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Lock, ArrowLeft, Mail, UserPlus } from 'lucide-react'
 
 interface DocumentAccessWrapperProps {
   documentId: string
+  documentTitle?: string
   children: React.ReactNode
 }
 
-export default function DocumentAccessWrapper({ documentId, children }: DocumentAccessWrapperProps) {
+export default function DocumentAccessWrapper({ documentId, documentTitle, children }: DocumentAccessWrapperProps) {
   const { userId, isLoaded } = useAuth()
+  const { user } = useUser()
   const [hasAccess, setHasAccess] = React.useState<boolean | null>(null)
   const [isChecking, setIsChecking] = React.useState(true)
 
@@ -76,7 +78,7 @@ export default function DocumentAccessWrapper({ documentId, children }: Document
               </p>
               <div className="space-y-3">
                 <a
-                  href="mailto:hello@tweedcollective.ai?subject=Document%20Access%20Request&body=I%20would%20like%20to%20request%20access%20to%20the%20document."
+                  href={`mailto:hello@tweedcollective.ai?subject=${encodeURIComponent(`Document Access Request: ${documentTitle || documentId}`)}&body=${encodeURIComponent(`Hi,\n\nI would like to request access to the following document:\n\nDocument: ${documentTitle || documentId}\nDocument ID: ${documentId}\nUser Email: ${user?.primaryEmailAddress?.emailAddress || 'Not available'}\nUser ID: ${userId}\n\nThank you.`)}`}
                   className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-purple-600 text-cream font-semibold hover:bg-purple-700 transition-colors"
                 >
                   <Mail className="w-4 h-4" />

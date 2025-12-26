@@ -23,6 +23,10 @@ interface DocumentMeta {
 }
 
 // Document metadata - add new documents here
+// Visibility types:
+// - 'public': Anyone can view, no authentication required
+// - 'listed': Listed on documents page, requires auth + access (granted via Clerk metadata)
+// - 'unlisted': NOT listed here, only accessible via direct link with auth + access
 const documents: DocumentMeta[] = [
   {
     id: 'health-tech-market-2024',
@@ -46,17 +50,7 @@ const documents: DocumentMeta[] = [
     href: '/documents/vibe-coding-pe-life-sciences',
     visibility: 'listed',
   },
-  {
-    id: 'ai-integration-framework',
-    title: 'AI Integration Framework',
-    description: 'How to effectively integrate AI capabilities into your health-tech product roadmap and operations.',
-    category: 'Presentation',
-    icon: Presentation,
-    date: '2024-03',
-    readTime: '12 min',
-    href: '/documents/ai-integration-framework',
-    visibility: 'listed',
-  },
+  // AI Integration Framework is 'unlisted' - not shown here, only accessible via direct link
 ]
 
 export default function DocumentsPage() {
