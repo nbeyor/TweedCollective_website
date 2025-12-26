@@ -1,12 +1,6 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-// Admin emails - add your email here
-const ADMIN_EMAILS = [
-  'nbeyor@gmail.com',
-  // Add more admin emails as needed
-]
-
 export async function GET() {
   try {
     const { userId } = await auth()
@@ -21,14 +15,11 @@ export async function GET() {
       return NextResponse.json({ isAdmin: false })
     }
 
-    // Check if user email is in admin list
-    const userEmail = user.primaryEmailAddress?.emailAddress
-    const isAdmin = userEmail ? ADMIN_EMAILS.includes(userEmail) : false
+    // Check for isAdmin in user metadata (managed via Clerk Dashboard)
+    const isAdmin = user.privateMetadata?.isAdmin === true ||
+                    user.publicMetadata?.role === 'admin'
 
-    // Alternatively, check for isAdmin in user metadata
-    const metadataAdmin = user.privateMetadata?.isAdmin === true
-
-    return NextResponse.json({ isAdmin: isAdmin || metadataAdmin })
+    return NextResponse.json({ isAdmin })
   } catch (error) {
     console.error('Error checking admin status:', error)
     return NextResponse.json({ isAdmin: false })

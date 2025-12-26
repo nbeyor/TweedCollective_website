@@ -1,11 +1,6 @@
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-// Admin emails - must match check/route.ts
-const ADMIN_EMAILS = [
-  'nbeyor@gmail.com',
-]
-
 export async function GET() {
   try {
     const { userId } = await auth()
@@ -20,10 +15,9 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if current user is admin
-    const userEmail = currentUserData.primaryEmailAddress?.emailAddress
-    const isAdmin = (userEmail && ADMIN_EMAILS.includes(userEmail)) || 
-                    currentUserData.privateMetadata?.isAdmin === true
+    // Check if current user is admin (managed via Clerk Dashboard)
+    const isAdmin = currentUserData.privateMetadata?.isAdmin === true ||
+                    currentUserData.publicMetadata?.role === 'admin'
 
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
