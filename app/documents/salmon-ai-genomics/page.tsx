@@ -1201,3 +1201,6 @@ export default function SalmonAIGenomicsPage() {
     />
   )
 }
+
+
+

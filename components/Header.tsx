@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import TweedLogo from './ui/tweed-logo'
 import { ChevronRight } from 'lucide-react'
 
@@ -85,9 +86,9 @@ export default function Header() {
             })}
           </div>
 
-          {/* CTA Button */}
-          {showCTA && (
-            <div className="hidden lg:block">
+          {/* CTA Button & Auth */}
+          <div className="hidden lg:flex items-center gap-3">
+            {showCTA && (
               <Link 
                 href="/contact" 
                 className={`group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
@@ -99,8 +100,37 @@ export default function Header() {
                 <span>Book a Call</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-            </div>
-          )}
+            )}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  isScrolled
+                    ? 'text-charcoal hover:bg-stone/50'
+                    : 'text-charcoal hover:bg-cream/20'
+                }`}>
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  isScrolled
+                    ? 'bg-sky-300 text-charcoal hover:bg-sky-400 shadow-sm'
+                    : 'bg-sky-300 text-charcoal hover:bg-sky-400 shadow-md'
+                }`}>
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8"
+                  }
+                }}
+              />
+            </SignedIn>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -159,8 +189,25 @@ export default function Header() {
               ))}
             </div>
             
-            {showCTA && (
-              <div className="mt-4 pt-4 border-t border-stone/30 px-2">
+            <div className="mt-4 pt-4 border-t border-stone/30 px-2 space-y-2">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors text-charcoal hover:bg-stone/50">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors bg-sky-300 text-charcoal hover:bg-sky-400">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center justify-center py-3">
+                  <UserButton />
+                </div>
+              </SignedIn>
+              {showCTA && (
                 <Link 
                   href="/contact" 
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage/90 transition-colors"
@@ -169,8 +216,8 @@ export default function Header() {
                   <span>Book a Call</span>
                   <ChevronRight className="w-4 h-4" />
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

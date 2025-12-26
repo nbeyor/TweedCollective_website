@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2 } from 'lucide-react'
+import { FileText, ExternalLink, Clock, ChevronRight, Presentation, BookOpen, BarChart3, Code2, LogIn } from 'lucide-react'
+import { SignedIn, SignedOut } from '@clerk/nextjs'
 
 // Document metadata - add new documents here
 const documents = [
@@ -57,10 +58,19 @@ export default function DocumentsPage() {
           <div className="max-w-3xl">
             <span className="caption mb-4 block">Resources</span>
             <h1 className="mb-6">Documents & Insights</h1>
-            <p className="body-large max-w-2xl">
+            <p className="body-large max-w-2xl mb-6">
               Explore our collection of research, playbooks, and presentations designed to help 
               health-tech leaders accelerate growth and navigate complex markets.
             </p>
+            <SignedOut>
+              <Link 
+                href="/sign-in" 
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-sky-300 text-charcoal hover:bg-sky-400 transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In to Access Documents</span>
+              </Link>
+            </SignedOut>
           </div>
         </div>
       </section>

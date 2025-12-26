@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
+import DocumentAccessWrapper from '@/components/DocumentAccessWrapper'
 import { Code2, TrendingUp, Users, Target, Zap, Shield, BarChart3, Clock, CheckCircle2, Settings, Lock, Eye, Workflow, UserCog, Timer, GraduationCap } from 'lucide-react'
 
 // Timeline data - updated with new content
@@ -1187,59 +1188,13 @@ function ValueCreationSlide() {
 }
 
 export default function VIBECodingPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password === 'TweedCollectiveDocuments') {
-      setIsAuthenticated(true)
-      setError('')
-    } else {
-      setError('Incorrect password. Please try again.')
-      setPassword('')
-    }
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
-        <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5">
-          <h2 className="text-2xl font-serif text-cream mb-2">Password Required</h2>
-          <p className="text-sm text-cream/70 mb-6">This document is password protected. Please enter the password to continue.</p>
-          <form onSubmit={handlePasswordSubmit}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-                setError('')
-              }}
-              placeholder="Enter password"
-              className="w-full px-4 py-3 rounded-lg border border-cream/20 bg-cream/10 text-cream placeholder-cream/40 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 mb-4"
-              autoFocus
-            />
-            {error && (
-              <p className="text-sm text-red-400 mb-4">{error}</p>
-            )}
-            <button
-              type="submit"
-              className="w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
-            >
-              Access Document
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <PresentationLayout
-      title="The Evolution of VIBE Coding in Enterprise"
-      subtitle="A Strategic Framework for Accelerating Product Development in Portfolio Companies"
-      slides={slides}
-    />
+    <DocumentAccessWrapper documentId="vibe-coding-pe-life-sciences">
+      <PresentationLayout
+        title="The Evolution of VIBE Coding in Enterprise"
+        subtitle="A Strategic Framework for Accelerating Product Development in Portfolio Companies"
+        slides={slides}
+      />
+    </DocumentAccessWrapper>
   )
 }
