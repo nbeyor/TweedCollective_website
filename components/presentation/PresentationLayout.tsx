@@ -88,22 +88,22 @@ export default function PresentationLayout({
   const prevSlide = () => setCurrentSlide(prev => Math.max(prev - 1, 0))
 
   return (
-    <div className="min-h-screen bg-charcoal text-cream flex flex-col relative overflow-hidden" style={{ paddingTop: '80px' }}>
+    <div className="min-h-screen bg-void text-cream flex flex-col relative overflow-hidden" style={{ paddingTop: '80px' }}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            radial-gradient(circle at 20% 30%, #8B9F7E 1px, transparent 1px),
-            radial-gradient(circle at 80% 70%, #A0725A 1px, transparent 1px)
+            radial-gradient(circle at 20% 30%, #8B5CF6 1px, transparent 1px),
+            radial-gradient(circle at 80% 70%, #22D3EE 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px, 80px 80px'
         }} />
       </div>
       
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-warm-gray/20 z-[60]">
+      <div className="fixed top-0 left-0 right-0 h-1 bg-slate/30 z-[60]">
         <div 
-          className="h-full bg-gradient-to-r from-sage to-terra transition-all duration-300 ease-out"
+          className="h-full bg-gradient-to-r from-violet to-helix-cyan transition-all duration-300 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -119,7 +119,7 @@ export default function PresentationLayout({
           <button
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -135,7 +135,7 @@ export default function PresentationLayout({
                   onClick={() => goToSlide(index)}
                   className={`rounded-full transition-all duration-300 ${
                     index === currentSlide 
-                      ? 'w-6 h-2 bg-sage' 
+                      ? 'w-6 h-2 bg-violet' 
                       : 'w-2 h-2 bg-cream/30 hover:bg-cream/50'
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
@@ -148,7 +148,7 @@ export default function PresentationLayout({
           <button
             onClick={nextSlide}
             disabled={currentSlide === totalSlides - 1}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-cream/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             aria-label="Next slide"
           >
             <span className="text-sm">Next</span>
@@ -159,7 +159,7 @@ export default function PresentationLayout({
         <div className="flex items-center gap-2">
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-cream/10 transition-all"
+            className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
             title={isFullscreen ? 'Exit fullscreen (F)' : 'Fullscreen (F)'}
           >
             {isFullscreen ? <Minimize2 className="icon-md" /> : <Maximize2 className="icon-md" />}
@@ -167,7 +167,7 @@ export default function PresentationLayout({
           
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-cream/10 transition-all"
+            className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
           >
             {isMenuOpen ? <X className="icon-md" /> : <Menu className="icon-md" />}
           </button>
@@ -183,17 +183,17 @@ export default function PresentationLayout({
 
       {/* Slide Menu Overlay */}
       <div 
-        className={`fixed inset-0 bg-charcoal/95 backdrop-blur-md z-50 transition-all duration-300 ${
+        className={`fixed inset-0 bg-void/95 backdrop-blur-md z-50 transition-all duration-300 ${
           isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
       >
         <div className="h-full overflow-auto py-20 px-6">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-serif text-cream">{title}</h2>
+              <h2 className="text-2xl font-sans text-cream">{title}</h2>
               <button
                 onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-cream/10 transition-all"
+                className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
               >
                 <X className="icon-lg" />
               </button>
@@ -206,8 +206,8 @@ export default function PresentationLayout({
                   onClick={() => goToSlide(index)}
                   className={`w-full text-left p-4 rounded-xl border transition-all ${
                     index === currentSlide
-                      ? 'bg-sage/20 border-sage/50 text-cream'
-                      : 'bg-cream/5 border-cream/10 text-cream/70 hover:bg-cream/10 hover:border-cream/20'
+                      ? 'bg-violet/20 border-violet/50 text-cream'
+                      : 'bg-cream/5 border-slate text-cream/70 hover:bg-violet/10 hover:border-violet/30'
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -224,10 +224,9 @@ export default function PresentationLayout({
       </div>
 
       {/* Keyboard hint */}
-      <div className="fixed bottom-4 left-4 text-xs text-cream/30 hidden lg:block">
+      <div className="fixed bottom-4 left-4 text-xs text-zinc hidden lg:block font-mono">
         ← → to navigate • F for fullscreen • ESC to close
       </div>
     </div>
   )
 }
-

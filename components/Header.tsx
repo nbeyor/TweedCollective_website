@@ -35,7 +35,7 @@ export default function Header() {
     <header 
       className={`fixed w-full z-50 transition-all duration-500 ease-out ${
         isScrolled 
-          ? 'bg-cream/98 backdrop-blur-md shadow-[0_1px_0_rgba(139,159,126,0.15)] py-3' 
+          ? 'bg-carbon/95 backdrop-blur-md border-b border-slate/50 py-3' 
           : 'bg-transparent py-5'
       }`}
     >
@@ -47,28 +47,23 @@ export default function Header() {
               <TweedLogo 
                 animated={true} 
                 size={36} 
-                className="mr-3"
-                withText={false}
+                className="mr-2"
               />
-              <span className={`font-sans font-semibold text-lg tracking-tight transition-colors ${
-                pathname?.startsWith('/documents') 
-                  ? 'text-cream' 
-                  : 'text-charcoal'
-              }`}>
+              <span className="font-sans font-semibold text-lg tracking-tight text-cream transition-colors group-hover:text-violet-light">
                 Tweed Collective
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation - Pill Container */}
+          {/* Desktop Navigation - Dark Pill Container */}
           <div 
             className={`hidden lg:flex items-center px-2 py-1.5 rounded-full transition-all duration-500 ${
               isScrolled 
-                ? 'bg-purple-900/80 border border-purple-800/50 backdrop-blur-sm' 
-                : 'bg-purple-900/60 backdrop-blur-sm border border-purple-700/40'
+                ? 'bg-graphite/80 border border-slate/50 backdrop-blur-sm' 
+                : 'bg-graphite/60 backdrop-blur-sm border border-slate/40'
             }`}
           >
-            {navigation.map((item, index) => {
+            {navigation.map((item) => {
               const isActive = pathname === item.href
               return (
                 <Link
@@ -76,11 +71,14 @@ export default function Header() {
                   href={item.href}
                   className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                     isActive
-                      ? 'text-cream bg-purple-700/50'
-                      : 'text-cream/80 hover:text-cream hover:bg-purple-800/40'
+                      ? 'text-cream bg-violet/20'
+                      : 'text-stone hover:text-cream hover:bg-slate/50'
                   }`}
                 >
                   {item.name}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-violet" />
+                  )}
                 </Link>
               )
             })}
@@ -91,11 +89,7 @@ export default function Header() {
             {showCTA && (
               <Link 
                 href="/contact" 
-                className={`group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isScrolled
-                    ? 'bg-sage text-cream hover:bg-sage/90 shadow-sm hover:shadow-md'
-                    : 'bg-cream text-charcoal hover:bg-cream/90 shadow-lg'
-                }`}
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-violet text-cream hover:bg-violet-light hover:shadow-glow-violet"
               >
                 <span>Book a Call</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -103,20 +97,12 @@ export default function Header() {
             )}
             <SignedOut>
               <SignInButton mode="modal">
-                <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isScrolled
-                    ? 'text-charcoal hover:bg-stone/50'
-                    : 'text-cream hover:bg-cream/20'
-                }`}>
+                <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 text-stone hover:text-cream hover:bg-slate/50">
                   Sign In
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  isScrolled
-                    ? 'bg-purple-600 text-cream hover:bg-purple-700 shadow-sm'
-                    : 'bg-purple-600 text-cream hover:bg-purple-700 shadow-md'
-                }`}>
+                <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-violet text-violet hover:bg-violet/10">
                   Sign Up
                 </button>
               </SignUpButton>
@@ -136,27 +122,27 @@ export default function Header() {
           <button
             className={`lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ${
               isScrolled 
-                ? 'bg-stone/50 hover:bg-stone' 
-                : 'bg-cream/10 hover:bg-cream/20'
+                ? 'bg-slate/50 hover:bg-slate' 
+                : 'bg-graphite/50 hover:bg-graphite'
             }`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
             <div className="relative w-5 h-5 flex items-center justify-center">
               <span
-                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
-                  isScrolled ? 'bg-charcoal' : 'bg-cream'
-                } ${isMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`}
+                className={`absolute h-0.5 w-5 bg-cream transform transition-all duration-300 ${
+                  isMenuOpen ? 'rotate-45' : '-translate-y-1.5'
+                }`}
               />
               <span
-                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
-                  isScrolled ? 'bg-charcoal' : 'bg-cream'
-                } ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}
+                className={`absolute h-0.5 w-5 bg-cream transform transition-all duration-300 ${
+                  isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+                }`}
               />
               <span
-                className={`absolute h-0.5 w-5 transform transition-all duration-300 ${
-                  isScrolled ? 'bg-charcoal' : 'bg-cream'
-                } ${isMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`}
+                className={`absolute h-0.5 w-5 bg-cream transform transition-all duration-300 ${
+                  isMenuOpen ? '-rotate-45' : 'translate-y-1.5'
+                }`}
               />
             </div>
           </button>
@@ -168,7 +154,7 @@ export default function Header() {
             isMenuOpen ? 'max-h-[32rem] opacity-100 mt-4' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="py-4 px-2 bg-cream/98 backdrop-blur-md rounded-2xl border border-stone/30 shadow-lg">
+          <div className="py-4 px-2 bg-carbon/98 backdrop-blur-md rounded-2xl border border-slate/50 shadow-lg">
             <div className="space-y-1">
               {navigation.map((item) => (
                 <Link
@@ -176,28 +162,28 @@ export default function Header() {
                   href={item.href}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-sage/10 text-sage'
-                      : 'text-charcoal/80 hover:bg-stone/50 hover:text-charcoal'
+                      ? 'bg-violet/10 text-violet'
+                      : 'text-stone hover:bg-slate/50 hover:text-cream'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>{item.name}</span>
                   <ChevronRight className={`w-4 h-4 transition-colors ${
-                    pathname === item.href ? 'text-sage' : 'text-charcoal/30'
+                    pathname === item.href ? 'text-violet' : 'text-zinc'
                   }`} />
                 </Link>
               ))}
             </div>
             
-            <div className="mt-4 pt-4 border-t border-stone/30 px-2 space-y-2">
+            <div className="mt-4 pt-4 border-t border-slate/30 px-2 space-y-2">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors text-charcoal hover:bg-stone/50">
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors text-stone hover:bg-slate/50 hover:text-cream">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors bg-purple-600 text-cream hover:bg-purple-700">
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors border border-violet text-violet hover:bg-violet/10">
                     Sign Up
                   </button>
                 </SignUpButton>
@@ -210,7 +196,7 @@ export default function Header() {
               {showCTA && (
                 <Link 
                   href="/contact" 
-                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage/90 transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-violet text-cream rounded-xl font-medium hover:bg-violet-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>Book a Call</span>

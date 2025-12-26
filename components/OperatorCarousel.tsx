@@ -62,11 +62,15 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
   };
 
   return (
-    <section className="section bg-stone/30">
-      <div className="container mx-auto px-4">
+    <section className="section bg-graphite relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-void to-graphite" />
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="mb-4">Our Operating Partners</h2>
-          <p className="body-large text-warm-gray">
+          <span className="mono-label mb-4 block">// Our Team</span>
+          <h2 className="text-cream mb-4">Operating Partners</h2>
+          <p className="body-large text-stone">
             Proven C-suite talent with deep health-tech expertise
           </p>
         </div>
@@ -76,45 +80,50 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
             {/* Previous Button */}
             <button
               onClick={prevOperator}
-              className="p-2 rounded-full bg-sage/10 hover:bg-sage/20 transition-colors"
+              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30"
               aria-label="Previous operator"
             >
-              <ChevronLeft className="w-6 h-6 text-sage" />
+              <ChevronLeft className="w-6 h-6 text-cream" />
             </button>
 
             {/* Operator Card */}
             <div className="flex-1 max-w-md">
               <div className="text-center">
                 <div className="relative mb-6">
-                  <img 
-                    src={currentOperator.photo ?? '/img/placeholder-headshot.svg'}
-                    alt={currentOperator.name} 
-                    className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-sage/20"
-                  />
+                  <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-2 border-violet/30 bg-slate">
+                    <img 
+                      src={currentOperator.photo ?? '/img/placeholder-headshot.svg'}
+                      alt={currentOperator.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full bg-violet/10 blur-xl -z-10" />
+                  
                   {('linkedin' in currentOperator && currentOperator.linkedin) ? (
                     <a
                       href={(currentOperator as any).linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="absolute bottom-0 right-0 p-2 bg-sage rounded-full hover:bg-sage/90 transition-colors"
+                      className="absolute bottom-0 right-1/3 p-2 bg-violet rounded-full hover:bg-violet-light transition-colors"
                     >
                       <Linkedin className="w-4 h-4 text-cream" />
                     </a>
                   ) : null}
                 </div>
                 
-                <h3 className="text-xl font-semibold mb-2">{currentOperator.name}</h3>
+                <h3 className="text-xl font-semibold text-cream mb-2">{currentOperator.name}</h3>
                 
                 {(currentOperator as any).title && (
-                  <p className="text-sm font-medium text-warm-gray mb-1">{(currentOperator as any).title}</p>
+                  <p className="text-sm font-medium text-violet-light mb-1">{(currentOperator as any).title}</p>
                 )}
                 
                 {(currentOperator as any).subtitle && (
-                  <p className="text-xs text-warm-gray/70 mb-3">{(currentOperator as any).subtitle}</p>
+                  <p className="text-xs text-zinc mb-3">{(currentOperator as any).subtitle}</p>
                 )}
                 
                 {currentOperator.expertise && currentOperator.expertise.length > 0 && (
-                  <p className="text-sm text-warm-gray mb-4">
+                  <p className="text-sm text-stone">
                     {currentOperator.expertise.join(' • ')}
                   </p>
                 )}
@@ -124,10 +133,10 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
             {/* Next Button */}
             <button
               onClick={nextOperator}
-              className="p-2 rounded-full bg-sage/10 hover:bg-sage/20 transition-colors"
+              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30"
               aria-label="Next operator"
             >
-              <ChevronRight className="w-6 h-6 text-sage" />
+              <ChevronRight className="w-6 h-6 text-cream" />
             </button>
           </div>
 
@@ -138,8 +147,8 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentIndex ? 'bg-sage' : 'bg-stone'
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === currentIndex ? 'bg-violet w-4' : 'bg-zinc hover:bg-stone'
                   }`}
                   aria-label={`Go to operator ${index + 1}`}
                 />
@@ -150,4 +159,4 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
       </div>
     </section>
   );
-} 
+}

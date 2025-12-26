@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { Clock, ChevronRight, Presentation, BarChart3, Code2, Lock, Globe, UserPlus } from 'lucide-react'
-import { SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs'
+import { Clock, ChevronRight, BarChart3, Code2, Lock, Globe, UserPlus } from 'lucide-react'
+import { SignUpButton, SignedOut } from '@clerk/nextjs'
 
 // Document visibility types:
 // - 'public': Anyone can view, no authentication required
@@ -23,10 +23,6 @@ interface DocumentMeta {
 }
 
 // Document metadata - add new documents here
-// Visibility types:
-// - 'public': Anyone can view, no authentication required
-// - 'listed': Listed on documents page, requires auth + access (granted via Clerk metadata)
-// - 'unlisted': NOT listed here, only accessible via direct link with auth + access
 const documents: DocumentMeta[] = [
   {
     id: 'health-tech-market-2024',
@@ -50,7 +46,6 @@ const documents: DocumentMeta[] = [
     href: '/documents/vibe-coding-pe-life-sciences',
     visibility: 'listed',
   },
-  // AI Integration Framework is 'unlisted' - not shown here, only accessible via direct link
 ]
 
 export default function DocumentsPage() {
@@ -58,36 +53,35 @@ export default function DocumentsPage() {
   const visibleDocs = documents.filter(d => d.visibility !== 'unlisted')
 
   return (
-    <div className="pt-28">
+    <div className="pt-28 bg-void min-h-screen">
       {/* Hero Section */}
-      <section className="section bg-gradient-subtle relative overflow-hidden">
-        <div className="absolute inset-0 bg-pattern opacity-50" />
-        <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-terra/5 to-transparent" />
+      <section className="section relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet/5 via-transparent to-helix-cyan/5" />
         
         <div className="container mx-auto relative z-10">
           <div className="max-w-3xl">
-            <span className="caption mb-4 block">Resources</span>
-            <h1 className="mb-6">Documents & Insights</h1>
-            <p className="body-large max-w-2xl mb-6">
+            <span className="mono-label mb-4 block">// Resources</span>
+            <h1 className="text-cream mb-6">Documents & Insights</h1>
+            <p className="body-large text-stone max-w-2xl mb-6">
               Explore our collection of research, playbooks, and presentations designed to help 
               health-tech leaders accelerate growth and navigate complex markets.
             </p>
             <SignedOut>
               <div className="flex items-center gap-4">
                 <SignUpButton mode="modal">
-                  <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-purple-600 text-cream hover:bg-purple-700 transition-colors shadow-md">
+                  <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-violet text-cream hover:bg-violet-light transition-colors shadow-glow-violet">
                     <UserPlus className="w-4 h-4" />
                     <span>Sign Up for Access</span>
                   </button>
                 </SignUpButton>
-                <span className="text-warm-gray text-sm">to view protected documents</span>
+                <span className="text-zinc text-sm">to view protected documents</span>
               </div>
             </SignedOut>
           </div>
         </div>
       </section>
 
-      {/* Documents List */}
+      {/* Documents List - Light Cards on Dark */}
       <section className="section">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto">
@@ -101,12 +95,13 @@ export default function DocumentsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="section bg-stone/30">
-        <div className="container mx-auto">
+      <section className="section bg-graphite relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-violet/5 to-transparent" />
+        <div className="container mx-auto relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <span className="caption mb-4 block">Stay Updated</span>
-            <h2 className="mb-6">Get New Resources First</h2>
-            <p className="body-large mb-8 max-w-xl mx-auto">
+            <span className="mono-label mb-4 block">// Stay Updated</span>
+            <h2 className="text-cream mb-6">Get New Resources First</h2>
+            <p className="body-large text-stone mb-8 max-w-xl mx-auto">
               Join our mailing list to receive the latest research, playbooks, and insights 
               delivered directly to your inbox.
             </p>
@@ -128,18 +123,18 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
   return (
     <Link 
       href={document.href}
-      className="group flex items-center gap-6 p-5 rounded-xl border border-stone/30 bg-cream hover:border-sage/50 hover:shadow-md transition-all duration-300"
+      className="group card-light flex items-center gap-6 p-6 hover:shadow-card-light-hover"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Icon */}
-      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-sage/20 to-terra/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-        <Icon className="w-7 h-7 text-sage" />
+      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-violet/10 to-helix-cyan/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+        <Icon className="w-7 h-7 text-violet" />
       </div>
       
       {/* Content */}
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="text-lg font-semibold text-charcoal group-hover:text-sage transition-colors truncate">
+          <h3 className="text-lg font-semibold text-carbon group-hover:text-violet transition-colors truncate">
             {document.title}
           </h3>
           {isPublic ? (
@@ -148,15 +143,15 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
               Public
             </span>
           ) : (
-            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-violet/10 text-violet">
               <Lock className="w-3 h-3" />
               Protected
             </span>
           )}
         </div>
-        <p className="text-sm text-warm-gray line-clamp-1 mb-2">{document.description}</p>
-        <div className="flex items-center gap-4 text-xs text-warm-gray/70">
-          <span className="badge-secondary">{document.category}</span>
+        <p className="text-sm text-stone line-clamp-1 mb-2">{document.description}</p>
+        <div className="flex items-center gap-4 text-xs text-zinc">
+          <span className="px-2 py-0.5 rounded bg-pearl text-stone">{document.category}</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {document.readTime}
@@ -166,7 +161,7 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
       
       {/* Arrow */}
       <div className="flex-shrink-0">
-        <ChevronRight className="w-5 h-5 text-warm-gray/50 group-hover:text-sage group-hover:translate-x-1 transition-all" />
+        <ChevronRight className="w-5 h-5 text-stone group-hover:text-violet group-hover:translate-x-1 transition-all" />
       </div>
     </Link>
   )
