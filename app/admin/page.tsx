@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth, useUser } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, X, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react'
+import { Shield, Users, FileText, Check, X, RefreshCw, ChevronDown, ChevronUp, Mail } from 'lucide-react'
 import Link from 'next/link'
 
 interface UserWithAccess {
@@ -31,6 +31,8 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null)
   const [expandedUser, setExpandedUser] = useState<string | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
+  const [testingEmail, setTestingEmail] = useState(false)
+  const [emailTestResult, setEmailTestResult] = useState<string | null>(null)
 
   // Check if current user is admin
   useEffect(() => {
@@ -117,6 +119,29 @@ export default function AdminPage() {
     }
   }
 
+  async function testEmail() {
+    setTestingEmail(true)
+    setEmailTestResult(null)
+    
+    try {
+      const response = await fetch('/api/test-email', {
+        method: 'POST'
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setEmailTestResult(`✅ Test email sent successfully! Check your inbox at nbeyor@gmail.com`)
+      } else {
+        setEmailTestResult(`❌ Error: ${data.error || data.details || 'Unknown error'}`)
+      }
+    } catch (err: any) {
+      setEmailTestResult(`❌ Failed to send test email: ${err.message}`)
+    } finally {
+      setTestingEmail(false)
+    }
+  }
+
   // Not loaded yet
   if (!isLoaded || isAdmin === null) {
     return (
@@ -170,15 +195,36 @@ export default function AdminPage() {
               <h1 className="text-3xl font-serif text-charcoal mb-2">Admin Dashboard</h1>
               <p className="text-warm-gray">Manage user document access</p>
             </div>
-            <button
-              onClick={fetchUsers}
-              disabled={loading}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={testEmail}
+                disabled={testingEmail}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet text-cream hover:bg-violet-light disabled:opacity-50 transition-colors"
+              >
+                <Mail className={`w-4 h-4 ${testingEmail ? 'animate-pulse' : ''}`} />
+                {testingEmail ? 'Sending...' : 'Test Email'}
+              </button>
+              <button
+                onClick={fetchUsers}
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
           </div>
+
+          {emailTestResult && (
+            <div className={`mb-6 p-4 rounded-lg border ${
+              emailTestResult.startsWith('✅') 
+                ? 'bg-green-50 border-green-200 text-green-700' 
+                : 'bg-red-50 border-red-200 text-red-700'
+            }`}>
+              {emailTestResult}
+              <button onClick={() => setEmailTestResult(null)} className="ml-4 underline">Dismiss</button>
+            </div>
+          )}
 
           {error && (
             <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
