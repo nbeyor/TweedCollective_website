@@ -259,13 +259,13 @@ const ServicesPage = () => {
             <p className="body-large text-cream/80 mb-8 max-w-2xl mx-auto">
               Let's discuss how our operator-first approach can help your health-tech company scale faster and more efficiently.
             </p>
-            <Link
-              href="/contact"
+            <a
+              href="mailto:hello@tweedcollective.ai"
               className="inline-flex items-center gap-2 px-8 py-4 bg-cream text-carbon rounded-xl font-medium hover:bg-cream/90 transition-colors group"
             >
-              <span>Schedule a Consultation</span>
+              <span>Reach Out</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>

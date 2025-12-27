@@ -24,36 +24,6 @@ export default async function Home() {
       {/* What We Do */}
       <Services />
 
-      {/* Trusted By Section */}
-      <section className="section bg-graphite relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-carbon to-graphite" />
-        <div className="absolute top-0 left-0 w-1/3 h-1/2 bg-gradient-radial from-sage/10 via-transparent to-transparent opacity-50" />
-        <div className="absolute bottom-0 right-0 w-1/3 h-1/2 bg-gradient-radial from-violet/10 via-transparent to-transparent opacity-50" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <span className="mono-label mb-4 block">// Our Network</span>
-            <h2 className="text-cream mb-4">Trusted by Health-Tech Leaders</h2>
-            <p className="body-large text-stone">
-              Companies we've helped scale and accelerate
-            </p>
-          </div>
-          <div className="flex items-center justify-center flex-wrap gap-8 opacity-40">
-            <div className="w-32 h-16 bg-slate/50 rounded-lg flex items-center justify-center border border-zinc/30">
-              <span className="text-sm text-zinc font-mono">Logo 1</span>
-            </div>
-            <div className="w-32 h-16 bg-slate/50 rounded-lg flex items-center justify-center border border-zinc/30">
-              <span className="text-sm text-zinc font-mono">Logo 2</span>
-            </div>
-            <div className="w-32 h-16 bg-slate/50 rounded-lg flex items-center justify-center border border-zinc/30">
-              <span className="text-sm text-zinc font-mono">Logo 3</span>
-            </div>
-            <div className="w-32 h-16 bg-slate/50 rounded-lg flex items-center justify-center border border-zinc/30">
-              <span className="text-sm text-zinc font-mono">Logo 4</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="section bg-void relative overflow-hidden">
         {/* Gradient overlay */}

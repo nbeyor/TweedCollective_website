@@ -116,13 +116,13 @@ export default async function OperatorsPage() {
                 <p className="body-small text-stone mb-6">
                   Access our network of proven operators to accelerate your growth trajectory.
                 </p>
-                <Link 
-                  href="/contact" 
+                <a 
+                  href="mailto:hello@tweedcollective.ai" 
                   className="btn-primary w-full justify-center"
                 >
-                  <span>Book a Call</span>
+                  <span>Reach Out</span>
                   <ArrowRight className="icon-sm" />
-                </Link>
+                </a>
               </div>
             </div>
           </div>

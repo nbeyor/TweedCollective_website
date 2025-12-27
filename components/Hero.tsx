@@ -3,13 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
-import DNAHelix from './ui/dna-helix'
+import TechSpiral from './ui/tech-spiral'
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-void">
-      {/* DNA Helix Decoration */}
-      <DNAHelix />
+      {/* Tech Spiral Decoration */}
+      <TechSpiral />
       
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-sage/5 via-transparent to-violet/5" />
