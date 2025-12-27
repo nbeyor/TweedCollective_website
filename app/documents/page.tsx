@@ -94,24 +94,6 @@ export default function DocumentsPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="section bg-graphite relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-violet/5 to-transparent" />
-        <div className="container mx-auto relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <span className="mono-label mb-4 block">// Stay Updated</span>
-            <h2 className="text-cream mb-6">Get New Resources First</h2>
-            <p className="body-large text-stone mb-8 max-w-xl mx-auto">
-              Join our mailing list to receive the latest research, playbooks, and insights 
-              delivered directly to your inbox.
-            </p>
-            <Link href="/contact" className="btn-primary">
-              <span>Subscribe to Updates</span>
-              <ChevronRight className="icon-sm" />
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
