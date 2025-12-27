@@ -1190,7 +1190,7 @@ function ValueCreationSlide() {
 export default function VIBECodingPage() {
   return (
     <DocumentAccessWrapper 
-      documentId="vibe-coding-pe-life-sciences"
+      documentId="vibe-coding-in-enterprise-for-pe"
       documentTitle="The Evolution of VIBE Coding in Enterprise - for PE Investors"
     >
       <PresentationLayout

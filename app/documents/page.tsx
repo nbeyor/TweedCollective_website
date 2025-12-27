@@ -36,14 +36,14 @@ const documents: DocumentMeta[] = [
     visibility: 'public',
   },
   {
-    id: 'vibe-coding-pe-life-sciences',
+    id: 'vibe-coding-in-enterprise-for-pe',
     title: 'The Evolution of VIBE Coding in Enterprise - for PE Investors',
     description: 'How next-gen coding agents reshape product velocity, talent, and value creation in PE-backed companies.',
     category: 'Executive Briefing',
     icon: Code2,
     date: '2024-12',
     readTime: '25 min',
-    href: '/documents/vibe-coding-pe-life-sciences',
+    href: '/documents/vibe-coding-in-enterprise-for-pe',
     visibility: 'listed',
   },
 ]

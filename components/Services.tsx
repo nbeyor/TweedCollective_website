@@ -32,7 +32,7 @@ const Services = () => {
       icon: Rocket,
       tangibleOutputs: ["Problem validation and market research", "Zero to MVP in 90 days, <$250K total spend", "Corporate formation and fundraising support", "Studio co-founder model with sweat equity"],
       engagement: "Current focus: AI × women's health, computational biology tools",
-      color: "rust"
+      color: "gold"
     }
   ]
 
@@ -161,9 +161,9 @@ const Services = () => {
               <p className="text-stone text-sm mb-4">For targeted diligence and strategic analyses</p>
               <p className="text-xs font-mono text-zinc">Typical: 2-6 weeks, $25-75K</p>
             </div>
-            <div className="card p-6 group hover:border-rust/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-rust/10 flex items-center justify-center">
-                <span className="text-rust-light font-mono text-lg">03</span>
+            <div className="card p-6 group hover:border-gold/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-gold/10 flex items-center justify-center">
+                <span className="text-gold font-mono text-lg">03</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Studio Co-found</h4>
               <p className="text-stone text-sm mb-4">Sweat equity for ventures we believe in</p>

@@ -17,13 +17,13 @@ export default function TechSpiral({ className = '' }: TechSpiralProps) {
       >
         <defs>
           <linearGradient id="spiralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="0%" stopColor="#D4AF37" />
             <stop offset="50%" stopColor="#4A5D4C" />
-            <stop offset="100%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#A89685" />
           </linearGradient>
           <radialGradient id="spiralGlow" cx="50%" cy="50%">
-            <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+            <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
           </radialGradient>
         </defs>
 
@@ -74,7 +74,7 @@ export default function TechSpiral({ className = '' }: TechSpiralProps) {
                 cx={x}
                 cy={y}
                 r="4"
-                fill={i % 3 === 0 ? "#8B5CF6" : "#4A5D4C"}
+                fill={i % 3 === 0 ? "#D4AF37" : "#4A5D4C"}
                 opacity="0.8"
               />
               {/* Inner highlight */}
@@ -82,7 +82,7 @@ export default function TechSpiral({ className = '' }: TechSpiralProps) {
                 cx={x}
                 cy={y}
                 r="1.5"
-                fill="#A78BFA"
+                fill="#C4A772"
                 opacity="0.9"
               />
             </g>
@@ -117,7 +117,7 @@ export default function TechSpiral({ className = '' }: TechSpiralProps) {
         {/* Subtle grid overlay for tech aesthetic */}
         <defs>
           <pattern id="techGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#8B5CF6" strokeWidth="0.5" opacity="0.1" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#D4AF37" strokeWidth="0.5" opacity="0.1" />
           </pattern>
         </defs>
         <rect width="400" height="1600" fill="url(#techGrid)" opacity="0.2" />

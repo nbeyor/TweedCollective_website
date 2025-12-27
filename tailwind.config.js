@@ -25,11 +25,13 @@ module.exports = {
         'sage-light': '#5C7360',
         'sage-bright': '#6B8E6F',
         
-        // Secondary Accent - Tan/Brown (Tweed)
-        'taupe': '#8C7B6B',
-        'taupe-light': '#A89685',
-        'rust': '#9C6B5C',
-        'rust-light': '#B5846F',
+        // Secondary Accent - Tan/Brown/Gold (Tweed)
+        'taupe': '#A89685',
+        'taupe-light': '#C4A772',
+        'rust': '#B5846F',
+        'rust-light': '#D4AF37',
+        'gold': '#D4AF37',
+        'gold-light': '#E5C158',
         
         // Scientific Accent
         'helix-cyan': '#22D3EE',

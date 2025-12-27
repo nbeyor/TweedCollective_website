@@ -16,7 +16,7 @@ interface UserWithAccess {
 
 // List of available documents
 const DOCUMENTS = [
-  { id: 'vibe-coding-pe-life-sciences', title: 'VIBE Coding in Enterprise' },
+  { id: 'vibe-coding-in-enterprise-for-pe', title: 'VIBE Coding in Enterprise' },
   { id: 'health-tech-market-2024', title: 'Health-Tech Market Landscape' },
   { id: 'ai-integration-framework', title: 'AI Integration Framework' },
   { id: 'salmon-ai-genomics', title: 'Strategic AI for Salmon Genomics' },

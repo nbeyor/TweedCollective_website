@@ -94,7 +94,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #5C7360;
+    color: #D4AF37;
   }
 
   .caption {
@@ -274,17 +274,17 @@
 
   /* Text Highlight */
   .text-highlight {
-    @apply text-sage-light relative;
+    @apply text-gold relative;
   }
 
   .text-highlight::after {
     content: '';
-    @apply absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-sage to-taupe opacity-50;
+    @apply absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-gold to-taupe opacity-60;
   }
 
   /* Gradient Text */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-sage via-sage-light to-taupe;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sage via-gold to-taupe;
   }
 
   /* Glow Effects */
@@ -369,17 +369,19 @@
   --pearl: #E8E6E1;
   --stone: #9A9890;
   
-  /* Primary Accent - Purple */
-  --violet: #8B5CF6;
-  --violet-light: #A78BFA;
-  --violet-glow: rgba(139, 92, 246, 0.15);
-  --violet-bright: #C4B5FD;
-  
-  /* Tweed Colors */
+  /* Primary Accent - Green (Tweed) */
   --sage: #4A5D4C;
   --sage-light: #5C7360;
-  --taupe: #8C7B6B;
-  --rust: #9C6B5C;
+  --sage-bright: #6B8E6F;
+  --sage-glow: rgba(74, 93, 76, 0.15);
+  
+  /* Secondary Accent - Tan/Brown/Gold (Tweed) */
+  --taupe: #A89685;
+  --taupe-light: #C4A772;
+  --rust: #B5846F;
+  --rust-light: #D4AF37;
+  --gold: #D4AF37;
+  --gold-light: #E5C158;
   
   /* Scientific Accent */
   --helix-cyan: #22D3EE;
