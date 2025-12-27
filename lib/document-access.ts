@@ -10,7 +10,7 @@ import { auth, currentUser } from '@clerk/nextjs/server'
  * 1. Go to Clerk Dashboard > Users > Select User > Metadata
  * 2. Add to private metadata: { "documentAccess": ["document-id-1", "document-id-2"] }
  * 
- * Document IDs match the document href paths (e.g., "vibe-coding-pe-life-sciences")
+ * Document IDs match the document href paths (e.g., "vibe-coding-in-enterprise-for-pe")
  */
 
 export interface DocumentAccess {
