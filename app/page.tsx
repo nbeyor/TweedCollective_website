@@ -27,6 +27,8 @@ export default async function Home() {
       {/* Trusted By Section */}
       <section className="section bg-graphite relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-carbon to-graphite" />
+        <div className="absolute top-0 left-0 w-1/3 h-1/2 bg-gradient-radial from-sage/10 via-transparent to-transparent opacity-50" />
+        <div className="absolute bottom-0 right-0 w-1/3 h-1/2 bg-gradient-radial from-violet/10 via-transparent to-transparent opacity-50" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <span className="mono-label mb-4 block">// Our Network</span>
@@ -56,6 +58,8 @@ export default async function Home() {
       <section className="section bg-void relative overflow-hidden">
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-violet/5 via-transparent to-transparent" />
+        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-sage/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-violet/10 rounded-full blur-3xl" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
@@ -64,10 +68,10 @@ export default async function Home() {
             <p className="body-large text-stone mb-8">
               Whether you need strategic advisory, hands-on operators, or a co-founding partner—we're here to help.
             </p>
-            <Link href="/contact" className="btn-primary text-lg px-8 py-4 group">
-              <span>Book a Call</span>
+            <a href="mailto:hello@tweedcollective.ai" className="btn-primary text-lg px-8 py-4 group">
+              <span>Reach Out</span>
               <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>

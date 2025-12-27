@@ -25,8 +25,14 @@ export async function POST(req: Request) {
   const payload = await req.json()
   const body = JSON.stringify(payload)
 
+  // Check if webhook secret is configured
+  if (!process.env.CLERK_WEBHOOK_SECRET) {
+    console.error('CLERK_WEBHOOK_SECRET is not configured')
+    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 })
+  }
+
   // Create a new Svix instance with your webhook secret
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || '')
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
   let evt: WebhookEvent
 
@@ -50,9 +56,16 @@ export async function POST(req: Request) {
     const email = email_addresses?.[0]?.email_address || 'No email'
     const name = [first_name, last_name].filter(Boolean).join(' ') || 'No name provided'
 
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured')
+      return NextResponse.json({ success: true, warning: 'Email not sent - API key missing' })
+    }
+
     try {
+      console.log(`Attempting to send email for new user: ${email}`)
       // Send email notification to admin
-      await resend.emails.send({
+      const result = await resend.emails.send({
         from: 'Tweed Collective <onboarding@resend.dev>',
         to: ADMIN_EMAIL,
         subject: `New User Signup: ${name}`,
@@ -86,12 +99,14 @@ export async function POST(req: Request) {
         `,
       })
 
-      console.log(`Email sent to admin for new user: ${email}`)
+      console.log(`Email sent to admin for new user: ${email}`, result)
     } catch (error) {
       console.error('Error sending email:', error)
       // Don't fail the webhook if email fails
     }
   }
+
+  console.log(`Webhook processed: ${eventType}`)
 
   return NextResponse.json({ success: true })
 }

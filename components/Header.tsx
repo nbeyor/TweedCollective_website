@@ -11,7 +11,6 @@ const navigation = [
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
   { name: 'Operators', href: '/operators' },
-  { name: 'Projects', href: '/projects' },
   { name: 'Documents', href: '/documents' },
 ]
 
@@ -87,13 +86,13 @@ export default function Header() {
           {/* CTA Button & Auth */}
           <div className="hidden lg:flex items-center gap-3">
             {showCTA && (
-              <Link 
-                href="/contact" 
+              <a 
+                href="mailto:hello@tweedcollective.ai" 
                 className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-violet text-cream hover:bg-violet-light hover:shadow-glow-violet"
               >
-                <span>Book a Call</span>
+                <span>Reach Out</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              </a>
             )}
             <SignedOut>
               <SignInButton mode="modal">
@@ -194,14 +193,14 @@ export default function Header() {
                 </div>
               </SignedIn>
               {showCTA && (
-                <Link 
-                  href="/contact" 
+                <a 
+                  href="mailto:hello@tweedcollective.ai" 
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-violet text-cream rounded-xl font-medium hover:bg-violet-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <span>Book a Call</span>
+                  <span>Reach Out</span>
                   <ChevronRight className="w-4 h-4" />
-                </Link>
+                </a>
               )}
             </div>
           </div>

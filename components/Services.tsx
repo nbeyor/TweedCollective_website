@@ -29,7 +29,7 @@ const Services = () => {
       description: "We co-found, prototype, and seed emerging plays at the edge of AI × health, from concept to fundable entity.",
       icon: Rocket,
       tangibleOutputs: ["MVP development", "Corporate setup", "Problem validation", "Fundraising"],
-      color: "helix-cyan"
+      color: "violet-light"
     }
   ]
 
@@ -49,12 +49,12 @@ const Services = () => {
           bg: 'bg-sage/10',
           dot: 'bg-sage'
         }
-      case 'helix-cyan':
+      case 'violet-light':
         return {
-          gradient: 'from-helix-cyan to-violet',
-          icon: 'text-helix-cyan',
-          bg: 'bg-helix-cyan/10',
-          dot: 'bg-helix-cyan'
+          gradient: 'from-violet-light to-violet',
+          icon: 'text-violet-light',
+          bg: 'bg-violet-light/10',
+          dot: 'bg-violet-light'
         }
       default:
         return {
@@ -149,9 +149,9 @@ const Services = () => {
               <h4 className="text-cream font-semibold mb-2">Fixed-scope Project</h4>
               <p className="text-stone text-sm">For targeted, specific needs</p>
             </div>
-            <div className="card p-6 text-center group hover:border-helix-cyan/50 transition-colors">
-              <div className="w-10 h-10 mx-auto mb-4 rounded-lg bg-helix-cyan/10 flex items-center justify-center">
-                <span className="text-helix-cyan font-mono text-lg">03</span>
+            <div className="card p-6 text-center group hover:border-violet-light/50 transition-colors">
+              <div className="w-10 h-10 mx-auto mb-4 rounded-lg bg-violet-light/10 flex items-center justify-center">
+                <span className="text-violet-light font-mono text-lg">03</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Studio Co-found</h4>
               <p className="text-stone text-sm">Tweed takes sweat equity in new ventures</p>

@@ -75,7 +75,7 @@ const ServicesPage = () => {
       subtitle: 'Building from Zero',
       description: 'Our studio approach originates and spins up new companies in AI-enabled health, leveraging our extensive talent network and operational expertise.',
       icon: Rocket,
-      color: 'helix-cyan',
+      color: 'violet-light',
       howWeWork: [
         {
           title: 'Material Equity',
@@ -120,13 +120,13 @@ const ServicesPage = () => {
           icon: 'text-sage-light',
           gradient: 'from-sage to-sage-light'
         }
-      case 'helix-cyan':
+      case 'violet-light':
         return {
-          bg: 'bg-helix-cyan/10',
-          border: 'border-helix-cyan/30',
-          text: 'text-helix-cyan',
-          icon: 'text-helix-cyan',
-          gradient: 'from-helix-cyan to-violet'
+          bg: 'bg-violet-light/10',
+          border: 'border-violet-light/30',
+          text: 'text-violet-light',
+          icon: 'text-violet-light',
+          gradient: 'from-violet-light to-violet'
         }
       default:
         return {
