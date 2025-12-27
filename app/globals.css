@@ -11,7 +11,7 @@
   }
   
   body {
-    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #F5F4F0;
     background-color: #0A0A0C;
     font-feature-settings: "kern" 1, "liga" 1;
@@ -19,34 +19,34 @@
 
   /* Typography - Dark Theme */
   h1 {
-    font-family: "Instrument Serif", Georgia, serif;
+    font-family: "Inter", -apple-system, sans-serif;
     font-size: clamp(2.5rem, 5.5vw, 4rem);
-    font-weight: 400;
-    letter-spacing: -0.03em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     line-height: 1.15;
     color: #F5F4F0;
   }
 
   h2 {
-    font-family: "Instrument Serif", Georgia, serif;
+    font-family: "Inter", -apple-system, sans-serif;
     font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.015em;
     line-height: 1.2;
     color: #F5F4F0;
   }
 
   h3 {
-    font-family: "Instrument Serif", Georgia, serif;
+    font-family: "Inter", -apple-system, sans-serif;
     font-size: 1.5rem;
-    font-weight: 400;
+    font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.35;
     color: #F5F4F0;
   }
 
   h4 {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -55,7 +55,7 @@
   }
 
   h5, h6 {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     letter-spacing: 0;
     line-height: 1.4;
@@ -94,7 +94,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #8B5CF6;
+    color: #5C7360;
   }
 
   .caption {
@@ -104,7 +104,7 @@
     line-height: 1.4;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #8B5CF6;
+    color: #5C7360;
   }
 
   .mono {
@@ -118,9 +118,9 @@
   /* Buttons - Dark Theme */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl 
-           bg-violet text-cream font-medium text-sm tracking-wide
+           bg-sage text-cream font-medium text-sm tracking-wide
            transition-all duration-300 ease-out
-           hover:bg-violet-light hover:shadow-glow-violet hover:-translate-y-0.5
+           hover:bg-sage-light hover:shadow-glow-sage hover:-translate-y-0.5
            active:translate-y-0 active:shadow-md
            disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
   }
@@ -153,8 +153,8 @@
 
   /* Links */
   .link {
-    @apply text-violet hover:text-violet-light transition-colors duration-300 
-           underline underline-offset-4 decoration-violet/30 hover:decoration-violet/60;
+    @apply text-sage-light hover:text-sage-bright transition-colors duration-300 
+           underline underline-offset-4 decoration-sage/30 hover:decoration-sage/60;
   }
 
   /* Cards - Dark Theme */
@@ -165,7 +165,7 @@
   }
 
   .card-interactive {
-    @apply card cursor-pointer hover:-translate-y-1 hover:shadow-glow-violet;
+    @apply card cursor-pointer hover:-translate-y-1 hover:shadow-glow-sage;
   }
 
   /* Light Cards (for documents on dark bg) */
@@ -210,7 +210,7 @@
   }
 
   .badge-primary {
-    @apply badge bg-violet/15 text-violet;
+    @apply badge bg-sage/15 text-sage-light;
   }
 
   .badge-secondary {
@@ -274,26 +274,26 @@
 
   /* Text Highlight */
   .text-highlight {
-    @apply text-violet relative;
+    @apply text-sage-light relative;
   }
 
   .text-highlight::after {
     content: '';
-    @apply absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-violet to-helix-cyan opacity-50;
+    @apply absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-sage to-taupe opacity-50;
   }
 
   /* Gradient Text */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-violet via-violet-light to-helix-cyan;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sage via-sage-light to-taupe;
   }
 
   /* Glow Effects */
-  .glow-violet {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+  .glow-sage {
+    box-shadow: 0 0 20px rgba(74, 93, 76, 0.25);
   }
 
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+  .glow-taupe {
+    box-shadow: 0 0 20px rgba(140, 123, 107, 0.2);
   }
 }
 
@@ -435,11 +435,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B5CF6;
+  background: #5C7360;
 }
 
 /* Focus Visible */
 *:focus-visible {
-  outline: 2px solid #8B5CF6;
+  outline: 2px solid #5C7360;
   outline-offset: 2px;
 }

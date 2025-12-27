@@ -268,10 +268,10 @@ const slides: Slide[] = [
         </p>
         
         {/* PE Insight Box */}
-        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-purple-500 bg-purple-500/10 mb-8 text-left">
-          <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Why This Matters</div>
+        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-sage bg-sage/10 mb-8 text-left">
+          <div className="text-xs uppercase tracking-wider text-sage-light mb-2">Why This Matters</div>
           <p className="text-sm text-cream/80 leading-relaxed">
-            In life sciences companies, where product development cycles are long and regulatory timelines are fixed, 
+            In enterprise companies, where product development cycles are long and timelines are fixed, 
             software velocity has become a critical differentiator. This presentation examines how agentic coding tools 
             are fundamentally changing the economics of software development—and why treating this as a growth acceleration 
             play rather than cost reduction unlocks significantly more value.

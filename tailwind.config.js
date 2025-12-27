@@ -20,16 +20,16 @@ module.exports = {
         'pearl': '#E8E6E1',
         'stone': '#9A9890',
         
-        // Primary Accent - Purple
-        'violet': '#8B5CF6',
-        'violet-light': '#A78BFA',
-        'violet-bright': '#C4B5FD',
-        
-        // Tweed Colors
+        // Primary Accent - Green (Tweed)
         'sage': '#4A5D4C',
         'sage-light': '#5C7360',
+        'sage-bright': '#6B8E6F',
+        
+        // Secondary Accent - Tan/Brown (Tweed)
         'taupe': '#8C7B6B',
+        'taupe-light': '#A89685',
         'rust': '#9C6B5C',
+        'rust-light': '#B5846F',
         
         // Scientific Accent
         'helix-cyan': '#22D3EE',
@@ -45,9 +45,9 @@ module.exports = {
         'burgundy': '#722F37',
       },
       fontFamily: {
-        'sans': ['"Instrument Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'display': ['"Instrument Serif"', 'Georgia', 'serif'],
-        'body': ['"Instrument Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'sans': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'display': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'body': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         'mono': ['"JetBrains Mono"', '"SF Mono"', 'Monaco', 'monospace'],
       },
       fontSize: {
@@ -107,12 +107,12 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-dark': 'linear-gradient(135deg, #0A0A0C 0%, #111114 50%, #1A1A1F 100%)',
-        'gradient-violet': 'linear-gradient(135deg, #8B5CF6 0%, #22D3EE 100%)',
+        'gradient-sage': 'linear-gradient(135deg, #4A5D4C 0%, #8C7B6B 100%)',
       },
       boxShadow: {
-        'glow-violet': '0 0 20px rgba(139, 92, 246, 0.25)',
-        'glow-violet-lg': '0 0 40px rgba(139, 92, 246, 0.3)',
-        'glow-cyan': '0 0 20px rgba(34, 211, 238, 0.2)',
+        'glow-sage': '0 0 20px rgba(74, 93, 76, 0.25)',
+        'glow-sage-lg': '0 0 40px rgba(74, 93, 76, 0.3)',
+        'glow-taupe': '0 0 20px rgba(140, 123, 107, 0.2)',
         'card-dark': '0 4px 20px rgba(0, 0, 0, 0.3)',
         'card-light': '0 4px 20px rgba(0, 0, 0, 0.08)',
         'card-light-hover': '0 12px 40px rgba(0, 0, 0, 0.12)',

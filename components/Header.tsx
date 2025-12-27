@@ -48,7 +48,7 @@ export default function Header() {
                 size={36} 
                 className="mr-2"
               />
-              <span className="font-sans font-semibold text-lg tracking-tight text-cream transition-colors group-hover:text-violet-light">
+              <span className="font-sans font-semibold text-lg tracking-tight text-cream transition-colors group-hover:text-sage-light">
                 Tweed Collective
               </span>
             </div>
@@ -70,13 +70,13 @@ export default function Header() {
                   href={item.href}
                   className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                     isActive
-                      ? 'text-cream bg-violet/20'
+                      ? 'text-cream bg-sage/20'
                       : 'text-stone hover:text-cream hover:bg-slate/50'
                   }`}
                 >
                   {item.name}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-violet" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-sage" />
                   )}
                 </Link>
               )
@@ -88,7 +88,7 @@ export default function Header() {
             {showCTA && (
               <a 
                 href="mailto:hello@tweedcollective.ai" 
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-violet text-cream hover:bg-violet-light hover:shadow-glow-violet"
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-sage text-cream hover:bg-sage-light hover:shadow-glow-sage"
               >
                 <span>Reach Out</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -101,7 +101,7 @@ export default function Header() {
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-violet text-violet hover:bg-violet/10">
+                <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-sage text-sage-light hover:bg-sage/10">
                   Sign Up
                 </button>
               </SignUpButton>
@@ -182,9 +182,9 @@ export default function Header() {
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors border border-violet text-violet hover:bg-violet/10">
-                    Sign Up
-                  </button>
+                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors border border-sage text-sage-light hover:bg-sage/10">
+                  Sign Up
+                </button>
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
@@ -195,7 +195,7 @@ export default function Header() {
               {showCTA && (
                 <a 
                   href="mailto:hello@tweedcollective.ai" 
-                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-violet text-cream rounded-xl font-medium hover:bg-violet-light transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>Reach Out</span>

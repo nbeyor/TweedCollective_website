@@ -12,7 +12,7 @@ const Services = () => {
       icon: Users,
       tangibleOutputs: ["Commercial & technical due diligence", "AI readiness audits and transformation roadmaps", "Strategic sector analyses with primary research", "Board presentations and investment memos"],
       engagement: "Typical: 2-4 weeks, fixed scope",
-      color: "violet"
+      color: "sage"
     },
     {
       number: "02",
@@ -22,7 +22,7 @@ const Services = () => {
       icon: Target,
       tangibleOutputs: ["Fractional CCO / CRO / CSO roles", "100-day transformation sprints", "GTM strategy → execution → closed pipeline", "Team building and organizational design"],
       engagement: "Typical: 4-6 months, retainer + equity",
-      color: "sage"
+      color: "taupe"
     },
     {
       number: "03",
@@ -32,19 +32,12 @@ const Services = () => {
       icon: Rocket,
       tangibleOutputs: ["Problem validation and market research", "Zero to MVP in 90 days, <$250K total spend", "Corporate formation and fundraising support", "Studio co-founder model with sweat equity"],
       engagement: "Current focus: AI × women's health, computational biology tools",
-      color: "violet-light"
+      color: "rust"
     }
   ]
 
   const getColorClasses = (color: string) => {
     switch (color) {
-      case 'violet':
-        return {
-          gradient: 'from-violet to-violet-light',
-          icon: 'text-violet',
-          bg: 'bg-violet/10',
-          dot: 'bg-violet'
-        }
       case 'sage':
         return {
           gradient: 'from-sage to-sage-light',
@@ -52,19 +45,26 @@ const Services = () => {
           bg: 'bg-sage/10',
           dot: 'bg-sage'
         }
-      case 'violet-light':
+      case 'taupe':
         return {
-          gradient: 'from-violet-light to-violet',
-          icon: 'text-violet-light',
-          bg: 'bg-violet-light/10',
-          dot: 'bg-violet-light'
+          gradient: 'from-taupe to-taupe-light',
+          icon: 'text-taupe-light',
+          bg: 'bg-taupe/10',
+          dot: 'bg-taupe'
+        }
+      case 'rust':
+        return {
+          gradient: 'from-rust to-rust-light',
+          icon: 'text-rust-light',
+          bg: 'bg-rust/10',
+          dot: 'bg-rust'
         }
       default:
         return {
-          gradient: 'from-violet to-helix-cyan',
-          icon: 'text-violet',
-          bg: 'bg-violet/10',
-          dot: 'bg-violet'
+          gradient: 'from-sage to-taupe',
+          icon: 'text-sage-light',
+          bg: 'bg-sage/10',
+          dot: 'bg-sage'
         }
     }
   }
@@ -145,25 +145,25 @@ const Services = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="card p-6 group hover:border-violet/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-violet/10 flex items-center justify-center group-hover:glow-violet transition-all">
-                <span className="text-violet font-mono text-lg">01</span>
+            <div className="card p-6 group hover:border-sage/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-sage/10 flex items-center justify-center group-hover:glow-sage transition-all">
+                <span className="text-sage-light font-mono text-lg">01</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Retainer + Equity</h4>
               <p className="text-stone text-sm mb-4">Our preferred model for long-term operator partnerships</p>
               <p className="text-xs font-mono text-zinc">Typical: $10-20K/mo + 0.5-2% equity</p>
             </div>
-            <div className="card p-6 group hover:border-sage/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-sage/10 flex items-center justify-center">
-                <span className="text-sage-light font-mono text-lg">02</span>
+            <div className="card p-6 group hover:border-taupe/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-taupe/10 flex items-center justify-center">
+                <span className="text-taupe-light font-mono text-lg">02</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Fixed-Scope Project</h4>
               <p className="text-stone text-sm mb-4">For targeted diligence and strategic analyses</p>
               <p className="text-xs font-mono text-zinc">Typical: 2-6 weeks, $25-75K</p>
             </div>
-            <div className="card p-6 group hover:border-violet-light/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-violet-light/10 flex items-center justify-center">
-                <span className="text-violet-light font-mono text-lg">03</span>
+            <div className="card p-6 group hover:border-rust/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-rust/10 flex items-center justify-center">
+                <span className="text-rust-light font-mono text-lg">03</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Studio Co-found</h4>
               <p className="text-stone text-sm mb-4">Sweat equity for ventures we believe in</p>

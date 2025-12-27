@@ -25,7 +25,7 @@ const Footer = () => {
           <div className="lg:col-span-1 space-y-6">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <TweedLogo animated={false} size={40} />
-              <span className="text-xl font-semibold tracking-tight group-hover:text-violet-light transition-colors">
+              <span className="text-xl font-semibold tracking-tight group-hover:text-sage-light transition-colors">
                 Tweed Collective
               </span>
             </Link>
@@ -45,7 +45,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-stone hover:text-violet-light transition-colors inline-flex items-center gap-1 group"
+                    className="text-stone hover:text-sage-light transition-colors inline-flex items-center gap-1 group"
                   >
                     <span>{link.name}</span>
                     <ArrowUpRight className="icon-xs opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -66,7 +66,7 @@ const Footer = () => {
                   href="mailto:hello@tweedcollective.ai" 
                   className="text-stone hover:text-violet-light transition-colors inline-flex items-center gap-3 group"
                 >
-                  <Mail className="icon-md text-violet/60 group-hover:text-violet transition-colors" />
+                  <Mail className="icon-md text-sage/60 group-hover:text-sage-light transition-colors" />
                   <span>hello@tweedcollective.ai</span>
                 </a>
               </li>
@@ -75,9 +75,9 @@ const Footer = () => {
                   href="https://linkedin.com/company/tweedcollective" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-stone hover:text-violet-light transition-colors inline-flex items-center gap-3 group"
+                  className="text-stone hover:text-sage-light transition-colors inline-flex items-center gap-3 group"
                 >
-                  <Linkedin className="icon-md text-violet/60 group-hover:text-violet transition-colors" />
+                  <Linkedin className="icon-md text-sage/60 group-hover:text-sage-light transition-colors" />
                   <span>LinkedIn</span>
                 </a>
               </li>
@@ -111,7 +111,7 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-2 text-zinc text-sm">
             <span>Built at the</span>
-            <span className="text-violet">AI × life sciences</span>
+            <span className="text-sage-light">AI × life sciences</span>
             <span>frontier</span>
           </div>
         </div>
