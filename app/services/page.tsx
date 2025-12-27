@@ -248,27 +248,6 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="section bg-violet relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet via-violet-light/20 to-violet" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-cream mb-6">
-              Ready to Accelerate Your Growth?
-            </h2>
-            <p className="body-large text-cream/80 mb-8 max-w-2xl mx-auto">
-              Let's discuss how our operator-first approach can help your health-tech company scale faster and more efficiently.
-            </p>
-            <a
-              href="mailto:hello@tweedcollective.ai"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-cream text-carbon rounded-xl font-medium hover:bg-cream/90 transition-colors group"
-            >
-              <span>Reach Out</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </a>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
