@@ -31,6 +31,7 @@ export async function POST(req: Request) {
 
   try {
     console.log(`Sending test email to admin: ${ADMIN_EMAIL}`)
+    console.log(`Resend API key configured: ${!!process.env.RESEND_API_KEY}`)
     
     // Send test email notification
     const result = await resend.emails.send({
@@ -67,18 +68,43 @@ export async function POST(req: Request) {
       `,
     })
 
-    console.log('Test email sent successfully:', result)
+    console.log('Resend API response:', JSON.stringify(result, null, 2))
+
+    // Check if Resend returned an error
+    if (result.error) {
+      console.error('Resend API error:', result.error)
+      return NextResponse.json({ 
+        success: false,
+        error: 'Resend API returned an error',
+        details: result.error.message || JSON.stringify(result.error)
+      }, { status: 500 })
+    }
+
+    // Check if data exists
+    if (!result.data) {
+      console.error('Resend API returned no data:', result)
+      return NextResponse.json({ 
+        success: false,
+        error: 'Resend API returned no data',
+        details: 'The email may not have been sent. Check Resend dashboard for details.'
+      }, { status: 500 })
+    }
+
+    console.log('Test email sent successfully. Email ID:', result.data.id)
 
     return NextResponse.json({ 
       success: true, 
       message: 'Test email sent successfully',
-      emailId: result.data?.id || 'unknown'
+      emailId: result.data.id,
+      note: 'If you don\'t see the email, check your spam folder or verify your Resend domain configuration.'
     })
   } catch (error: any) {
     console.error('Error sending test email:', error)
     return NextResponse.json({ 
+      success: false,
       error: 'Failed to send email',
-      details: error.message || 'Unknown error'
+      details: error.message || 'Unknown error',
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }, { status: 500 })
   }
 }
