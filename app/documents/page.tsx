@@ -69,7 +69,7 @@ export default function DocumentsPage() {
             <SignedOut>
               <div className="flex items-center gap-4">
                 <SignUpButton mode="modal">
-                  <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-violet text-cream hover:bg-violet-light transition-colors shadow-glow-violet">
+                  <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-sage text-cream hover:bg-sage-light transition-colors shadow-glow-sage">
                     <UserPlus className="w-4 h-4" />
                     <span>Sign Up for Access</span>
                   </button>
@@ -116,7 +116,7 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
       {/* Content */}
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="text-lg font-semibold text-carbon group-hover:text-violet transition-colors truncate">
+          <h3 className="text-lg font-semibold text-carbon group-hover:text-sage transition-colors truncate">
             {document.title}
           </h3>
           {isPublic ? (

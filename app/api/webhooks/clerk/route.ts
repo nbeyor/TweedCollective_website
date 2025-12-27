@@ -5,7 +5,12 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  if (!process.env.RESEND_API_KEY) {
+    return null
+  }
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 async function getAdminEmails(): Promise<string[]> {
   try {
@@ -72,7 +77,50 @@ export async function POST(req: Request) {
   if (eventType === 'user.created') {
     const { id, email_addresses, first_name, last_name } = evt.data
     const email = email_addresses?.[0]?.email_address || 'No email'
+    const emailLower = email.toLowerCase()
     const name = [first_name, last_name].filter(Boolean).join(' ') || 'No name provided'
+
+    // Check approved emails and auto-grant access
+    try {
+      const client = await clerkClient()
+      const usersResponse = await client.users.getUserList({ limit: 100 })
+      
+      // Find admin user to get document approvals
+      const adminUser = usersResponse.data.find(user => 
+        user.privateMetadata?.isAdmin === true || 
+        user.publicMetadata?.role === 'admin'
+      )
+      
+      if (adminUser) {
+        const documentApprovals = (adminUser.publicMetadata?.documentApprovals as Record<string, string[]>) || {}
+        const documentsToGrant: string[] = []
+        
+        // Check each document's approved emails
+        for (const [documentId, approvedEmails] of Object.entries(documentApprovals)) {
+          if (Array.isArray(approvedEmails) && approvedEmails.includes(emailLower)) {
+            documentsToGrant.push(documentId)
+          }
+        }
+        
+        // Auto-grant access to matching documents
+        if (documentsToGrant.length > 0) {
+          const currentAccess = (evt.data.private_metadata?.documentAccess as string[]) || []
+          const newAccess = Array.from(new Set([...currentAccess, ...documentsToGrant]))
+          
+          await client.users.updateUserMetadata(id, {
+            privateMetadata: {
+              ...(evt.data.private_metadata || {}),
+              documentAccess: newAccess
+            }
+          })
+          
+          console.log(`Auto-granted access to ${documentsToGrant.length} document(s) for ${email}: ${documentsToGrant.join(', ')}`)
+        }
+      }
+    } catch (error) {
+      console.error('Error checking approved emails:', error)
+      // Don't fail the webhook if this fails
+    }
 
     // Check if Resend API key is configured
     if (!process.env.RESEND_API_KEY) {
@@ -90,6 +138,13 @@ export async function POST(req: Request) {
       }
       
       console.log(`Attempting to send email for new user: ${email} to admin(s): ${adminEmails.join(', ')}`)
+      
+      const resend = getResend()
+      if (!resend) {
+        console.warn('Resend not configured, skipping email')
+        return NextResponse.json({ success: true, warning: 'Email not sent - Resend not configured' })
+      }
+      
       // Send email notification to all admins
       const result = await resend.emails.send({
         from: 'Tweed Collective <onboarding@resend.dev>',

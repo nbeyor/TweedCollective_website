@@ -2,7 +2,12 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  if (!process.env.RESEND_API_KEY) {
+    return null
+  }
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 async function getAdminEmails(): Promise<string[]> {
   try {
@@ -61,6 +66,15 @@ export async function POST(req: Request) {
     console.log(`Sending test email to admin(s): ${adminEmails.join(', ')}`)
     console.log(`Resend API key configured: ${!!process.env.RESEND_API_KEY}`)
     console.log(`Resend API key prefix: ${process.env.RESEND_API_KEY?.substring(0, 5)}...`)
+    
+    const resend = getResend()
+    if (!resend) {
+      return NextResponse.json({ 
+        success: false,
+        error: 'Resend not configured',
+        details: 'RESEND_API_KEY environment variable is not set'
+      }, { status: 500 })
+    }
     
     // Send test email notification to all admins
     const result = await resend.emails.send({

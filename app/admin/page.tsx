@@ -33,6 +33,10 @@ export default function AdminPage() {
   const [updating, setUpdating] = useState<string | null>(null)
   const [testingEmail, setTestingEmail] = useState(false)
   const [emailTestResult, setEmailTestResult] = useState<string | null>(null)
+  const [expandedDocument, setExpandedDocument] = useState<string | null>(null)
+  const [bulkEmails, setBulkEmails] = useState<Record<string, string>>({})
+  const [savingEmails, setSavingEmails] = useState<Record<string, boolean>>({})
+  const [approvedEmails, setApprovedEmails] = useState<Record<string, string[]>>({})
 
   // Check if current user is admin
   useEffect(() => {
@@ -77,6 +81,57 @@ export default function AdminPage() {
       setError('Failed to fetch users')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function fetchApprovedEmails() {
+    try {
+      const emails: Record<string, string[]> = {}
+      for (const doc of DOCUMENTS) {
+        const response = await fetch(`/api/admin/approved-emails?documentId=${doc.id}`)
+        const data = await response.json()
+        emails[doc.id] = data.approvedEmails || []
+      }
+      setApprovedEmails(emails)
+    } catch (err) {
+      console.error('Failed to fetch approved emails:', err)
+    }
+  }
+
+  async function saveBulkEmails(documentId: string) {
+    setSavingEmails({ ...savingEmails, [documentId]: true })
+    
+    try {
+      const emailText = bulkEmails[documentId] || ''
+      const emailList = emailText
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+      
+      const response = await fetch('/api/admin/approved-emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          documentId,
+          emails: emailList
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setApprovedEmails({ ...approvedEmails, [documentId]: data.approvedEmails })
+        setBulkEmails({ ...bulkEmails, [documentId]: '' })
+        setError(null)
+        // Refresh users to show newly granted access
+        fetchUsers()
+      } else {
+        setError(data.error || 'Failed to save approved emails')
+      }
+    } catch (err) {
+      setError('Failed to save approved emails')
+    } finally {
+      setSavingEmails({ ...savingEmails, [documentId]: false })
     }
   }
 
@@ -202,7 +257,7 @@ export default function AdminPage() {
               <button
                 onClick={testEmail}
                 disabled={testingEmail}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet text-cream hover:bg-violet-light disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage-light disabled:opacity-50 transition-colors"
               >
                 <Mail className={`w-4 h-4 ${testingEmail ? 'animate-pulse' : ''}`} />
                 {testingEmail ? 'Sending...' : 'Test Email'}
@@ -280,6 +335,77 @@ export default function AdminPage() {
             </div>
           </div>
 
+          {/* Bulk Email Management */}
+          <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
+            <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
+              <h2 className="text-lg font-semibold text-charcoal">Bulk Email Approval</h2>
+              <p className="text-sm text-warm-gray mt-1">Add email addresses that should automatically get access when they sign up</p>
+            </div>
+            
+            <div className="divide-y divide-stone/20">
+              {DOCUMENTS.map((doc) => (
+                <div key={doc.id} className="px-6 py-4">
+                  <div 
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => setExpandedDocument(expandedDocument === doc.id ? null : doc.id)}
+                  >
+                    <div>
+                      <h3 className="font-medium text-charcoal">{doc.title}</h3>
+                      <p className="text-sm text-warm-gray">
+                        {approvedEmails[doc.id]?.length || 0} approved email{approvedEmails[doc.id]?.length !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    {expandedDocument === doc.id ? (
+                      <ChevronUp className="w-5 h-5 text-warm-gray" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-warm-gray" />
+                    )}
+                  </div>
+                  
+                  {expandedDocument === doc.id && (
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-charcoal mb-2">
+                          Email addresses (one per line)
+                        </label>
+                        <textarea
+                          value={bulkEmails[doc.id] || approvedEmails[doc.id]?.join('\n') || ''}
+                          onChange={(e) => setBulkEmails({ ...bulkEmails, [doc.id]: e.target.value })}
+                          placeholder="user1@example.com&#10;user2@example.com&#10;user3@example.com"
+                          className="w-full h-32 px-4 py-3 rounded-lg border border-stone/30 bg-white text-charcoal font-mono text-sm resize-none focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20"
+                        />
+                        <p className="text-xs text-warm-gray mt-2">
+                          Paste email addresses separated by newlines. These users will automatically get access when they sign up.
+                        </p>
+                      </div>
+                      
+                      {approvedEmails[doc.id] && approvedEmails[doc.id].length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-charcoal mb-2">Currently approved:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {approvedEmails[doc.id].map((email, idx) => (
+                              <span key={idx} className="px-2 py-1 rounded bg-sage/10 text-sage text-xs font-mono">
+                                {email}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => saveBulkEmails(doc.id)}
+                        disabled={savingEmails[doc.id]}
+                        className="px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage-light disabled:opacity-50 transition-colors text-sm font-medium"
+                      >
+                        {savingEmails[doc.id] ? 'Saving...' : 'Save Approved Emails'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Users List */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
@@ -304,8 +430,8 @@ export default function AdminPage() {
                       onClick={() => setExpandedUser(expandedUser === u.id ? null : u.id)}
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                          <span className="text-purple-700 font-semibold">
+                        <div className="w-10 h-10 rounded-full bg-sage/20 flex items-center justify-center">
+                          <span className="text-sage font-semibold">
                             {(u.firstName?.[0] || u.email[0]).toUpperCase()}
                           </span>
                         </div>
