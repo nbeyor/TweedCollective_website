@@ -56,7 +56,7 @@ export default function DocumentsPage() {
     <div className="pt-28 bg-void min-h-screen">
       {/* Hero Section */}
       <section className="section relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet/5 via-transparent to-helix-cyan/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-sage/5 via-transparent to-taupe/5" />
         
         <div className="container mx-auto relative z-10">
           <div className="max-w-3xl">
@@ -109,8 +109,8 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Icon */}
-      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-violet/10 to-helix-cyan/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-        <Icon className="w-7 h-7 text-violet" />
+      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-sage/10 to-taupe/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+        <Icon className="w-7 h-7 text-sage-light" />
       </div>
       
       {/* Content */}
@@ -125,7 +125,7 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
               Public
             </span>
           ) : (
-            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-violet/10 text-violet">
+            <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sage/10 text-sage-light">
               <Lock className="w-3 h-3" />
               Protected
             </span>
@@ -143,7 +143,7 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
       
       {/* Arrow */}
       <div className="flex-shrink-0">
-        <ChevronRight className="w-5 h-5 text-stone group-hover:text-violet group-hover:translate-x-1 transition-all" />
+        <ChevronRight className="w-5 h-5 text-stone group-hover:text-sage-light group-hover:translate-x-1 transition-all" />
       </div>
     </Link>
   )
