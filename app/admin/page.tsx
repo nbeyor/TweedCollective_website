@@ -131,9 +131,12 @@ export default function AdminPage() {
       const data = await response.json()
       
       if (data.success) {
-        setEmailTestResult(`✅ Test email sent successfully! Check your inbox at nbeyor@gmail.com`)
+        const note = data.note ? ` ${data.note}` : ''
+        const emails = data.adminEmails ? ` (${data.adminEmails.join(', ')})` : ''
+        setEmailTestResult(`✅ Test email sent successfully to Admin${emails}! Email ID: ${data.emailId || 'unknown'}.${note}`)
       } else {
-        setEmailTestResult(`❌ Error: ${data.error || data.details || 'Unknown error'}`)
+        const details = data.details ? ` Details: ${data.details}` : ''
+        setEmailTestResult(`❌ Error: ${data.error || 'Unknown error'}${details}`)
       }
     } catch (err: any) {
       setEmailTestResult(`❌ Failed to send test email: ${err.message}`)

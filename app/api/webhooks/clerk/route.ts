@@ -3,11 +3,29 @@ import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { clerkClient } from '@clerk/nextjs/server'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Admin email to receive notifications
-const ADMIN_EMAIL = 'nbeyor@gmail.com'
+async function getAdminEmails(): Promise<string[]> {
+  try {
+    const client = await clerkClient()
+    const usersResponse = await client.users.getUserList({ limit: 100 })
+    
+    const adminEmails = usersResponse.data
+      .filter(user => 
+        user.privateMetadata?.isAdmin === true || 
+        user.publicMetadata?.role === 'admin'
+      )
+      .map(user => user.primaryEmailAddress?.emailAddress)
+      .filter((email): email is string => !!email)
+    
+    return adminEmails
+  } catch (error) {
+    console.error('Error fetching admin emails:', error)
+    return []
+  }
+}
 
 export async function POST(req: Request) {
   // Get the headers
@@ -63,11 +81,19 @@ export async function POST(req: Request) {
     }
 
     try {
-      console.log(`Attempting to send email for new user: ${email}`)
-      // Send email notification to admin
+      // Get admin emails from Clerk
+      const adminEmails = await getAdminEmails()
+      
+      if (adminEmails.length === 0) {
+        console.warn('No admin emails found, skipping email notification')
+        return NextResponse.json({ success: true, warning: 'No admin emails found' })
+      }
+      
+      console.log(`Attempting to send email for new user: ${email} to admin(s): ${adminEmails.join(', ')}`)
+      // Send email notification to all admins
       const result = await resend.emails.send({
         from: 'Tweed Collective <onboarding@resend.dev>',
-        to: ADMIN_EMAIL,
+        to: adminEmails,
         subject: `New User Signup: ${name}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -99,7 +125,18 @@ export async function POST(req: Request) {
         `,
       })
 
-      console.log(`Email sent to admin for new user: ${email}`, result)
+      console.log(`Email sent to admin(s) for new user: ${email}`, result)
+      
+      // Check for Resend errors
+      if (result.error) {
+        console.error('Resend API error:', result.error)
+      }
+      
+      if (!result.data) {
+        console.error('Resend API returned no data:', result)
+      } else {
+        console.log('Email ID:', result.data.id)
+      }
     } catch (error) {
       console.error('Error sending email:', error)
       // Don't fail the webhook if email fails

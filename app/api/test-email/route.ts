@@ -30,13 +30,14 @@ export async function POST(req: Request) {
   }
 
   try {
-    console.log(`Sending test email to admin: ${ADMIN_EMAIL}`)
+    console.log(`Sending test email to admin(s): ${adminEmails.join(', ')}`)
     console.log(`Resend API key configured: ${!!process.env.RESEND_API_KEY}`)
+    console.log(`Resend API key prefix: ${process.env.RESEND_API_KEY?.substring(0, 5)}...`)
     
-    // Send test email notification
+    // Send test email notification to all admins
     const result = await resend.emails.send({
       from: 'Tweed Collective <onboarding@resend.dev>',
-      to: ADMIN_EMAIL,
+      to: adminEmails,
       subject: 'Test Email: New User Signup Notification',
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -94,9 +95,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Test email sent successfully',
+      message: 'Test email sent successfully to Admin',
       emailId: result.data.id,
-      note: 'If you don\'t see the email, check your spam folder or verify your Resend domain configuration.'
+      adminEmails: adminEmails,
+      note: 'If you don\'t see the email, check your spam folder or verify your Resend domain configuration. Check Resend dashboard for delivery status.'
     })
   } catch (error: any) {
     console.error('Error sending test email:', error)
