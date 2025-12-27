@@ -7,28 +7,31 @@ const Services = () => {
     {
       number: "01",
       title: "Advisory",
-      subtitle: "Fee-for-Service Consulting",
-      description: "Commercial diligence, pricing models, AI readiness audits, and board advisory that turn ambiguity into conviction.",
+      subtitle: "Due diligence that goes beyond the deck",
+      description: "We've evaluated 50+ computational biology platforms, AI-enabled drug discovery companies, and clinical tech assets for PE and VC investors. Our diligence includes technical architecture reviews, primary research, and commercial viability assessments.",
       icon: Users,
-      tangibleOutputs: ["Due diligence", "Strategy documents", "Market maps", "Investment memos"],
+      tangibleOutputs: ["Commercial & technical due diligence", "AI readiness audits and transformation roadmaps", "Strategic sector analyses with primary research", "Board presentations and investment memos"],
+      engagement: "Typical: 2-4 weeks, fixed scope",
       color: "violet"
     },
     {
       number: "02",
       title: "Operators", 
-      subtitle: "Cash + Equity Partnerships",
-      description: "We embed proven C-suite talent directly into your team, running sprints that move pipeline and product—hands on the wheel, P&L in view.",
+      subtitle: "Principals with P&L experience, embedded with equity alignment",
+      description: "We've run commercial organizations, closed enterprise deals, and built GTM motions in life sciences and AI companies. We embed for 100-day sprints with skin in the game—because we only win when you win.",
       icon: Target,
-      tangibleOutputs: ["100-day GTM plan", "Revenue acceleration", "KPI dashboards", "Org building"],
+      tangibleOutputs: ["Fractional CCO / CRO / CSO roles", "100-day transformation sprints", "GTM strategy → execution → closed pipeline", "Team building and organizational design"],
+      engagement: "Typical: 4-6 months, retainer + equity",
       color: "sage"
     },
     {
       number: "03",
       title: "Incubation",
-      subtitle: "Building from Zero",
-      description: "We co-found, prototype, and seed emerging plays at the edge of AI × health, from concept to fundable entity.",
+      subtitle: "We co-found at the frontier",
+      description: "When we see a problem worth solving, we build. We've taken companies from napkin sketch to paying customer in under 90 days. We bring capital-efficient execution and deep domain networks.",
       icon: Rocket,
-      tangibleOutputs: ["MVP development", "Corporate setup", "Problem validation", "Fundraising"],
+      tangibleOutputs: ["Problem validation and market research", "Zero to MVP in 90 days, <$250K total spend", "Corporate formation and fundraising support", "Studio co-founder model with sweat equity"],
+      engagement: "Current focus: AI × women's health, computational biology tools",
       color: "violet-light"
     }
   ]
@@ -77,7 +80,7 @@ const Services = () => {
           <div className="flex items-center gap-3 mb-4">
             <span className="mono-label">// How We Work</span>
           </div>
-          <h2 className="text-cream">Three Pillars of Engagement</h2>
+          <h2 className="text-cream">Three models, one mission</h2>
         </div>
 
         {/* Services grid with gap lines */}
@@ -112,7 +115,7 @@ const Services = () => {
                 </p>
 
                 {/* Tangible Outputs */}
-                <div>
+                <div className="mb-6">
                   <p className="text-xs font-mono uppercase tracking-wider text-zinc mb-3">Deliverables</p>
                   <ul className="space-y-2">
                     {service.tangibleOutputs.map((output, i) => (
@@ -123,6 +126,13 @@ const Services = () => {
                     ))}
                   </ul>
                 </div>
+                
+                {/* Engagement meta */}
+                {service.engagement && (
+                  <p className="text-xs font-mono text-zinc pt-4 border-t border-slate/50">
+                    {service.engagement}
+                  </p>
+                )}
               </div>
             )
           })}
@@ -135,26 +145,29 @@ const Services = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="card p-6 text-center group hover:border-violet/50 transition-colors">
-              <div className="w-10 h-10 mx-auto mb-4 rounded-lg bg-violet/10 flex items-center justify-center group-hover:glow-violet transition-all">
+            <div className="card p-6 group hover:border-violet/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-violet/10 flex items-center justify-center group-hover:glow-violet transition-all">
                 <span className="text-violet font-mono text-lg">01</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Retainer + Equity</h4>
-              <p className="text-stone text-sm">Our preferred model for long-term partnerships</p>
+              <p className="text-stone text-sm mb-4">Our preferred model for long-term operator partnerships</p>
+              <p className="text-xs font-mono text-zinc">Typical: $10-20K/mo + 0.5-2% equity</p>
             </div>
-            <div className="card p-6 text-center group hover:border-sage/50 transition-colors">
-              <div className="w-10 h-10 mx-auto mb-4 rounded-lg bg-sage/10 flex items-center justify-center">
+            <div className="card p-6 group hover:border-sage/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-sage/10 flex items-center justify-center">
                 <span className="text-sage-light font-mono text-lg">02</span>
               </div>
-              <h4 className="text-cream font-semibold mb-2">Fixed-scope Project</h4>
-              <p className="text-stone text-sm">For targeted, specific needs</p>
+              <h4 className="text-cream font-semibold mb-2">Fixed-Scope Project</h4>
+              <p className="text-stone text-sm mb-4">For targeted diligence and strategic analyses</p>
+              <p className="text-xs font-mono text-zinc">Typical: 2-6 weeks, $25-75K</p>
             </div>
-            <div className="card p-6 text-center group hover:border-violet-light/50 transition-colors">
-              <div className="w-10 h-10 mx-auto mb-4 rounded-lg bg-violet-light/10 flex items-center justify-center">
+            <div className="card p-6 group hover:border-violet-light/50 transition-colors">
+              <div className="w-10 h-10 mb-4 rounded-lg bg-violet-light/10 flex items-center justify-center">
                 <span className="text-violet-light font-mono text-lg">03</span>
               </div>
               <h4 className="text-cream font-semibold mb-2">Studio Co-found</h4>
-              <p className="text-stone text-sm">Tweed takes sweat equity in new ventures</p>
+              <p className="text-stone text-sm mb-4">Sweat equity for ventures we believe in</p>
+              <p className="text-xs font-mono text-zinc">Typical: Significant equity, milestone-based</p>
             </div>
           </div>
         </div>

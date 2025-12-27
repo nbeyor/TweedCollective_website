@@ -45,8 +45,9 @@ module.exports = {
         'burgundy': '#722F37',
       },
       fontFamily: {
-        'sans': ['"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'display': ['"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'sans': ['"Instrument Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'display': ['"Instrument Serif"', 'Georgia', 'serif'],
+        'body': ['"Instrument Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         'mono': ['"JetBrains Mono"', '"SF Mono"', 'Monaco', 'monospace'],
       },
       fontSize: {

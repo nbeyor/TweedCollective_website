@@ -31,23 +31,28 @@ const Hero = () => {
         <div className="max-w-4xl">
           {/* Eyebrow */}
           <div className="flex items-center gap-3 mb-8 animate-fade-up">
-            <span className="w-8 h-px bg-sage-light" />
-            <span className="mono-label text-sage-light">Life Sciences × Technology</span>
+            <span className="w-6 h-px bg-violet" />
+            <span className="mono-label text-violet-light">AI × Life Sciences</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="mb-8 text-balance animate-fade-up animation-delay-100">
-            <span className="text-cream">Operations and advisory at the intersection of </span>
+          <h1 className="mb-6 text-balance animate-fade-up animation-delay-100">
+            <span className="text-cream">Operators and builders at the frontier of </span>
+            <span className="text-highlight">AI</span>
+            <span className="text-cream"> × </span>
             <span className="text-highlight">life sciences</span>
-            <span className="text-cream"> and </span>
-            <span className="text-highlight">technology</span>
+            <span className="text-cream">.</span>
           </h1>
+          
+          {/* Tagline */}
+          <p className="text-2xl text-violet-light mb-8 animate-fade-up animation-delay-150 font-display italic">
+            We advise. We embed. We build.
+          </p>
 
           {/* Subheadline */}
           <p className="body-large mb-12 text-balance max-w-2xl text-stone animate-fade-up animation-delay-200">
-            We partner with investors, growth-stage companies, and founding teams to navigate 
-            the convergence of life sciences and artificial intelligence—through advisory, 
-            fractional leadership, and venture building.
+            Advisory for investors who need conviction. Fractional leadership with equity alignment. 
+            Venture building from zero. All at the convergence of biotechnology and artificial intelligence.
           </p>
 
           {/* CTA Buttons */}
@@ -57,7 +62,7 @@ const Hero = () => {
               <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </a>
             <Link href="/services" className="btn-outline text-base px-8 py-4">
-              <span>Explore Services</span>
+              <span>Our Services</span>
             </Link>
           </div>
         </div>

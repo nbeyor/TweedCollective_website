@@ -1,11 +1,28 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Admin email to receive notifications
-const ADMIN_EMAIL = 'nbeyor@gmail.com'
+async function getAdminEmails(): Promise<string[]> {
+  try {
+    const client = await clerkClient()
+    const usersResponse = await client.users.getUserList({ limit: 100 })
+    
+    const adminEmails = usersResponse.data
+      .filter(user => 
+        user.privateMetadata?.isAdmin === true || 
+        user.publicMetadata?.role === 'admin'
+      )
+      .map(user => user.primaryEmailAddress?.emailAddress)
+      .filter((email): email is string => !!email)
+    
+    return adminEmails
+  } catch (error) {
+    console.error('Error fetching admin emails:', error)
+    return []
+  }
+}
 
 export async function POST(req: Request) {
   // Check if user is admin
@@ -26,6 +43,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       error: 'RESEND_API_KEY is not configured',
       message: 'Please add RESEND_API_KEY to your Vercel environment variables'
+    }, { status: 500 })
+  }
+
+  // Get admin emails from Clerk
+  const adminEmails = await getAdminEmails()
+  
+  if (adminEmails.length === 0) {
+    return NextResponse.json({ 
+      success: false,
+      error: 'No admin emails found',
+      details: 'Please ensure at least one user has admin privileges in Clerk'
     }, { status: 500 })
   }
 

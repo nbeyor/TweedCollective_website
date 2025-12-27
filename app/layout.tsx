@@ -5,9 +5,9 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Tweed Collective - Scale Health-Tech Revenue with Fractional Operators & AI-Powered Playbooks',
-  description: 'Health-tech companies accelerate revenue with our fractional operators and AI-powered execution frameworks',
-  keywords: 'health-tech, fractional operators, revenue acceleration, biotech consulting, startup scaling',
+  title: 'Tweed Collective - Operators and Builders at the AI × Life Sciences Frontier',
+  description: 'Advisory for investors, fractional leadership with equity alignment, and venture building at the convergence of biotechnology and artificial intelligence.',
+  keywords: 'AI life sciences, biotech consulting, fractional operators, venture building, due diligence, computational biology',
 }
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link 
-            href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" 
+            href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" 
             rel="stylesheet" 
           />
         </head>

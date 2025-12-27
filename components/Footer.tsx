@@ -30,7 +30,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-stone text-sm leading-relaxed max-w-xs">
-              Strategic intelligence at the intersection of life sciences and artificial intelligence. 
+              Operators and builders at the AI × life sciences frontier. 
               Advisory. Operations. Incubation.
             </p>
           </div>
@@ -110,9 +110,9 @@ const Footer = () => {
             © {new Date().getFullYear()} Tweed Collective. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-zinc text-sm">
-            <span>Built with</span>
-            <span className="text-violet">♥</span>
-            <span>for health-tech innovators</span>
+            <span>Built at the</span>
+            <span className="text-violet">AI × life sciences</span>
+            <span>frontier</span>
           </div>
         </div>
       </div>
