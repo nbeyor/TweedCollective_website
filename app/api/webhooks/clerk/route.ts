@@ -245,7 +245,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, warning: 'No admin emails found' })
       }
       
-      console.log(`Attempting to send email for new user: ${email} to admin(s): ${adminEmails.join(', ')}`)
+      console.log(`Attempting to send email for new user: ${primaryEmail} to admin(s): ${adminEmails.join(', ')}`)
       
       const resend = getResend()
       if (!resend) {
@@ -269,7 +269,7 @@ export async function POST(req: Request) {
               </tr>
               <tr>
                 <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Email</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">${email}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${primaryEmail}</td>
               </tr>
               <tr>
                 <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">User ID</td>
@@ -288,7 +288,7 @@ export async function POST(req: Request) {
         `,
       })
 
-      console.log(`Email sent to admin(s) for new user: ${email}`, result)
+      console.log(`Email sent to admin(s) for new user: ${primaryEmail}`, result)
       
       // Check for Resend errors
       if (result.error) {

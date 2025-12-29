@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAuth, SignUpButton, SignInButton } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Lock, CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react'
 
@@ -12,16 +12,25 @@ interface MagicLinkStatus {
   error?: string
 }
 
-export default function MagicLinkPage({ params }: { params: { token: string } }) {
+export default function MagicLinkPage() {
   const { userId, isLoaded } = useAuth()
   const router = useRouter()
+  const params = useParams()
+  const token = (params?.token as string) || ''
   const [magicLinkStatus, setMagicLinkStatus] = useState<MagicLinkStatus>({ status: 'loading' })
   const [redeeming, setRedeeming] = useState(false)
 
   useEffect(() => {
+    if (!token) {
+      setMagicLinkStatus({ status: 'invalid', error: 'Invalid token' })
+      return
+    }
+
     async function checkMagicLink() {
+      if (!token) return
+      
       try {
-        const response = await fetch(`/api/magic-link/${params.token}`)
+        const response = await fetch(`/api/magic-link/${token}`)
         const data = await response.json()
 
         if (response.status === 404 || response.status === 410) {

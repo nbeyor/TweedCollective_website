@@ -12,6 +12,25 @@ interface UserWithAccess {
   lastName: string | null
   documentAccess: string[]
   createdAt: string
+  grantInfo?: Record<string, { method: 'bulk-email' | 'magic-link' | 'manual', timestamp: string }>
+}
+
+interface MagicLink {
+  token: string
+  documentId: string
+  createdAt: string
+  usedAt?: string
+  usedBy?: string
+  expiresAt?: string
+  status: 'active' | 'used' | 'expired'
+}
+
+interface AuditEntry {
+  userId: string
+  email: string
+  documentIds: string[]
+  timestamp: string
+  method: 'bulk-email' | 'magic-link'
 }
 
 // List of available documents
@@ -37,6 +56,12 @@ export default function AdminPage() {
   const [bulkEmails, setBulkEmails] = useState<Record<string, string>>({})
   const [savingEmails, setSavingEmails] = useState<Record<string, boolean>>({})
   const [approvedEmails, setApprovedEmails] = useState<Record<string, string[]>>({})
+  const [magicLinks, setMagicLinks] = useState<MagicLink[]>([])
+  const [auditTrail, setAuditTrail] = useState<AuditEntry[]>([])
+  const [expandedMagicLink, setExpandedMagicLink] = useState<string | null>(null)
+  const [generatingLink, setGeneratingLink] = useState<Record<string, boolean>>({})
+  const [testEmailInput, setTestEmailInput] = useState('')
+  const [testingAutoGrant, setTestingAutoGrant] = useState(false)
 
   // Check if current user is admin
   useEffect(() => {
