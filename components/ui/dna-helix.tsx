@@ -115,3 +115,4 @@ export default function DNAHelix({ className = '' }: DNAHelixProps) {
     </div>
   )
 }
+

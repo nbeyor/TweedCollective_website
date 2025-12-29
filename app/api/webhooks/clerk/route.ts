@@ -12,20 +12,53 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY)
 }
 
-async function getAdminEmails(): Promise<string[]> {
+async function getAdminUser(client: ReturnType<typeof clerkClient> extends Promise<infer T> ? T : never): Promise<{ id: string; email: string } | null> {
   try {
-    const client = await clerkClient()
-    const usersResponse = await client.users.getUserList({ limit: 100 })
+    // Try to get all users with pagination to find admin
+    let adminUser = null
+    let offset = 0
+    const limit = 100
     
-    const adminEmails = usersResponse.data
-      .filter(user => 
+    while (!adminUser) {
+      const usersResponse = await client.users.getUserList({ limit, offset })
+      
+      adminUser = usersResponse.data.find(user => 
         user.privateMetadata?.isAdmin === true || 
         user.publicMetadata?.role === 'admin'
       )
-      .map(user => user.primaryEmailAddress?.emailAddress)
-      .filter((email): email is string => !!email)
+      
+      // If no more users or found admin, break
+      if (usersResponse.data.length < limit || adminUser) {
+        break
+      }
+      
+      offset += limit
+    }
     
-    return adminEmails
+    if (adminUser && adminUser.primaryEmailAddress?.emailAddress) {
+      return {
+        id: adminUser.id,
+        email: adminUser.primaryEmailAddress.emailAddress
+      }
+    }
+    
+    return null
+  } catch (error) {
+    console.error('Error fetching admin user:', error)
+    return null
+  }
+}
+
+async function getAdminEmails(): Promise<string[]> {
+  try {
+    const client = await clerkClient()
+    const adminUser = await getAdminUser(client)
+    
+    if (adminUser) {
+      return [adminUser.email]
+    }
+    
+    return []
   } catch (error) {
     console.error('Error fetching admin emails:', error)
     return []
@@ -76,29 +109,48 @@ export async function POST(req: Request) {
 
   if (eventType === 'user.created') {
     const { id, email_addresses, first_name, last_name } = evt.data
-    const email = email_addresses?.[0]?.email_address || 'No email'
-    const emailLower = email.toLowerCase()
+    // Normalize all email addresses
+    const allEmails = (email_addresses || [])
+      .map(addr => addr?.email_address?.trim().toLowerCase())
+      .filter((email): email is string => !!email && email.includes('@'))
+    
+    const primaryEmail = allEmails[0] || 'No email'
     const name = [first_name, last_name].filter(Boolean).join(' ') || 'No name provided'
+
+    console.log(`[Webhook] New user created: ${primaryEmail} (ID: ${id})`)
+    console.log(`[Webhook] All emails for user: ${allEmails.join(', ')}`)
 
     // Check approved emails and auto-grant access
     try {
       const client = await clerkClient()
-      const usersResponse = await client.users.getUserList({ limit: 100 })
+      const adminUser = await getAdminUser(client)
       
-      // Find admin user to get document approvals
-      const adminUser = usersResponse.data.find(user => 
-        user.privateMetadata?.isAdmin === true || 
-        user.publicMetadata?.role === 'admin'
-      )
-      
-      if (adminUser) {
-        const documentApprovals = (adminUser.publicMetadata?.documentApprovals as Record<string, string[]>) || {}
+      if (!adminUser) {
+        console.warn('[Webhook] No admin user found, skipping auto-grant check')
+      } else {
+        console.log(`[Webhook] Found admin user: ${adminUser.email} (ID: ${adminUser.id})`)
+        
+        // Get admin user's full data to access metadata
+        const adminUserData = await client.users.getUser(adminUser.id)
+        const documentApprovals = (adminUserData.publicMetadata?.documentApprovals as Record<string, string[]>) || {}
         const documentsToGrant: string[] = []
         
-        // Check each document's approved emails
+        console.log(`[Webhook] Checking ${Object.keys(documentApprovals).length} document(s) for approved emails`)
+        
+        // Check each document's approved emails against all user emails
         for (const [documentId, approvedEmails] of Object.entries(documentApprovals)) {
-          if (Array.isArray(approvedEmails) && approvedEmails.includes(emailLower)) {
+          if (!Array.isArray(approvedEmails)) {
+            console.warn(`[Webhook] Invalid approved emails format for document ${documentId}`)
+            continue
+          }
+          
+          // Check if any of the user's emails match approved emails
+          const normalizedApproved = approvedEmails.map(e => e.trim().toLowerCase())
+          const hasMatch = allEmails.some(userEmail => normalizedApproved.includes(userEmail))
+          
+          if (hasMatch) {
             documentsToGrant.push(documentId)
+            console.log(`[Webhook] Match found for document ${documentId} - user email matches approved list`)
           }
         }
         
@@ -114,11 +166,67 @@ export async function POST(req: Request) {
             }
           })
           
-          console.log(`Auto-granted access to ${documentsToGrant.length} document(s) for ${email}: ${documentsToGrant.join(', ')}`)
+          // Store audit trail in admin metadata
+          const auditTrail = (adminUserData.publicMetadata?.accessAuditTrail as Array<{
+            userId: string
+            email: string
+            documentIds: string[]
+            timestamp: string
+            method: 'bulk-email' | 'magic-link'
+          }>) || []
+          
+          auditTrail.push({
+            userId: id,
+            email: primaryEmail,
+            documentIds: documentsToGrant,
+            timestamp: new Date().toISOString(),
+            method: 'bulk-email'
+          })
+          
+          // Keep only last 100 audit entries
+          const recentAudit = auditTrail.slice(-100)
+          
+          await client.users.updateUserMetadata(adminUser.id, {
+            publicMetadata: {
+              ...adminUserData.publicMetadata,
+              accessAuditTrail: recentAudit
+            }
+          })
+          
+          console.log(`[Webhook] ✅ Auto-granted access to ${documentsToGrant.length} document(s) for ${primaryEmail}: ${documentsToGrant.join(', ')}`)
+        } else {
+          console.log(`[Webhook] No matching approved emails found for ${primaryEmail}`)
+        }
+      }
+      
+      // Check for pending magic link grants
+      if (adminUser) {
+        const adminUserData = await client.users.getUser(adminUser.id)
+        const magicLinks = (adminUserData.publicMetadata?.magicLinks as Record<string, {
+          documentId: string
+          createdAt: string
+          usedAt?: string
+          usedBy?: string
+          expiresAt?: string
+        }>) || {}
+        
+        const pendingLinks = Object.entries(magicLinks).filter(([token, link]) => {
+          // Check if link is unused and not expired
+          if (link.usedAt || link.usedBy) return false
+          if (link.expiresAt && new Date(link.expiresAt) < new Date()) return false
+          return true
+        })
+        
+        if (pendingLinks.length > 0) {
+          console.log(`[Webhook] Found ${pendingLinks.length} pending magic link(s), checking for matches...`)
+          
+          // Note: Magic links are redeemed via the magic link page, not automatically on signup
+          // This is intentional - user must click the link to redeem it
         }
       }
     } catch (error) {
-      console.error('Error checking approved emails:', error)
+      console.error('[Webhook] Error checking approved emails:', error)
+      console.error('[Webhook] Error details:', error instanceof Error ? error.message : String(error))
       // Don't fail the webhook if this fails
     }
 
