@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Shield, Settings, Users, FileText, ExternalLink, Lock } from 'lucide-react'
+import { Shield, Settings, Users, FileText, ExternalLink, Lock, Globe, Eye, EyeOff, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { getAllDocuments } from '@/content/documents'
+import type { DocumentMeta } from '@/lib/types'
 
 interface Tool {
   id: string
@@ -23,14 +25,10 @@ const TOOLS: Tool[] = [
     icon: <Users className="w-6 h-6" />,
     requiresAdmin: true,
   },
-  {
-    id: 'documents',
-    title: 'Documents',
-    description: 'View and manage internal documents',
-    href: '/documents',
-    icon: <FileText className="w-6 h-6" />,
-  },
 ]
+
+// Get all documents including unlisted ones for internal view
+const ALL_DOCUMENTS = getAllDocuments().filter(doc => doc.id !== 'internal-access')
 
 export default function InternalPage() {
   const { userId, isLoaded } = useAuth()
@@ -133,14 +131,9 @@ export default function InternalPage() {
           </div>
 
           {/* Tools Grid */}
-          <div className="grid gap-6 md:grid-cols-2">
-            {TOOLS.map((tool) => {
-              // Skip admin-only tools for non-admins
-              if (tool.requiresAdmin && !isAdmin) {
-                return null
-              }
-
-              return (
+          {isAdmin && (
+            <div className="grid gap-6 md:grid-cols-2 mb-12">
+              {TOOLS.map((tool) => (
                 <Link
                   key={tool.id}
                   href={tool.href}
@@ -160,11 +153,86 @@ export default function InternalPage() {
                     </span>
                   )}
                 </Link>
-              )
-            })}
+              ))}
+            </div>
+          )}
+
+          {/* All Documents Section */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <FileText className="w-6 h-6 text-sage" />
+              <h2 className="text-xl font-semibold text-cream">All Documents</h2>
+            </div>
+            <p className="text-stone mb-6 text-sm">
+              Complete document registry including unlisted documents. Visibility indicates how documents appear on the public site.
+            </p>
+            <div className="space-y-3">
+              {ALL_DOCUMENTS.map((doc) => (
+                <DocumentRow key={doc.id} document={doc} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+function DocumentRow({ document }: { document: DocumentMeta }) {
+  const Icon = document.icon
+  
+  const getVisibilityBadge = () => {
+    switch (document.visibility) {
+      case 'public':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+            <Globe className="w-3 h-3" />
+            Public
+          </span>
+        )
+      case 'listed':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sage/20 text-sage-light">
+            <Eye className="w-3 h-3" />
+            Listed (Protected)
+          </span>
+        )
+      case 'unlisted':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-taupe/20 text-taupe">
+            <EyeOff className="w-3 h-3" />
+            Unlisted
+          </span>
+        )
+    }
+  }
+  
+  return (
+    <Link
+      href={document.href}
+      className="group flex items-center gap-4 p-4 rounded-xl bg-carbon border border-slate hover:border-sage/50 transition-all duration-300"
+    >
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-sage/10 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-sage" />
+      </div>
+      
+      <div className="flex-grow min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <h3 className="text-sm font-medium text-cream group-hover:text-sage-light transition-colors truncate">
+            {document.title}
+          </h3>
+          {getVisibilityBadge()}
+        </div>
+        <div className="flex items-center gap-3 text-xs text-stone">
+          <span>{document.category}</span>
+          <span>•</span>
+          <span>{document.readTime}</span>
+          <span>•</span>
+          <span className="font-mono text-zinc">{document.id}</span>
+        </div>
+      </div>
+      
+      <ChevronRight className="flex-shrink-0 w-4 h-4 text-stone group-hover:text-sage-light group-hover:translate-x-0.5 transition-all" />
+    </Link>
   )
 }

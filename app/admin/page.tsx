@@ -2,39 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, X, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX } from 'lucide-react'
+import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX } from 'lucide-react'
 import Link from 'next/link'
+import { getGrantablePermissions } from '@/content/documents'
+import type { UserWithAccess, Invitation } from '@/lib/types'
 
-interface UserWithAccess {
-  id: string
-  email: string
-  firstName: string | null
-  lastName: string | null
-  documentAccess: string[]
-  createdAt: string
-  grantInfo?: Record<string, { method: 'invitation' | 'manual', timestamp: string }>
-}
-
-interface Invitation {
-  token: string
-  documentId: string
-  documentTitle?: string
-  targetEmail: string
-  createdAt: string
-  expiresAt: string
-  redeemedAt?: string
-  redeemedBy?: string
-  status: 'active' | 'expired' | 'redeemed'
-}
-
-// List of available documents and permissions
-const DOCUMENTS = [
-  { id: 'vibe-coding-in-enterprise-for-pe', title: 'VIBE Coding in Enterprise' },
-  { id: 'health-tech-market-2024', title: 'Health-Tech Market Landscape' },
-  { id: 'ai-integration-framework', title: 'AI Integration Framework' },
-  { id: 'salmon-ai-genomics', title: 'Strategic AI for Salmon Genomics' },
-  { id: 'internal-access', title: 'Internal Tools Access' },
-]
+// Get documents/permissions from centralized registry
+const DOCUMENTS = getGrantablePermissions()
 
 export default function AdminPage() {
   const { userId, isLoaded } = useAuth()

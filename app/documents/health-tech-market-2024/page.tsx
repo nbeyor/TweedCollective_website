@@ -2,6 +2,7 @@
 
 import React from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
+import DocumentAccessWrapper from '@/components/DocumentAccessWrapper'
 import { BarChart3, TrendingUp, Zap, Target, Users, Sprout, Rocket, ArrowUp, Briefcase, FlaskConical, Stethoscope, ShoppingCart } from 'lucide-react'
 
 // Define slides
@@ -550,10 +551,15 @@ function SegmentSlide({ segment }: { segment: 'pharmatech' | 'provider-payor' | 
 
 export default function HealthTechMarket2024Page() {
   return (
-    <PresentationLayout
-      title="Health-Tech Market Landscape: Entering 2026"
-      subtitle="Investment themes across stages and segments"
-      slides={slides}
-    />
+    <DocumentAccessWrapper 
+      documentId="health-tech-market-2024"
+      documentTitle="Health-Tech Market Landscape: Entering 2026"
+    >
+      <PresentationLayout
+        title="Health-Tech Market Landscape: Entering 2026"
+        subtitle="Investment themes across stages and segments"
+        slides={slides}
+      />
+    </DocumentAccessWrapper>
   )
 }

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
-import { Dna, Database, Layers, Target, Map, Zap, Brain, Eye, TrendingUp, GitBranch, FlaskConical, Globe, Calendar, Users, BarChart3, BookOpen, AlertTriangle, FileText, Shield } from 'lucide-react'
+import DocumentAccessWrapper from '@/components/DocumentAccessWrapper'
+import { Dna, Database, Target, Brain, Eye, TrendingUp, Users, BarChart3, Shield } from 'lucide-react'
 
 // Define slides
 const slides: Slide[] = [
@@ -1145,60 +1146,17 @@ function GlossarySlide() {
 }
 
 export default function SalmonAIGenomicsPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password === 'SalmonAIDocuments') {
-      setIsAuthenticated(true)
-      setError('')
-    } else {
-      setError('Incorrect password. Please try again.')
-      setPassword('')
-    }
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
-        <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5">
-          <h2 className="text-2xl font-serif text-cream mb-2">Password Required</h2>
-          <p className="text-sm text-cream/70 mb-6">This document is password protected. Please enter the password to continue.</p>
-          <form onSubmit={handlePasswordSubmit}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-                setError('')
-              }}
-              placeholder="Enter password"
-              className="w-full px-4 py-3 rounded-lg border border-cream/20 bg-cream/10 text-cream placeholder-cream/40 focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 mb-4"
-              autoFocus
-            />
-            {error && (
-              <p className="text-sm text-red-400 mb-4">{error}</p>
-            )}
-            <button
-              type="submit"
-              className="w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
-            >
-              Access Document
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <PresentationLayout
-      title="Strategic AI for Salmon Genetic Improvement"
-      subtitle="Turn 2.5 generations of genomic+phenotypic data into a predictive asset"
-      slides={slides}
-    />
+    <DocumentAccessWrapper 
+      documentId="salmon-ai-genomics"
+      documentTitle="Strategic AI for Salmon Genetic Improvement"
+    >
+      <PresentationLayout
+        title="Strategic AI for Salmon Genetic Improvement"
+        subtitle="Turn 2.5 generations of genomic+phenotypic data into a predictive asset"
+        slides={slides}
+      />
+    </DocumentAccessWrapper>
   )
 }
 

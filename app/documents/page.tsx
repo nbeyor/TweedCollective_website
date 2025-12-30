@@ -1,56 +1,16 @@
 import React from 'react'
 import Link from 'next/link'
-import { Clock, ChevronRight, BarChart3, Code2, Lock, Globe, UserPlus } from 'lucide-react'
+import { Clock, ChevronRight, Lock, Globe, UserPlus } from 'lucide-react'
 import { SignUpButton, SignedOut } from '@clerk/nextjs'
+import { getPublicDocuments } from '@/content/documents'
+import type { DocumentMeta } from '@/lib/types'
 
-// Document visibility types:
-// - 'public': Anyone can view, no authentication required
-// - 'listed': Listed on documents page, requires auth + access
-// - 'unlisted': NOT listed on documents page, only accessible via direct link with auth + access
-
-type DocumentVisibility = 'public' | 'listed' | 'unlisted'
-
-interface DocumentMeta {
-  id: string
-  title: string
-  description: string
-  category: string
-  icon: React.ElementType
-  date: string
-  readTime: string
-  href: string
-  visibility: DocumentVisibility
-}
-
-// Document metadata - add new documents here
-const documents: DocumentMeta[] = [
-  {
-    id: 'health-tech-market-2024',
-    title: 'Health-Tech Market Landscape: Entering 2026',
-    description: 'Investment themes across stages (seed/venture/growth/buyout) and segments (pharmatech/provider-payor/consumer).',
-    category: 'Market Research',
-    icon: BarChart3,
-    date: '2025-12',
-    readTime: '20 min',
-    href: '/documents/health-tech-market-2024',
-    visibility: 'public',
-  },
-  {
-    id: 'vibe-coding-in-enterprise-for-pe',
-    title: 'The Evolution of VIBE Coding in Enterprise - for PE Investors',
-    description: 'How next-gen coding agents reshape product velocity, talent, and value creation in PE-backed companies.',
-    category: 'Executive Briefing',
-    icon: Code2,
-    date: '2024-12',
-    readTime: '25 min',
-    href: '/documents/vibe-coding-in-enterprise-for-pe',
-    visibility: 'listed',
-  },
-]
+// Get visible documents from centralized registry
+const documents = getPublicDocuments()
 
 export default function DocumentsPage() {
-  // Only show public and listed documents (not unlisted)
-  const visibleDocs = documents.filter(d => d.visibility !== 'unlisted')
+  // Documents are already filtered by getPublicDocuments()
+  const visibleDocs = documents
 
   return (
     <div className="pt-28 bg-void min-h-screen">

@@ -2,6 +2,7 @@ import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { Resend } from 'resend'
+import { getDocumentTitle } from '@/content/documents'
 
 interface MagicLink {
   documentId: string
@@ -11,14 +12,6 @@ interface MagicLink {
   expiresAt: string
   redeemedAt?: string
   redeemedBy?: string
-}
-
-// Document titles for email content
-const DOCUMENT_TITLES: Record<string, string> = {
-  'vibe-coding-in-enterprise-for-pe': 'VIBE Coding in Enterprise',
-  'health-tech-market-2024': 'Health-Tech Market Landscape',
-  'ai-integration-framework': 'AI Integration Framework',
-  'salmon-ai-genomics': 'Strategic AI for Salmon Genomics',
 }
 
 export async function GET() {
@@ -120,7 +113,7 @@ export async function POST(request: Request) {
     const currentMetadata = user.publicMetadata || {}
     const magicLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
     
-    const documentTitle = DOCUMENT_TITLES[documentId] || documentId
+    const documentTitle = getDocumentTitle(documentId)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tweedcollective.ai'
     
     // Initialize Resend
