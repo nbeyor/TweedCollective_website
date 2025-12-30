@@ -306,10 +306,14 @@ export const iconRegistry = {
   'check': 'Check',
   'cross': 'X',
   'warning': 'AlertTriangle',
+  'alert': 'AlertTriangle',
   'info': 'Info',
   'settings': 'Settings',
   'edit': 'Edit',
   'delete': 'Trash2',
+  'cpu': 'Cpu',
+  'map': 'Map',
+  'lock': 'Lock',
 
   // Navigation & UI
   'arrow-right': 'ArrowRight',
@@ -585,6 +589,56 @@ export const slideTypeTemplates = {
       hover: {
         color: colors.sage[800],
       },
+    },
+  },
+
+  table: {
+    layout: 'standard',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    description: {
+      ...typographyPresets.body,
+      color: colors.neutral[600],
+      marginTop: spacing[3],
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse' as const,
+      marginTop: spacing[8],
+    },
+    thead: {
+      borderBottom: `2px solid ${colors.sage[400]}`,
+    },
+    th: {
+      textAlign: 'left' as const,
+      padding: spacing[3],
+      ...typographyPresets.cardTitle,
+      fontSize: typography.sizes.base,
+      color: colors.neutral[900],
+      fontWeight: typography.weights.semibold,
+    },
+    tbody: {
+      color: colors.neutral[700],
+    },
+    tr: {
+      borderBottom: `1px solid ${colors.neutral[200]}`,
+    },
+    td: {
+      padding: spacing[3],
+      ...typographyPresets.body,
+      fontSize: typography.sizes.sm,
+      color: colors.neutral[700],
+    },
+    tdHighlight: {
+      fontWeight: typography.weights.medium,
+      color: colors.neutral[900],
     },
   },
 } as const

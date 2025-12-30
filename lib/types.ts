@@ -46,7 +46,7 @@ export interface DocumentMeta extends Omit<DocumentConfig, 'icon'> {
 /**
  * Slide content types for pure data representation
  */
-export type SlideContentType = 
+export type SlideContentType =
   | 'title'           // Title slide with headline, subtitle, insight box
   | 'text'            // Text-heavy slide with heading and paragraphs
   | 'grid'            // Grid of cards/items
@@ -57,6 +57,7 @@ export type SlideContentType =
   | 'framework'       // Framework/process display
   | 'case-study'      // Case study with metrics and insights
   | 'sources'         // Sources/citations list
+  | 'table'           // Table with headers and rows
   | 'custom'          // Custom component (fallback for complex slides)
 
 /**
@@ -128,7 +129,12 @@ export interface GridSlideContent {
   sectionLabel?: string
   heading: string
   description?: string
+  headerSection?: {
+    heading: string
+    items: string[]
+  }
   columns?: 2 | 3 | 4
+  layout?: 'standard' | 'horizontal-cards'  // Layout variant for cards
   items: GridItem[]
   insightBox?: {
     label: string
@@ -313,6 +319,24 @@ export interface SourcesSlideContent {
 }
 
 /**
+ * Table slide content
+ */
+export interface TableSlideContent {
+  type: 'table'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  headers: string[]
+  rows: string[][]
+  highlightFirstColumn?: boolean
+  columnWidths?: string[]  // Optional CSS width values for each column
+  insightBox?: {
+    label: string
+    text: string
+  }
+}
+
+/**
  * Custom slide content (for complex interactive slides)
  */
 export interface CustomSlideContent {
@@ -324,7 +348,7 @@ export interface CustomSlideContent {
 /**
  * Union type for all slide content types
  */
-export type SlideContent = 
+export type SlideContent =
   | TitleSlideContent
   | TextSlideContent
   | GridSlideContent
@@ -335,6 +359,7 @@ export type SlideContent =
   | MetricsSlideContent
   | CaseStudySlideContent
   | SourcesSlideContent
+  | TableSlideContent
   | CustomSlideContent
 
 /**
