@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useAuth, SignUpButton, SignInButton } from '@clerk/nextjs'
+import { useAuth } from '@clerk/nextjs'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Lock, CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react'
+import { CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react'
 
 interface MagicLinkStatus {
   status: 'loading' | 'valid' | 'invalid' | 'used' | 'expired' | 'needs-auth'
@@ -42,10 +42,9 @@ export default function MagicLinkPage() {
         }
 
         if (data.needsAuth) {
-          setMagicLinkStatus({
-            status: 'needs-auth',
-            documentId: data.documentId
-          })
+          // Automatically redirect to sign-in page with redirect_url
+          const redirectUrl = encodeURIComponent(`/magic-link/${token}`)
+          router.push(`/sign-in?redirect_url=${redirectUrl}`)
           return
         }
 
@@ -68,17 +67,21 @@ export default function MagicLinkPage() {
       }
     }
 
-    if (isLoaded && token) {
+    // Only check magic link if user is not authenticated yet
+    // If user is authenticated, the other useEffect will handle redemption
+    if (isLoaded && token && !userId) {
       checkMagicLink()
     }
   }, [token, isLoaded, userId, router])
 
   useEffect(() => {
-    // If user just signed in and we're waiting for auth, check again
-    if (isLoaded && userId && magicLinkStatus.status === 'needs-auth' && token) {
+    // If user just signed in and we have a token, automatically redeem the magic link
+    // This handles the case when user returns from sign-in page
+    if (isLoaded && userId && token && magicLinkStatus.status === 'loading') {
+      // User is authenticated, redeem the magic link
       redeemMagicLink()
     }
-  }, [isLoaded, userId, magicLinkStatus.status, token])
+  }, [isLoaded, userId, token, magicLinkStatus.status])
 
   async function redeemMagicLink() {
     if (redeeming || !token) return
@@ -159,42 +162,6 @@ export default function MagicLinkPage() {
     )
   }
 
-  if (magicLinkStatus.status === 'needs-auth') {
-    return (
-      <div className="min-h-screen bg-void flex items-center justify-center p-4">
-        <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/20 flex items-center justify-center">
-            <Lock className="w-8 h-8 text-gold" />
-          </div>
-          
-          <h2 className="text-2xl font-serif text-cream mb-2">Sign In Required</h2>
-          <p className="text-sm text-cream/70 mb-6">
-            Please sign in or create an account to access this document. Your access will be granted automatically after you sign in.
-          </p>
-          
-          <div className="space-y-3">
-            <SignUpButton mode="modal">
-              <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-gold text-void font-semibold hover:bg-gold-light transition-colors">
-                <span>Sign Up</span>
-              </button>
-            </SignUpButton>
-            <SignInButton mode="modal">
-              <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage-light transition-colors">
-                <span>Sign In</span>
-              </button>
-            </SignInButton>
-            <Link
-              href="/documents"
-              className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Documents</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   // Success state
   return (
@@ -216,3 +183,4 @@ export default function MagicLinkPage() {
     </div>
   )
 }
+

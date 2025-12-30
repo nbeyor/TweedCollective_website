@@ -153,3 +153,4 @@ export async function GET(
     return NextResponse.json({ error: 'Failed to validate magic link' }, { status: 500 })
   }
 }
+

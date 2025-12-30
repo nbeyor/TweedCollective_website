@@ -1,6 +1,12 @@
+'use client'
+
 import { SignIn } from '@clerk/nextjs'
+import { useSearchParams } from 'next/navigation'
 
 export default function SignInPage() {
+  const searchParams = useSearchParams()
+  const redirectUrl = searchParams.get('redirect_url') || '/documents'
+
   return (
     <div className="pt-28 min-h-screen flex items-center justify-center bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -11,6 +17,8 @@ export default function SignInPage() {
           </div>
           <div className="card p-8">
             <SignIn 
+              fallbackRedirectUrl={redirectUrl}
+              signUpUrl="/sign-up"
               appearance={{
                 elements: {
                   rootBox: "mx-auto",
