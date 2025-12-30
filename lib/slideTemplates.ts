@@ -340,7 +340,6 @@ export const iconRegistry = {
 
   // Other
   'eye': 'Eye',
-  'lock': 'Lock',
   'unlock': 'Unlock',
   'workflow': 'Workflow',
   'graduation': 'GraduationCap',
