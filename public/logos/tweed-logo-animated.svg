@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background square with rounded corners -->
+  <rect x="10" y="10" width="180" height="180" rx="25" fill="none" stroke="#3A3A45" stroke-width="3"/>
+
+  <!-- Animated horizontal data streams -->
+  <g>
+    <!-- Stream 1 -->
+    <line x1="35" y1="60" x2="165" y2="60" stroke="#4A5D4C" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Stream 2 -->
+    <line x1="35" y1="100" x2="165" y2="100" stroke="#8C7B6B" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Stream 3 -->
+    <line x1="35" y1="140" x2="165" y2="140" stroke="#4A5D4C" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="1s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- Animated vertical data streams -->
+  <g>
+    <!-- Stream 1 -->
+    <line x1="60" y1="35" x2="60" y2="165" stroke="#C4A772" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.25s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Stream 2 -->
+    <line x1="100" y1="35" x2="100" y2="165" stroke="#D4AF37" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0.75s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Stream 3 -->
+    <line x1="140" y1="35" x2="140" y2="165" stroke="#C4A772" stroke-width="5" stroke-linecap="round" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="1.25s" repeatCount="indefinite"/>
+    </line>
+  </g>
+</svg>
