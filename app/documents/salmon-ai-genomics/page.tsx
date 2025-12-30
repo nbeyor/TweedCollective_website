@@ -398,7 +398,7 @@ const slides: Slide[] = [
             <Check className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">Phase 3 (A3 Complete)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>✓ Model v1 serving "Select-Now" predictions</li>
+              <li>✓ Model v1 serving &quot;Select-Now&quot; predictions</li>
               <li>✓ Edit-or-Select dashboard by trait/region</li>
               <li>✓ Regulatory playbooks for EU vs permissive markets</li>
             </ul>
