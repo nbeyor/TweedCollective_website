@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   '/contact',
   '/documents',
   '/admin',
+  '/internal',
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/magic-link(.*)',

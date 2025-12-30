@@ -16,6 +16,23 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
   const { user } = useUser()
   const [hasAccess, setHasAccess] = React.useState<boolean | null>(null)
   const [isChecking, setIsChecking] = React.useState(true)
+  const [adminEmails, setAdminEmails] = React.useState<string[]>([])
+
+  // Fetch admin emails for access request mailto link
+  React.useEffect(() => {
+    async function fetchAdminEmails() {
+      try {
+        const response = await fetch('/api/admin/emails')
+        const data = await response.json()
+        if (data.emails && data.emails.length > 0) {
+          setAdminEmails(data.emails)
+        }
+      } catch (error) {
+        console.error('Error fetching admin emails:', error)
+      }
+    }
+    fetchAdminEmails()
+  }, [])
 
   React.useEffect(() => {
     async function verifyAccess() {
@@ -64,8 +81,8 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
     return (
       <div className="min-h-screen bg-charcoal flex items-center justify-center p-4">
         <div className="max-w-md w-full p-8 rounded-xl border border-cream/20 bg-cream/5 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-purple-500/20 flex items-center justify-center">
-            <Lock className="w-8 h-8 text-purple-400" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-sage/20 flex items-center justify-center">
+            <Lock className="w-8 h-8 text-sage" />
           </div>
           
           {userId ? (
@@ -78,8 +95,8 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
               </p>
               <div className="space-y-3">
                 <a
-                  href={`mailto:hello@tweedcollective.ai?subject=${encodeURIComponent(`Document Access Request: ${documentTitle || documentId}`)}&body=${encodeURIComponent(`Hi,\n\nI would like to request access to the following document:\n\nDocument: ${documentTitle || documentId}\nDocument ID: ${documentId}\nUser Email: ${user?.primaryEmailAddress?.emailAddress || 'Not available'}\nUser ID: ${userId}\n\nThank you.`)}`}
-                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-purple-600 text-cream font-semibold hover:bg-purple-700 transition-colors"
+                  href={`mailto:${adminEmails.length > 0 ? adminEmails.join(',') : 'support@tweedcollective.ai'}?subject=${encodeURIComponent(`Document Access Request: ${documentTitle || documentId}`)}&body=${encodeURIComponent(`Hi,\n\nI would like to request access to the following document:\n\nDocument: ${documentTitle || documentId}\nDocument ID: ${documentId}\nUser Email: ${user?.primaryEmailAddress?.emailAddress || 'Not available'}\nUser ID: ${userId}\n\nThank you.`)}`}
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
                 >
                   <Mail className="w-4 h-4" />
                   <span>Request Access</span>
@@ -102,13 +119,13 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
               </p>
               <div className="space-y-3">
                 <SignUpButton mode="modal">
-                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-purple-600 text-cream font-semibold hover:bg-purple-700 transition-colors">
+                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors">
                     <UserPlus className="w-4 h-4" />
                     <span>Sign Up</span>
                   </button>
                 </SignUpButton>
                 <SignInButton mode="modal">
-                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors">
+                  <button className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-taupe text-cream font-semibold hover:bg-taupe/90 transition-colors">
                     <span>Sign In</span>
                   </button>
                 </SignInButton>

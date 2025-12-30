@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth, useUser } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, X, RefreshCw, ChevronDown, ChevronUp, Mail, Link2, Copy, Trash2, Clock, Sparkles } from 'lucide-react'
+import { useAuth } from '@clerk/nextjs'
+import { Shield, Users, FileText, Check, X, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX } from 'lucide-react'
 import Link from 'next/link'
 
 interface UserWithAccess {
@@ -12,17 +12,19 @@ interface UserWithAccess {
   lastName: string | null
   documentAccess: string[]
   createdAt: string
-  grantInfo?: Record<string, { method: 'bulk-email' | 'magic-link' | 'manual', timestamp: string }>
+  grantInfo?: Record<string, { method: 'invitation' | 'manual', timestamp: string }>
 }
 
-interface MagicLink {
+interface Invitation {
   token: string
   documentId: string
+  documentTitle?: string
+  targetEmail: string
   createdAt: string
-  usedAt?: string
-  usedBy?: string
-  expiresAt?: string
-  status: 'active' | 'used' | 'expired'
+  expiresAt: string
+  redeemedAt?: string
+  redeemedBy?: string
+  status: 'active' | 'expired' | 'redeemed'
 }
 
 interface AuditEntry {
@@ -30,38 +32,37 @@ interface AuditEntry {
   email: string
   documentIds: string[]
   timestamp: string
-  method: 'bulk-email' | 'magic-link'
+  method: 'invitation' | 'manual'
 }
 
-// List of available documents
+// List of available documents and permissions
 const DOCUMENTS = [
   { id: 'vibe-coding-in-enterprise-for-pe', title: 'VIBE Coding in Enterprise' },
   { id: 'health-tech-market-2024', title: 'Health-Tech Market Landscape' },
   { id: 'ai-integration-framework', title: 'AI Integration Framework' },
   { id: 'salmon-ai-genomics', title: 'Strategic AI for Salmon Genomics' },
+  { id: 'internal-access', title: 'Internal Tools Access' },
 ]
 
 export default function AdminPage() {
   const { userId, isLoaded } = useAuth()
-  const { user } = useUser()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [users, setUsers] = useState<UserWithAccess[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [expandedUser, setExpandedUser] = useState<string | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
   const [testingEmail, setTestingEmail] = useState(false)
   const [emailTestResult, setEmailTestResult] = useState<string | null>(null)
-  const [expandedDocument, setExpandedDocument] = useState<string | null>(null)
-  const [bulkEmails, setBulkEmails] = useState<Record<string, string>>({})
-  const [savingEmails, setSavingEmails] = useState<Record<string, boolean>>({})
-  const [approvedEmails, setApprovedEmails] = useState<Record<string, string[]>>({})
-  const [magicLinks, setMagicLinks] = useState<MagicLink[]>([])
-  const [auditTrail, setAuditTrail] = useState<AuditEntry[]>([])
-  const [expandedMagicLink, setExpandedMagicLink] = useState<string | null>(null)
-  const [generatingLink, setGeneratingLink] = useState<Record<string, boolean>>({})
-  const [testEmailInput, setTestEmailInput] = useState('')
-  const [testingAutoGrant, setTestingAutoGrant] = useState(false)
+  const [invitations, setInvitations] = useState<Invitation[]>([])
+  const [adminEmails, setAdminEmails] = useState<string[]>([])
+  
+  // Invitation form state
+  const [selectedDocument, setSelectedDocument] = useState<string>('')
+  const [inviteEmails, setInviteEmails] = useState('')
+  const [sendingInvites, setSendingInvites] = useState(false)
+  const [deletingUser, setDeletingUser] = useState<string | null>(null)
 
   // Check if current user is admin
   useEffect(() => {
@@ -79,9 +80,8 @@ export default function AdminPage() {
         
         if (data.isAdmin) {
           fetchUsers()
-          fetchApprovedEmails()
-          fetchMagicLinks()
-          fetchAuditTrail()
+          fetchInvitations()
+          fetchAdminEmails()
         } else {
           setLoading(false)
         }
@@ -112,72 +112,82 @@ export default function AdminPage() {
     }
   }
 
-  async function fetchApprovedEmails() {
-    try {
-      const emails: Record<string, string[]> = {}
-      for (const doc of DOCUMENTS) {
-        const response = await fetch(`/api/admin/approved-emails?documentId=${doc.id}`)
-        const data = await response.json()
-        emails[doc.id] = data.approvedEmails || []
-      }
-      setApprovedEmails(emails)
-    } catch (err) {
-      console.error('Failed to fetch approved emails:', err)
-    }
-  }
-
-  async function fetchMagicLinks() {
+  async function fetchInvitations() {
     try {
       const response = await fetch('/api/admin/magic-links')
       const data = await response.json()
       if (data.magicLinks) {
-        setMagicLinks(data.magicLinks)
+        setInvitations(data.magicLinks)
       }
     } catch (err) {
-      console.error('Failed to fetch magic links:', err)
+      console.error('Failed to fetch invitations:', err)
     }
   }
 
-  async function fetchAuditTrail() {
+  async function fetchAdminEmails() {
     try {
-      const response = await fetch('/api/admin/users')
+      const response = await fetch('/api/admin/emails')
       const data = await response.json()
-      if (data.auditTrail) {
-        setAuditTrail(data.auditTrail)
+      if (data.emails) {
+        setAdminEmails(data.emails)
       }
     } catch (err) {
-      console.error('Failed to fetch audit trail:', err)
+      console.error('Failed to fetch admin emails:', err)
     }
   }
 
-  async function generateMagicLink(documentId: string) {
-    setGeneratingLink({ ...generatingLink, [documentId]: true })
+  async function sendInvitations() {
+    if (!selectedDocument || !inviteEmails.trim()) {
+      setError('Please select a document and enter at least one email address')
+      return
+    }
+
+    const emailList = inviteEmails
+      .split(/[\n,;]/)
+      .map(e => e.trim())
+      .filter(e => e.length > 0 && e.includes('@'))
+
+    if (emailList.length === 0) {
+      setError('No valid email addresses found')
+      return
+    }
+
+    setSendingInvites(true)
+    setError(null)
+    setSuccessMessage(null)
+
     try {
       const response = await fetch('/api/admin/magic-links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId, expiresInDays: 30 })
+        body: JSON.stringify({ 
+          documentId: selectedDocument, 
+          emails: emailList,
+          expiresInDays: 7 
+        })
       })
       
       const data = await response.json()
       
       if (data.success) {
-        await fetchMagicLinks()
-        // Copy to clipboard
-        await navigator.clipboard.writeText(data.magicLinkUrl)
-        setError(null)
-        alert(`Magic link generated and copied to clipboard!\n\n${data.magicLinkUrl}`)
+        const successCount = data.results?.filter((r: { success: boolean }) => r.success).length || 0
+        const failCount = data.results?.filter((r: { success: boolean }) => !r.success).length || 0
+        
+        setSuccessMessage(`Sent ${successCount} invitation(s) successfully${failCount > 0 ? `, ${failCount} failed` : ''}`)
+        setInviteEmails('')
+        setSelectedDocument('')
+        await fetchInvitations()
       } else {
-        setError(data.error || 'Failed to generate magic link')
+        setError(data.error || 'Failed to send invitations')
       }
     } catch (err) {
-      setError('Failed to generate magic link')
+      setError('Failed to send invitations')
     } finally {
-      setGeneratingLink({ ...generatingLink, [documentId]: false })
+      setSendingInvites(false)
     }
   }
 
-  async function revokeMagicLink(token: string) {
+  async function revokeInvitation(token: string) {
     try {
       const response = await fetch('/api/admin/magic-links', {
         method: 'DELETE',
@@ -188,90 +198,41 @@ export default function AdminPage() {
       const data = await response.json()
       
       if (data.success) {
-        await fetchMagicLinks()
+        await fetchInvitations()
         setError(null)
       } else {
-        setError(data.error || 'Failed to revoke magic link')
+        setError(data.error || 'Failed to revoke invitation')
       }
     } catch (err) {
-      setError('Failed to revoke magic link')
+      setError('Failed to revoke invitation')
     }
   }
 
-  async function copyMagicLink(url: string) {
-    try {
-      await navigator.clipboard.writeText(url)
-      alert('Magic link copied to clipboard!')
-    } catch (err) {
-      setError('Failed to copy magic link')
-    }
-  }
-
-  async function testAutoGrant() {
-    if (!testEmailInput.trim()) {
-      setError('Please enter an email address')
+  async function deleteUser(targetUserId: string) {
+    if (!confirm('Are you sure you want to delete this user? They will need to sign up again.')) {
       return
     }
 
-    setTestingAutoGrant(true)
+    setDeletingUser(targetUserId)
     try {
-      // Simulate what the webhook would do - check if email is in approved list
-      const emailLower = testEmailInput.trim().toLowerCase()
-      const matchingDocs: string[] = []
-      
-      for (const [docId, emails] of Object.entries(approvedEmails)) {
-        if (emails.includes(emailLower)) {
-          matchingDocs.push(docId)
-        }
-      }
-      
-      if (matchingDocs.length > 0) {
-        const docTitles = matchingDocs.map(id => DOCUMENTS.find(d => d.id === id)?.title || id).join(', ')
-        setEmailTestResult(`✅ Email "${testEmailInput}" would be auto-granted access to: ${docTitles}`)
-      } else {
-        setEmailTestResult(`ℹ️ Email "${testEmailInput}" is not in any approved email lists`)
-      }
-    } catch (err: any) {
-      setEmailTestResult(`❌ Error: ${err.message}`)
-    } finally {
-      setTestingAutoGrant(false)
-    }
-  }
-
-  async function saveBulkEmails(documentId: string) {
-    setSavingEmails({ ...savingEmails, [documentId]: true })
-    
-    try {
-      const emailText = bulkEmails[documentId] || ''
-      const emailList = emailText
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line.length > 0)
-      
-      const response = await fetch('/api/admin/approved-emails', {
-        method: 'POST',
+      const response = await fetch('/api/admin/users', {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          documentId,
-          emails: emailList
-        })
+        body: JSON.stringify({ userId: targetUserId })
       })
       
       const data = await response.json()
       
       if (data.success) {
-        setApprovedEmails({ ...approvedEmails, [documentId]: data.approvedEmails })
-        setBulkEmails({ ...bulkEmails, [documentId]: '' })
-        setError(null)
-        // Refresh users to show newly granted access
-        fetchUsers()
+        setUsers(users.filter(u => u.id !== targetUserId))
+        setSuccessMessage('User deleted successfully')
       } else {
-        setError(data.error || 'Failed to save approved emails')
+        setError(data.error || 'Failed to delete user')
       }
     } catch (err) {
-      setError('Failed to save approved emails')
+      setError('Failed to delete user')
     } finally {
-      setSavingEmails({ ...savingEmails, [documentId]: false })
+      setDeletingUser(null)
     }
   }
 
@@ -292,7 +253,6 @@ export default function AdminPage() {
       const data = await response.json()
       
       if (data.success) {
-        // Update local state
         setUsers(users.map(u => {
           if (u.id === targetUserId) {
             return {
@@ -326,15 +286,14 @@ export default function AdminPage() {
       const data = await response.json()
       
       if (data.success) {
-        const note = data.note ? ` ${data.note}` : ''
         const emails = data.adminEmails ? ` (${data.adminEmails.join(', ')})` : ''
-        setEmailTestResult(`✅ Test email sent successfully to Admin${emails}! Email ID: ${data.emailId || 'unknown'}.${note}`)
+        setEmailTestResult(`✅ Test email sent successfully to Admin${emails}!`)
       } else {
-        const details = data.details ? ` Details: ${data.details}` : ''
-        setEmailTestResult(`❌ Error: ${data.error || 'Unknown error'}${details}`)
+        setEmailTestResult(`❌ Error: ${data.error || 'Unknown error'}`)
       }
-    } catch (err: any) {
-      setEmailTestResult(`❌ Failed to send test email: ${err.message}`)
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      setEmailTestResult(`❌ Failed to send test email: ${errorMessage}`)
     } finally {
       setTestingEmail(false)
     }
@@ -373,7 +332,7 @@ export default function AdminPage() {
           <Shield className="w-16 h-16 mx-auto mb-6 text-red-400" />
           <h1 className="text-2xl font-serif text-charcoal mb-2">Access Denied</h1>
           <p className="text-warm-gray mb-6">
-            You don't have admin privileges. Contact the site administrator if you believe this is an error.
+            You don&apos;t have admin privileges. Contact the site administrator if you believe this is an error.
           </p>
           <Link href="/" className="btn-outline">
             Back to Home
@@ -391,13 +350,13 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-serif text-charcoal mb-2">Admin Dashboard</h1>
-              <p className="text-warm-gray">Manage user document access</p>
+              <p className="text-warm-gray">Manage user document access and send invitations</p>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={testEmail}
                 disabled={testingEmail}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage-light disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors"
               >
                 <Mail className={`w-4 h-4 ${testingEmail ? 'animate-pulse' : ''}`} />
                 {testingEmail ? 'Sending...' : 'Test Email'}
@@ -413,6 +372,7 @@ export default function AdminPage() {
             </div>
           </div>
 
+          {/* Messages */}
           {emailTestResult && (
             <div className={`mb-6 p-4 rounded-lg border ${
               emailTestResult.startsWith('✅') 
@@ -421,6 +381,13 @@ export default function AdminPage() {
             }`}>
               {emailTestResult}
               <button onClick={() => setEmailTestResult(null)} className="ml-4 underline">Dismiss</button>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700">
+              {successMessage}
+              <button onClick={() => setSuccessMessage(null)} className="ml-4 underline">Dismiss</button>
             </div>
           )}
 
@@ -444,7 +411,7 @@ export default function AdminPage() {
             </div>
             <div className="p-4 rounded-xl bg-white border border-stone/30">
               <div className="flex items-center gap-3">
-                <FileText className="w-8 h-8 text-purple-500" />
+                <FileText className="w-8 h-8 text-taupe" />
                 <div>
                   <p className="text-2xl font-bold text-charcoal">{DOCUMENTS.length}</p>
                   <p className="text-sm text-warm-gray">Documents</p>
@@ -464,228 +431,164 @@ export default function AdminPage() {
             </div>
             <div className="p-4 rounded-xl bg-white border border-stone/30">
               <div className="flex items-center gap-3">
-                <X className="w-8 h-8 text-red-400" />
+                <Mail className="w-8 h-8 text-gold" />
                 <div>
                   <p className="text-2xl font-bold text-charcoal">
-                    {users.filter(u => u.documentAccess.length === 0).length}
+                    {invitations.filter(i => i.status === 'active').length}
                   </p>
-                  <p className="text-sm text-warm-gray">No Access</p>
+                  <p className="text-sm text-warm-gray">Pending Invites</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bulk Email Management */}
-          <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
-            <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-charcoal">Bulk Email Approval</h2>
-                  <p className="text-sm text-warm-gray mt-1">Add email addresses that should automatically get access when they sign up</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="email"
-                    value={testEmailInput}
-                    onChange={(e) => setTestEmailInput(e.target.value)}
-                    placeholder="test@example.com"
-                    className="px-3 py-1.5 rounded-lg border border-stone/30 text-sm text-charcoal focus:outline-none focus:border-sage"
-                    onKeyPress={(e) => e.key === 'Enter' && testAutoGrant()}
-                  />
-                  <button
-                    onClick={testAutoGrant}
-                    disabled={testingAutoGrant || !testEmailInput.trim()}
-                    className="px-3 py-1.5 rounded-lg bg-sage text-cream hover:bg-sage-light disabled:opacity-50 transition-colors text-sm font-medium"
-                  >
-                    {testingAutoGrant ? 'Testing...' : 'Test'}
-                  </button>
+          {/* Admin Emails Info */}
+          {adminEmails.length > 0 && (
+            <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
+              <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
+                <h2 className="text-lg font-semibold text-charcoal">Admin Notifications</h2>
+                <p className="text-sm text-warm-gray mt-1">These emails receive new user signup notifications and access requests</p>
+              </div>
+              <div className="px-6 py-4">
+                <div className="flex flex-wrap gap-2">
+                  {adminEmails.map((email, idx) => (
+                    <span key={idx} className="px-3 py-1.5 rounded-lg bg-sage/10 text-sage font-mono text-sm border border-sage/20">
+                      {email}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
-            
-            <div className="divide-y divide-stone/20">
-              {DOCUMENTS.map((doc) => (
-                <div key={doc.id} className="px-6 py-4">
-                  <div 
-                    className="flex items-center justify-between cursor-pointer"
-                    onClick={() => setExpandedDocument(expandedDocument === doc.id ? null : doc.id)}
-                  >
-                    <div>
-                      <h3 className="font-medium text-charcoal">{doc.title}</h3>
-                      <p className="text-sm text-warm-gray">
-                        {approvedEmails[doc.id]?.length || 0} approved email{approvedEmails[doc.id]?.length !== 1 ? 's' : ''}
-                      </p>
-                    </div>
-                    {expandedDocument === doc.id ? (
-                      <ChevronUp className="w-5 h-5 text-warm-gray" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-warm-gray" />
-                    )}
-                  </div>
-                  
-                  {expandedDocument === doc.id && (
-                    <div className="mt-4 space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-charcoal mb-2">
-                          Email addresses (one per line)
-                        </label>
-                        <textarea
-                          value={bulkEmails[doc.id] || approvedEmails[doc.id]?.join('\n') || ''}
-                          onChange={(e) => setBulkEmails({ ...bulkEmails, [doc.id]: e.target.value })}
-                          placeholder="user1@example.com&#10;user2@example.com&#10;user3@example.com"
-                          className="w-full h-32 px-4 py-3 rounded-lg border border-stone/30 bg-white text-charcoal font-mono text-sm resize-none focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20"
-                        />
-                        <p className="text-xs text-warm-gray mt-2">
-                          Paste email addresses separated by newlines. These users will automatically get access when they sign up.
-                        </p>
-                      </div>
-                      
-                      {approvedEmails[doc.id] && approvedEmails[doc.id].length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-charcoal mb-2">
-                            Currently approved ({approvedEmails[doc.id].length}):
-                          </p>
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {approvedEmails[doc.id].map((email, idx) => (
-                              <span key={idx} className="px-2 py-1 rounded bg-sage/10 text-sage text-xs font-mono">
-                                {email}
-                              </span>
-                            ))}
-                          </div>
-                          {/* Show recent auto-grants for this document */}
-                          {auditTrail.filter(e => 
-                            e.documentIds.includes(doc.id) && e.method === 'bulk-email'
-                          ).slice(-5).length > 0 && (
-                            <div className="mt-3 pt-3 border-t border-stone/20">
-                              <p className="text-xs font-medium text-charcoal mb-2">Recent auto-grants:</p>
-                              <div className="space-y-1">
-                                {auditTrail
-                                  .filter(e => e.documentIds.includes(doc.id) && e.method === 'bulk-email')
-                                  .slice(-5)
-                                  .reverse()
-                                  .map((entry, idx) => (
-                                    <div key={idx} className="text-xs text-warm-gray flex items-center gap-2">
-                                      <Clock className="w-3 h-3" />
-                                      <span className="font-mono">{entry.email}</span>
-                                      <span className="text-zinc">
-                                        {new Date(entry.timestamp).toLocaleDateString()} {new Date(entry.timestamp).toLocaleTimeString()}
-                                      </span>
-                                    </div>
-                                  ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      <button
-                        onClick={() => saveBulkEmails(doc.id)}
-                        disabled={savingEmails[doc.id]}
-                        className="px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage-light disabled:opacity-50 transition-colors text-sm font-medium"
-                      >
-                        {savingEmails[doc.id] ? 'Saving...' : 'Save Approved Emails'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
 
-          {/* Magic Links Management */}
+          {/* Send Invitations */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
-              <h2 className="text-lg font-semibold text-charcoal">Magic Links</h2>
-              <p className="text-sm text-warm-gray mt-1">Generate one-time share links that auto-grant access after signup</p>
+              <h2 className="text-lg font-semibold text-charcoal">Send Invitations</h2>
+              <p className="text-sm text-warm-gray mt-1">Invite people by email - they&apos;ll receive a link to access the document</p>
             </div>
-            
-            <div className="px-6 py-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {DOCUMENTS.map((doc) => (
-                  <div key={doc.id} className="p-4 rounded-lg border border-stone/20 bg-stone/5">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-charcoal text-sm">{doc.title}</h3>
-                      <button
-                        onClick={() => generateMagicLink(doc.id)}
-                        disabled={generatingLink[doc.id]}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gold text-void hover:bg-gold-light disabled:opacity-50 transition-colors text-xs font-medium"
-                      >
-                        <Sparkles className="w-3 h-3" />
-                        {generatingLink[doc.id] ? 'Generating...' : 'Generate Link'}
-                      </button>
-                    </div>
-                    <p className="text-xs text-warm-gray">
-                      {magicLinks.filter(l => l.documentId === doc.id && l.status === 'active').length} active link(s)
-                    </p>
-                  </div>
-                ))}
+            <div className="px-6 py-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  Select Document
+                </label>
+                <select
+                  value={selectedDocument}
+                  onChange={(e) => setSelectedDocument(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-stone/30 bg-white text-charcoal focus:outline-none focus:border-sage"
+                >
+                  <option value="">Choose a document...</option>
+                  {DOCUMENTS.map(doc => (
+                    <option key={doc.id} value={doc.id}>{doc.title}</option>
+                  ))}
+                </select>
               </div>
               
-              {magicLinks.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h3 className="text-sm font-semibold text-charcoal mb-2">All Magic Links</h3>
-                  {magicLinks.map((link) => {
-                    const doc = DOCUMENTS.find(d => d.id === link.documentId)
-                    const linkUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://tweedcollective.ai'}/magic-link/${link.token}`
-                    
-                    return (
-                      <div key={link.token} className="p-3 rounded-lg border border-stone/20 bg-stone/5">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-grow min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-sm text-charcoal">{doc?.title || link.documentId}</span>
-                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                                link.status === 'active' ? 'bg-green-100 text-green-700' :
-                                link.status === 'used' ? 'bg-blue-100 text-blue-700' :
-                                'bg-red-100 text-red-700'
-                              }`}>
-                                {link.status}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <code className="text-xs text-warm-gray font-mono bg-stone/20 px-2 py-0.5 rounded truncate max-w-md">
-                                {linkUrl}
-                              </code>
-                              <button
-                                onClick={() => copyMagicLink(linkUrl)}
-                                className="p-1 hover:bg-stone/20 rounded transition-colors"
-                                title="Copy link"
-                              >
-                                <Copy className="w-3 h-3 text-warm-gray" />
-                              </button>
-                            </div>
-                            <div className="text-xs text-warm-gray space-y-0.5">
-                              <div>Created: {new Date(link.createdAt).toLocaleString()}</div>
-                              {link.expiresAt && (
-                                <div>Expires: {new Date(link.expiresAt).toLocaleString()}</div>
-                              )}
-                              {link.usedAt && (
-                                <div>Used: {new Date(link.usedAt).toLocaleString()}</div>
-                              )}
-                            </div>
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  Email Addresses
+                </label>
+                <textarea
+                  value={inviteEmails}
+                  onChange={(e) => setInviteEmails(e.target.value)}
+                  placeholder="Enter email addresses (one per line, or comma-separated)"
+                  className="w-full h-24 px-4 py-3 rounded-lg border border-stone/30 bg-white text-charcoal font-mono text-sm resize-none focus:outline-none focus:border-sage"
+                />
+                <p className="text-xs text-warm-gray mt-2">
+                  Each person will receive a unique invitation link valid for 7 days. They must sign in with the invited email.
+                </p>
+              </div>
+              
+              <button
+                onClick={sendInvitations}
+                disabled={sendingInvites || !selectedDocument || !inviteEmails.trim()}
+                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors font-medium"
+              >
+                <Send className="w-4 h-4" />
+                {sendingInvites ? 'Sending...' : 'Send Invitations'}
+              </button>
+            </div>
+          </div>
+
+          {/* Pending Invitations */}
+          {invitations.length > 0 && (
+            <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
+              <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
+                <h2 className="text-lg font-semibold text-charcoal">Invitations</h2>
+                <p className="text-sm text-warm-gray mt-1">Track sent invitations and their status</p>
+              </div>
+              <div className="divide-y divide-stone/20">
+                {invitations.map((invite) => {
+                  const doc = DOCUMENTS.find(d => d.id === invite.documentId)
+                  
+                  return (
+                    <div key={invite.token} className="px-6 py-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-grow min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-charcoal">{invite.targetEmail}</span>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                              invite.status === 'active' ? 'bg-yellow-100 text-yellow-700' :
+                              invite.status === 'redeemed' ? 'bg-green-100 text-green-700' :
+                              'bg-red-100 text-red-700'
+                            }`}>
+                              {invite.status === 'active' ? 'Pending' : 
+                               invite.status === 'redeemed' ? 'Redeemed' : 'Expired'}
+                            </span>
                           </div>
-                          {link.status === 'active' && (
+                          <div className="text-sm text-warm-gray">
+                            {doc?.title || invite.documentId}
+                          </div>
+                          <div className="text-xs text-warm-gray mt-1 flex items-center gap-3">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              Sent: {new Date(invite.createdAt).toLocaleDateString()}
+                            </span>
+                            <span>
+                              Expires: {new Date(invite.expiresAt).toLocaleDateString()}
+                            </span>
+                            {invite.redeemedAt && (
+                              <span className="text-green-600">
+                                Redeemed: {new Date(invite.redeemedAt).toLocaleDateString()}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {invite.status === 'active' && (
+                          <div className="flex items-center gap-2">
                             <button
-                              onClick={() => revokeMagicLink(link.token)}
+                              onClick={async () => {
+                                const url = `${window.location.origin}/magic-link/${invite.token}`
+                                await navigator.clipboard.writeText(url)
+                                setSuccessMessage('Invitation link copied to clipboard!')
+                              }}
+                              className="p-2 hover:bg-stone/20 rounded transition-colors text-warm-gray"
+                              title="Copy link"
+                            >
+                              <Copy className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => revokeInvitation(invite.token)}
                               className="p-2 hover:bg-red-50 rounded transition-colors text-red-600"
-                              title="Revoke link"
+                              title="Revoke invitation"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
-                    )
-                  })}
-                </div>
-              )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Users List */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
               <h2 className="text-lg font-semibold text-charcoal">Users & Document Access</h2>
+              <p className="text-sm text-warm-gray mt-1">Manage access and remove users</p>
             </div>
             
             {loading ? (
@@ -719,23 +622,6 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        {u.documentAccess.length > 0 && u.grantInfo && (
-                          <div className="flex items-center gap-2">
-                            {Object.entries(u.grantInfo).slice(0, 2).map(([docId, info]) => (
-                              <span
-                                key={docId}
-                                className="px-2 py-0.5 rounded text-xs font-medium"
-                                title={`Granted via ${info.method} on ${new Date(info.timestamp).toLocaleString()}`}
-                                style={{
-                                  backgroundColor: info.method === 'bulk-email' ? '#d1fae5' : info.method === 'magic-link' ? '#fef3c7' : '#e5e7eb',
-                                  color: info.method === 'bulk-email' ? '#065f46' : info.method === 'magic-link' ? '#92400e' : '#374151'
-                                }}
-                              >
-                                {info.method === 'bulk-email' ? '📧' : info.method === 'magic-link' ? '✨' : '👤'}
-                              </span>
-                            ))}
-                          </div>
-                        )}
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                           u.documentAccess.length > 0 
                             ? 'bg-green-100 text-green-700' 
@@ -766,15 +652,8 @@ export default function AdminPage() {
                               <div className="flex-grow">
                                 <span className="text-sm text-charcoal">{doc.title}</span>
                                 {hasAccess && grantInfo && (
-                                  <div className="text-xs text-warm-gray mt-1 flex items-center gap-2">
-                                    <span>
-                                      {grantInfo.method === 'bulk-email' ? '📧 Auto-granted via bulk email' :
-                                       grantInfo.method === 'magic-link' ? '✨ Auto-granted via magic link' :
-                                       '👤 Manually granted'}
-                                    </span>
-                                    <span className="text-zinc">
-                                      {new Date(grantInfo.timestamp).toLocaleDateString()} {new Date(grantInfo.timestamp).toLocaleTimeString()}
-                                    </span>
+                                  <div className="text-xs text-warm-gray mt-1">
+                                    {grantInfo.method === 'invitation' ? '✉️ Via invitation' : '👤 Manual'} - {new Date(grantInfo.timestamp).toLocaleDateString()}
                                   </div>
                                 )}
                               </div>
@@ -795,6 +674,21 @@ export default function AdminPage() {
                             </div>
                           )
                         })}
+                        
+                        {/* Delete User Button */}
+                        <div className="pt-3 mt-3 border-t border-stone/20">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              deleteUser(u.id)
+                            }}
+                            disabled={deletingUser === u.id}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm"
+                          >
+                            <UserX className="w-4 h-4" />
+                            {deletingUser === u.id ? 'Deleting...' : 'Delete User'}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
 import TweedLogo from './ui/tweed-logo'
 import { ChevronRight } from 'lucide-react'
 
@@ -18,6 +18,42 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user, isLoaded } = useUser()
+  const [hasInternalAccess, setHasInternalAccess] = useState(false)
+  
+  // Check if user has internal access
+  useEffect(() => {
+    async function checkInternalAccess() {
+      if (!isLoaded || !user) {
+        setHasInternalAccess(false)
+        return
+      }
+
+      try {
+        // Check admin status first
+        const adminResponse = await fetch('/api/admin/check')
+        const adminData = await adminResponse.json()
+        
+        if (adminData.isAdmin) {
+          setHasInternalAccess(true)
+          return
+        }
+
+        // Check internal-access permission
+        const accessResponse = await fetch('/api/document-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ documentId: 'internal-access' })
+        })
+        const accessData = await accessResponse.json()
+        setHasInternalAccess(accessData.hasAccess)
+      } catch (error) {
+        setHasInternalAccess(false)
+      }
+    }
+
+    checkInternalAccess()
+  }, [isLoaded, user])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,6 +117,21 @@ export default function Header() {
                 </Link>
               )
             })}
+            {hasInternalAccess && (
+              <Link
+                href="/internal"
+                className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
+                  pathname === '/internal' || pathname === '/admin'
+                    ? 'text-gold bg-gold/10'
+                    : 'text-gold/70 hover:text-gold hover:bg-gold/10'
+                }`}
+              >
+                Internal
+                {(pathname === '/internal' || pathname === '/admin') && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold" />
+                )}
+              </Link>
+            )}
           </div>
 
           {/* CTA Button & Auth */}
@@ -161,17 +212,33 @@ export default function Header() {
                   href={item.href}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-violet/10 text-violet'
+                      ? 'bg-sage/10 text-sage-light'
                       : 'text-stone hover:bg-slate/50 hover:text-cream'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>{item.name}</span>
                   <ChevronRight className={`w-4 h-4 transition-colors ${
-                    pathname === item.href ? 'text-violet' : 'text-zinc'
+                    pathname === item.href ? 'text-sage' : 'text-zinc'
                   }`} />
                 </Link>
               ))}
+              {hasInternalAccess && (
+                <Link
+                  href="/internal"
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                    pathname === '/internal' || pathname === '/admin'
+                      ? 'bg-gold/10 text-gold'
+                      : 'text-gold/70 hover:bg-gold/10 hover:text-gold'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span>Internal</span>
+                  <ChevronRight className={`w-4 h-4 transition-colors ${
+                    pathname === '/internal' || pathname === '/admin' ? 'text-gold' : 'text-zinc'
+                  }`} />
+                </Link>
+              )}
             </div>
             
             <div className="mt-4 pt-4 border-t border-slate/30 px-2 space-y-2">

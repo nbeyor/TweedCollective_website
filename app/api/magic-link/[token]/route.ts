@@ -3,10 +3,12 @@ import { NextResponse } from 'next/server'
 
 interface MagicLink {
   documentId: string
+  documentTitle?: string
+  targetEmail: string
   createdAt: string
-  usedAt?: string
-  usedBy?: string
-  expiresAt?: string
+  expiresAt: string
+  redeemedAt?: string
+  redeemedBy?: string
 }
 
 export async function GET(
@@ -53,21 +55,21 @@ export async function GET(
     const magicLink = magicLinks[token]
 
     if (!magicLink) {
-      return NextResponse.json({ error: 'Invalid or expired magic link' }, { status: 404 })
+      return NextResponse.json({ error: 'Invalid or expired invitation link' }, { status: 404 })
     }
 
-    // Check if already used
-    if (magicLink.usedAt || magicLink.usedBy) {
+    // Check if expired
+    if (new Date(magicLink.expiresAt) < new Date()) {
       return NextResponse.json({ 
-        error: 'This magic link has already been used',
+        error: 'This invitation has expired',
         documentId: magicLink.documentId 
       }, { status: 410 })
     }
 
-    // Check if expired
-    if (magicLink.expiresAt && new Date(magicLink.expiresAt) < new Date()) {
+    // Check if already redeemed
+    if (magicLink.redeemedAt) {
       return NextResponse.json({ 
-        error: 'This magic link has expired',
+        error: 'This invitation has already been used',
         documentId: magicLink.documentId 
       }, { status: 410 })
     }
@@ -80,18 +82,37 @@ export async function GET(
       return NextResponse.json({ 
         needsAuth: true,
         documentId: magicLink.documentId,
+        targetEmail: magicLink.targetEmail,
         token 
       })
     }
 
-    // User is authenticated - grant access and mark as used
+    // User is authenticated - validate email matches
     const user = await currentUser()
     
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 401 })
     }
 
-    // Grant access to document
+    // Get all user emails and check if any match the target
+    const userEmails = user.emailAddresses?.map(e => e.emailAddress.toLowerCase()) || []
+    const primaryEmail = user.primaryEmailAddress?.emailAddress?.toLowerCase()
+    
+    if (primaryEmail && !userEmails.includes(primaryEmail)) {
+      userEmails.push(primaryEmail)
+    }
+
+    const targetEmailLower = magicLink.targetEmail.toLowerCase()
+    
+    if (!userEmails.includes(targetEmailLower)) {
+      return NextResponse.json({ 
+        error: 'Email mismatch',
+        message: `This invitation was sent to ${magicLink.targetEmail}. Please sign in with that email address.`,
+        targetEmail: magicLink.targetEmail
+      }, { status: 403 })
+    }
+
+    // Email matches - grant access
     const currentAccess = (user.privateMetadata?.documentAccess as string[]) || []
     
     if (!currentAccess.includes(magicLink.documentId)) {
@@ -103,11 +124,11 @@ export async function GET(
       })
     }
 
-    // Mark magic link as used
+    // Mark magic link as redeemed
     magicLinks[token] = {
       ...magicLink,
-      usedAt: new Date().toISOString(),
-      usedBy: userId
+      redeemedAt: new Date().toISOString(),
+      redeemedBy: userId
     }
 
     await client.users.updateUserMetadata(adminUser.id, {
@@ -123,15 +144,15 @@ export async function GET(
       email: string
       documentIds: string[]
       timestamp: string
-      method: 'bulk-email' | 'magic-link'
+      method: 'invitation' | 'manual'
     }>) || []
     
     auditTrail.push({
       userId: userId,
-      email: user.primaryEmailAddress?.emailAddress || 'unknown',
+      email: primaryEmail || magicLink.targetEmail,
       documentIds: [magicLink.documentId],
       timestamp: new Date().toISOString(),
-      method: 'magic-link'
+      method: 'invitation'
     })
     
     const recentAudit = auditTrail.slice(-100)
@@ -149,8 +170,7 @@ export async function GET(
       message: 'Access granted successfully'
     })
   } catch (error) {
-    console.error('Error validating magic link:', error)
-    return NextResponse.json({ error: 'Failed to validate magic link' }, { status: 500 })
+    console.error('Error validating invitation link:', error)
+    return NextResponse.json({ error: 'Failed to validate invitation link' }, { status: 500 })
   }
 }
-

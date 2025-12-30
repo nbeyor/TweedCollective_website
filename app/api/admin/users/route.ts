@@ -53,12 +53,12 @@ export async function GET() {
           email: string
           documentIds: string[]
           timestamp: string
-          method: 'bulk-email' | 'magic-link'
+          method: 'invitation' | 'manual'
         }>) || []
       : []
     
     // Create a map of user grants from audit trail
-    const userGrants: Record<string, { method: 'bulk-email' | 'magic-link' | 'manual', timestamp: string, documentIds: string[] }[]> = {}
+    const userGrants: Record<string, { method: 'invitation' | 'manual', timestamp: string, documentIds: string[] }[]> = {}
     
     auditTrail.forEach(entry => {
       if (!userGrants[entry.userId]) {
@@ -75,7 +75,7 @@ export async function GET() {
     
     const users = usersResponse.data.map(user => {
       const grants = userGrants[user.id] || []
-      const grantInfo: Record<string, { method: 'bulk-email' | 'magic-link' | 'manual', timestamp: string }> = {}
+      const grantInfo: Record<string, { method: 'invitation' | 'manual', timestamp: string }> = {}
       
       grants.forEach(grant => {
         grant.documentIds.forEach(docId => {
@@ -117,5 +117,51 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching users:', error)
     return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const currentUserData = await currentUser()
+    
+    if (!currentUserData) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Check if current user is admin
+    const isAdmin = currentUserData.privateMetadata?.isAdmin === true ||
+                    currentUserData.publicMetadata?.role === 'admin'
+
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    const { userId: targetUserId } = await request.json()
+
+    if (!targetUserId || typeof targetUserId !== 'string') {
+      return NextResponse.json({ error: 'userId is required' }, { status: 400 })
+    }
+
+    // Prevent admin from deleting themselves
+    if (targetUserId === userId) {
+      return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
+    }
+
+    // Delete the user from Clerk
+    const client = await clerkClient()
+    await client.users.deleteUser(targetUserId)
+
+    console.log(`[Admin] User ${targetUserId} deleted by admin ${userId}`)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting user:', error)
+    return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 })
   }
 }
