@@ -179,7 +179,7 @@ const slides: Slide[] = [
             <BarChart3 className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">AI-Imputed FCR (g-FCR)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Problem: Can't measure individual FCR in net-pens</li>
+              <li>• Problem: Can&apos;t measure individual FCR in net-pens</li>
               <li>• Solution: AI imputes individual scores from family/genomic data</li>
               <li>• Impact: Only operator breeding for feed efficiency</li>
             </ul>
