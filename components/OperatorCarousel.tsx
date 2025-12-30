@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Operator } from '@/lib/airtable';
 import { ChevronLeft, ChevronRight, Linkedin } from 'lucide-react';
 
@@ -48,7 +48,9 @@ const staticOperators = [
 
 export default function OperatorCarousel({ operators }: { operators: Operator[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Use static operators if Airtable operators are not available
   const displayOperators = (operators && operators.length > 0) ? operators : staticOperators;
   const currentOperator = displayOperators[currentIndex];
@@ -60,6 +62,25 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
   const prevOperator = () => {
     setCurrentIndex((prev) => (prev - 1 + displayOperators.length) % displayOperators.length);
   };
+
+  // Auto-advance carousel every 5 seconds
+  useEffect(() => {
+    if (isPaused || displayOperators.length <= 1) return;
+
+    intervalRef.current = setInterval(() => {
+      nextOperator();
+    }, 5000); // 5 seconds
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [currentIndex, isPaused, displayOperators.length]);
+
+  // Pause on hover
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
 
   return (
     <section className="section bg-graphite relative overflow-hidden">
@@ -80,15 +101,19 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
             {/* Previous Button */}
             <button
               onClick={prevOperator}
-              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30"
+              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30 opacity-60 hover:opacity-100"
               aria-label="Previous operator"
             >
               <ChevronLeft className="w-6 h-6 text-cream" />
             </button>
 
-            {/* Operator Card */}
-            <div className="flex-1 max-w-md">
-              <div className="text-center">
+            {/* Operator Card with auto-scroll and pause on hover */}
+            <div
+              className="flex-1 max-w-md"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="text-center transition-opacity duration-500">
                 <div className="relative mb-6">
                   <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-2 border-violet/30 bg-slate">
                     <img 
@@ -133,22 +158,22 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
             {/* Next Button */}
             <button
               onClick={nextOperator}
-              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30"
+              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30 opacity-60 hover:opacity-100"
               aria-label="Next operator"
             >
               <ChevronRight className="w-6 h-6 text-cream" />
             </button>
           </div>
 
-          {/* Dots Indicator */}
+          {/* Dots Indicator - Subtle, auto-playing */}
           {displayOperators.length > 1 && (
-            <div className="flex justify-center mt-8 space-x-2">
+            <div className="flex justify-center mt-8 space-x-2 opacity-60 hover:opacity-100 transition-opacity">
               {displayOperators.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex ? 'bg-violet w-4' : 'bg-zinc hover:bg-stone'
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentIndex ? 'bg-violet w-8' : 'bg-zinc hover:bg-stone w-2'
                   }`}
                   aria-label={`Go to operator ${index + 1}`}
                 />
