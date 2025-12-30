@@ -55,6 +55,7 @@ export default function AdminPage() {
   const [docInviteEmails, setDocInviteEmails] = useState<Record<string, string>>({})
   const [sendingDocInvite, setSendingDocInvite] = useState<Record<string, boolean>>({})
   const [deletingUser, setDeletingUser] = useState<string | null>(null)
+  const [revokingInvite, setRevokingInvite] = useState<string | null>(null)
 
   // Check if current user is admin
   useEffect(() => {
@@ -181,6 +182,13 @@ export default function AdminPage() {
   }
 
   async function revokeInvitation(token: string) {
+    if (revokingInvite) return // Prevent double-clicks
+    
+    setRevokingInvite(token)
+    // Optimistically remove from UI immediately
+    const previousInvitations = [...invitations]
+    setInvitations(invitations.filter(i => i.token !== token))
+    
     try {
       const response = await fetch('/api/admin/magic-links', {
         method: 'DELETE',
@@ -191,13 +199,19 @@ export default function AdminPage() {
       const data = await response.json()
       
       if (data.success) {
-        await fetchInvitations()
+        setSuccessMessage('Invitation revoked')
         setError(null)
       } else {
+        // Restore on failure
+        setInvitations(previousInvitations)
         setError(data.error || 'Failed to revoke invitation')
       }
     } catch (err) {
+      // Restore on error
+      setInvitations(previousInvitations)
       setError('Failed to revoke invitation')
+    } finally {
+      setRevokingInvite(null)
     }
   }
 
@@ -564,10 +578,11 @@ export default function AdminPage() {
                                         e.stopPropagation()
                                         revokeInvitation(invite.token)
                                       }}
-                                      className="p-1.5 hover:bg-red-50 rounded transition-colors text-red-600"
+                                      disabled={revokingInvite === invite.token}
+                                      className={`p-1.5 hover:bg-red-50 rounded transition-colors text-red-600 ${revokingInvite === invite.token ? 'opacity-50' : ''}`}
                                       title="Revoke"
                                     >
-                                      <Trash2 className="w-4 h-4" />
+                                      <Trash2 className={`w-4 h-4 ${revokingInvite === invite.token ? 'animate-pulse' : ''}`} />
                                     </button>
                                   </div>
                                 </div>
