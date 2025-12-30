@@ -1,92 +1,21 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
 import type { Operator } from '@/lib/airtable';
-import { ChevronLeft, ChevronRight, Linkedin } from 'lucide-react';
-
-// Static operator data for carousel
-const staticOperators = [
-  {
-    id: '1',
-    name: 'Bob Battista',
-    title: 'Head of Commercial, Salt AI',
-    expertise: ['Life sciences go-to-market', 'Medical intelligence platforms', 'Commercial strategy', 'Enterprise AI adoption'],
-    photo: '/img/placeholder-headshot.svg'
-  },
-  {
-    id: '2',
-    name: 'Sibel Sayiner',
-    title: 'VP, Business Operations & Analytics, Marley Medical',
-    subtitle: '(prev. BCG, Propeller Health)',
-    expertise: ['Digital health ops', 'Data-driven commercialization', 'Chronic disease virtual care', 'Payer/provider strategy'],
-    photo: '/img/placeholder-headshot.svg'
-  },
-  {
-    id: '3',
-    name: 'Stuart John',
-    title: 'First American',
-    expertise: ['Enterprise data platforms', 'Title & escrow tech', 'Large-scale systems modernization'],
-    photo: '/img/placeholder-headshot.svg'
-  },
-  {
-    id: '4',
-    name: 'Syuzi Pakhchyan',
-    title: 'Head of Innovation & Emerging Experiences, Target',
-    subtitle: '(prev. Design Director, BCG Digital Ventures)',
-    expertise: ['Wearable tech & emerging interfaces', 'Experience design', 'Retail innovation', 'Fashion–technology convergence'],
-    photo: '/img/placeholder-headshot.svg'
-  },
-  {
-    id: '5',
-    name: 'Amy Zhang',
-    title: 'Marketing Strategy & Growth',
-    subtitle: '(formerly Senior Growth Architect, BCG Digital Ventures)',
-    expertise: ['Growth marketing', 'Go-to-market for SaaS', 'Digital experiments & performance', 'Mission-driven brand strategy'],
-    photo: '/img/placeholder-headshot.svg'
-  }
-]
+import { operators as staticOperators } from '@/data/operators';
+import { Linkedin } from 'lucide-react';
 
 export default function OperatorCarousel({ operators }: { operators: Operator[] }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
   // Use static operators if Airtable operators are not available
   const displayOperators = (operators && operators.length > 0) ? operators : staticOperators;
-  const currentOperator = displayOperators[currentIndex];
 
-  const nextOperator = () => {
-    setCurrentIndex((prev) => (prev + 1) % displayOperators.length);
-  };
-
-  const prevOperator = () => {
-    setCurrentIndex((prev) => (prev - 1 + displayOperators.length) % displayOperators.length);
-  };
-
-  // Auto-advance carousel every 5 seconds
-  useEffect(() => {
-    if (isPaused || displayOperators.length <= 1) return;
-
-    intervalRef.current = setInterval(() => {
-      nextOperator();
-    }, 5000); // 5 seconds
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [currentIndex, isPaused, displayOperators.length]);
-
-  // Pause on hover
-  const handleMouseEnter = () => setIsPaused(true);
-  const handleMouseLeave = () => setIsPaused(false);
+  // Duplicate operators for seamless infinite scroll
+  const duplicatedOperators = [...displayOperators, ...displayOperators];
 
   return (
     <section className="section bg-graphite relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-void to-graphite" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <span className="mono-label mb-4 block">// Our Team</span>
@@ -96,92 +25,94 @@ export default function OperatorCarousel({ operators }: { operators: Operator[] 
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-center space-x-8">
-            {/* Previous Button */}
-            <button
-              onClick={prevOperator}
-              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30 opacity-60 hover:opacity-100"
-              aria-label="Previous operator"
-            >
-              <ChevronLeft className="w-6 h-6 text-cream" />
-            </button>
+        {/* Continuous Scrolling Carousel */}
+        <div className="relative">
+          {/* Gradient fade on edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-graphite to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-graphite to-transparent z-10 pointer-events-none" />
 
-            {/* Operator Card with auto-scroll and pause on hover */}
-            <div
-              className="flex-1 max-w-md"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className="text-center transition-opacity duration-500">
-                <div className="relative mb-6">
-                  <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-2 border-violet/30 bg-slate">
-                    <img 
-                      src={currentOperator.photo ?? '/img/placeholder-headshot.svg'}
-                      alt={currentOperator.name} 
-                      className="w-full h-full object-cover"
-                    />
+          {/* Scrolling track */}
+          <div className="overflow-hidden">
+            <div className="flex animate-scroll-left">
+              {duplicatedOperators.map((operator, index) => (
+                <div
+                  key={`${operator.id}-${index}`}
+                  className="flex-shrink-0 w-80 mx-4"
+                >
+                  <div className="bg-slate/30 border border-violet/20 rounded-xl p-6 h-full hover:bg-slate/50 hover:border-violet/40 transition-all">
+                    <div className="flex flex-col items-center text-center">
+                      {/* Photo */}
+                      <div className="relative mb-4">
+                        <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-violet/30 bg-slate">
+                          <img
+                            src={(operator as any).photo ?? '/img/placeholder-headshot.svg'}
+                            alt={operator.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-full bg-violet/10 blur-xl -z-10" />
+
+                        {/* LinkedIn icon */}
+                        {('linkedin' in operator && (operator as any).linkedin) && (
+                          <a
+                            href={(operator as any).linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="absolute -bottom-1 -right-1 p-1.5 bg-violet rounded-full hover:bg-violet-light transition-colors"
+                          >
+                            <Linkedin className="w-3 h-3 text-cream" />
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Name */}
+                      <h3 className="text-lg font-semibold text-cream mb-1">{operator.name}</h3>
+
+                      {/* Title */}
+                      {(operator as any).title && (
+                        <p className="text-sm font-medium text-violet-light mb-1 line-clamp-2">{(operator as any).title}</p>
+                      )}
+
+                      {/* Subtitle */}
+                      {(operator as any).subtitle && (
+                        <p className="text-xs text-zinc mb-3 line-clamp-1">{(operator as any).subtitle}</p>
+                      )}
+
+                      {/* Expertise */}
+                      {operator.expertise && operator.expertise.length > 0 && (
+                        <p className="text-xs text-stone line-clamp-3">
+                          {operator.expertise.join(' • ')}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full bg-violet/10 blur-xl -z-10" />
-                  
-                  {('linkedin' in currentOperator && currentOperator.linkedin) ? (
-                    <a
-                      href={(currentOperator as any).linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-0 right-1/3 p-2 bg-violet rounded-full hover:bg-violet-light transition-colors"
-                    >
-                      <Linkedin className="w-4 h-4 text-cream" />
-                    </a>
-                  ) : null}
                 </div>
-                
-                <h3 className="text-xl font-semibold text-cream mb-2">{currentOperator.name}</h3>
-                
-                {(currentOperator as any).title && (
-                  <p className="text-sm font-medium text-violet-light mb-1">{(currentOperator as any).title}</p>
-                )}
-                
-                {(currentOperator as any).subtitle && (
-                  <p className="text-xs text-zinc mb-3">{(currentOperator as any).subtitle}</p>
-                )}
-                
-                {currentOperator.expertise && currentOperator.expertise.length > 0 && (
-                  <p className="text-sm text-stone">
-                    {currentOperator.expertise.join(' • ')}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Next Button */}
-            <button
-              onClick={nextOperator}
-              className="p-3 rounded-full bg-slate/50 hover:bg-slate border border-zinc/30 transition-all hover:border-violet/30 opacity-60 hover:opacity-100"
-              aria-label="Next operator"
-            >
-              <ChevronRight className="w-6 h-6 text-cream" />
-            </button>
-          </div>
-
-          {/* Dots Indicator - Subtle, auto-playing */}
-          {displayOperators.length > 1 && (
-            <div className="flex justify-center mt-8 space-x-2 opacity-60 hover:opacity-100 transition-opacity">
-              {displayOperators.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex ? 'bg-violet w-8' : 'bg-zinc hover:bg-stone w-2'
-                  }`}
-                  aria-label={`Go to operator ${index + 1}`}
-                />
               ))}
             </div>
-          )}
+          </div>
         </div>
       </div>
+
+      {/* CSS for continuous scroll animation */}
+      <style jsx>{`
+        @keyframes scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .animate-scroll-left {
+          animation: scroll-left 40s linear infinite;
+        }
+
+        .animate-scroll-left:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 }
