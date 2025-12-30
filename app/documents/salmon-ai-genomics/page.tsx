@@ -232,7 +232,7 @@ const slides: Slide[] = [
             <h3 className="text-lg font-semibold text-cream mb-1">Aquaticode</h3>
             <p className="text-sm text-cream/50 mb-3">A2 Phenotyping</p>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• SORTpro: 10,000 fish/hour at >97% accuracy</li>
+              <li>• SORTpro: 10,000 fish/hour at &gt;97% accuracy</li>
               <li>• 60M+ fish sorted with major producers</li>
               <li>• Grieg Seafood adoption Nov 2025</li>
             </ul>
