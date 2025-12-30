@@ -265,7 +265,7 @@ export async function DELETE(request: Request) {
     const existingLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
     
     console.log(`DELETE: userId=${userId}, token to delete=${token}`)
-    console.log(`DELETE: Before - ${Object.keys(existingLinks).length} links:`, Object.keys(existingLinks))
+    console.log(`DELETE: Before - ${Object.keys(existingLinks).length} links`)
     
     // Check if token exists
     if (!existingLinks[token]) {
@@ -273,7 +273,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Magic link not found' }, { status: 404 })
     }
     
-    // Create new object WITHOUT the deleted token (don't mutate)
+    // Create new object WITHOUT the deleted token
     const updatedLinks: Record<string, MagicLink> = {}
     for (const [key, value] of Object.entries(existingLinks)) {
       if (key !== token) {
@@ -281,30 +281,53 @@ export async function DELETE(request: Request) {
       }
     }
     
-    console.log(`DELETE: After - ${Object.keys(updatedLinks).length} links:`, Object.keys(updatedLinks))
+    console.log(`DELETE: After filtering - ${Object.keys(updatedLinks).length} links`)
     
-    // Build new metadata object explicitly (don't spread old metadata)
+    // IMPORTANT: Clerk's updateUserMetadata does a shallow merge
+    // We need to completely replace publicMetadata to avoid deep merge issues
+    // First, get all other metadata fields (excluding magicLinks)
+    const otherMetadata: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(currentMetadata)) {
+      if (key !== 'magicLinks') {
+        otherMetadata[key] = value
+      }
+    }
+    
+    // Build the complete new publicMetadata
     const newPublicMetadata = {
-      ...currentMetadata,
+      ...otherMetadata,
       magicLinks: updatedLinks
     }
     
-    // Ensure we're not accidentally keeping old magicLinks
-    console.log(`DELETE: Updating metadata with ${Object.keys(newPublicMetadata.magicLinks).length} links`)
+    console.log(`DELETE: New metadata keys:`, Object.keys(newPublicMetadata))
+    console.log(`DELETE: New magicLinks count:`, Object.keys(updatedLinks).length)
     
-    // Update admin user metadata
-    const updateResult = await client.users.updateUserMetadata(userId, {
-      publicMetadata: newPublicMetadata
-    })
+    // Try using updateUser instead of updateUserMetadata for a full replace
+    try {
+      await client.users.updateUser(userId, {
+        publicMetadata: newPublicMetadata
+      })
+      console.log(`DELETE: updateUser completed`)
+    } catch (updateError) {
+      console.error(`DELETE: updateUser failed:`, updateError)
+      throw updateError
+    }
     
     // Verify the update worked
     const verifyUser = await client.users.getUser(userId)
     const verifyLinks = (verifyUser.publicMetadata?.magicLinks as Record<string, MagicLink>) || {}
-    console.log(`DELETE: Verification - ${Object.keys(verifyLinks).length} links after update:`, Object.keys(verifyLinks))
+    console.log(`DELETE: Verification - ${Object.keys(verifyLinks).length} links after update`)
     
     if (verifyLinks[token]) {
       console.error(`DELETE: FAILED - Token still exists after update!`)
-      return NextResponse.json({ error: 'Delete failed - token still exists', debug: { token, linksAfter: Object.keys(verifyLinks) } }, { status: 500 })
+      return NextResponse.json({ 
+        error: 'Delete failed - token still exists', 
+        debug: { 
+          token, 
+          linksBefore: Object.keys(existingLinks).length,
+          linksAfter: Object.keys(verifyLinks).length 
+        } 
+      }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, remainingLinks: Object.keys(verifyLinks).length })
