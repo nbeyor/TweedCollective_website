@@ -400,29 +400,34 @@ const slides: Slide[] = [
               <tr className="border-b border-cream/10">
                 <td className="p-3 font-medium text-cream">C2</td>
                 <td className="p-3 font-medium text-purple-300">Aquaticode (SORTpro)</td>
-                <td className="p-3">Industrial-scale AI phenotyping at vaccination/handling (~10k smolt/hr); immediate robustness/gill/sex/maturation labels; field-proven with major producers</td>
-                <td className="p-3">Generate scalable phenotypes; feed selection &amp; ops</td>
-              </tr>
-              <tr className="border-b border-cream/10">
-                <td className="p-3 font-medium text-cream">C2</td>
-                <td className="p-3 font-medium text-purple-300">Xelect (Genus Group)</td>
-                <td className="p-3">Aquaculture-native genetics at scale (own lab + software); bioeconomic index design; will build <strong>population-specific</strong> pipelines with tight IP</td>
-                <td className="p-3">Custom selection index; genotyping plan; benchmark classical vs. ML; selection decisions</td>
+                <td className="p-3">Production-scale AI phenotyping at vaccination/handling; standardized robustness/gill/sex/maturation labels</td>
+                <td className="p-3">Generate scalable phenotypes to feed selection and operations</td>
               </tr>
               <tr className="border-b border-cream/10">
                 <td className="p-3 font-medium text-cream">C3</td>
                 <td className="p-3 font-medium text-purple-300">SINTEF Digital/Ocean</td>
-                <td className="p-3">Tech-native, production ML in aquaculture (CV, sensor fusion, behaviour/feeding control); secure on-prem/private-cloud deployment</td>
-                <td className="p-3">Build &amp; serve the <strong>multi-modal model</strong>; APIs; MLOps/SLOs</td>
+                <td className="p-3">Tech-native builder for production ML in aquaculture (vision, sensor fusion, behaviour/feeding control); secure deployment</td>
+                <td className="p-3">Build and operate the multi-modal model; APIs; reliability targets</td>
               </tr>
               <tr className="border-b border-cream/10">
-                <td className="p-3 font-medium text-cream">C3 (academic)</td>
-                <td className="p-3 font-medium text-purple-300">Nofima <em>(alt: IMR for sterility; CAT later for wet-lab)</em></td>
-                <td className="p-3">Scandinavian leadership in salmon genetics/lice/gill; regulatory-aware; <strong>in-silico</strong> CRISPR target triage</td>
-                <td className="p-3">Trait biology guidance; <strong>Edit-or-Select</strong> priorities by market</td>
+                <td className="p-3 font-medium text-cream">C3 Academic</td>
+                <td className="p-3 font-medium text-purple-300">Nofima <em>(existing relationship to deepen)</em></td>
+                <td className="p-3">Scandinavian authority in salmon genetics and lice/gill biology; regulatory-aware; strong in <strong>in-silico</strong> CRISPR target triage</td>
+                <td className="p-3">Trait biology guidance; market-specific edit-or-select priorities</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Option</td>
+                <td className="p-3 font-medium text-purple-300">IMR (if sterility/escapes prioritized)</td>
+                <td className="p-3">Deep sterility/escapes expertise and field context</td>
+                <td className="p-3">Advisory and study design for sterility strategy</td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-taupe-500/10 border-l-4 border-taupe-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-taupe-300 mb-1">Note</div>
+          <p className="text-sm text-cream/80">Verify existing discussions; surprising there is no formal arrangement with Aquaticode. There is a clear opportunity to expand the Nofima collaboration. SINTEF can work alongside Nofima to accelerate model delivery.</p>
         </div>
       </div>
     ),
