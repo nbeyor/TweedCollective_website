@@ -263,25 +263,51 @@ export async function DELETE(request: Request) {
     // Get current metadata (fresh from Clerk)
     const currentMetadata = user.publicMetadata || {}
     const existingLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
-    const magicLinks = { ...existingLinks }
+    
+    console.log(`DELETE: userId=${userId}, token to delete=${token}`)
+    console.log(`DELETE: Before - ${Object.keys(existingLinks).length} links:`, Object.keys(existingLinks))
     
     // Check if token exists
-    if (!magicLinks[token]) {
+    if (!existingLinks[token]) {
+      console.log(`DELETE: Token not found in metadata`)
       return NextResponse.json({ error: 'Magic link not found' }, { status: 404 })
     }
     
-    // Remove token
-    delete magicLinks[token]
+    // Create new object WITHOUT the deleted token (don't mutate)
+    const updatedLinks: Record<string, MagicLink> = {}
+    for (const [key, value] of Object.entries(existingLinks)) {
+      if (key !== token) {
+        updatedLinks[key] = value
+      }
+    }
+    
+    console.log(`DELETE: After - ${Object.keys(updatedLinks).length} links:`, Object.keys(updatedLinks))
+    
+    // Build new metadata object explicitly (don't spread old metadata)
+    const newPublicMetadata = {
+      ...currentMetadata,
+      magicLinks: updatedLinks
+    }
+    
+    // Ensure we're not accidentally keeping old magicLinks
+    console.log(`DELETE: Updating metadata with ${Object.keys(newPublicMetadata.magicLinks).length} links`)
     
     // Update admin user metadata
-    await client.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        ...currentMetadata,
-        magicLinks
-      }
+    const updateResult = await client.users.updateUserMetadata(userId, {
+      publicMetadata: newPublicMetadata
     })
+    
+    // Verify the update worked
+    const verifyUser = await client.users.getUser(userId)
+    const verifyLinks = (verifyUser.publicMetadata?.magicLinks as Record<string, MagicLink>) || {}
+    console.log(`DELETE: Verification - ${Object.keys(verifyLinks).length} links after update:`, Object.keys(verifyLinks))
+    
+    if (verifyLinks[token]) {
+      console.error(`DELETE: FAILED - Token still exists after update!`)
+      return NextResponse.json({ error: 'Delete failed - token still exists', debug: { token, linksAfter: Object.keys(verifyLinks) } }, { status: 500 })
+    }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, remainingLinks: Object.keys(verifyLinks).length })
   } catch (error) {
     console.error('Error deleting magic link:', error)
     return NextResponse.json({ error: 'Failed to delete magic link' }, { status: 500 })
