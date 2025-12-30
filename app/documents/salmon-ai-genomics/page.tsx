@@ -23,8 +23,8 @@ const slides: Slide[] = [
           Partner Roadmap for Salmon Genetic Improvement
         </p>
 
-        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-sage-500 bg-sage-500/10 text-left">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Tagline</div>
+        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-green-500 bg-green-500/10 text-left">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-2">Tagline</div>
           <p className="text-sm text-cream/80 leading-relaxed">
             Transforming a 2.5-Generation Dataset into Competitive Advantage
           </p>
@@ -83,29 +83,29 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-3 gap-4 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Database className="w-10 h-10 text-sage-400 mb-3" />
+            <Database className="w-10 h-10 text-green-400 mb-3" />
             <h3 className="text-xl font-semibold text-cream mb-2">Archetype 1: Data Foundation</h3>
             <p className="text-sm text-cream/60 mb-2">Data ingestion, cleaning, harmonization</p>
-            <p className="text-sm text-sage-300">Prerequisite for all AI</p>
+            <p className="text-sm text-green-300">Prerequisite for all AI</p>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Dna className="w-10 h-10 text-sage-400 mb-3" />
+            <Dna className="w-10 h-10 text-green-400 mb-3" />
             <h3 className="text-xl font-semibold text-cream mb-2">Archetype 2: Purpose-Built GS</h3>
             <p className="text-sm text-cream/60 mb-2">Standard genomic selection (GBLUP)</p>
-            <p className="text-sm text-sage-300">10-25% immediate accuracy gain</p>
+            <p className="text-sm text-green-300">10-25% immediate accuracy gain</p>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-10 h-10 text-sage-400 mb-3" />
+            <Brain className="w-10 h-10 text-green-400 mb-3" />
             <h3 className="text-xl font-semibold text-cream mb-2">Archetype 3: Custom AI Models</h3>
             <p className="text-sm text-cream/60 mb-2">Novel discovery, trait imputation</p>
-            <p className="text-sm text-sage-300">Competitive moat—proprietary IP</p>
+            <p className="text-sm text-green-300">Competitive moat—proprietary IP</p>
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Strategy</div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Strategy</div>
           <p className="text-sm text-cream/80">Buy Archetype 2 for efficiency → Build Archetype 3 for advantage</p>
         </div>
       </div>
@@ -126,7 +126,7 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-3 gap-4 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Database className="w-8 h-8 text-sage-400 mb-3" />
+            <Database className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">A1: AI-Ready Data</h3>
             <p className="text-sm text-cream/50 mb-3">0-6 months</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -137,7 +137,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <TrendingUp className="w-8 h-8 text-sage-400 mb-3" />
+            <TrendingUp className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">A2: Scalable Phenotypes</h3>
             <p className="text-sm text-cream/50 mb-3">3-12 months</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -148,7 +148,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-8 h-8 text-sage-400 mb-3" />
+            <Brain className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">A3: Multi-Modal Model</h3>
             <p className="text-sm text-cream/50 mb-3">6-24 months</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -176,7 +176,7 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-3 gap-4 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <BarChart3 className="w-8 h-8 text-sage-400 mb-3" />
+            <BarChart3 className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">AI-Imputed FCR (g-FCR)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
               <li>• Problem: Can't measure individual FCR in net-pens</li>
@@ -186,7 +186,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Shield className="w-8 h-8 text-sage-400 mb-3" />
+            <Shield className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">Sea Lice Resistance</h3>
             <ul className="space-y-1 text-sm text-cream/70">
               <li>• Problem: Costs industry $1B+ annually</li>
@@ -196,7 +196,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Heart className="w-8 h-8 text-sage-400 mb-3" />
+            <Heart className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">Robustness & Gill Health</h3>
             <ul className="space-y-1 text-sm text-cream/70">
               <li>• Problem: Difficult to quantify at scale</li>
@@ -206,8 +206,8 @@ const slides: Slide[] = [
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Competitive Moat</div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Competitive Moat</div>
           <p className="text-sm text-cream/80">These proprietary phenotypes cannot be replicated without equivalent longitudinal data</p>
         </div>
       </div>
@@ -228,7 +228,7 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-2 gap-4 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Zap className="w-8 h-8 text-sage-400 mb-3" />
+            <Zap className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">Aquaticode</h3>
             <p className="text-sm text-cream/50 mb-3">A2 Phenotyping</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -239,7 +239,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Dna className="w-8 h-8 text-sage-400 mb-3" />
+            <Dna className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">Xelect / Genus</h3>
             <p className="text-sm text-cream/50 mb-3">A2 Genomics</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -250,7 +250,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-8 h-8 text-sage-400 mb-3" />
+            <Brain className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">SINTEF Digital</h3>
             <p className="text-sm text-cream/50 mb-3">A3 Model Builder</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -261,7 +261,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Target className="w-8 h-8 text-sage-400 mb-3" />
+            <Target className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-1">Nofima</h3>
             <p className="text-sm text-cream/50 mb-3">A3 Scientific Advisory</p>
             <ul className="space-y-1 text-sm text-cream/70">
@@ -272,8 +272,8 @@ const slides: Slide[] = [
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Central Asset</div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Central Asset</div>
           <p className="text-sm text-cream/80">Your 2.5-generation dataset is the foundation—partners provide specialized capabilities</p>
         </div>
       </div>
@@ -294,7 +294,7 @@ const slides: Slide[] = [
 
         <div className="grid md:grid-cols-2 gap-4 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Target className="w-8 h-8 text-sage-400 mb-3" />
+            <Target className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">Regional Status</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li>• EU: Restrictive — GMO regulations apply to all gene editing</li>
@@ -304,7 +304,7 @@ const slides: Slide[] = [
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Info className="w-8 h-8 text-sage-400 mb-3" />
+            <Info className="w-8 h-8 text-green-400 mb-3" />
             <h3 className="text-lg font-semibold text-cream mb-3">Recent Updates</h3>
             <ul className="space-y-2 text-sm text-cream/70">
               <li>• UK: Precision Breeding Regulations in force (Nov 2025)</li>
@@ -316,8 +316,8 @@ const slides: Slide[] = [
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Strategic Flexibility</div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Strategic Flexibility</div>
           <p className="text-sm text-cream/80">AI enables parallel breeding programs—selection-only for restrictive markets, selection + editing for permissive markets</p>
         </div>
       </div>
@@ -337,23 +337,23 @@ const slides: Slide[] = [
         </div>
 
         <div className="p-6 bg-white/5 border border-cream/10 rounded-xl mt-8">
-          <Rocket className="w-8 h-8 text-sage-400 mb-4" />
+          <Rocket className="w-8 h-8 text-green-400 mb-4" />
           <h3 className="text-xl font-semibold text-cream mb-4">Industry Momentum</h3>
           <ul className="space-y-3 text-cream/80">
-            <li className="border-l-2 border-sage-500 pl-4">
-              <span className="text-sage-300 text-sm">Aug 2025:</span> Tidal (Google X) launches autonomous AI lice control at AquaNor 2025
+            <li className="border-l-2 border-green-500 pl-4">
+              <span className="text-green-300 text-sm">Aug 2025:</span> Tidal (Google X) launches autonomous AI lice control at AquaNor 2025
             </li>
-            <li className="border-l-2 border-sage-500 pl-4">
-              <span className="text-sage-300 text-sm">Nov 2025:</span> Grieg Seafood adopts Aquaticode—first vaccination line integration
+            <li className="border-l-2 border-green-500 pl-4">
+              <span className="text-green-300 text-sm">Nov 2025:</span> Grieg Seafood adopts Aquaticode—first vaccination line integration
             </li>
-            <li className="border-l-2 border-sage-500 pl-4">
-              <span className="text-sage-300 text-sm">Apr 2025:</span> ISAV resistance breakthrough via triple gene CRISPR knockout
+            <li className="border-l-2 border-green-500 pl-4">
+              <span className="text-green-300 text-sm">Apr 2025:</span> ISAV resistance breakthrough via triple gene CRISPR knockout
             </li>
-            <li className="border-l-2 border-sage-500 pl-4">
-              <span className="text-sage-300 text-sm">Nov 2025:</span> UK Precision Breeding Regulations enter force
+            <li className="border-l-2 border-green-500 pl-4">
+              <span className="text-green-300 text-sm">Nov 2025:</span> UK Precision Breeding Regulations enter force
             </li>
-            <li className="border-l-2 border-sage-500 pl-4">
-              <span className="text-sage-300 text-sm">Apr 2025:</span> SINTEF releases SOLAQUA dataset for aquaculture AI research
+            <li className="border-l-2 border-green-500 pl-4">
+              <span className="text-green-300 text-sm">Apr 2025:</span> SINTEF releases SOLAQUA dataset for aquaculture AI research
             </li>
           </ul>
         </div>
@@ -405,8 +405,8 @@ const slides: Slide[] = [
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Key Talent Investment</div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Key Talent Investment</div>
           <p className="text-sm text-cream/80">2-3 computational biologists to own proprietary models and manage partner ecosystem</p>
         </div>
       </div>
