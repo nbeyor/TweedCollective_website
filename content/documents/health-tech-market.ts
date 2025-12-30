@@ -1,11 +1,16 @@
 /**
  * Health-Tech Market Landscape - Document Content
- * 
+ *
  * Pure data representation of slide content.
  * This file contains NO React components or JSX.
+ *
+ * Visual specifications are managed centrally in lib/slideTemplates.ts
+ * Icons reference semantic names from the icon registry
+ * Colors and styling are applied automatically based on slide type
  */
 
 import { SlideData } from '@/lib/types'
+import { getIcon } from '@/lib/slideTemplates'
 
 export const DOCUMENT_ID = 'health-tech-market-2024'
 
@@ -15,7 +20,7 @@ export const DOCUMENT_ID = 'health-tech-market-2024'
 
 export const stageData = {
   seed: {
-    icon: 'Sprout',
+    icon: getIcon('sprout'), // Visual template: see lib/slideTemplates.ts
     title: 'Seed Stage',
     description: 'Product-market fit, early validation',
     themes: [
@@ -34,7 +39,7 @@ export const stageData = {
     ],
   },
   venture: {
-    icon: 'Rocket',
+    icon: getIcon('rocket'), // Visual template: see lib/slideTemplates.ts
     title: 'Venture Stage',
     description: 'Scaling, growth metrics',
     themes: [
@@ -53,7 +58,7 @@ export const stageData = {
     ],
   },
   growth: {
-    icon: 'ArrowUp',
+    icon: getIcon('arrow-up'), // Visual template: see lib/slideTemplates.ts
     title: 'Growth Stage',
     description: 'Market expansion, profitability',
     themes: [
@@ -72,7 +77,7 @@ export const stageData = {
     ],
   },
   buyout: {
-    icon: 'Briefcase',
+    icon: getIcon('briefcase'), // Visual template: see lib/slideTemplates.ts
     title: 'Buyout Stage',
     description: 'Operational optimization, exits',
     themes: [
@@ -98,7 +103,7 @@ export const stageData = {
 
 export const segmentData = {
   pharmatech: {
-    icon: 'FlaskConical',
+    icon: getIcon('lab'), // Visual template: see lib/slideTemplates.ts
     title: 'Pharmatech',
     description: 'Drug discovery, clinical trials, biotech innovation',
     themes: [
@@ -117,7 +122,7 @@ export const segmentData = {
     ],
   },
   'provider-payor': {
-    icon: 'Stethoscope',
+    icon: getIcon('medical'), // Visual template: see lib/slideTemplates.ts
     title: 'Provider/Payor Tech',
     description: 'Health systems, insurers, care delivery',
     themes: [
@@ -136,7 +141,7 @@ export const segmentData = {
     ],
   },
   consumer: {
-    icon: 'ShoppingCart',
+    icon: getIcon('cart'), // Visual template: see lib/slideTemplates.ts
     title: 'Consumer Facing',
     description: 'Direct-to-consumer health, wellness, digital therapeutics',
     themes: [
@@ -159,6 +164,10 @@ export const segmentData = {
 // ============================================
 // Slide Content Data
 // ============================================
+//
+// NOTE: Visual specifications (colors, fonts, spacing) are managed in lib/slideTemplates.ts
+// Icons use semantic names that are resolved through the icon registry
+// Slide rendering components automatically apply the appropriate templates
 
 export const slides: SlideData[] = [
   {
@@ -210,8 +219,8 @@ export const slides: SlideData[] = [
       items: [
         {
           title: 'By Investment Stage',
-          icon: 'TrendingUp',
-          color: 'purple',
+          icon: getIcon('growth'),
+          // Color scheme applied automatically by template
           items: [
             'Seed: Product-market fit, early validation',
             'Venture: Scaling, growth metrics',
@@ -221,8 +230,8 @@ export const slides: SlideData[] = [
         },
         {
           title: 'By Market Segment',
-          icon: 'Target',
-          color: 'green',
+          icon: getIcon('strategy'),
+          // Color scheme applied automatically by template
           items: [
             'Pharmatech: Drug discovery, clinical trials',
             'Provider/Payor Tech: Health systems, insurers',
@@ -314,26 +323,22 @@ export const slides: SlideData[] = [
       items: [
         {
           title: 'AI & Machine Learning',
-          icon: 'Zap',
-          color: 'purple',
+          icon: getIcon('automation'),
           items: ['Clinical decision support', 'Drug discovery acceleration', 'Administrative automation'],
         },
         {
           title: 'Value-Based Care',
-          icon: 'Target',
-          color: 'green',
+          icon: getIcon('strategy'),
           items: ['Outcomes-focused models', 'Population health management', 'Risk-based contracting'],
         },
         {
           title: 'Interoperability',
-          icon: 'Users',
-          color: 'purple',
+          icon: getIcon('users'),
           items: ['FHIR adoption', 'Data exchange standards', 'Platform integration'],
         },
         {
           title: 'Evidence Generation',
-          icon: 'BarChart3',
-          color: 'green',
+          icon: getIcon('chart'),
           items: ['Real-world evidence', 'Clinical validation', 'ROI demonstration'],
         },
       ],

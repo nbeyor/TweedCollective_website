@@ -1,11 +1,16 @@
 /**
- * Strategic AI for Salmon Genetic Improvement - Document Content
- * 
+ * AI × Genomics × Aquaculture Partner Roadmap - Document Content
+ *
  * Pure data representation of slide content.
  * This file contains NO React components or JSX.
+ *
+ * Visual specifications are managed centrally in lib/slideTemplates.ts
+ * Icons reference semantic names from the icon registry
+ * Colors and styling are applied automatically based on slide type
  */
 
 import { SlideData } from '@/lib/types'
+import { getIcon } from '@/lib/slideTemplates'
 
 export const DOCUMENT_ID = 'salmon-ai-genomics'
 
@@ -13,134 +18,199 @@ export const DOCUMENT_ID = 'salmon-ai-genomics'
 // Shared Data Objects
 // ============================================
 
-export const strategicLevels = [
+export const platformArchetypes = [
   {
-    title: 'Now: Optimize Breeding',
-    description: 'Immediate accuracy gains through genomic selection',
-    actions: ['Implement GEBVs', 'Modernize breeding program', 'Baseline accuracy uplift'],
+    number: 1,
+    title: 'Archetype 1: Data Foundation',
+    function: 'Data ingestion, cleaning, harmonization',
+    value: 'Prerequisite for all AI',
   },
   {
-    title: 'Next: Proprietary Phenotypes',
-    description: 'Create hard-to-measure traits (g-FCR, g-Gill)',
-    actions: ['Train custom models', 'Link phenotypes to genome', 'New selectable traits'],
+    number: 2,
+    title: 'Archetype 2: Purpose-Built GS',
+    function: 'Standard genomic selection (GBLUP)',
+    value: '10-25% immediate accuracy gain',
   },
   {
-    title: 'Moat: Dual Regulatory Strategies',
-    description: 'Run GM + non-GM lines from same broodstock',
-    actions: ['AI-managed pedigrees', 'Compliance tracking', 'Market optimization'],
-  },
-]
-
-export const archetypes = [
-  {
-    id: 1,
-    name: 'Data Unification/Governance',
-    description: 'Data lake + ETL + harmonization',
-    what: 'Unified data platform',
-    why: 'Foundation for all advanced work',
-    buildVsBuy: 'Build core, partner for tools',
-  },
-  {
-    id: 2,
-    name: 'Off-the-Shelf GS Tools',
-    description: 'Standard GEBVs for measurable traits',
-    what: 'Genomic selection software',
-    why: 'Quick wins, baseline modernization',
-    buildVsBuy: 'Buy/license, customize',
-  },
-  {
-    id: 3,
-    name: 'Custom Proprietary Models',
-    description: 'Models trained on your dataset',
-    what: 'g-FCR, proprietary phenotypes',
-    why: 'Competitive moat, defensible IP',
-    buildVsBuy: 'Build internally, own IP',
+    number: 3,
+    title: 'Archetype 3: Custom AI Models',
+    function: 'Novel discovery, trait imputation',
+    value: 'Competitive moat—proprietary IP',
   },
 ]
 
 export const roadmapPhases = [
   {
     phase: 1,
-    title: 'Data Platform + GS Quick Wins',
-    months: '0-6',
-    milestones: ['Data lake setup', 'ETL pipelines', 'GS implementation', 'Baseline accuracy gains'],
+    label: 'A1: AI-Ready Data',
+    timeline: '0-6 months',
+    bullets: [
+      'Clean IDs, standardized ontologies',
+      'API front-door for partners',
+      'Backfill phenotypes from existing logs',
+    ],
   },
   {
     phase: 2,
-    title: 'Custom Models (g-FCR, Lice)',
-    months: '6-18',
-    milestones: ['Model training', 'g-FCR development', 'Lice resistance models', 'Validation'],
+    label: 'A2: Scalable Phenotypes',
+    timeline: '3-12 months',
+    bullets: [
+      'High-throughput AI phenotyping',
+      'Index v1: growth, g-FCR, lice, robustness',
+      'GBLUP vs ML validation',
+    ],
   },
   {
     phase: 3,
-    title: 'In Silico CRISPR Validation',
-    months: '18-30',
-    milestones: ['Safety package', 'Off-target analysis', 'Efficacy prediction', 'Regulatory prep'],
+    label: 'A3: Multi-Modal Model',
+    timeline: '6-24 months',
+    bullets: [
+      'Production-grade model integrating all data streams',
+      'Edit-or-Select dashboard by region',
+      'Regulatory pathway preparation',
+    ],
+  },
+]
+
+export const useCases = [
+  {
+    title: 'AI-Imputed FCR (g-FCR)',
+    problem: "Can't measure individual FCR in net-pens",
+    solution: 'AI imputes individual scores from family/genomic data',
+    impact: 'Only operator breeding for feed efficiency',
   },
   {
-    phase: 4,
-    title: 'Go/No-Go and Deploy Dual Lines',
-    months: '30-36+',
-    milestones: ['Decision point', 'Line separation', 'Compliance tracking', 'Market deployment'],
+    title: 'Sea Lice Resistance',
+    problem: 'Costs industry $1B+ annually',
+    solution: 'AI-enhanced GWAS identifies resistance gene networks',
+    impact: 'Accelerated selection for resistant broodstock',
+  },
+  {
+    title: 'Robustness & Gill Health',
+    problem: 'Difficult to quantify at scale',
+    solution: 'AI image analysis → genomic linkage',
+    impact: 'New GEBVs for previously unmeasurable traits',
+  },
+]
+
+export const partnerEcosystem = [
+  {
+    name: 'Aquaticode',
+    role: 'A2 Phenotyping',
+    description: 'High-throughput fish sorting and phenotyping',
+    bullets: [
+      'SORTpro: 10,000 fish/hour at >97% accuracy',
+      '60M+ fish sorted with major producers',
+      'Grieg Seafood adoption Nov 2025',
+    ],
+  },
+  {
+    name: 'Xelect / Genus',
+    role: 'A2 Genomics',
+    description: 'Aquaculture-native genomic selection',
+    bullets: [
+      'Aquaculture-native GS at scale',
+      'Optimate software for complex breeding',
+      'Population-specific index design with IP protection',
+    ],
+  },
+  {
+    name: 'SINTEF Digital',
+    role: 'A3 Model Builder',
+    description: 'Hybrid AI expertise and deployment',
+    bullets: [
+      'Hybrid AI expertise (domain + ML)',
+      'Production deployment capability',
+      'Full-scale ACE research facility',
+    ],
+  },
+  {
+    name: 'Nofima',
+    role: 'A3 Scientific Advisory',
+    description: 'Leading salmon genetics research',
+    bullets: [
+      'Leading salmon genetics research',
+      'CMSEdit, CrispResist projects',
+      'Regulatory navigation expertise',
+    ],
   },
 ]
 
 export const regulatoryRegions = [
   {
-    id: 'eu',
-    name: 'European Union',
-    allowed: 'Restrictive',
-    labeling: 'Mandatory GM labeling',
-    strategy: 'Non-GM line only',
+    region: 'EU',
+    status: 'Restrictive',
+    description: 'GMO regulations apply to all gene editing',
   },
   {
-    id: 'us',
-    name: 'United States',
-    allowed: 'Permissive',
-    labeling: 'Case-by-case',
-    strategy: 'Bioengineered line viable',
+    region: 'UK, Norway',
+    status: 'Evolving',
+    description: 'Precision breeding pathways emerging',
   },
   {
-    id: 'asia',
-    name: 'Asia',
-    allowed: 'Mixed',
-    labeling: 'Varies by country',
-    strategy: 'Dual-track approach',
+    region: 'US, Canada, Japan, Argentina',
+    status: 'Permissive',
+    description: 'Case-by-case or not regulated as GMO',
   },
 ]
 
-export const glossaryTerms = [
-  { term: 'GEBV', definition: 'Genomic Estimated Breeding Value - prediction of breeding value using genomic data' },
-  { term: 'GWAS', definition: 'Genome-Wide Association Study - identifies genetic variants associated with traits' },
-  { term: 'GBLUP', definition: 'Genomic Best Linear Unbiased Prediction - statistical method for genomic selection' },
-  { term: 'ssGBLUP', definition: 'Single-Step GBLUP - combines pedigree and genomic data in one analysis' },
-  { term: 'CNN', definition: 'Convolutional Neural Network - deep learning model for image analysis' },
-  { term: 'gRNA', definition: 'Guide RNA - RNA molecule that directs CRISPR to target DNA sequence' },
-  { term: 'g-FCR', definition: 'Genomic Feed Conversion Ratio - individual feed efficiency score imputed from genomic data' },
-  { term: 'g-Gill', definition: 'Genomic Gill Health Score - selectable trait derived from computer vision analysis' },
+export const recentDevelopments = [
+  {
+    date: 'Aug 2025',
+    headline: 'Tidal (Google X) launches autonomous AI lice control at AquaNor 2025',
+  },
+  {
+    date: 'Nov 2025',
+    headline: 'Grieg Seafood adopts Aquaticode—first vaccination line integration',
+  },
+  {
+    date: 'Apr 2025',
+    headline: 'ISAV resistance breakthrough via triple gene CRISPR knockout',
+  },
+  {
+    date: 'Nov 2025',
+    headline: 'UK Precision Breeding Regulations enter force',
+  },
+  {
+    date: 'Apr 2025',
+    headline: 'SINTEF releases SOLAQUA dataset for aquaculture AI research',
+  },
 ]
 
-export const dashboardKPIs = [
-  { name: 'Selection Accuracy Uplift', value: '42%', trend: '+5%' },
-  { name: 'g-FCR Model Performance', value: 'R² = 0.78', trend: '+0.12' },
-  { name: 'Feed Cost Impact', value: '-18%', trend: 'Improving' },
-  { name: 'Lice Resistance Gain', value: '+35%', trend: '+8%' },
-  { name: 'Off-Target Risk Score', value: '92/100', trend: 'Safe' },
-  { name: 'Regulatory Readiness', value: '75%', trend: 'On track' },
-]
-
-export const breedingGenerations = [
-  { gen: 0, freq: 20, desc: 'Baseline allele frequency' },
-  { gen: 1, freq: 28, desc: 'Initial selection pressure' },
-  { gen: 2, freq: 38, desc: 'Accelerated gain' },
-  { gen: 3, freq: 50, desc: 'Mid-program progress' },
-  { gen: 4, freq: 65, desc: 'Near target' },
-  { gen: 5, freq: 80, desc: 'Target achieved' },
+export const successMetrics = [
+  {
+    phase: 'Phase 1 (A1 Complete)',
+    metrics: [
+      'Queryable trait time series operational',
+      'Reliable pen-level g-FCR proxy validated',
+      '2-3 partner APIs integrated',
+    ],
+  },
+  {
+    phase: 'Phase 2 (A2 Complete)',
+    metrics: [
+      'Selection decisions incorporate AI-derived traits',
+      '15-20% GEBV accuracy improvement on lice/robustness',
+      'Visible feed efficiency improvements',
+    ],
+  },
+  {
+    phase: 'Phase 3 (A3 Complete)',
+    metrics: [
+      'Model v1 serving "Select-Now" predictions',
+      'Edit-or-Select dashboard by trait/region',
+      'Regulatory playbooks for EU vs permissive markets',
+    ],
+  },
 ]
 
 // ============================================
 // Slide Content Data
 // ============================================
+//
+// NOTE: Visual specifications (colors, fonts, spacing) are managed in lib/slideTemplates.ts
+// Icons use semantic names that are resolved through the icon registry
+// Slide rendering components automatically apply the appropriate templates
 
 export const slides: SlideData[] = [
   {
@@ -149,330 +219,374 @@ export const slides: SlideData[] = [
     type: 'title',
     content: {
       type: 'title',
-      badge: 'Strategic AI Integration',
-      headline: 'Strategic AI for Salmon Genetic Improvement',
-      subtitle: 'Turn 2.5 generations of genomic+phenotypic data into a predictive asset; move from "records" → "moat."',
+      badge: 'Partner Roadmap',
+      headline: 'AI × Genomics × Aquaculture',
+      subtitle: 'Partner Roadmap for Salmon Genetic Improvement',
       insightBox: {
-        label: 'Why Now',
-        text: 'Proprietary longitudinal data becomes defensible when used to train custom models. Transform historical records into competitive advantage through AI-driven genomic selection.',
+        label: 'Tagline',
+        text: 'Transforming a 2.5-Generation Dataset into Competitive Advantage',
       },
     },
   },
   {
-    id: 'core-asset',
-    title: 'The Core Asset',
-    type: 'grid',
-    content: {
-      type: 'grid',
-      sectionLabel: 'Card 02',
-      heading: 'The 2.5-Generation Dataset is the Moat',
-      description: "Proprietary longitudinal data becomes defensible when used to train custom models. Competitors can buy software; they can't replicate models trained on your dataset.",
-      columns: 2,
-      items: [
-        {
-          title: 'Data Layers',
-          icon: 'Database',
-          color: 'purple',
-          items: [
-            'Genomics: SNP arrays, whole-genome sequences',
-            'Phenotype: Growth, disease resistance, feed efficiency',
-            'Environment: Water quality, temperature, pen conditions',
-            'Pedigree: Family relationships, breeding history',
-          ],
-        },
-        {
-          title: 'AI Transformation',
-          icon: 'Brain',
-          color: 'green',
-          items: [
-            'Historical records → Predictive models',
-            'Data becomes proprietary IP',
-            'Competitive moat through custom training',
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: 'three-levels',
-    title: 'Three Strategic Levels',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ThreeLevelsSlide',
-      props: { levels: 'strategicLevels' },
-    },
-  },
-  {
-    id: 'landscape-map',
-    title: 'AI Platform Landscape',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'LandscapeMapSlide',
-      props: { archetypes: 'archetypes' },
-    },
-  },
-  {
-    id: 'archetype-1',
-    title: 'Archetype 1: Data Foundation',
+    id: 'opportunity',
+    title: 'The Opportunity',
     type: 'comparison',
     content: {
       type: 'comparison',
-      sectionLabel: 'Card 05',
-      heading: 'Data is the Prerequisite (Archetype 1)',
-      description: 'Data lake + ETL + harmonization; without this, advanced modeling fails.',
+      sectionLabel: 'Slide 02',
+      heading: 'The Opportunity',
+      description: 'Transform raw breeding data into predictive, proprietary competitive advantage',
       left: {
-        title: '❌ Before: Messy Sources',
-        variant: 'negative',
+        title: 'The Asset',
+        variant: 'neutral',
         items: [
-          'Fragmented databases across systems',
-          'Inconsistent formats and schemas',
-          'Missing metadata and lineage',
-          'No single source of truth',
+          '2.5-generation genomic and phenotypic dataset',
+          'Longitudinal breeding records across multiple traits',
+          'Operational data: feed, treatments, lice counts, mortality',
+          'Your most valuable unrefined asset',
         ],
       },
       right: {
-        title: '✅ After: Single Source of Truth',
+        title: 'The Unlock',
         variant: 'positive',
         items: [
-          'Unified data lake architecture',
-          'Standardized ETL pipelines',
-          'Complete data harmonization',
-          'Ready for advanced modeling',
+          'AI transforms raw data into predictive, proprietary IP',
+          'Genomic selection delivers 10-25% improvement over pedigree methods',
+          'Custom models create capabilities competitors cannot replicate',
         ],
       },
     },
   },
   {
-    id: 'archetype-2',
-    title: 'Archetype 2: Quick Wins',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'BreedingAccuracySlide',
-      props: {},
-    },
-  },
-  {
-    id: 'archetype-3',
-    title: 'Archetype 3: Custom Models',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'CustomModelsSlide',
-      props: {},
-    },
-  },
-  {
-    id: 'sea-lice',
-    title: 'Use Case: Sea Lice Resistance',
+    id: 'archetypes',
+    title: 'Three Platform Archetypes',
     type: 'grid',
     content: {
       type: 'grid',
-      sectionLabel: 'Card 08',
-      heading: 'Dissect Complex Traits with AI',
-      description: 'AI-driven GWAS identifies gene networks driving lice resistance; accelerates selection.',
+      sectionLabel: 'Slide 03',
+      heading: 'Three Platform Archetypes',
+      description: 'Progressive capabilities that build upon each other',
       columns: 3,
       items: [
-        { title: 'Immune Pathways', icon: 'Dna', color: 'purple', description: 'Innate immune response networks' },
-        { title: 'Mucus Production', icon: 'Shield', color: 'green', description: 'Protective barrier mechanisms' },
-        { title: 'Skin Integrity', icon: 'Target', color: 'purple', description: 'Structural defense systems' },
+        {
+          title: 'Archetype 1: Data Foundation',
+          icon: getIcon('database'),
+          subtitle: 'Data ingestion, cleaning, harmonization',
+          description: 'Prerequisite for all AI',
+        },
+        {
+          title: 'Archetype 2: Purpose-Built GS',
+          icon: getIcon('dna'),
+          subtitle: 'Standard genomic selection (GBLUP)',
+          description: '10-25% immediate accuracy gain',
+        },
+        {
+          title: 'Archetype 3: Custom AI Models',
+          icon: getIcon('ai'),
+          subtitle: 'Novel discovery, trait imputation',
+          description: 'Competitive moat—proprietary IP',
+        },
       ],
       insightBox: {
-        label: 'Key Insight',
-        text: 'Traditional GWAS finds individual genes. AI identifies interacting networks, revealing polygenic resistance mechanisms that accelerate breeding programs.',
+        label: 'Strategy',
+        text: 'Buy Archetype 2 for efficiency → Build Archetype 3 for advantage',
       },
     },
   },
   {
-    id: 'gill-health',
-    title: 'Use Case: Gill Health',
+    id: 'roadmap',
+    title: 'The Staged Roadmap',
     type: 'grid',
     content: {
       type: 'grid',
-      sectionLabel: 'Card 09',
-      heading: 'Convert Images into a Selectable Trait',
-      description: 'CNN/computer vision scores gill health from photos/histology; link scores back to genome → new breeding value.',
-      columns: 2,
+      sectionLabel: 'Slide 04',
+      heading: 'The Staged Roadmap',
+      description: 'Three overlapping phases building toward production AI',
+      columns: 3,
       items: [
         {
-          title: 'Computer Vision Pipeline',
-          icon: 'Eye',
-          color: 'green',
+          title: 'A1: AI-Ready Data',
+          subtitle: '0-6 months',
+          icon: getIcon('database'),
           items: [
-            'Capture gill images/photos',
-            'CNN model scores health (0-100)',
-            'Link scores to genomic data',
-            'Create new breeding value (g-Gill)',
+            'Clean IDs, standardized ontologies',
+            'API front-door for partners',
+            'Backfill phenotypes from existing logs',
           ],
         },
         {
-          title: 'Breeding Impact',
-          icon: 'TrendingUp',
-          color: 'purple',
+          title: 'A2: Scalable Phenotypes',
+          subtitle: '3-12 months',
+          icon: getIcon('growth'),
           items: [
-            'Previously unmeasurable trait',
-            'Now selectable in breeding',
-            'Accelerates genetic gain',
+            'High-throughput AI phenotyping',
+            'Index v1: growth, g-FCR, lice, robustness',
+            'GBLUP vs ML validation',
+          ],
+        },
+        {
+          title: 'A3: Multi-Modal Model',
+          subtitle: '6-24 months',
+          icon: getIcon('ai'),
+          items: [
+            'Production-grade model integrating all data streams',
+            'Edit-or-Select dashboard by region',
+            'Regulatory pathway preparation',
           ],
         },
       ],
     },
   },
   {
-    id: 'g-fcr',
-    title: 'Proprietary g-FCR',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'GFCRSlide',
-      props: {},
-    },
-  },
-  {
-    id: 'strategic-fork',
-    title: 'The Strategic Fork',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'StrategicForkSlide',
-      props: {},
-    },
-  },
-  {
-    id: 'pathway-1',
-    title: 'Pathway 1: AI-Accelerated Breeding',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'BreedingPathwaySlide',
-      props: { generations: 'breedingGenerations' },
-    },
-  },
-  {
-    id: 'pathway-2',
-    title: 'Pathway 2: AI-Informed Gene Editing',
+    id: 'use-cases',
+    title: 'High-Value AI Use Cases',
     type: 'grid',
     content: {
       type: 'grid',
-      sectionLabel: 'Card 13',
-      heading: 'Edit Once, Gain in One Generation',
-      description: 'AI supports (a) efficacy prediction (which edit works best) and (b) off-target risk scanning (regulatory-critical).',
-      columns: 2,
+      sectionLabel: 'Slide 05',
+      heading: 'Creating Proprietary Phenotypes',
+      description: 'AI enables breeding for traits that were previously unmeasurable',
+      columns: 3,
       items: [
         {
-          title: 'Efficacy Prediction',
-          icon: 'Target',
-          color: 'purple',
+          title: 'AI-Imputed FCR (g-FCR)',
+          icon: getIcon('chart'),
           items: [
-            'Which edit works best',
-            'Expected phenotypic outcome',
-            'Success probability scoring',
+            "Problem: Can't measure individual FCR in net-pens",
+            'Solution: AI imputes individual scores from family/genomic data',
+            'Impact: Only operator breeding for feed efficiency',
           ],
         },
         {
-          title: 'Off-Target Risk Scanning',
-          icon: 'Shield',
-          color: 'green',
+          title: 'Sea Lice Resistance',
+          icon: getIcon('shield'),
           items: [
-            'Regulatory-critical safety',
-            'Predicted off-target sites',
-            'Safety score with explainable factors',
+            'Problem: Costs industry $1B+ annually',
+            'Solution: AI-enhanced GWAS identifies resistance gene networks',
+            'Impact: Accelerated selection for resistant broodstock',
+          ],
+        },
+        {
+          title: 'Robustness & Gill Health',
+          icon: getIcon('health'),
+          items: [
+            'Problem: Difficult to quantify at scale',
+            'Solution: AI image analysis → genomic linkage',
+            'Impact: New GEBVs for previously unmeasurable traits',
           ],
         },
       ],
       insightBox: {
-        label: 'Safety Score Panel',
-        text: 'Target Site: High confidence | Off-Targets: 2 predicted (low risk) | Overall Safety: 92/100',
+        label: 'Competitive Moat',
+        text: 'These proprietary phenotypes cannot be replicated without equivalent longitudinal data',
+      },
+    },
+  },
+  {
+    id: 'partners',
+    title: 'Recommended Partner Ecosystem',
+    type: 'grid',
+    content: {
+      type: 'grid',
+      sectionLabel: 'Slide 06',
+      heading: 'Recommended Partner Ecosystem',
+      description: 'Four specialized partners to execute the staged roadmap',
+      columns: 2,
+      items: [
+        {
+          title: 'Aquaticode',
+          subtitle: 'A2 Phenotyping',
+          icon: getIcon('automation'),
+          items: [
+            'SORTpro: 10,000 fish/hour at >97% accuracy',
+            '60M+ fish sorted with major producers',
+            'Grieg Seafood adoption Nov 2025',
+          ],
+        },
+        {
+          title: 'Xelect / Genus',
+          subtitle: 'A2 Genomics',
+          icon: getIcon('dna'),
+          items: [
+            'Aquaculture-native GS at scale',
+            'Optimate software for complex breeding',
+            'Population-specific index design with IP protection',
+          ],
+        },
+        {
+          title: 'SINTEF Digital',
+          subtitle: 'A3 Model Builder',
+          icon: getIcon('ai'),
+          items: [
+            'Hybrid AI expertise (domain + ML)',
+            'Production deployment capability',
+            'Full-scale ACE research facility',
+          ],
+        },
+        {
+          title: 'Nofima',
+          subtitle: 'A3 Scientific Advisory',
+          icon: getIcon('lab'),
+          items: [
+            'Leading salmon genetics research',
+            'CMSEdit, CrispResist projects',
+            'Regulatory navigation expertise',
+          ],
+        },
+      ],
+      insightBox: {
+        label: 'Central Asset',
+        text: 'Your 2.5-generation dataset is the foundation—partners provide specialized capabilities',
       },
     },
   },
   {
     id: 'regulatory',
-    title: 'Regulatory Reality',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'RegulatoryMapSlide',
-      props: { regions: 'regulatoryRegions' },
-    },
-  },
-  {
-    id: 'dual-track',
-    title: 'Dual-Track Program',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'DualTrackSlide',
-      props: {},
-    },
-  },
-  {
-    id: 'roadmap',
-    title: 'Implementation Roadmap',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'RoadmapSlide',
-      props: { phases: 'roadmapPhases' },
-    },
-  },
-  {
-    id: 'operating-model',
-    title: 'Operating Model',
+    title: 'Regulatory Landscape',
     type: 'grid',
     content: {
       type: 'grid',
-      sectionLabel: 'Card 17',
-      heading: 'Small Core Team + Targeted Partners',
-      description: 'Hire 2–3 computational bio / bioinformatics experts to own models + manage vendors; pair with GS vendor + boutique AI/genomics partner(s).',
+      sectionLabel: 'Slide 07',
+      heading: 'Regulatory Landscape',
+      description: 'Global regulatory environment for gene editing in aquaculture',
       columns: 2,
       items: [
         {
-          title: 'Build Internally',
-          icon: 'Users',
-          color: 'purple',
+          title: 'Regional Status',
+          icon: getIcon('strategy'),
           items: [
-            '2-3 computational biologists',
-            'Model ownership & IP',
-            'Vendor management',
+            'EU: Restrictive — GMO regulations apply to all gene editing',
+            'UK, Norway: Evolving — Precision breeding pathways emerging',
+            'US, Canada, Japan, Argentina: Permissive — Case-by-case or not regulated as GMO',
           ],
         },
         {
-          title: 'Partner Strategically',
-          icon: 'Target',
-          color: 'green',
+          title: 'Recent Updates',
+          icon: getIcon('info'),
           items: [
-            'GS vendor (off-the-shelf tools)',
-            'Boutique AI/genomics partners',
-            'Specialized expertise on-demand',
+            'UK: Precision Breeding Regulations in force (Nov 2025)',
+            'UK: Plants operational; animals pending',
+            'UK: First gene-edited foods expected late 2026',
+            'Norway: 7-4 committee recommendation favorable',
+            'Norway: Industry awaiting legislative action',
+          ],
+        },
+      ],
+      insightBox: {
+        label: 'Strategic Flexibility',
+        text: 'AI enables parallel breeding programs—selection-only for restrictive markets, selection + editing for permissive markets',
+      },
+    },
+  },
+  {
+    id: 'developments',
+    title: 'Recent Market Developments',
+    type: 'list',
+    content: {
+      type: 'list',
+      sectionLabel: 'Slide 08',
+      heading: 'Recent Market Developments',
+      description: 'Last 60 Days',
+      groups: [
+        {
+          title: 'Industry Momentum',
+          icon: getIcon('rocket'),
+          items: [
+            {
+              text: 'Aug 2025: Tidal (Google X) launches autonomous AI lice control at AquaNor 2025',
+            },
+            {
+              text: 'Nov 2025: Grieg Seafood adopts Aquaticode—first vaccination line integration',
+            },
+            {
+              text: 'Apr 2025: ISAV resistance breakthrough via triple gene CRISPR knockout',
+            },
+            {
+              text: 'Nov 2025: UK Precision Breeding Regulations enter force',
+            },
+            {
+              text: 'Apr 2025: SINTEF releases SOLAQUA dataset for aquaculture AI research',
+            },
           ],
         },
       ],
     },
   },
   {
-    id: 'dashboard',
-    title: 'Executive Dashboard',
-    type: 'custom',
+    id: 'metrics',
+    title: 'Success Metrics',
+    type: 'grid',
     content: {
-      type: 'custom',
-      componentId: 'DashboardSlide',
-      props: { kpis: 'dashboardKPIs' },
+      type: 'grid',
+      sectionLabel: 'Slide 09',
+      heading: 'Investment & Success Metrics',
+      description: 'Clear milestones for each phase',
+      columns: 3,
+      items: [
+        {
+          title: 'Phase 1 (A1 Complete)',
+          icon: getIcon('check'),
+          items: [
+            '✓ Queryable trait time series operational',
+            '✓ Reliable pen-level g-FCR proxy validated',
+            '✓ 2-3 partner APIs integrated',
+          ],
+        },
+        {
+          title: 'Phase 2 (A2 Complete)',
+          icon: getIcon('check'),
+          items: [
+            '✓ Selection decisions incorporate AI-derived traits',
+            '✓ 15-20% GEBV accuracy improvement on lice/robustness',
+            '✓ Visible feed efficiency improvements',
+          ],
+        },
+        {
+          title: 'Phase 3 (A3 Complete)',
+          icon: getIcon('check'),
+          items: [
+            '✓ Model v1 serving "Select-Now" predictions',
+            '✓ Edit-or-Select dashboard by trait/region',
+            '✓ Regulatory playbooks for EU vs permissive markets',
+          ],
+        },
+      ],
+      insightBox: {
+        label: 'Key Talent Investment',
+        text: '2-3 computational biologists to own proprietary models and manage partner ecosystem',
+      },
     },
   },
   {
-    id: 'glossary',
-    title: 'Glossary',
-    type: 'custom',
+    id: 'summary',
+    title: 'Summary & Next Steps',
+    type: 'comparison',
     content: {
-      type: 'custom',
-      componentId: 'GlossarySlide',
-      props: { terms: 'glossaryTerms' },
+      type: 'comparison',
+      sectionLabel: 'Slide 10',
+      heading: 'Summary & Next Steps',
+      left: {
+        title: 'Key Takeaways',
+        variant: 'positive',
+        items: [
+          'The Asset: Your 2.5-generation dataset is a formidable competitive moat—AI is the only tool to unlock its full value',
+          'The Strategy: Buy Archetype 2 for immediate gains; Build Archetype 3 for defensible advantage',
+          'The Opportunity: AI-managed parallel breeding programs enable serving global markets from single broodstock',
+        ],
+      },
+      right: {
+        title: 'Next Steps',
+        variant: 'neutral',
+        items: [
+          '☐ Initiate A1 data architecture workstream',
+          '☐ Engage Aquaticode for pilot phenotyping assessment',
+          '☐ Open discussions with Xelect on index design',
+          '☐ Schedule SINTEF/Nofima advisory scoping',
+        ],
+      },
     },
   },
 ]
 
 export default slides
-
