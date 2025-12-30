@@ -16,13 +16,8 @@ const Hero = () => {
       <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-radial from-sage/10 via-transparent to-transparent opacity-50" />
       <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-gradient-radial from-gold/15 via-transparent to-transparent opacity-50" />
       
-      {/* Floating Elements */}
+      {/* Ambient Glows */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-40 left-20 w-3 h-3 bg-sage-light rounded-full animate-pulse-glow" />
-        <div className="absolute top-60 left-40 w-2 h-2 bg-gold rounded-full animate-pulse-glow animation-delay-1000" />
-        <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-gold-light rounded-full animate-pulse-glow animation-delay-2000" />
-        <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-taupe rounded-full animate-pulse-glow animation-delay-500" />
-        {/* Larger ambient glows */}
         <div className="absolute top-20 left-10 w-40 h-40 bg-sage/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-48 h-48 bg-gold/15 rounded-full blur-3xl" />
       </div>

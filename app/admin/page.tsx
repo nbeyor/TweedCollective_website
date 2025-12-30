@@ -27,14 +27,6 @@ interface Invitation {
   status: 'active' | 'expired' | 'redeemed'
 }
 
-interface AuditEntry {
-  userId: string
-  email: string
-  documentIds: string[]
-  timestamp: string
-  method: 'invitation' | 'manual'
-}
-
 // List of available documents and permissions
 const DOCUMENTS = [
   { id: 'vibe-coding-in-enterprise-for-pe', title: 'VIBE Coding in Enterprise' },
@@ -52,16 +44,16 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [expandedUser, setExpandedUser] = useState<string | null>(null)
+  const [expandedDocument, setExpandedDocument] = useState<string | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
   const [testingEmail, setTestingEmail] = useState(false)
   const [emailTestResult, setEmailTestResult] = useState<string | null>(null)
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [adminEmails, setAdminEmails] = useState<string[]>([])
   
-  // Invitation form state
-  const [selectedDocument, setSelectedDocument] = useState<string>('')
-  const [inviteEmails, setInviteEmails] = useState('')
-  const [sendingInvites, setSendingInvites] = useState(false)
+  // Per-document invitation state
+  const [docInviteEmails, setDocInviteEmails] = useState<Record<string, string>>({})
+  const [sendingDocInvite, setSendingDocInvite] = useState<Record<string, boolean>>({})
   const [deletingUser, setDeletingUser] = useState<string | null>(null)
 
   // Check if current user is admin
@@ -136,13 +128,14 @@ export default function AdminPage() {
     }
   }
 
-  async function sendInvitations() {
-    if (!selectedDocument || !inviteEmails.trim()) {
-      setError('Please select a document and enter at least one email address')
+  async function sendDocumentInvitation(documentId: string) {
+    const emailText = docInviteEmails[documentId]
+    if (!emailText?.trim()) {
+      setError('Please enter at least one email address')
       return
     }
 
-    const emailList = inviteEmails
+    const emailList = emailText
       .split(/[\n,;]/)
       .map(e => e.trim())
       .filter(e => e.length > 0 && e.includes('@'))
@@ -152,7 +145,7 @@ export default function AdminPage() {
       return
     }
 
-    setSendingInvites(true)
+    setSendingDocInvite({ ...sendingDocInvite, [documentId]: true })
     setError(null)
     setSuccessMessage(null)
 
@@ -161,7 +154,7 @@ export default function AdminPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          documentId: selectedDocument, 
+          documentId, 
           emails: emailList,
           expiresInDays: 7 
         })
@@ -173,9 +166,9 @@ export default function AdminPage() {
         const successCount = data.results?.filter((r: { success: boolean }) => r.success).length || 0
         const failCount = data.results?.filter((r: { success: boolean }) => !r.success).length || 0
         
-        setSuccessMessage(`Sent ${successCount} invitation(s) successfully${failCount > 0 ? `, ${failCount} failed` : ''}`)
-        setInviteEmails('')
-        setSelectedDocument('')
+        const docTitle = DOCUMENTS.find(d => d.id === documentId)?.title || documentId
+        setSuccessMessage(`Sent ${successCount} invitation(s) for "${docTitle}"${failCount > 0 ? `, ${failCount} failed` : ''}`)
+        setDocInviteEmails({ ...docInviteEmails, [documentId]: '' })
         await fetchInvitations()
       } else {
         setError(data.error || 'Failed to send invitations')
@@ -183,7 +176,7 @@ export default function AdminPage() {
     } catch (err) {
       setError('Failed to send invitations')
     } finally {
-      setSendingInvites(false)
+      setSendingDocInvite({ ...sendingDocInvite, [documentId]: false })
     }
   }
 
@@ -299,6 +292,16 @@ export default function AdminPage() {
     }
   }
 
+  // Helper to get invitations for a document
+  function getDocumentInvitations(documentId: string) {
+    return invitations.filter(i => i.documentId === documentId)
+  }
+
+  // Helper to get users with access to a document
+  function getUsersWithAccess(documentId: string) {
+    return users.filter(u => u.documentAccess.includes(documentId))
+  }
+
   // Not loaded yet
   if (!isLoaded || isAdmin === null) {
     return (
@@ -350,7 +353,7 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-serif text-charcoal mb-2">Admin Dashboard</h1>
-              <p className="text-warm-gray">Manage user document access and send invitations</p>
+              <p className="text-warm-gray">Manage documents, invitations, and user access</p>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -362,7 +365,7 @@ export default function AdminPage() {
                 {testingEmail ? 'Sending...' : 'Test Email'}
               </button>
               <button
-                onClick={fetchUsers}
+                onClick={() => { fetchUsers(); fetchInvitations(); }}
                 disabled={loading}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors"
               >
@@ -431,7 +434,7 @@ export default function AdminPage() {
             </div>
             <div className="p-4 rounded-xl bg-white border border-stone/30">
               <div className="flex items-center gap-3">
-                <Mail className="w-8 h-8 text-gold" />
+                <Mail className="w-8 h-8 text-taupe" />
                 <div>
                   <p className="text-2xl font-bold text-charcoal">
                     {invitations.filter(i => i.status === 'active').length}
@@ -461,134 +464,144 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Send Invitations */}
+          {/* Documents & Invitations */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
-              <h2 className="text-lg font-semibold text-charcoal">Send Invitations</h2>
-              <p className="text-sm text-warm-gray mt-1">Invite people by email - they&apos;ll receive a link to access the document</p>
+              <h2 className="text-lg font-semibold text-charcoal">Documents & Invitations</h2>
+              <p className="text-sm text-warm-gray mt-1">Send invitations for each document</p>
             </div>
-            <div className="px-6 py-4 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-charcoal mb-2">
-                  Select Document
-                </label>
-                <select
-                  value={selectedDocument}
-                  onChange={(e) => setSelectedDocument(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-stone/30 bg-white text-charcoal focus:outline-none focus:border-sage"
-                >
-                  <option value="">Choose a document...</option>
-                  {DOCUMENTS.map(doc => (
-                    <option key={doc.id} value={doc.id}>{doc.title}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-charcoal mb-2">
-                  Email Addresses
-                </label>
-                <textarea
-                  value={inviteEmails}
-                  onChange={(e) => setInviteEmails(e.target.value)}
-                  placeholder="Enter email addresses (one per line, or comma-separated)"
-                  className="w-full h-24 px-4 py-3 rounded-lg border border-stone/30 bg-white text-charcoal font-mono text-sm resize-none focus:outline-none focus:border-sage"
-                />
-                <p className="text-xs text-warm-gray mt-2">
-                  Each person will receive a unique invitation link valid for 7 days. They must sign in with the invited email.
-                </p>
-              </div>
-              
-              <button
-                onClick={sendInvitations}
-                disabled={sendingInvites || !selectedDocument || !inviteEmails.trim()}
-                className="flex items-center gap-2 px-6 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors font-medium"
-              >
-                <Send className="w-4 h-4" />
-                {sendingInvites ? 'Sending...' : 'Send Invitations'}
-              </button>
-            </div>
-          </div>
-
-          {/* Pending Invitations */}
-          {invitations.length > 0 && (
-            <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
-              <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
-                <h2 className="text-lg font-semibold text-charcoal">Invitations</h2>
-                <p className="text-sm text-warm-gray mt-1">Track sent invitations and their status</p>
-              </div>
-              <div className="divide-y divide-stone/20">
-                {invitations.map((invite) => {
-                  const doc = DOCUMENTS.find(d => d.id === invite.documentId)
-                  
-                  return (
-                    <div key={invite.token} className="px-6 py-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-grow min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-charcoal">{invite.targetEmail}</span>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              invite.status === 'active' ? 'bg-yellow-100 text-yellow-700' :
-                              invite.status === 'redeemed' ? 'bg-green-100 text-green-700' :
-                              'bg-red-100 text-red-700'
-                            }`}>
-                              {invite.status === 'active' ? 'Pending' : 
-                               invite.status === 'redeemed' ? 'Redeemed' : 'Expired'}
-                            </span>
-                          </div>
-                          <div className="text-sm text-warm-gray">
-                            {doc?.title || invite.documentId}
-                          </div>
-                          <div className="text-xs text-warm-gray mt-1 flex items-center gap-3">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              Sent: {new Date(invite.createdAt).toLocaleDateString()}
-                            </span>
-                            <span>
-                              Expires: {new Date(invite.expiresAt).toLocaleDateString()}
-                            </span>
-                            {invite.redeemedAt && (
-                              <span className="text-green-600">
-                                Redeemed: {new Date(invite.redeemedAt).toLocaleDateString()}
-                              </span>
-                            )}
-                          </div>
+            <div className="divide-y divide-stone/20">
+              {DOCUMENTS.map((doc) => {
+                const docInvitations = getDocumentInvitations(doc.id)
+                const usersWithAccess = getUsersWithAccess(doc.id)
+                const activeInvites = docInvitations.filter(i => i.status === 'active')
+                const isExpanded = expandedDocument === doc.id
+                
+                return (
+                  <div key={doc.id} className="px-6 py-4">
+                    <div 
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <FileText className="w-6 h-6 text-taupe" />
+                        <div>
+                          <h3 className="font-medium text-charcoal">{doc.title}</h3>
+                          <p className="text-sm text-warm-gray">
+                            {usersWithAccess.length} user{usersWithAccess.length !== 1 ? 's' : ''} with access
+                            {activeInvites.length > 0 && ` • ${activeInvites.length} pending invite${activeInvites.length !== 1 ? 's' : ''}`}
+                          </p>
                         </div>
-                        {invite.status === 'active' && (
-                          <div className="flex items-center gap-2">
+                      </div>
+                      {isExpanded ? (
+                        <ChevronUp className="w-5 h-5 text-warm-gray" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-warm-gray" />
+                      )}
+                    </div>
+                    
+                    {isExpanded && (
+                      <div className="mt-4 pl-10 space-y-4">
+                        {/* Invite Form */}
+                        <div className="p-4 rounded-lg bg-stone/5 border border-stone/20">
+                          <label className="block text-sm font-medium text-charcoal mb-2">
+                            Send Invitations
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={docInviteEmails[doc.id] || ''}
+                              onChange={(e) => setDocInviteEmails({ ...docInviteEmails, [doc.id]: e.target.value })}
+                              placeholder="Enter email addresses (comma-separated)"
+                              className="flex-grow px-4 py-2 rounded-lg border border-stone/30 bg-white text-charcoal text-sm focus:outline-none focus:border-sage"
+                            />
                             <button
-                              onClick={async () => {
-                                const url = `${window.location.origin}/magic-link/${invite.token}`
-                                await navigator.clipboard.writeText(url)
-                                setSuccessMessage('Invitation link copied to clipboard!')
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                sendDocumentInvitation(doc.id)
                               }}
-                              className="p-2 hover:bg-stone/20 rounded transition-colors text-warm-gray"
-                              title="Copy link"
+                              disabled={sendingDocInvite[doc.id] || !docInviteEmails[doc.id]?.trim()}
+                              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors text-sm font-medium whitespace-nowrap"
                             >
-                              <Copy className="w-4 h-4" />
+                              <Send className="w-4 h-4" />
+                              {sendingDocInvite[doc.id] ? 'Sending...' : 'Send'}
                             </button>
-                            <button
-                              onClick={() => revokeInvitation(invite.token)}
-                              className="p-2 hover:bg-red-50 rounded transition-colors text-red-600"
-                              title="Revoke invitation"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          </div>
+                          <p className="text-xs text-warm-gray mt-2">
+                            Each person receives a unique link valid for 7 days.
+                          </p>
+                        </div>
+
+                        {/* Pending Invitations for this document */}
+                        {activeInvites.length > 0 && (
+                          <div>
+                            <h4 className="text-sm font-medium text-charcoal mb-2">Pending Invitations</h4>
+                            <div className="space-y-2">
+                              {activeInvites.map((invite) => (
+                                <div key={invite.token} className="flex items-center justify-between p-3 rounded-lg bg-stone/5 border border-stone/20">
+                                  <div>
+                                    <span className="text-sm text-charcoal">{invite.targetEmail}</span>
+                                    <div className="text-xs text-warm-gray flex items-center gap-2 mt-0.5">
+                                      <Clock className="w-3 h-3" />
+                                      Expires: {new Date(invite.expiresAt).toLocaleDateString()}
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      onClick={async (e) => {
+                                        e.stopPropagation()
+                                        const url = `${window.location.origin}/magic-link/${invite.token}`
+                                        await navigator.clipboard.writeText(url)
+                                        setSuccessMessage('Invitation link copied!')
+                                      }}
+                                      className="p-1.5 hover:bg-stone/20 rounded transition-colors text-warm-gray"
+                                      title="Copy link"
+                                    >
+                                      <Copy className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        revokeInvitation(invite.token)
+                                      }}
+                                      className="p-1.5 hover:bg-red-50 rounded transition-colors text-red-600"
+                                      title="Revoke"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Users with access */}
+                        {usersWithAccess.length > 0 && (
+                          <div>
+                            <h4 className="text-sm font-medium text-charcoal mb-2">Users with Access</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {usersWithAccess.map((u) => (
+                                <span key={u.id} className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-medium">
+                                  {u.email}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
-          )}
+          </div>
 
           {/* Users List */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
               <h2 className="text-lg font-semibold text-charcoal">Users & Document Access</h2>
-              <p className="text-sm text-warm-gray mt-1">Manage access and remove users</p>
+              <p className="text-sm text-warm-gray mt-1">Manage individual user access and remove users</p>
             </div>
             
             {loading ? (

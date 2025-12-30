@@ -28,14 +28,9 @@ export default function TweedLogo({ animated = true, size = 48, className = '' }
           <div className="data-stream-v"></div>
           <div className="data-stream-v"></div>
           <div className="data-stream-v"></div>
-          {/* Intersection nodes */}
-          <div className="weave-point" style={{ top: '20%', left: '20%' }}></div>
-          <div className="weave-point" style={{ top: '40%', left: '60%' }}></div>
-          <div className="weave-point" style={{ top: '60%', left: '40%' }}></div>
-          <div className="weave-point" style={{ top: '80%', left: '80%' }}></div>
         </>
       ) : (
-        // Static lines + intersection points
+        // Static lines only
         <>
           <div className="static-line-h"></div>
           <div className="static-line-h"></div>
@@ -45,10 +40,6 @@ export default function TweedLogo({ animated = true, size = 48, className = '' }
           <div className="static-line-v"></div>
           <div className="static-line-v"></div>
           <div className="static-line-v"></div>
-          <div className="weave-point-static" style={{ top: '20%', left: '20%' }}></div>
-          <div className="weave-point-static" style={{ top: '40%', left: '60%' }}></div>
-          <div className="weave-point-static" style={{ top: '60%', left: '40%' }}></div>
-          <div className="weave-point-static" style={{ top: '80%', left: '80%' }}></div>
         </>
       )}
     </div>
@@ -72,9 +63,6 @@ export function TweedLogoSimple({ size = 24, className = '' }: Omit<TweedLogoPro
       <line x1="7" y1="4" x2="7" y2="20" stroke="#C4A772" strokeWidth="1.5" />
       <line x1="12" y1="4" x2="12" y2="20" stroke="#D4AF37" strokeWidth="1.5" />
       <line x1="17" y1="4" x2="17" y2="20" stroke="#C4A772" strokeWidth="1.5" />
-      <circle cx="7" cy="7" r="1.5" fill="#D4AF37" />
-      <circle cx="12" cy="12" r="2" fill="#C4A772" />
-      <circle cx="17" cy="17" r="1.5" fill="#D4AF37" />
     </svg>
   )
 }

@@ -122,13 +122,13 @@ export default function Header() {
                 href="/internal"
                 className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                   pathname === '/internal' || pathname === '/admin'
-                    ? 'text-gold bg-gold/10'
-                    : 'text-gold/70 hover:text-gold hover:bg-gold/10'
+                    ? 'text-cream bg-sage/20'
+                    : 'text-stone hover:text-cream hover:bg-slate/50'
                 }`}
               >
                 Internal
                 {(pathname === '/internal' || pathname === '/admin') && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-sage" />
                 )}
               </Link>
             )}
@@ -228,14 +228,14 @@ export default function Header() {
                   href="/internal"
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     pathname === '/internal' || pathname === '/admin'
-                      ? 'bg-gold/10 text-gold'
-                      : 'text-gold/70 hover:bg-gold/10 hover:text-gold'
+                      ? 'bg-sage/10 text-sage-light'
+                      : 'text-stone hover:bg-slate/50 hover:text-cream'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>Internal</span>
                   <ChevronRight className={`w-4 h-4 transition-colors ${
-                    pathname === '/internal' || pathname === '/admin' ? 'text-gold' : 'text-zinc'
+                    pathname === '/internal' || pathname === '/admin' ? 'text-sage' : 'text-zinc'
                   }`} />
                 </Link>
               )}

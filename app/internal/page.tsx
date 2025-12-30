@@ -124,7 +124,7 @@ export default function InternalPage() {
           {/* Header */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
-              <Settings className="w-8 h-8 text-gold" />
+              <Settings className="w-8 h-8 text-sage" />
               <h1 className="text-3xl font-semibold text-cream">Internal Tools</h1>
             </div>
             <p className="text-stone">
@@ -155,36 +155,13 @@ export default function InternalPage() {
                   <h3 className="text-lg font-semibold text-cream mb-2">{tool.title}</h3>
                   <p className="text-stone text-sm">{tool.description}</p>
                   {tool.requiresAdmin && (
-                    <span className="inline-block mt-3 px-2 py-1 rounded text-xs font-medium bg-gold/10 text-gold">
+                    <span className="inline-block mt-3 px-2 py-1 rounded text-xs font-medium bg-sage/10 text-sage">
                       Admin Only
                     </span>
                   )}
                 </Link>
               )
             })}
-          </div>
-
-          {/* Quick Links */}
-          <div className="mt-12 p-6 rounded-xl bg-carbon border border-slate">
-            <h2 className="text-lg font-semibold text-cream mb-4">Quick Actions</h2>
-            <div className="flex flex-wrap gap-3">
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sage/10 text-sage-light hover:bg-sage/20 transition-colors text-sm font-medium"
-                >
-                  <Users className="w-4 h-4" />
-                  Manage Users
-                </Link>
-              )}
-              <Link
-                href="/documents"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-taupe/10 text-taupe hover:bg-taupe/20 transition-colors text-sm font-medium"
-              >
-                <FileText className="w-4 h-4" />
-                View Documents
-              </Link>
-            </div>
           </div>
         </div>
       </div>
