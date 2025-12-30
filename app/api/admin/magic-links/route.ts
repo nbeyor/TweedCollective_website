@@ -69,7 +69,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const user = await currentUser()
+    const client = await clerkClient()
+    
+    // IMPORTANT: Fetch fresh user data from Clerk to avoid stale metadata
+    // Using currentUser() can return cached data that doesn't reflect recent deletions
+    const user = await client.users.getUser(userId)
     
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -106,12 +110,11 @@ export async function POST(request: Request) {
     const expiresIn = expiresInDays || 7
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + expiresIn)
-
-    const client = await clerkClient()
     
-    // Get current metadata
+    // Get current metadata (fresh from Clerk)
     const currentMetadata = user.publicMetadata || {}
-    const magicLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
+    const existingLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
+    const magicLinks = { ...existingLinks }
     
     const documentTitle = getDocumentTitle(documentId)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tweedcollective.ai'
@@ -142,7 +145,9 @@ export async function POST(request: Request) {
         }
 
         // Send invitation email
-        await resend.emails.send({
+        console.log(`Attempting to send invitation email to ${email} for document ${documentId}`)
+        
+        const emailResult = await resend.emails.send({
           from: 'Tweed Collective <noreply@tweedcollective.ai>',
           to: email,
           subject: `You're invited to view: ${documentTitle}`,
@@ -180,6 +185,13 @@ export async function POST(request: Request) {
             </div>
           `
         })
+
+        console.log(`Email send result for ${email}:`, JSON.stringify(emailResult))
+        
+        // Check if Resend returned an error in the response
+        if ('error' in emailResult && emailResult.error) {
+          throw new Error(emailResult.error.message || 'Resend API error')
+        }
 
         results.push({ email, success: true, token })
       } catch (emailError: unknown) {
@@ -270,3 +282,4 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Failed to delete magic link' }, { status: 500 })
   }
 }
+

@@ -181,3 +181,4 @@ export function getGrantablePermissions(): Array<{ id: string; title: string }> 
     title: doc.shortTitle,
   }))
 }
+
