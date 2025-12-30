@@ -150,8 +150,12 @@ export async function POST(request: Request) {
         // Send invitation email
         console.log(`Attempting to send invitation email to ${email} for document ${documentId}`)
         
+        // Use Resend's default domain until tweedcollective.ai is verified
+        // Change back to 'Tweed Collective <noreply@tweedcollective.ai>' once verified
+        const fromAddress = process.env.RESEND_FROM_EMAIL || 'Tweed Collective <onboarding@resend.dev>'
+        
         const emailResult = await resend.emails.send({
-          from: 'Tweed Collective <noreply@tweedcollective.ai>',
+          from: fromAddress,
           to: email,
           subject: `You're invited to view: ${documentTitle}`,
           html: `
