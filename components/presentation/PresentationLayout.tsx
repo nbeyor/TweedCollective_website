@@ -18,19 +18,24 @@ interface PresentationLayoutProps {
   logo?: React.ReactNode
 }
 
-export default function PresentationLayout({ 
-  title, 
-  subtitle, 
+export default function PresentationLayout({
+  title,
+  subtitle,
   slides,
-  logo 
+  logo
 }: PresentationLayoutProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
   const totalSlides = slides.length
   const slide = slides[currentSlide]
+
+  // Minimum swipe distance (in px) to trigger slide change
+  const minSwipeDistance = 50
 
   // Update progress
   useEffect(() => {
@@ -60,6 +65,31 @@ export default function PresentationLayout({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
+  // Touch/swipe handlers for mobile
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && currentSlide < totalSlides - 1) {
+      nextSlide()
+    }
+    if (isRightSwipe && currentSlide > 0) {
+      prevSlide()
+    }
+  }
+
   // Fullscreen handling
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -88,7 +118,13 @@ export default function PresentationLayout({
   const prevSlide = () => setCurrentSlide(prev => Math.max(prev - 1, 0))
 
   return (
-    <div className="min-h-screen bg-void text-cream flex flex-col relative overflow-hidden" style={{ paddingTop: '80px' }}>
+    <div
+      className="min-h-screen bg-void text-cream flex flex-col relative overflow-hidden"
+      style={{ paddingTop: '80px' }}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0" style={{
@@ -114,44 +150,57 @@ export default function PresentationLayout({
           {/* Home button removed - Tweed Collective logo in header serves this purpose */}
         </div>
         
-        {/* Navigation Controls - Moved to Top */}
-        <div className="flex items-center gap-3 flex-1 justify-center max-w-2xl mx-auto">
+        {/* Navigation Controls - Responsive */}
+        <div className="flex items-center gap-2 md:gap-3 flex-1 justify-center max-w-2xl mx-auto">
+          {/* Previous Button - Icon only on mobile, text on desktop */}
           <button
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 p-2 md:px-3 md:py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm">Previous</span>
+            <span className="text-sm hidden md:inline">Previous</span>
           </button>
-          
-          <div className="flex items-center gap-2.5 px-4">
-            <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-right">{currentSlide + 1}</span>
-            <div className="flex items-center gap-1.5">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`rounded-full transition-all duration-300 ${
-                    index === currentSlide 
-                      ? 'w-6 h-2 bg-violet' 
-                      : 'w-2 h-2 bg-cream/30 hover:bg-cream/50'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
+
+          {/* Slide Counter - Simplified on mobile, dots on desktop */}
+          <div className="flex items-center gap-2.5 px-2 md:px-4">
+            {/* Mobile: Just show "3 / 10" */}
+            <div className="flex md:hidden items-center gap-1.5">
+              <span className="text-sm text-cream/70 font-mono">{currentSlide + 1}</span>
+              <span className="text-xs text-cream/40">/</span>
+              <span className="text-sm text-cream/70 font-mono">{totalSlides}</span>
             </div>
-            <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-left">{totalSlides}</span>
+
+            {/* Desktop: Show slide dots */}
+            <div className="hidden md:flex items-center gap-2.5">
+              <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-right">{currentSlide + 1}</span>
+              <div className="flex items-center gap-1.5">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`rounded-full transition-all duration-300 ${
+                      index === currentSlide
+                        ? 'w-6 h-2 bg-violet'
+                        : 'w-2 h-2 bg-cream/30 hover:bg-cream/50'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-cream/70 font-mono min-w-[1.5rem] text-left">{totalSlides}</span>
+            </div>
           </div>
-          
+
+          {/* Next Button - Icon only on mobile, text on desktop */}
           <button
             onClick={nextSlide}
             disabled={currentSlide === totalSlides - 1}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="flex items-center gap-1.5 p-2 md:px-3 md:py-2 rounded-xl text-cream/70 hover:text-cream hover:bg-violet/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             aria-label="Next slide"
           >
-            <span className="text-sm">Next</span>
+            <span className="text-sm hidden md:inline">Next</span>
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
