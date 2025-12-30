@@ -218,10 +218,17 @@ export async function POST(request: Request) {
     const successCount = results.filter(r => r.success).length
     const failCount = results.filter(r => !r.success).length
 
+    console.log(`POST: Email results - ${successCount} sent, ${failCount} failed`)
+    if (failCount > 0) {
+      console.log(`POST: Failed emails:`, results.filter(r => !r.success))
+    }
+
     return NextResponse.json({ 
       success: true,
       message: `Sent ${successCount} invitation(s)${failCount > 0 ? `, ${failCount} failed` : ''}`,
       results,
+      emailsSent: successCount,
+      emailsFailed: failCount,
       expiresAt: expiresAt.toISOString()
     })
   } catch (error) {

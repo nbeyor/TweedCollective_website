@@ -139,10 +139,24 @@ export default function AdminPage() {
       
       if (data.success) {
         const successCount = data.results?.filter((r: { success: boolean }) => r.success).length || 0
-        const failCount = data.results?.filter((r: { success: boolean }) => !r.success).length || 0
+        const failedResults = data.results?.filter((r: { success: boolean; error?: string }) => !r.success) || []
         
         const docTitle = DOCUMENTS.find(d => d.id === documentId)?.title || documentId
-        setSuccessMessage(`Sent ${successCount} invitation(s) for "${docTitle}"${failCount > 0 ? `, ${failCount} failed` : ''}`)
+        
+        if (failedResults.length > 0) {
+          // Show which emails failed and why
+          const failedEmails = failedResults.map((r: { email: string; error?: string }) => 
+            `${r.email}: ${r.error || 'Unknown error'}`
+          ).join(', ')
+          setError(`Email failed for: ${failedEmails}`)
+        }
+        
+        if (successCount > 0) {
+          setSuccessMessage(`Sent ${successCount} invitation(s) for "${docTitle}"`)
+        } else if (failedResults.length > 0) {
+          setSuccessMessage(null) // Only show error
+        }
+        
         setDocInviteEmails({ ...docInviteEmails, [documentId]: '' })
         await fetchInvitations()
       } else {
