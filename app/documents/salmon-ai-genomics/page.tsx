@@ -452,7 +452,11 @@ const slides: Slide[] = [
 export default function SalmonAIGenomicsPage() {
   return (
     <DocumentAccessWrapper documentId="salmon-ai-genomics">
-      <PresentationLayout slides={slides} />
+      <PresentationLayout
+        title="AI × Genomics × Aquaculture"
+        subtitle="Partner Roadmap for Salmon Genetic Improvement"
+        slides={slides}
+      />
     </DocumentAccessWrapper>
   )
 }
