@@ -159,31 +159,40 @@ export default function AdminPage() {
     if (revokingInvite) return // Prevent double-clicks
     
     setRevokingInvite(token)
+    setError(null)
+    setSuccessMessage(null)
+    
     // Optimistically remove from UI immediately
     const previousInvitations = [...invitations]
     setInvitations(invitations.filter(i => i.token !== token))
     
     try {
+      console.log('Deleting invitation:', token)
       const response = await fetch('/api/admin/magic-links', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token })
       })
       
+      console.log('Delete response status:', response.status)
       const data = await response.json()
+      console.log('Delete response data:', data)
       
       if (data.success) {
-        setSuccessMessage('Invitation revoked')
+        setSuccessMessage(`Invitation revoked (${data.remainingLinks ?? '?'} remaining)`)
         setError(null)
+        // Don't restore - keep the optimistic update
       } else {
         // Restore on failure
+        console.error('Delete failed:', data)
         setInvitations(previousInvitations)
-        setError(data.error || 'Failed to revoke invitation')
+        setError(`Failed: ${data.error || 'Unknown error'}${data.debug ? ' - ' + JSON.stringify(data.debug) : ''}`)
       }
     } catch (err) {
       // Restore on error
+      console.error('Delete exception:', err)
       setInvitations(previousInvitations)
-      setError('Failed to revoke invitation')
+      setError(`Network error: ${err instanceof Error ? err.message : 'Unknown'}`)
     } finally {
       setRevokingInvite(null)
     }
