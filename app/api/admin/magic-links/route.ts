@@ -1,4 +1,4 @@
-import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
+import { auth, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { Resend } from 'resend'
@@ -22,7 +22,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const user = await currentUser()
+    const client = await clerkClient()
+    
+    // IMPORTANT: Fetch fresh user data from Clerk to avoid stale metadata
+    const user = await client.users.getUser(userId)
     
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -35,7 +38,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Get magic links from admin user's public metadata
+    // Get magic links from admin user's public metadata (fresh from Clerk)
     const magicLinks = (user.publicMetadata?.magicLinks as Record<string, MagicLink>) || {}
     
     // Convert to array format with token and status
@@ -235,7 +238,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const user = await currentUser()
+    const client = await clerkClient()
+    
+    // IMPORTANT: Fetch fresh user data from Clerk to avoid stale metadata
+    const user = await client.users.getUser(userId)
     
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -253,12 +259,11 @@ export async function DELETE(request: Request) {
     if (!token || typeof token !== 'string') {
       return NextResponse.json({ error: 'token is required' }, { status: 400 })
     }
-
-    const client = await clerkClient()
     
-    // Get current metadata
+    // Get current metadata (fresh from Clerk)
     const currentMetadata = user.publicMetadata || {}
-    const magicLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
+    const existingLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
+    const magicLinks = { ...existingLinks }
     
     // Check if token exists
     if (!magicLinks[token]) {
