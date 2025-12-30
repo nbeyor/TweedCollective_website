@@ -3,9 +3,9 @@
 import React from 'react'
 import PresentationLayout, { Slide } from '@/components/presentation/PresentationLayout'
 import DocumentAccessWrapper from '@/components/DocumentAccessWrapper'
-import { Database, Dna, Brain, TrendingUp, BarChart3, Shield, Heart, Zap, Target, Info, Check, Rocket } from 'lucide-react'
+import { Database, Dna, Shield, TrendingUp, BarChart3, Target, Zap, Lock, AlertTriangle, Check, Cpu, Rocket, Map } from 'lucide-react'
 
-// Define slides based on AI × Genomics × Aquaculture Partner Roadmap
+// Define slides based on AI × Genomics × Aquaculture (Salmon) - Choices, Partners, and a Regulatory Lens
 const slides: Slide[] = [
   // Slide 1: Title
   {
@@ -13,55 +13,49 @@ const slides: Slide[] = [
     title: 'Title',
     content: (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cream/20 bg-cream/5 mb-6">
-          <span className="text-xs uppercase tracking-wider text-cream/60">Partner Roadmap</span>
-        </div>
         <h1 className="text-4xl md:text-6xl font-serif font-light text-cream mb-4 leading-tight">
-          AI × Genomics × Aquaculture
+          AI × Genomics × Aquaculture (Salmon)
         </h1>
         <p className="text-xl md:text-2xl text-cream/70 mb-8 max-w-3xl">
-          Partner Roadmap for Salmon Genetic Improvement
+          Choices, Partners, and a Regulatory Lens
         </p>
-
-        <div className="w-full max-w-4xl p-6 rounded-xl border-l-4 border-green-500 bg-green-500/10 text-left">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-2">Tagline</div>
-          <p className="text-sm text-cream/80 leading-relaxed">
-            Transforming a 2.5-Generation Dataset into Competitive Advantage
-          </p>
-        </div>
+        <p className="text-sm text-cream/50">
+          Date: December 30, 2025
+        </p>
       </div>
     ),
   },
 
-  // Slide 2: The Opportunity
+  // Slide 2: Executive Summary
   {
-    id: 'opportunity',
-    title: 'The Opportunity',
+    id: 'executive-summary',
+    title: 'Executive Summary',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 02</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">The Opportunity</h2>
-          <p className="text-cream/60 text-sm">Transform raw breeding data into predictive, proprietary competitive advantage</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
+          <p className="text-cream/60 text-sm">December 30, 2025</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mt-8">
-          <div className="p-6 rounded-xl border-2 border-neutral-300 bg-neutral-50">
-            <h3 className="text-xl font-semibold text-neutral-900 mb-4">The Asset</h3>
-            <ul className="space-y-2 text-neutral-700">
-              <li>• 2.5-generation genomic and phenotypic dataset</li>
-              <li>• Longitudinal breeding records across multiple traits</li>
-              <li>• Operational data: feed, treatments, lice counts, mortality</li>
-              <li>• Your most valuable unrefined asset</li>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <TrendingUp className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-xl font-semibold text-cream mb-3">Why now</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li>• Terrestrial ag proved the playbook (dense phenotyping + genomics + AI). Aquaculture is just beginning to unlock similar gains.</li>
+              <li>• The moat is longitudinal genotype–phenotype–environment data you own—and your ability to act on it quickly across cohorts and sites.</li>
             </ul>
           </div>
 
-          <div className="p-6 rounded-xl border-2 border-green-300 bg-green-50">
-            <h3 className="text-xl font-semibold text-green-900 mb-4">The Unlock</h3>
-            <ul className="space-y-2 text-green-700">
-              <li>• AI transforms raw data into predictive, proprietary IP</li>
-              <li>• Genomic selection delivers 10-25% improvement over pedigree methods</li>
-              <li>• Custom models create capabilities competitors cannot replicate</li>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Target className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-xl font-semibold text-cream mb-3">Four key questions</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li>• 1. AI strategy against the regulatory backdrop: where to place AI bets to maximize market upside given regional constraints.</li>
+              <li>• 2. AI capability investment appetite: C1 Data Infrastructure → C2 Genomic Selection with AI Phenotyping → C3 Custom Multi-Modal ML Model (not a foundation LLM).</li>
+              <li>• 3. Trait prioritization: rank by business value, data readiness, and AI fit.</li>
+              <li>• 4. Partners: short, high-impact list that preserves IP and speed.</li>
             </ul>
           </div>
         </div>
@@ -69,291 +63,401 @@ const slides: Slide[] = [
     ),
   },
 
-  // Slide 3: Three Platform Archetypes
+  // Slide 3: AI Strategy vs. Regulatory Backdrop: The Two Paths
   {
-    id: 'archetypes',
-    title: 'Three Platform Archetypes',
+    id: 'two-paths',
+    title: 'AI Strategy vs. Regulatory Backdrop: The Two Paths',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 03</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Three Platform Archetypes</h2>
-          <p className="text-cream/60 text-sm">Progressive capabilities that build upon each other</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Strategy vs. Regulatory Backdrop: The Two Paths</h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Database className="w-10 h-10 text-green-400 mb-3" />
-            <h3 className="text-xl font-semibold text-cream mb-2">Archetype 1: Data Foundation</h3>
-            <p className="text-sm text-cream/60 mb-2">Data ingestion, cleaning, harmonization</p>
-            <p className="text-sm text-green-300">Prerequisite for all AI</p>
+            <Shield className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-xl font-semibold text-cream mb-3">Path A — Selection-only (AI-accelerated)</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li>• Pros: widest market access (EU-safe), brand flexibility; compounding gains each cohort.</li>
+              <li>• Cons: slower genetic gain than edits.</li>
+              <li>• AI role: richer phenotyping (vision/sensors), higher-accuracy genomic prediction, better selection decisions.</li>
+            </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Dna className="w-10 h-10 text-green-400 mb-3" />
-            <h3 className="text-xl font-semibold text-cream mb-2">Archetype 2: Purpose-Built GS</h3>
-            <p className="text-sm text-cream/60 mb-2">Standard genomic selection (GBLUP)</p>
-            <p className="text-sm text-green-300">10-25% immediate accuracy gain</p>
-          </div>
-
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-10 h-10 text-green-400 mb-3" />
-            <h3 className="text-xl font-semibold text-cream mb-2">Archetype 3: Custom AI Models</h3>
-            <p className="text-sm text-cream/60 mb-2">Novel discovery, trait imputation</p>
-            <p className="text-sm text-green-300">Competitive moat—proprietary IP</p>
+            <Dna className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-xl font-semibold text-cream mb-3">Path B — Selection + AI-informed gene editing (where allowed)</h3>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li>• Pros: faster trait deltas; strong demo value.</li>
+              <li>• Cons: market-limited SKUs, labeling/segregation requirements.</li>
+              <li>• AI role: in-silico target discovery/validation, &quot;edit-or-select&quot; prioritization, off-target risk modeling.</li>
+            </ul>
           </div>
         </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Strategy</div>
-          <p className="text-sm text-cream/80">Buy Archetype 2 for efficiency → Build Archetype 3 for advantage</p>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Decision</div>
+          <p className="text-sm text-cream/80">Choose where each path runs (by market) and how to allocate AI effort across A vs. B while maintaining supply-chain separation for edited lines.</p>
         </div>
       </div>
     ),
   },
 
-  // Slide 4: The Staged Roadmap
+  // Slide 4: Global Map (Regulatory Segmentation Prompt)
   {
-    id: 'roadmap',
-    title: 'The Staged Roadmap',
+    id: 'global-map',
+    title: 'Global Map (Regulatory Segmentation Prompt)',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 04</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">The Staged Roadmap</h2>
-          <p className="text-cream/60 text-sm">Three overlapping phases building toward production AI</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Global Map (Regulatory Segmentation Prompt)</h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Database className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">A1: AI-Ready Data</h3>
-            <p className="text-sm text-cream/50 mb-3">0-6 months</p>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Clean IDs, standardized ontologies</li>
-              <li>• API front-door for partners</li>
-              <li>• Backfill phenotypes from existing logs</li>
-            </ul>
-          </div>
+        <div className="p-6 bg-white/5 border border-cream/10 rounded-xl mt-8">
+          <Map className="w-8 h-8 text-gold mb-4" />
+          <h3 className="text-xl font-semibold text-cream mb-4">Use a world map with four labeled call-outs:</h3>
+          <ul className="space-y-3 text-cream/80">
+            <li className="border-l-2 border-gold pl-4">
+              <span className="text-gold text-sm font-medium">EU:</span> Transgenic fish banned; gene-edited organisms treated as GMOs—Path A only. (<a href="https://curia.europa.eu/jcms/upload/docs/application/pdf/2018-07/cp180111en.pdf?utm_source=chatgpt.com" className="underline hover:text-gold" target="_blank" rel="noopener noreferrer">Curia</a>)
+            </li>
+            <li className="border-l-2 border-gold pl-4">
+              <span className="text-gold text-sm font-medium">UK:</span> Precision Breeding Act in force; plants moving ahead now, animals pending secondary rules—Path A primary; B potential later. (<a href="https://www.ft.com/content/32c085d6-0170-462d-86d6-a6a35d071ec1?utm_source=chatgpt.com" className="underline hover:text-gold" target="_blank" rel="noopener noreferrer">Financial Times</a>)
+            </li>
+            <li className="border-l-2 border-gold pl-4">
+              <span className="text-gold text-sm font-medium">US:</span> GE salmon allowed with bioengineered labeling and strict containment—Path A + B (segregated). (<a href="https://www.fda.gov/animal-veterinary/aquadvantage-salmon/aquadvantage-salmon-fact-sheet?utm_source=chatgpt.com" className="underline hover:text-gold" target="_blank" rel="noopener noreferrer">U.S. Food and Drug Administration</a>)
+            </li>
+            <li className="border-l-2 border-gold pl-4">
+              <span className="text-gold text-sm font-medium">Japan (exemplar):</span> CRISPR red sea bream &amp; tiger puffer cleared for sale—Path A + B. (<a href="https://www.asahi.com/ajw/articles/14445610?utm_source=chatgpt.com" className="underline hover:text-gold" target="_blank" rel="noopener noreferrer">Asahi Shimbun</a>)
+            </li>
+          </ul>
+        </div>
 
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <TrendingUp className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">A2: Scalable Phenotypes</h3>
-            <p className="text-sm text-cream/50 mb-3">3-12 months</p>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>• High-throughput AI phenotyping</li>
-              <li>• Index v1: growth, g-FCR, lice, robustness</li>
-              <li>• GBLUP vs ML validation</li>
-            </ul>
-          </div>
-
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">A3: Multi-Modal Model</h3>
-            <p className="text-sm text-cream/50 mb-3">6-24 months</p>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Production-grade model integrating all data streams</li>
-              <li>• Edit-or-Select dashboard by region</li>
-              <li>• Regulatory pathway preparation</li>
-            </ul>
-          </div>
+        <div className="w-full max-w-4xl p-4 rounded-xl bg-taupe-500/10 border-l-4 border-taupe-500 mt-6">
+          <div className="text-xs uppercase tracking-wider text-taupe-300 mb-1">Footer</div>
+          <p className="text-sm text-cream/80">Based on current rules. Regulations and available AI/phenotype data will evolve; revisit segmentation periodically.</p>
         </div>
       </div>
     ),
   },
 
-  // Slide 5: High-Value AI Use Cases
+  // Slide 5: Risk Posture & How It Evolves (Scenarios)
   {
-    id: 'use-cases',
-    title: 'High-Value AI Use Cases',
+    id: 'risk-scenarios',
+    title: 'Risk Posture & How It Evolves (Scenarios)',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 05</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Creating Proprietary Phenotypes</h2>
-          <p className="text-cream/60 text-sm">AI enables breeding for traits that were previously unmeasurable</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Risk Posture &amp; How It Evolves (Scenarios)</h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <BarChart3 className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">AI-Imputed FCR (g-FCR)</h3>
+            <Lock className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">R1: &quot;EU-first moat&quot; scenario (2026–2030)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Problem: Can&apos;t measure individual FCR in net-pens</li>
-              <li>• Solution: AI imputes individual scores from family/genomic data</li>
-              <li>• Impact: Only operator breeding for feed efficiency</li>
+              <li>• Reg: EU stays restrictive on edited animals.</li>
+              <li>• AI/Data: Non-invasive phenotyping (lice/gill/biomass/feeding) and enviromics improve quickly; selection-only ROI rises.</li>
+              <li>• Implication: Double-down on Path A globally; keep in-silico edit work warm for selective markets.</li>
             </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Shield className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Sea Lice Resistance</h3>
+            <Check className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">R2: &quot;Selective openings&quot; scenario (UK/US/Japan 2026–2028)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Problem: Costs industry $1B+ annually</li>
-              <li>• Solution: AI-enhanced GWAS identifies resistance gene networks</li>
-              <li>• Impact: Accelerated selection for resistant broodstock</li>
+              <li>• Reg: UK finalizes animal rules; US/Japan remain permissive with labeling and segregation.</li>
+              <li>• AI/Data: Larger labeled datasets improve target ranking and predicted editing benefit.</li>
+              <li>• Implication: Maintain Path A; pilot small edited SKUs only in permissive markets with tight chain-of-custody.</li>
             </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Heart className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Robustness & Gill Health</h3>
+            <AlertTriangle className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">R3: &quot;Backlash or delay&quot; scenario (any region, any year)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Problem: Difficult to quantify at scale</li>
-              <li>• Solution: AI image analysis → genomic linkage</li>
-              <li>• Impact: New GEBVs for previously unmeasurable traits</li>
+              <li>• Reg: Heightened scrutiny slows edited-animal approvals; labeling becomes stricter.</li>
+              <li>• AI/Data: Still compounds selection accuracy and operations (feeding/lice timing).</li>
+              <li>• Implication: Keep edited lines siloed; lean harder into AI-accelerated selection to protect market access.</li>
             </ul>
           </div>
-        </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Competitive Moat</div>
-          <p className="text-sm text-cream/80">These proprietary phenotypes cannot be replicated without equivalent longitudinal data</p>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Zap className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">R4: &quot;Tech step-change&quot; scenario (2027+)</h3>
+            <ul className="space-y-1 text-sm text-cream/70">
+              <li>• Reg: No major change.</li>
+              <li>• AI/Data: Autonomy + multimodal models yield materially better g-FCR and lice outcomes, making Path A even more attractive on EBITDA.</li>
+              <li>• Implication: Path A remains the default profit engine; edits remain optional, market-specific accelerants.</li>
+            </ul>
+          </div>
         </div>
       </div>
     ),
   },
 
-  // Slide 6: Recommended Partner Ecosystem
+  // Slide 6: Investment Appetite in AI Capabilities (C1 → C2 → C3)
   {
-    id: 'partners',
-    title: 'Recommended Partner Ecosystem',
+    id: 'investment-appetite',
+    title: 'Investment Appetite in AI Capabilities (C1 → C2 → C3)',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 06</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Recommended Partner Ecosystem</h2>
-          <p className="text-cream/60 text-sm">Four specialized partners to execute the staged roadmap</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Investment Appetite in AI Capabilities (C1 → C2 → C3)</h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mt-8">
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Zap className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">Aquaticode</h3>
-            <p className="text-sm text-cream/50 mb-3">A2 Phenotyping</p>
+            <Database className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C1 — Data Infrastructure (must-have; enables everything else)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• SORTpro: 10,000 fish/hour at &gt;97% accuracy</li>
-              <li>• 60M+ fish sorted with major producers</li>
-              <li>• Grieg Seafood adoption Nov 2025</li>
+              <li>• Make the lake AI-ready: stable IDs, time-aligned events, partner-grade APIs, private-cloud training zone, gap-fill phenotypes (e.g., lice-laser time series; pen-level g-FCR proxy).</li>
+              <li>• Output: a governed, queryable data product partners and models can actually use.</li>
             </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Dna className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">Xelect / Genus</h3>
-            <p className="text-sm text-cream/50 mb-3">A2 Genomics</p>
+            <BarChart3 className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C2 — Genomic Selection with AI Phenotyping (buy &amp; deploy)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Aquaculture-native GS at scale</li>
-              <li>• Optimate software for complex breeding</li>
-              <li>• Population-specific index design with IP protection</li>
+              <li>• Generate scalable labels at vaccination/handling (robustness/gill, sex/maturation) plus continuous lice/biomass/feeding.</li>
+              <li>• Build a custom selection index (growth, g-FCR proxy, lice, robustness); benchmark classical genomic prediction vs. ML on your population.</li>
+              <li>• Output: selection decisions improve this season; ops wins (feeding, treatment timing).</li>
             </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Brain className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">SINTEF Digital</h3>
-            <p className="text-sm text-cream/50 mb-3">A3 Model Builder</p>
+            <Cpu className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C3 — Custom Multi-Modal ML Model (the differentiator; not an LLM)</h3>
             <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Hybrid AI expertise (domain + ML)</li>
-              <li>• Production deployment capability</li>
-              <li>• Full-scale ACE research facility</li>
+              <li>• Train on your genotypes + AI phenotypes + environment; serve Select-Now scores and Edit-or-Select prioritization by market; expose APIs.</li>
+              <li>• Output: a compounding model moat tied to your data and processes.</li>
             </ul>
           </div>
-
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Target className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-1">Nofima</h3>
-            <p className="text-sm text-cream/50 mb-3">A3 Scientific Advisory</p>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>• Leading salmon genetics research</li>
-              <li>• CMSEdit, CrispResist projects</li>
-              <li>• Regulatory navigation expertise</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Central Asset</div>
-          <p className="text-sm text-cream/80">Your 2.5-generation dataset is the foundation—partners provide specialized capabilities</p>
         </div>
       </div>
     ),
   },
 
-  // Slide 7: Regulatory Landscape
+  // Slide 7: Technical Considerations (mirrors Slide 6 layout)
   {
-    id: 'regulatory',
-    title: 'Regulatory Landscape',
+    id: 'technical-considerations',
+    title: 'Technical Considerations (mirrors Slide 6 layout)',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 07</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Regulatory Landscape</h2>
-          <p className="text-cream/60 text-sm">Global regulatory environment for gene editing in aquaculture</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Technical Considerations (mirrors Slide 6 layout)</h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mt-8">
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Target className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Regional Status</h3>
-            <ul className="space-y-2 text-sm text-cream/70">
-              <li>• EU: Restrictive — GMO regulations apply to all gene editing</li>
-              <li>• UK, Norway: Evolving — Precision breeding pathways emerging</li>
-              <li>• US, Canada, Japan, Argentina: Permissive — Case-by-case or not regulated as GMO</li>
+            <Database className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C1 — Data Infrastructure</h3>
+            <ul className="space-y-1 text-sm text-cream/70">
+              <li>• Reality: most lakes aren&apos;t modeled for joins/time windows; ontologies (feed/transfers/treatments) are inconsistent; partner APIs are thin.</li>
+              <li>• Work: entity resolution; event schemas; RBAC APIs; CDC pipelines; compute lice time-series from laser logs; derive and validate g-FCR proxies.</li>
             </ul>
           </div>
 
           <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Info className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Recent Updates</h3>
-            <ul className="space-y-2 text-sm text-cream/70">
-              <li>• UK: Precision Breeding Regulations in force (Nov 2025)</li>
-              <li>• UK: Plants operational; animals pending</li>
-              <li>• UK: First gene-edited foods expected late 2026</li>
-              <li>• Norway: 7-4 committee recommendation favorable</li>
-              <li>• Norway: Industry awaiting legislative action</li>
+            <BarChart3 className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C2 — Genomic Selection with AI Phenotyping</h3>
+            <ul className="space-y-1 text-sm text-cream/70">
+              <li>• Reality: hands-on data science, not push-button; requires experimental design, clean join keys, environment covariates, and bioeconomic framing.</li>
+              <li>• Work: label QA; genotyping strategy (LD→HD where needed); benchmark classical genomic prediction vs. ML; governance for index updates.</li>
             </ul>
           </div>
-        </div>
 
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Strategic Flexibility</div>
-          <p className="text-sm text-cream/80">AI enables parallel breeding programs—selection-only for restrictive markets, selection + editing for permissive markets</p>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Cpu className="w-10 h-10 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">C3 — Custom Multi-Modal ML Model</h3>
+            <ul className="space-y-1 text-sm text-cream/70">
+              <li>• Reality: not a foundation LLM. Focused model; synthetic data may be needed to cover gaps; secure deployment; IP over features and weights.</li>
+              <li>• Work: feature engineering across time-series CV + genotype + env; uncertainty estimates; model serving/MLOps; monitoring &amp; drift controls.</li>
+            </ul>
+          </div>
         </div>
       </div>
     ),
   },
 
-  // Slide 8: Recent Market Developments
+  // Slide 8: Trait Prioritization (Forced Rank—table)
   {
-    id: 'developments',
-    title: 'Recent Market Developments',
+    id: 'trait-prioritization',
+    title: 'Trait Prioritization (Forced Rank—table)',
     content: (
       <div className="space-y-6 px-4">
         <div>
           <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 08</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Recent Market Developments</h2>
-          <p className="text-cream/60 text-sm">Last 60 Days</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Trait Prioritization (Forced Rank—table)</h2>
+        </div>
+
+        <div className="overflow-x-auto mt-8">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b-2 border-sage">
+                <th className="text-left p-3 text-cream font-semibold">Trait</th>
+                <th className="text-left p-3 text-cream font-semibold">Business value</th>
+                <th className="text-left p-3 text-cream font-semibold">Why enabled here</th>
+                <th className="text-left p-3 text-cream font-semibold">Why AI is suited</th>
+              </tr>
+            </thead>
+            <tbody className="text-cream/80">
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Feed Conversion Ratio (g-FCR proxy)</td>
+                <td className="p-3">Largest COGS lever → biggest long-run EBITDA; <strong>global (EU-safe)</strong></td>
+                <td className="p-3">You already collect longitudinal ops data; robust proxies are feasible now; compounds every cohort</td>
+                <td className="p-3">CV biomass + sensor fusion + time-series ML for feeding decisions; strongest case for a proprietary model moat</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Sea-lice resistance / burden</td>
+                <td className="p-3">High pain/cost; strong demo; treatment reductions</td>
+                <td className="p-3">Existing lice imaging/laser provides rich labeled data</td>
+                <td className="p-3">Vision models for counts/severity; ML/genomics to lift resistance predictions; optional edit exploration in permissive markets</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Gill health &amp; robustness</td>
+                <td className="p-3">Reduces mortality/handling losses; additive to the above</td>
+                <td className="p-3">Existing datasets likely support progress; near-term value &lt; FCR/lice</td>
+                <td className="p-3">Behavioural CV and event-linked models; welfare scoring feeding the selection index</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ),
+  },
+
+  // Slide 9: Other Traits (Why Not Now)
+  {
+    id: 'other-traits',
+    title: 'Other Traits (Why Not Now)',
+    content: (
+      <div className="space-y-6 px-4">
+        <div>
+          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 09</div>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Other Traits (Why Not Now)</h2>
+        </div>
+
+        <div className="overflow-x-auto mt-8">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b-2 border-sage">
+                <th className="text-left p-3 text-cream font-semibold">Trait</th>
+                <th className="text-left p-3 text-cream font-semibold">Status / reason to defer</th>
+              </tr>
+            </thead>
+            <tbody className="text-cream/80">
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Growth rate</td>
+                <td className="p-3">Partly addressed historically; lower incremental EBITDA vs. FCR; reassess if models surface outsized signal</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Fillet yield / quality</td>
+                <td className="p-3">Valuable but slower feedback and harder to measure consistently at scale; add after C2 phenotypes stabilize</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Disease-specific resistances (e.g., CMS)</td>
+                <td className="p-3">Important but may need wet-lab validation/regulatory gating; keep in <strong>in-silico</strong> queue</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">Sterility / escapes</td>
+                <td className="p-3">Strong ESG angle; better aligned to edit track and regulatory timing; scope under C3 academic guidance</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ),
+  },
+
+  // Slide 10: Partners & Why (short list)
+  {
+    id: 'partners',
+    title: 'Partners & Why (short list)',
+    content: (
+      <div className="space-y-6 px-4">
+        <div>
+          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 10</div>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Partners &amp; Why (short list)</h2>
+        </div>
+
+        <div className="overflow-x-auto mt-8">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b-2 border-purple-400">
+                <th className="text-left p-3 text-cream font-semibold">Capability</th>
+                <th className="text-left p-3 text-cream font-semibold">Partner</th>
+                <th className="text-left p-3 text-cream font-semibold">Why them</th>
+                <th className="text-left p-3 text-cream font-semibold">Where they plug in</th>
+              </tr>
+            </thead>
+            <tbody className="text-cream/80">
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">C2</td>
+                <td className="p-3 font-medium text-purple-300">Aquaticode (SORTpro)</td>
+                <td className="p-3">Industrial-scale AI phenotyping at vaccination/handling (~10k smolt/hr); immediate robustness/gill/sex/maturation labels; field-proven with major producers</td>
+                <td className="p-3">Generate scalable phenotypes; feed selection &amp; ops</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">C2</td>
+                <td className="p-3 font-medium text-purple-300">Xelect (Genus Group)</td>
+                <td className="p-3">Aquaculture-native genetics at scale (own lab + software); bioeconomic index design; will build <strong>population-specific</strong> pipelines with tight IP</td>
+                <td className="p-3">Custom selection index; genotyping plan; benchmark classical vs. ML; selection decisions</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">C3</td>
+                <td className="p-3 font-medium text-purple-300">SINTEF Digital/Ocean</td>
+                <td className="p-3">Tech-native, production ML in aquaculture (CV, sensor fusion, behaviour/feeding control); secure on-prem/private-cloud deployment</td>
+                <td className="p-3">Build &amp; serve the <strong>multi-modal model</strong>; APIs; MLOps/SLOs</td>
+              </tr>
+              <tr className="border-b border-cream/10">
+                <td className="p-3 font-medium text-cream">C3 (academic)</td>
+                <td className="p-3 font-medium text-purple-300">Nofima <em>(alt: IMR for sterility; CAT later for wet-lab)</em></td>
+                <td className="p-3">Scandinavian leadership in salmon genetics/lice/gill; regulatory-aware; <strong>in-silico</strong> CRISPR target triage</td>
+                <td className="p-3">Trait biology guidance; <strong>Edit-or-Select</strong> priorities by market</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ),
+  },
+
+  // Slide 11: Recent Announcements & Signals (with citations)
+  {
+    id: 'recent-announcements',
+    title: 'Recent Announcements & Signals (with citations)',
+    content: (
+      <div className="space-y-6 px-4">
+        <div>
+          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 11</div>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Recent Announcements &amp; Signals (with citations)</h2>
         </div>
 
         <div className="p-6 bg-white/5 border border-cream/10 rounded-xl mt-8">
-          <Rocket className="w-8 h-8 text-green-400 mb-4" />
-          <h3 className="text-xl font-semibold text-cream mb-4">Industry Momentum</h3>
           <ul className="space-y-3 text-cream/80">
-            <li className="border-l-2 border-green-500 pl-4">
-              <span className="text-green-300 text-sm">Aug 2025:</span> Tidal (Google X) launches autonomous AI lice control at AquaNor 2025
+            <li className="border-l-2 border-sage pl-4">
+              • Aquaticode signs agreements to sort &gt;60M fish with Australis &amp; AquaChile (June 2025). (<a href="https://www.fishfarmingexpert.com/ai-powered-sorting-aquachile-aquaticode/aquaticodes-ai-driven-system-will-sort-over-60-million-fish-in-chile-deal/1949293?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">Fish Farming Expert</a>)
             </li>
-            <li className="border-l-2 border-green-500 pl-4">
-              <span className="text-green-300 text-sm">Nov 2025:</span> Grieg Seafood adopts Aquaticode—first vaccination line integration
+            <li className="border-l-2 border-sage pl-4">
+              • Tidal (spinout from Alphabet&apos;s X) launches as independent company; &gt;250 pens globally; expands in Chile (2024–2025). (<a href="https://www.aquafeed.co.uk/tidal-launches-from-alphabets-moonshot-factory/?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">AquaFeed</a>)
             </li>
-            <li className="border-l-2 border-green-500 pl-4">
-              <span className="text-green-300 text-sm">Apr 2025:</span> ISAV resistance breakthrough via triple gene CRISPR knockout
+            <li className="border-l-2 border-sage pl-4">
+              • Tidal forms alliance with Maqsur to scale in Chile (June 2025). (<a href="https://www.aquafeed.co.uk/tidal-and-maqsur-companies-form-alliance-to-scale-operations-in-chile/?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">AquaFeed</a>)
             </li>
-            <li className="border-l-2 border-green-500 pl-4">
-              <span className="text-green-300 text-sm">Nov 2025:</span> UK Precision Breeding Regulations enter force
+            <li className="border-l-2 border-sage pl-4">
+              • Japan commercializes CRISPR-edited red sea bream (2021); tiger puffer follows (2021–2022). (<a href="https://www.asahi.com/ajw/articles/14445610?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">Asahi Shimbun</a>)
             </li>
-            <li className="border-l-2 border-green-500 pl-4">
-              <span className="text-green-300 text-sm">Apr 2025:</span> SINTEF releases SOLAQUA dataset for aquaculture AI research
+            <li className="border-l-2 border-sage pl-4">
+              • EU: CJEU confirms gene-edited organisms regulated as GMOs (2018). (<a href="https://curia.europa.eu/jcms/upload/docs/application/pdf/2018-07/cp180111en.pdf?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">Curia</a>)
+            </li>
+            <li className="border-l-2 border-sage pl-4">
+              • US: FDA/USDA require &quot;bioengineered&quot; disclosure; land-based containment for GE salmon. (<a href="https://www.fda.gov/animal-veterinary/aquadvantage-salmon/aquadvantage-salmon-fact-sheet?utm_source=chatgpt.com" className="underline hover:text-sage-300" target="_blank" rel="noopener noreferrer">U.S. Food and Drug Administration</a>)
             </li>
           </ul>
         </div>
@@ -361,87 +465,40 @@ const slides: Slide[] = [
     ),
   },
 
-  // Slide 9: Success Metrics
+  // Slide 12: Overall Recommendations (ties back to Slide 2's questions)
   {
-    id: 'metrics',
-    title: 'Success Metrics',
+    id: 'recommendations',
+    title: 'Overall Recommendations (ties back to Slide 2\'s questions)',
     content: (
       <div className="space-y-6 px-4">
         <div>
-          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 09</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Investment & Success Metrics</h2>
-          <p className="text-cream/60 text-sm">Clear milestones for each phase</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Check className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Phase 1 (A1 Complete)</h3>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>✓ Queryable trait time series operational</li>
-              <li>✓ Reliable pen-level g-FCR proxy validated</li>
-              <li>✓ 2-3 partner APIs integrated</li>
-            </ul>
-          </div>
-
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Check className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Phase 2 (A2 Complete)</h3>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>✓ Selection decisions incorporate AI-derived traits</li>
-              <li>✓ 15-20% GEBV accuracy improvement on lice/robustness</li>
-              <li>✓ Visible feed efficiency improvements</li>
-            </ul>
-          </div>
-
-          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
-            <Check className="w-8 h-8 text-green-400 mb-3" />
-            <h3 className="text-lg font-semibold text-cream mb-3">Phase 3 (A3 Complete)</h3>
-            <ul className="space-y-1 text-sm text-cream/70">
-              <li>✓ Model v1 serving &quot;Select-Now&quot; predictions</li>
-              <li>✓ Edit-or-Select dashboard by trait/region</li>
-              <li>✓ Regulatory playbooks for EU vs permissive markets</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="w-full max-w-4xl p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500 mt-6">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Key Talent Investment</div>
-          <p className="text-sm text-cream/80">2-3 computational biologists to own proprietary models and manage partner ecosystem</p>
-        </div>
-      </div>
-    ),
-  },
-
-  // Slide 10: Summary & Next Steps
-  {
-    id: 'summary',
-    title: 'Summary & Next Steps',
-    content: (
-      <div className="space-y-6 px-4">
-        <div>
-          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 10</div>
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Summary & Next Steps</h2>
+          <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 12</div>
+          <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Overall Recommendations (ties back to Slide 2&apos;s questions)</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mt-8">
-          <div className="p-6 rounded-xl border-2 border-green-300 bg-green-50">
-            <h3 className="text-xl font-semibold text-green-900 mb-4">Key Takeaways</h3>
-            <ul className="space-y-2 text-green-700">
-              <li>• <strong>The Asset:</strong> Your 2.5-generation dataset is a formidable competitive moat—AI is the only tool to unlock its full value</li>
-              <li>• <strong>The Strategy:</strong> Buy Archetype 2 for immediate gains; Build Archetype 3 for defensible advantage</li>
-              <li>• <strong>The Opportunity:</strong> AI-managed parallel breeding programs enable serving global markets from single broodstock</li>
-            </ul>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Shield className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">Q1 (AI vs. regulatory backdrop):</h3>
+            <p className="text-sm text-cream/70">• Default to selection-only, AI-accelerated as the global path; run a contained, market-segmented edit exploration in permissive geographies with segregated supply/labeling.</p>
           </div>
 
-          <div className="p-6 rounded-xl border-2 border-neutral-300 bg-neutral-50">
-            <h3 className="text-xl font-semibold text-neutral-900 mb-4">Next Steps</h3>
-            <ul className="space-y-2 text-neutral-700">
-              <li>☐ Initiate A1 data architecture workstream</li>
-              <li>☐ Engage Aquaticode for pilot phenotyping assessment</li>
-              <li>☐ Open discussions with Xelect on index design</li>
-              <li>☐ Schedule SINTEF/Nofima advisory scoping</li>
-            </ul>
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Database className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">Q2 (AI capability investment appetite):</h3>
+            <p className="text-sm text-cream/70">• Fund C1 + C2 now (AI-ready data product; Aquaticode + Xelect; custom index; classical vs. ML benchmark). Scope C3 with SINTEF + Nofima/IMR for model design and in-silico CRISPR triage.</p>
+          </div>
+
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Target className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">Q3 (Traits):</h3>
+            <p className="text-sm text-cream/70">• Long-run anchor = FCR (global moat via selection-first); near-term demo/value = sea-lice (leverage existing imaging/laser data); gill/robustness as additive.</p>
+          </div>
+
+          <div className="p-6 bg-white/5 border border-cream/10 rounded-xl">
+            <Rocket className="w-8 h-8 text-sage-300 mb-3" />
+            <h3 className="text-lg font-semibold text-cream mb-2">Q4 (Partners):</h3>
+            <p className="text-sm text-cream/70">• Validate current conversations; onboard C2 first, begin C3 scoping in parallel. IP rule: your data ⇒ your weights; vendors keep device/code; partner APIs from day one.</p>
           </div>
         </div>
       </div>
@@ -453,8 +510,8 @@ export default function SalmonAIGenomicsPage() {
   return (
     <DocumentAccessWrapper documentId="salmon-ai-genomics">
       <PresentationLayout
-        title="AI × Genomics × Aquaculture"
-        subtitle="Partner Roadmap for Salmon Genetic Improvement"
+        title="AI × Genomics × Aquaculture (Salmon)"
+        subtitle="Choices, Partners, and a Regulatory Lens"
         slides={slides}
       />
     </DocumentAccessWrapper>
