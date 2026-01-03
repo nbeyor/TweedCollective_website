@@ -1,6 +1,5 @@
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { verifySession } from '@/lib/auth'
+import { auth, currentUser } from '@clerk/nextjs/server'
 
 // Import document registry
 import { DOCUMENTS } from '@/content/documents'
@@ -16,16 +15,22 @@ export default async function DocumentExportPage({
   params: { documentId: string }
 }) {
   // Verify admin session
-  const cookieStore = await cookies()
-  const sessionToken = cookieStore.get('session')?.value
+  const { userId } = await auth()
 
-  if (!sessionToken) {
+  if (!userId) {
     redirect('/login')
   }
 
-  const session = await verifySession(sessionToken)
+  const user = await currentUser()
 
-  if (!session || session.role !== 'admin') {
+  if (!user) {
+    redirect('/login')
+  }
+
+  const isAdmin = user.privateMetadata?.isAdmin === true ||
+                  user.publicMetadata?.role === 'admin'
+
+  if (!isAdmin) {
     redirect('/login')
   }
 
