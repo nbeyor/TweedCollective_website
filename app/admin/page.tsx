@@ -490,11 +490,13 @@ export default function AdminPage() {
                 
                 return (
                   <div key={doc.id} className="px-6 py-4">
-                    <div 
-                      className="flex items-center justify-between cursor-pointer"
-                      onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
+                    <div
+                      className="flex items-center justify-between"
                     >
-                      <div className="flex items-center gap-4">
+                      <div
+                        className="flex items-center gap-4 cursor-pointer flex-grow"
+                        onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
+                      >
                         <FileText className="w-6 h-6 text-taupe" />
                         <div>
                           <h3 className="font-medium text-charcoal">{doc.title}</h3>
@@ -504,11 +506,30 @@ export default function AdminPage() {
                           </p>
                         </div>
                       </div>
-                      {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-warm-gray" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-warm-gray" />
-                      )}
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`/documents/${doc.id}/export`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 text-sm font-medium text-sage bg-sage/10 hover:bg-sage/20 rounded-lg transition-colors flex items-center gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          Export PDF
+                        </a>
+                        <button
+                          onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
+                          className="p-2"
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="w-5 h-5 text-warm-gray" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-warm-gray" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                     
                     {isExpanded && (
