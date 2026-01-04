@@ -125,19 +125,19 @@ export default async function DocumentExportPage({
         .slide-title {
           font-size: 2rem;
           font-weight: 600;
-          color: #1a1a1a;
+          color: #000;
           margin-bottom: 0.5rem;
         }
 
         .slide-subtitle {
           font-size: 1.125rem;
-          color: #666;
+          color: #2d2d2d;
         }
 
         .slide-content {
           font-size: 0.95rem;
           line-height: 1.6;
-          color: #333;
+          color: #000;
         }
 
         .content-section {
@@ -147,7 +147,7 @@ export default async function DocumentExportPage({
         .section-heading {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #1a1a1a;
+          color: #000;
           margin-bottom: 0.75rem;
         }
 
@@ -171,19 +171,19 @@ export default async function DocumentExportPage({
 
         .card {
           padding: 1rem;
-          border: 1px solid #e5e7eb;
+          border: 2px solid #333;
           border-radius: 0.5rem;
-          background: #f9fafb;
+          background: #fff;
         }
 
         .card-title {
           font-weight: 600;
-          color: #1a1a1a;
+          color: #000;
           margin-bottom: 0.5rem;
         }
 
         .card-description {
-          color: #666;
+          color: #2d2d2d;
           font-size: 0.9rem;
         }
 
@@ -236,14 +236,14 @@ export default async function DocumentExportPage({
           font-weight: 600;
           font-size: 1.125rem;
           margin-bottom: 0.75rem;
-          color: #1a1a1a;
+          color: #000;
         }
 
         .insight-box {
           margin-top: 1.5rem;
           padding: 1rem;
-          background: #f0f4f0;
-          border-left: 4px solid #6b7556;
+          background: #f5f5f5;
+          border-left: 4px solid #333;
           border-radius: 0.25rem;
         }
 
@@ -252,12 +252,80 @@ export default async function DocumentExportPage({
           font-size: 0.875rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #6b7556;
+          color: #000;
           margin-bottom: 0.5rem;
         }
 
         .insight-text {
-          color: #333;
+          color: #000;
+        }
+
+        .metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5rem;
+          margin-top: 2rem;
+        }
+
+        .metric-card {
+          text-align: center;
+          padding: 1rem;
+          border: 2px solid #333;
+          border-radius: 0.5rem;
+        }
+
+        .metric-value {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #000;
+          margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #000;
+          margin-bottom: 0.25rem;
+        }
+
+        .metric-sublabel {
+          font-size: 0.75rem;
+          color: #555;
+        }
+
+        .timeline-item {
+          margin-bottom: 2rem;
+          padding: 1rem;
+          border-left: 3px solid #333;
+          padding-left: 1.5rem;
+        }
+
+        .timeline-header {
+          margin-bottom: 0.5rem;
+        }
+
+        .timeline-date {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #000;
+        }
+
+        .timeline-title {
+          font-size: 1.125rem;
+          font-weight: bold;
+          color: #000;
+          margin: 0.25rem 0;
+        }
+
+        .timeline-description {
+          color: #2d2d2d;
+          margin: 0.5rem 0;
+        }
+
+        .timeline-metrics {
+          margin: 0.5rem 0;
+          font-size: 0.875rem;
+          color: #000;
         }
       `}} />
 
@@ -304,12 +372,25 @@ function renderSlideContent(slide: any) {
       return (
         <div className="text-center py-8">
           {content.badge && (
-            <div className="inline-block px-4 py-1 bg-sage/10 text-sage rounded-full text-sm font-medium mb-4">
+            <div className="inline-block px-4 py-1 bg-gray-200 border-2 border-black rounded-full text-sm font-medium mb-4" style={{color: '#000'}}>
               {content.badge}
             </div>
           )}
-          <h1 className="text-4xl font-light mb-4">{content.headline}</h1>
-          {content.subtitle && <p className="text-xl text-gray-600">{content.subtitle}</p>}
+          <h1 className="text-4xl font-bold mb-4" style={{color: '#000'}}>{content.headline}</h1>
+          {content.subtitle && <p className="text-xl mb-6" style={{color: '#2d2d2d'}}>{content.subtitle}</p>}
+
+          {content.metrics && content.metrics.length > 0 && (
+            <div className="metrics-grid">
+              {content.metrics.map((metric: any, i: number) => (
+                <div key={i} className="metric-card">
+                  <div className="metric-value">{metric.value}</div>
+                  <div className="metric-label">{metric.label}</div>
+                  {metric.sublabel && <div className="metric-sublabel">{metric.sublabel}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+
           {content.insightBox && (
             <div className="insight-box mt-8">
               <div className="insight-label">{content.insightBox.label}</div>
@@ -468,6 +549,39 @@ function renderSlideContent(slide: any) {
     case 'custom':
       return (
         <>
+          {content.props?.heading && (
+            <h3 className="section-heading mb-4">{content.props.heading}</h3>
+          )}
+
+          {content.props?.items && (
+            <div className="content-section">
+              {content.props.items.map((item: any, i: number) => (
+                <div key={i} className="timeline-item">
+                  <div className="timeline-header">
+                    <div className="timeline-date">{item.date} • {item.source}</div>
+                    <h4 className="timeline-title">{item.title}</h4>
+                  </div>
+                  <p className="timeline-description">{item.description}</p>
+                  {item.metrics && item.metrics.length > 0 && (
+                    <div className="timeline-metrics">
+                      <strong>Key Metrics:</strong>
+                      <ul style={{marginTop: '0.25rem', paddingLeft: '1.5rem'}}>
+                        {item.metrics.map((metric: string, j: number) => (
+                          <li key={j}>{metric}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {item.anecdote && (
+                    <p className="timeline-description" style={{fontStyle: 'italic', marginTop: '0.5rem'}}>
+                      {item.anecdote}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {content.props?.regions && (
             <div className="content-section">
               <ul>
