@@ -66,7 +66,7 @@ export default async function DocumentExportPage({
 
   return (
     <>
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{__html: `
         @page {
           size: landscape;
           margin: 0.5in;
@@ -251,7 +251,7 @@ export default async function DocumentExportPage({
         .insight-text {
           color: #333;
         }
-      `}</style>
+      `}} />
 
       {/* Print instruction header (hidden on print) */}
       <div className="no-print bg-gray-50 border-b border-gray-200 p-4 sticky top-0 z-10">
