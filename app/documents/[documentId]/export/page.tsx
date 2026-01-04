@@ -12,8 +12,11 @@ import { slides as vibeSlides } from '@/content/documents/vibe-coding'
 export default async function DocumentExportPage({
   params,
 }: {
-  params: { documentId: string }
+  params: Promise<{ documentId: string }>
 }) {
+  // Await params in Next.js 15+
+  const { documentId } = await params
+
   // Verify admin session
   const { userId } = await auth()
 
@@ -35,7 +38,7 @@ export default async function DocumentExportPage({
   }
 
   // Get document metadata
-  const document = DOCUMENT_CONFIGS.find(doc => doc.id === params.documentId)
+  const document = DOCUMENT_CONFIGS.find(doc => doc.id === documentId)
 
   if (!document) {
     return (
@@ -50,14 +53,16 @@ export default async function DocumentExportPage({
 
   // Get slides for this document
   let slides: any[] = []
-  switch (params.documentId) {
+  switch (documentId) {
     case 'salmon-ai-genomics':
       slides = salmonSlides
       break
     case 'health-tech-market':
+    case 'health-tech-market-2024':
       slides = healthTechSlides
       break
     case 'vibe-coding':
+    case 'vibe-coding-in-enterprise-for-pe':
       slides = vibeSlides
       break
     default:
@@ -257,10 +262,10 @@ export default async function DocumentExportPage({
       <div className="no-print bg-gray-50 border-b border-gray-200 p-4 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">{document.title} - Print Export</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{document.title} - Export</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Press <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">Ctrl+P</kbd> or{' '}
-              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">⌘+P</kbd> to print or save as PDF
+              Each slide is formatted as one landscape page. Press <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">Ctrl+P</kbd> or{' '}
+              <kbd className="px-2 py-1 bg-white border border-gray-300 rounded text-xs">⌘+P</kbd> to print
             </p>
           </div>
           <button
@@ -270,7 +275,7 @@ export default async function DocumentExportPage({
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
-            Print Document
+            Print
           </button>
         </div>
       </div>
