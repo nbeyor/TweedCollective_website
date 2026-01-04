@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { auth, currentUser } from '@clerk/nextjs/server'
 
 // Import document registry
-import { DOCUMENTS } from '@/content/documents'
+import { DOCUMENT_CONFIGS } from '@/content/documents'
 
 // Import slide data for each document
 import { slides as salmonSlides } from '@/content/documents/salmon-ai-genomics'
@@ -35,7 +35,7 @@ export default async function DocumentExportPage({
   }
 
   // Get document metadata
-  const document = DOCUMENTS.find(doc => doc.id === params.documentId)
+  const document = DOCUMENT_CONFIGS.find(doc => doc.id === params.documentId)
 
   if (!document) {
     return (
