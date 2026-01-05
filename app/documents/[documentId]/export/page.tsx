@@ -217,7 +217,8 @@ export default async function DocumentExportPage({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          min-height: 6.5in;
+          height: 100%;
+          min-height: calc(7.5in - 3rem);
         }
 
         .slide-subtitle {
@@ -934,7 +935,7 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
   switch (content.type) {
     case 'title':
       return (
-        <div className="text-center py-8">
+        <div className="text-center">
           {content.badge && (
             <div className="inline-block px-4 py-2 bg-sage-50 border-2 border-sage rounded-full text-sm font-medium mb-4" style={{background: '#f6f7f4', borderColor: '#6b7556', color: '#535d43'}}>
               {content.badge}
