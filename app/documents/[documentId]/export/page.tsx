@@ -9,8 +9,36 @@ import { slides as salmonSlides } from '@/content/documents/salmon-ai-genomics'
 import { slides as healthTechSlides } from '@/content/documents/health-tech-market'
 import { slides as vibeSlides } from '@/content/documents/vibe-coding'
 
+// Import design system
+import { spacing, typography, colors } from '@/lib/slideTemplates'
+
 // Client component for print button
 import PrintButton from './PrintButton'
+
+// Design system values for CSS (extracted for inline styles)
+const exportStyles = {
+  // Spacing
+  pagePadding: spacing[6],           // 1.5rem
+  cardPadding: spacing[3],           // 0.75rem
+  cardGap: spacing[3],               // 0.75rem
+  sectionMargin: spacing[5],         // 1.25rem
+  elementGap: spacing[4],            // 1rem
+  tightGap: spacing[2],              // 0.5rem
+  
+  // Typography
+  bodySize: typography.sizes.sm,     // 0.875rem
+  smallSize: '0.8125rem',            // slightly smaller
+  xsSize: typography.sizes.xs,       // 0.75rem
+  headingSize: typography.sizes.xl,  // 1.25rem
+  titleSize: typography.sizes['2xl'], // 1.5rem
+  lineHeight: typography.lineHeights.normal, // 1.5
+  
+  // Colors
+  sage500: colors.sage[500],         // #6b7556
+  sage600: colors.sage[600],         // #535d43
+  sage50: colors.sage[50],           // #f6f7f4
+  taupe600: colors.taupe[600],       // #8a7969
+}
 
 export default async function DocumentExportPage({
   params,
@@ -123,19 +151,19 @@ export default async function DocumentExportPage({
 
         .slide-header {
           border-bottom: 2px solid #6b7556;
-          padding-bottom: 0.75rem;
-          margin-bottom: 1.5rem;
+          padding-bottom: 0.5rem;
+          margin-bottom: 1rem;
         }
 
         .slide-title {
-          font-size: 2rem;
+          font-size: 1.5rem;
           font-weight: 600;
           color: #000;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
         }
 
         .slide-page-indicator {
-          font-size: 1.25rem;
+          font-size: 1rem;
           font-weight: 400;
           color: #6b7556;
         }
@@ -148,33 +176,33 @@ export default async function DocumentExportPage({
         }
 
         .slide-subtitle {
-          font-size: 1.125rem;
+          font-size: 1rem;
           color: #2d2d2d;
         }
 
         .slide-content {
-          font-size: 0.95rem;
-          line-height: 1.6;
+          font-size: 0.875rem;
+          line-height: 1.5;
           color: #000;
         }
 
         .content-section {
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
         }
 
         .section-heading {
-          font-size: 1.25rem;
+          font-size: 1.125rem;
           font-weight: 600;
           color: #000;
-          margin-bottom: 0.75rem;
-          padding-left: 0.75rem;
-          border-left: 4px solid #6b7556;
+          margin-bottom: 0.5rem;
+          padding-left: 0.5rem;
+          border-left: 3px solid #6b7556;
         }
 
         .card-grid {
           display: grid;
-          gap: 1rem;
-          margin-top: 1rem;
+          gap: 0.75rem;
+          margin-top: 0.75rem;
         }
 
         .card-grid.cols-2 {
@@ -190,21 +218,22 @@ export default async function DocumentExportPage({
         }
 
         .card {
-          padding: 1rem;
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
+          padding: 0.75rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
           background: #fff;
         }
 
         .card-title {
           font-weight: 600;
+          font-size: 0.875rem;
           color: #535d43;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.375rem;
         }
 
         .card-description {
           color: #2d2d2d;
-          font-size: 0.9rem;
+          font-size: 0.8125rem;
         }
 
         .card-icon {
@@ -214,19 +243,21 @@ export default async function DocumentExportPage({
         table {
           width: 100%;
           border-collapse: collapse;
-          margin-top: 1rem;
+          margin-top: 0.75rem;
         }
 
         th {
           background: #f3f4f6;
-          padding: 0.75rem;
+          padding: 0.5rem;
           text-align: left;
           font-weight: 600;
+          font-size: 0.8125rem;
           border-bottom: 2px solid #6b7556;
         }
 
         td {
-          padding: 0.75rem;
+          padding: 0.5rem;
+          font-size: 0.8125rem;
           border-bottom: 1px solid #e5e7eb;
         }
 
@@ -239,122 +270,126 @@ export default async function DocumentExportPage({
         }
 
         ul, ol {
-          margin: 0.5rem 0;
-          padding-left: 1.5rem;
+          margin: 0.25rem 0;
+          padding-left: 1.25rem;
         }
 
         li {
-          margin: 0.25rem 0;
+          margin: 0.125rem 0;
+          font-size: 0.8125rem;
         }
 
         .comparison-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 1.5rem;
-          margin-top: 1rem;
+          gap: 1rem;
+          margin-top: 0.75rem;
         }
 
         .comparison-column {
-          padding: 1rem;
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
+          padding: 0.75rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
         }
 
         .comparison-title {
           font-weight: 600;
-          font-size: 1.125rem;
-          margin-bottom: 0.75rem;
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
           color: #535d43;
-          padding-bottom: 0.5rem;
+          padding-bottom: 0.375rem;
           border-bottom: 2px solid #6b7556;
         }
 
         .insight-box {
-          margin-top: 1.5rem;
-          padding: 1rem;
+          margin-top: 0.75rem;
+          padding: 0.75rem;
           background: #f6f7f4;
-          border-left: 4px solid #6b7556;
+          border-left: 3px solid #6b7556;
           border-radius: 0.25rem;
         }
 
         .insight-label {
           font-weight: 600;
-          font-size: 0.875rem;
+          font-size: 0.75rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
           color: #8a7969;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
         }
 
         .insight-text {
           color: #000;
+          font-size: 0.8125rem;
+          line-height: 1.4;
         }
 
         .metrics-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
-          margin-top: 2rem;
+          gap: 1rem;
+          margin-top: 1rem;
         }
 
         .metric-card {
           text-align: center;
-          padding: 1rem;
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
+          padding: 0.75rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
         }
 
         .metric-value {
-          font-size: 2rem;
+          font-size: 1.5rem;
           font-weight: bold;
           color: #6b7556;
-          margin-bottom: 0.5rem;
-        }
-
-        .metric-label {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: #535d43;
           margin-bottom: 0.25rem;
         }
 
-        .metric-sublabel {
+        .metric-label {
           font-size: 0.75rem;
+          font-weight: 600;
+          color: #535d43;
+          margin-bottom: 0.125rem;
+        }
+
+        .metric-sublabel {
+          font-size: 0.6875rem;
           color: #555;
         }
 
         .timeline-item {
-          margin-bottom: 2rem;
-          padding: 1rem;
-          border-left: 3px solid #6b7556;
-          padding-left: 1.5rem;
+          margin-bottom: 1rem;
+          padding: 0.75rem;
+          border-left: 2px solid #6b7556;
+          padding-left: 1rem;
         }
 
         .timeline-header {
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
         }
 
         .timeline-date {
-          font-size: 0.875rem;
+          font-size: 0.75rem;
           font-weight: 600;
           color: #8a7969;
         }
 
         .timeline-title {
-          font-size: 1.125rem;
+          font-size: 0.9375rem;
           font-weight: bold;
           color: #535d43;
-          margin: 0.25rem 0;
+          margin: 0.125rem 0;
         }
 
         .timeline-description {
           color: #2d2d2d;
-          margin: 0.5rem 0;
+          margin: 0.25rem 0;
+          font-size: 0.8125rem;
         }
 
         .timeline-metrics {
-          margin: 0.5rem 0;
-          font-size: 0.875rem;
+          margin: 0.25rem 0;
+          font-size: 0.75rem;
           color: #000;
         }
 
@@ -362,32 +397,33 @@ export default async function DocumentExportPage({
         .framework-levels {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.625rem;
         }
 
         .framework-level {
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
-          padding: 1rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
+          padding: 0.625rem;
           background: #fff;
         }
 
         .framework-level-header {
           display: flex;
           align-items: center;
-          gap: 1rem;
-          margin-bottom: 0.75rem;
+          gap: 0.625rem;
+          margin-bottom: 0.375rem;
         }
 
         .framework-level-number {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 2rem;
-          height: 2rem;
+          width: 1.5rem;
+          height: 1.5rem;
           background: #6b7556;
           color: white;
           font-weight: bold;
+          font-size: 0.75rem;
           border-radius: 50%;
           flex-shrink: 0;
         }
@@ -395,42 +431,44 @@ export default async function DocumentExportPage({
         .framework-level-title-group {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.5rem;
           flex-wrap: wrap;
         }
 
         .framework-level-title {
-          font-size: 1.125rem;
+          font-size: 0.9375rem;
           font-weight: 600;
           color: #000;
         }
 
         .framework-badge {
           display: inline-block;
-          padding: 0.25rem 0.75rem;
+          padding: 0.125rem 0.5rem;
           background: #f6f7f4;
           border: 1px solid #6b7556;
           border-radius: 1rem;
-          font-size: 0.75rem;
+          font-size: 0.6875rem;
           font-weight: 600;
           color: #6b7556;
         }
 
         .framework-description {
           color: #2d2d2d;
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.375rem;
+          font-size: 0.8125rem;
         }
 
         .framework-details {
           background: #f6f7f4;
-          border-left: 3px solid #6b7556;
-          padding: 0.75rem;
+          border-left: 2px solid #6b7556;
+          padding: 0.5rem;
           border-radius: 0.25rem;
+          font-size: 0.75rem;
         }
 
         .framework-detail-item {
-          margin-bottom: 0.5rem;
-          font-size: 0.875rem;
+          margin-bottom: 0.25rem;
+          font-size: 0.75rem;
         }
 
         .framework-detail-item:last-child {
@@ -441,56 +479,58 @@ export default async function DocumentExportPage({
         .kpi-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
-          margin-top: 1rem;
+          gap: 0.625rem;
+          margin-top: 0.5rem;
         }
 
         .kpi-card {
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
-          padding: 1rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
+          padding: 0.625rem;
           background: #fff;
         }
 
         .kpi-header {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
+          gap: 0.375rem;
+          margin-bottom: 0.25rem;
         }
 
         .kpi-icon {
-          font-size: 1.25rem;
+          font-size: 1rem;
         }
 
         .kpi-title {
           font-weight: 600;
+          font-size: 0.8125rem;
           color: #000;
         }
 
         .kpi-metric {
           color: #2d2d2d;
-          font-size: 0.9rem;
-          margin-bottom: 0.75rem;
-          padding-bottom: 0.75rem;
+          font-size: 0.75rem;
+          margin-bottom: 0.375rem;
+          padding-bottom: 0.375rem;
           border-bottom: 1px solid #e5e7eb;
         }
 
         .kpi-targets {
-          margin-bottom: 0.75rem;
+          margin-bottom: 0.375rem;
+          font-size: 0.75rem;
         }
 
         .kpi-targets ul {
-          margin-top: 0.25rem;
-          font-size: 0.85rem;
+          margin-top: 0.125rem;
+          font-size: 0.75rem;
         }
 
         .kpi-anchor {
-          font-size: 0.8rem;
+          font-size: 0.6875rem;
           color: #555;
           font-style: italic;
           background: #f6f7f4;
-          padding: 0.5rem;
+          padding: 0.375rem;
           border-radius: 0.25rem;
         }
 
@@ -498,98 +538,102 @@ export default async function DocumentExportPage({
         .case-study-metrics {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
-          margin-bottom: 1.5rem;
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
         }
 
         .case-study-metric {
           text-align: center;
-          padding: 1rem;
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
+          padding: 0.625rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
           background: #f6f7f4;
         }
 
         .case-study-value {
-          font-size: 2rem;
+          font-size: 1.5rem;
           font-weight: bold;
           color: #6b7556;
         }
 
         .case-study-label {
           font-weight: 600;
+          font-size: 0.75rem;
           color: #000;
-          margin: 0.25rem 0;
+          margin: 0.125rem 0;
         }
 
         .case-study-sublabel {
-          font-size: 0.8rem;
+          font-size: 0.6875rem;
           color: #555;
         }
 
         .case-study-source {
-          font-size: 0.7rem;
+          font-size: 0.625rem;
           color: #777;
-          margin-top: 0.25rem;
+          margin-top: 0.125rem;
         }
 
         .case-study-sections {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 1.5rem;
-          margin-bottom: 1.5rem;
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
         }
 
         .case-study-section {
-          padding: 1rem;
+          padding: 0.625rem;
           border: 1px solid #e5e7eb;
-          border-radius: 0.5rem;
+          border-radius: 0.375rem;
         }
 
         .case-study-section-title {
           font-weight: 600;
+          font-size: 0.8125rem;
           color: #000;
-          margin-bottom: 0.5rem;
-          padding-bottom: 0.5rem;
+          margin-bottom: 0.375rem;
+          padding-bottom: 0.25rem;
           border-bottom: 2px solid #6b7556;
         }
 
         .case-study-anecdote {
           background: #f6f7f4;
-          border-left: 4px solid #6b7556;
-          padding: 1rem;
-          margin-bottom: 1rem;
+          border-left: 3px solid #6b7556;
+          padding: 0.625rem;
+          margin-bottom: 0.625rem;
           border-radius: 0.25rem;
+          font-size: 0.8125rem;
         }
 
         /* Sources Styles */
         .sources-container {
           columns: 2;
-          column-gap: 2rem;
+          column-gap: 1.5rem;
         }
 
         .sources-section {
           break-inside: avoid;
-          margin-bottom: 1.5rem;
+          margin-bottom: 0.75rem;
         }
 
         .sources-section-title {
           font-weight: 600;
+          font-size: 0.8125rem;
           color: #000;
-          margin-bottom: 0.5rem;
-          padding-bottom: 0.25rem;
+          margin-bottom: 0.25rem;
+          padding-bottom: 0.125rem;
           border-bottom: 2px solid #6b7556;
         }
 
         .sources-list {
-          padding-left: 1.5rem;
+          padding-left: 1rem;
           margin: 0;
         }
 
         .sources-item {
-          margin-bottom: 0.5rem;
-          font-size: 0.8rem;
-          line-height: 1.4;
+          margin-bottom: 0.25rem;
+          font-size: 0.6875rem;
+          line-height: 1.35;
         }
 
         .sources-text {
@@ -599,7 +643,7 @@ export default async function DocumentExportPage({
         .sources-url {
           display: block;
           color: #555;
-          font-size: 0.7rem;
+          font-size: 0.625rem;
           word-break: break-all;
         }
 
@@ -607,13 +651,13 @@ export default async function DocumentExportPage({
         .stances-container {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
+          gap: 0.625rem;
         }
 
         .stance-card {
-          border: 2px solid #6b7556;
-          border-radius: 0.5rem;
-          padding: 1rem;
+          border: 1px solid #6b7556;
+          border-radius: 0.375rem;
+          padding: 0.625rem;
           background: #fff;
         }
 
@@ -621,53 +665,54 @@ export default async function DocumentExportPage({
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 0.75rem;
-          padding-bottom: 0.75rem;
+          gap: 0.25rem;
+          margin-bottom: 0.375rem;
+          padding-bottom: 0.375rem;
           border-bottom: 1px solid #e5e7eb;
         }
 
         .stance-level {
           background: #6b7556;
           color: white;
-          font-size: 0.75rem;
+          font-size: 0.6875rem;
           font-weight: 600;
-          padding: 0.25rem 0.5rem;
+          padding: 0.125rem 0.375rem;
           border-radius: 0.25rem;
         }
 
         .stance-title {
           font-weight: 600;
+          font-size: 0.8125rem;
           color: #000;
         }
 
         .stance-subtitle {
-          font-size: 0.875rem;
+          font-size: 0.75rem;
           color: #555;
           font-style: italic;
         }
 
         .stance-section {
-          margin-bottom: 0.5rem;
-          font-size: 0.85rem;
+          margin-bottom: 0.25rem;
+          font-size: 0.75rem;
         }
 
         .stance-section ul {
-          margin: 0.25rem 0 0 0;
-          padding-left: 1.25rem;
+          margin: 0.125rem 0 0 0;
+          padding-left: 1rem;
         }
 
         .stance-messaging {
           font-style: italic;
           color: #6b7556;
-          margin-bottom: 0.5rem;
-          font-size: 0.9rem;
+          margin-bottom: 0.25rem;
+          font-size: 0.75rem;
         }
 
         .stance-case-study {
-          font-size: 0.8rem;
+          font-size: 0.6875rem;
           background: #f6f7f4;
-          padding: 0.5rem;
+          padding: 0.375rem;
           border-radius: 0.25rem;
           margin-top: 0.5rem;
         }
@@ -736,6 +781,15 @@ export default async function DocumentExportPage({
 function needsPageBreak(slide: any): { needsBreak: boolean; splitAt?: number } {
   const content = slide.content
   
+  // Grid slides - split based on column count (2 rows per page max)
+  if (content.type === 'grid' && content.items) {
+    const columns = content.columns || 3
+    const maxItemsPerPage = columns * 2 // 2 rows per page
+    if (content.items.length > maxItemsPerPage) {
+      return { needsBreak: true, splitAt: maxItemsPerPage }
+    }
+  }
+  
   // Timeline with more than 2 items needs splitting
   if (content.type === 'custom' && content.props?.items && content.props.items.length > 2) {
     return { needsBreak: true, splitAt: 2 }
@@ -746,9 +800,9 @@ function needsPageBreak(slide: any): { needsBreak: boolean; splitAt?: number } {
     return { needsBreak: true, splitAt: 2 }
   }
   
-  // KPIs/Metrics with more than 4 items needs splitting
-  if (content.type === 'metrics' && content.kpis && content.kpis.length > 4) {
-    return { needsBreak: true, splitAt: 4 }
+  // KPIs/Metrics with more than 3 items needs splitting (tightened from 4)
+  if (content.type === 'metrics' && content.kpis && content.kpis.length > 3) {
+    return { needsBreak: true, splitAt: 3 }
   }
   
   // Sources with more than 3 sections needs splitting
@@ -778,7 +832,10 @@ function renderSlideWithPagination(slide: any, pageIndex: number, totalPages: nu
   let items: any[] = []
   let itemKey = ''
   
-  if (content.type === 'framework' && content.levels) {
+  if (content.type === 'grid' && content.items) {
+    items = content.items
+    itemKey = 'items'
+  } else if (content.type === 'framework' && content.levels) {
     items = content.levels
     itemKey = 'levels'
   } else if (content.type === 'metrics' && content.kpis) {
@@ -809,7 +866,9 @@ function getSlidePageCount(slide: any): number {
   if (!needsBreak || splitAt === undefined) return 1
   
   let itemCount = 0
-  if (content.type === 'framework' && content.levels) {
+  if (content.type === 'grid' && content.items) {
+    itemCount = content.items.length
+  } else if (content.type === 'framework' && content.levels) {
     itemCount = content.levels.length
   } else if (content.type === 'metrics' && content.kpis) {
     itemCount = content.kpis.length
@@ -861,15 +920,24 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
       )
 
     case 'grid':
+      const allGridItems = content.items || []
+      const displayGridItems = (startIdx !== undefined && endIdx !== undefined)
+        ? allGridItems.slice(startIdx, endIdx)
+        : allGridItems
+      const isFirstGridPage = startIdx === undefined || startIdx === 0
+      const isLastGridPage = endIdx === undefined || endIdx >= allGridItems.length
       return (
         <>
           {content.sectionLabel && <div className="text-xs text-gray-500 mb-2">{content.sectionLabel}</div>}
           {content.heading && <h3 className="section-heading">{content.heading}</h3>}
-          {content.description && <p className="text-gray-600 mb-4">{content.description}</p>}
+          {isFirstGridPage && content.description && <p className="text-gray-600 mb-4" style={{fontSize: '0.8125rem'}}>{content.description}</p>}
+          {!isFirstGridPage && (
+            <div className="text-sm text-gray-500 mb-2">(continued)</div>
+          )}
 
-          {content.headerSection && (
+          {isFirstGridPage && content.headerSection && (
             <div className="content-section">
-              <h4 className="font-semibold mb-2">{content.headerSection.heading}</h4>
+              <h4 className="font-semibold mb-2" style={{fontSize: '0.875rem'}}>{content.headerSection.heading}</h4>
               <ul>
                 {content.headerSection.items.map((item: string, i: number) => (
                   <li key={i}>{item}</li>
@@ -879,10 +947,10 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
           )}
 
           <div className={`card-grid cols-${content.columns || 3}`}>
-            {content.items.map((item: any, i: number) => (
+            {displayGridItems.map((item: any, i: number) => (
               <div key={i} className="card">
                 {item.title && <div className="card-title">{item.title}</div>}
-                {item.subtitle && <div className="text-sm text-gray-500 mb-2">{item.subtitle}</div>}
+                {item.subtitle && <div className="text-sm text-gray-500 mb-2" style={{fontSize: '0.75rem'}}>{item.subtitle}</div>}
                 {item.description && <div className="card-description">{item.description}</div>}
                 {item.items && (
                   <ul className="mt-2">
@@ -895,7 +963,7 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
             ))}
           </div>
 
-          {content.insightBox && (
+          {isLastGridPage && content.insightBox && (
             <div className="insight-box">
               <div className="insight-label">{content.insightBox.label}</div>
               <div className="insight-text">{content.insightBox.text}</div>
