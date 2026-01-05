@@ -101,12 +101,14 @@ export default async function DocumentExportPage({
         }
 
         .export-slide {
-          min-height: 7.5in;
+          height: 7.5in;
           width: 10in;
           margin: 0 auto 2rem;
           padding: 1.5rem;
           background: white;
           border: 1px solid #e5e7eb;
+          overflow: hidden;
+          box-sizing: border-box;
         }
 
         @media print {
@@ -120,6 +122,10 @@ export default async function DocumentExportPage({
           border-bottom: 2px solid #6b7556;
           padding-bottom: 0.75rem;
           margin-bottom: 1.5rem;
+        }
+
+        .slide-header.hidden {
+          display: none;
         }
 
         .slide-title {
@@ -149,6 +155,8 @@ export default async function DocumentExportPage({
           font-weight: 600;
           color: #000;
           margin-bottom: 0.75rem;
+          padding-left: 0.75rem;
+          border-left: 4px solid #6b7556;
         }
 
         .card-grid {
@@ -171,14 +179,14 @@ export default async function DocumentExportPage({
 
         .card {
           padding: 1rem;
-          border: 2px solid #333;
+          border: 2px solid #d4a574;
           border-radius: 0.5rem;
           background: #fff;
         }
 
         .card-title {
           font-weight: 600;
-          color: #000;
+          color: #535d43;
           margin-bottom: 0.5rem;
         }
 
@@ -194,16 +202,21 @@ export default async function DocumentExportPage({
         }
 
         th {
-          background: #f3f4f6;
+          background: #f6f7f4;
           padding: 0.75rem;
           text-align: left;
           font-weight: 600;
           border-bottom: 2px solid #6b7556;
+          color: #535d43;
         }
 
         td {
           padding: 0.75rem;
           border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:nth-child(even) {
+          background: #f6f7f4;
         }
 
         tr:last-child td {
@@ -242,8 +255,8 @@ export default async function DocumentExportPage({
         .insight-box {
           margin-top: 1.5rem;
           padding: 1rem;
-          background: #f5f5f5;
-          border-left: 4px solid #333;
+          background: #faf9f7;
+          border-left: 4px solid #8a7969;
           border-radius: 0.25rem;
         }
 
@@ -252,7 +265,7 @@ export default async function DocumentExportPage({
           font-size: 0.875rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #000;
+          color: #8a7969;
           margin-bottom: 0.5rem;
         }
 
@@ -270,14 +283,15 @@ export default async function DocumentExportPage({
         .metric-card {
           text-align: center;
           padding: 1rem;
-          border: 2px solid #333;
+          border: 2px solid #6b7556;
           border-radius: 0.5rem;
+          background: #f6f7f4;
         }
 
         .metric-value {
           font-size: 2rem;
           font-weight: bold;
-          color: #000;
+          color: #6b7556;
           margin-bottom: 0.5rem;
         }
 
@@ -345,20 +359,26 @@ export default async function DocumentExportPage({
 
       {/* Slides */}
       <div className="py-8">
-        {slides.map((slide, index) => (
-          <div key={slide.id} className={`export-slide ${index < slides.length - 1 ? 'page-break' : ''}`}>
-            <div className="slide-header">
-              <div className="text-xs text-gray-500 mb-2">
-                Slide {index + 1} of {slides.length}
+        {slides.map((slide, index) => {
+          const isTitleSlide = slide.content.type === 'title'
+          return (
+            <div key={slide.id} className={`export-slide ${index < slides.length - 1 ? 'page-break' : ''}`}>
+              <div className={`slide-header ${isTitleSlide ? 'hidden' : ''}`}>
+                <div className="text-xs text-gray-500 mb-2">
+                  Slide {index + 1} of {slides.length}
+                </div>
+                <h2 className="slide-title">
+                  {slide.title}
+                  {slides.length > 1 && <span style={{fontSize: '0.875rem', fontWeight: 'normal', color: '#6b6b6b', marginLeft: '0.5rem'}}>({index + 1} of {slides.length})</span>}
+                </h2>
               </div>
-              <h2 className="slide-title">{slide.title}</h2>
-            </div>
 
-            <div className="slide-content">
-              {renderSlideContent(slide)}
+              <div className="slide-content">
+                {renderSlideContent(slide)}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </>
   )
@@ -372,7 +392,7 @@ function renderSlideContent(slide: any) {
       return (
         <div className="text-center py-8">
           {content.badge && (
-            <div className="inline-block px-4 py-1 bg-gray-200 border-2 border-black rounded-full text-sm font-medium mb-4" style={{color: '#000'}}>
+            <div className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4" style={{backgroundColor: '#f6f7f4', border: '2px solid #6b7556', color: '#535d43'}}>
               {content.badge}
             </div>
           )}
