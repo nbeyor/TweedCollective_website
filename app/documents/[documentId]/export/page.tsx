@@ -103,12 +103,55 @@ export default async function DocumentExportPage({
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
+        /* Hide website header and footer on export page */
+        header,
+        nav[role="navigation"],
+        footer,
+        [data-testid="header"],
+        [data-testid="footer"] {
+          display: none !important;
+        }
+
+        /* Ensure layout wrapper doesn't interfere */
+        body > div {
+          min-height: auto !important;
+          display: block !important;
+        }
+
+        /* Ensure main content takes full viewport */
+        main {
+          padding: 0 !important;
+          margin: 0 !important;
+          flex-grow: 0 !important;
+        }
+
+        body {
+          background: white;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
         @page {
           size: landscape;
           margin: 0.5in;
         }
 
         @media print {
+          /* Hide header and footer in print */
+          header,
+          nav[role="navigation"],
+          footer,
+          [data-testid="header"],
+          [data-testid="footer"] {
+            display: none !important;
+          }
+
+          /* Ensure layout wrapper doesn't interfere */
+          body > div {
+            min-height: auto !important;
+            display: block !important;
+          }
+
           .page-break {
             page-break-after: always;
             break-after: page;
@@ -122,10 +165,12 @@ export default async function DocumentExportPage({
             margin: 0;
             padding: 0;
           }
-        }
 
-        body {
-          background: white;
+          main {
+            padding: 0 !important;
+            margin: 0 !important;
+            flex-grow: 0 !important;
+          }
         }
 
         .export-slide {
