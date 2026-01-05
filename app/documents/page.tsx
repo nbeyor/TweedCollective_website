@@ -42,8 +42,8 @@ export default function DocumentsPage() {
       </section>
 
       {/* Documents List - Light Cards on Dark */}
-      <section className="section">
-        <div className="container mx-auto">
+        <section className="section">
+          <div className="container mx-auto">
           <div className="max-w-4xl mx-auto">
             <div className="space-y-4">
               {visibleDocs.map((doc, index) => (
@@ -77,7 +77,7 @@ function DocumentListItem({ document, index }: { document: DocumentMeta; index: 
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <h3 className="text-lg font-semibold text-carbon group-hover:text-sage transition-colors truncate">
-            {document.title}
+          {document.title}
           </h3>
           {isPublic ? (
             <span className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sage/20 text-sage">

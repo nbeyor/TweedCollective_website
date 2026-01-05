@@ -79,11 +79,11 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="relative group">
             <div className="flex items-center gap-3">
-              <TweedLogo 
-                animated={true} 
-                size={36} 
+            <TweedLogo 
+              animated={true} 
+              size={36} 
                 className="mr-2"
-              />
+            />
               <span className="font-sans font-semibold text-lg tracking-tight text-cream transition-colors group-hover:text-sage-light">
                 Tweed Collective
               </span>
@@ -118,7 +118,7 @@ export default function Header() {
               )
             })}
             {hasInternalAccess && (
-              <Link
+              <Link 
                 href="/internal"
                 className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                   pathname === '/internal' || pathname === '/admin'
@@ -166,7 +166,7 @@ export default function Header() {
                 }}
               />
             </SignedIn>
-          </div>
+            </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -259,7 +259,7 @@ export default function Header() {
                   <UserButton />
                 </div>
               </SignedIn>
-              {showCTA && (
+            {showCTA && (
                 <a 
                   href="mailto:hello@tweedcollective.ai" 
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage-light transition-colors"
@@ -269,7 +269,7 @@ export default function Header() {
                   <ChevronRight className="w-4 h-4" />
                 </a>
               )}
-            </div>
+              </div>
           </div>
         </div>
       </div>

@@ -103,7 +103,7 @@ const Services = () => {
                 {/* Icon */}
                 <div className={`w-14 h-14 rounded-xl ${colorClasses.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <IconComponent className={`w-7 h-7 ${colorClasses.icon}`} />
-                </div>
+                  </div>
 
                 {/* Title & Subtitle */}
                 <h3 className="text-cream mb-2">{service.title}</h3>
@@ -111,21 +111,21 @@ const Services = () => {
 
                 {/* Description */}
                 <p className="text-stone text-sm leading-relaxed mb-6">
-                  {service.description}
-                </p>
+                    {service.description}
+                  </p>
 
-                {/* Tangible Outputs */}
+                  {/* Tangible Outputs */}
                 <div className="mb-6">
                   <p className="text-xs font-mono uppercase tracking-wider text-zinc mb-3">Deliverables</p>
-                  <ul className="space-y-2">
-                    {service.tangibleOutputs.map((output, i) => (
+                      <ul className="space-y-2">
+                        {service.tangibleOutputs.map((output, i) => (
                       <li key={i} className="text-sm text-stone/80 flex items-center gap-2">
                         <span className={`w-1.5 h-1.5 rounded-full ${colorClasses.dot}`} />
-                        {output}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                            {output}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                 
                 {/* Engagement meta */}
                 {service.engagement && (
@@ -184,4 +184,4 @@ const Services = () => {
   )
 }
 
-export default Services
+export default Services 

@@ -101,18 +101,23 @@ export default async function DocumentExportPage({
         }
 
         .export-slide {
-          min-height: 7.5in;
+          height: 7.5in;
           width: 10in;
           margin: 0 auto 2rem;
           padding: 1.5rem;
           background: white;
           border: 1px solid #e5e7eb;
+          box-sizing: border-box;
+          overflow: hidden;
+          position: relative;
         }
 
         @media print {
           .export-slide {
             margin: 0;
             border: none;
+            height: 7.5in;
+            width: 10in;
           }
         }
 
@@ -127,6 +132,19 @@ export default async function DocumentExportPage({
           font-weight: 600;
           color: #000;
           margin-bottom: 0.5rem;
+        }
+
+        .slide-page-indicator {
+          font-size: 1.25rem;
+          font-weight: 400;
+          color: #6b7556;
+        }
+
+        .title-slide-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-height: 6.5in;
         }
 
         .slide-subtitle {
@@ -149,6 +167,8 @@ export default async function DocumentExportPage({
           font-weight: 600;
           color: #000;
           margin-bottom: 0.75rem;
+          padding-left: 0.75rem;
+          border-left: 4px solid #6b7556;
         }
 
         .card-grid {
@@ -178,13 +198,17 @@ export default async function DocumentExportPage({
 
         .card-title {
           font-weight: 600;
-          color: #000;
+          color: #535d43;
           margin-bottom: 0.5rem;
         }
 
         .card-description {
           color: #2d2d2d;
           font-size: 0.9rem;
+        }
+
+        .card-icon {
+          color: #6b7556;
         }
 
         table {
@@ -204,6 +228,10 @@ export default async function DocumentExportPage({
         td {
           padding: 0.75rem;
           border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:nth-child(even) td {
+          background: #f6f7f4;
         }
 
         tr:last-child td {
@@ -236,7 +264,9 @@ export default async function DocumentExportPage({
           font-weight: 600;
           font-size: 1.125rem;
           margin-bottom: 0.75rem;
-          color: #000;
+          color: #535d43;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid #6b7556;
         }
 
         .insight-box {
@@ -252,7 +282,7 @@ export default async function DocumentExportPage({
           font-size: 0.875rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #000;
+          color: #8a7969;
           margin-bottom: 0.5rem;
         }
 
@@ -277,14 +307,14 @@ export default async function DocumentExportPage({
         .metric-value {
           font-size: 2rem;
           font-weight: bold;
-          color: #000;
+          color: #6b7556;
           margin-bottom: 0.5rem;
         }
 
         .metric-label {
           font-size: 0.875rem;
           font-weight: 600;
-          color: #000;
+          color: #535d43;
           margin-bottom: 0.25rem;
         }
 
@@ -307,13 +337,13 @@ export default async function DocumentExportPage({
         .timeline-date {
           font-size: 0.875rem;
           font-weight: 600;
-          color: #000;
+          color: #8a7969;
         }
 
         .timeline-title {
           font-size: 1.125rem;
           font-weight: bold;
-          color: #000;
+          color: #535d43;
           margin: 0.25rem 0;
         }
 
@@ -668,20 +698,27 @@ export default async function DocumentExportPage({
             const isLastSlide = slideIndex === slides.length - 1
             const showPageBreak = !(isLastSlide && isLastPage)
             
+            // Hide header for title/cover slides
+            const isTitleSlide = slide.content?.type === 'title'
+            
             pages.push(
               <div 
                 key={`${slide.id}-page-${pageIdx}`} 
                 className={`export-slide ${showPageBreak ? 'page-break' : ''}`}
               >
-                <div className="slide-header">
-                  <div className="text-xs text-gray-500 mb-2">
-                    Slide {slideIndex + 1} of {slides.length}
-                    {pageCount > 1 && ` (Page ${pageIdx + 1} of ${pageCount})`}
+                {!isTitleSlide && (
+                  <div className="slide-header">
+                    <div className="text-xs text-gray-500 mb-2">
+                      Slide {slideIndex + 1} of {slides.length}
+                    </div>
+                    <h2 className="slide-title">
+                      {slide.title}
+                      {pageCount > 1 && <span className="slide-page-indicator"> ({pageIdx + 1} of {pageCount})</span>}
+                    </h2>
                   </div>
-                  <h2 className="slide-title">{slide.title}</h2>
-                </div>
+                )}
 
-                <div className="slide-content">
+                <div className={`slide-content ${isTitleSlide ? 'title-slide-content' : ''}`}>
                   {renderSlideWithPagination(slide, pageIdx, pageCount)}
                 </div>
               </div>
@@ -714,6 +751,11 @@ function needsPageBreak(slide: any): { needsBreak: boolean; splitAt?: number } {
     return { needsBreak: true, splitAt: 4 }
   }
   
+  // Sources with more than 3 sections needs splitting
+  if (content.type === 'sources' && content.sections && content.sections.length > 3) {
+    return { needsBreak: true, splitAt: 3 }
+  }
+  
   // Stances with more than 2 items needs splitting
   if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && 
       content.props?.stances && content.props.stances.length > 2) {
@@ -742,6 +784,9 @@ function renderSlideWithPagination(slide: any, pageIndex: number, totalPages: nu
   } else if (content.type === 'metrics' && content.kpis) {
     items = content.kpis
     itemKey = 'kpis'
+  } else if (content.type === 'sources' && content.sections) {
+    items = content.sections
+    itemKey = 'sections'
   } else if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && content.props?.stances) {
     items = content.props.stances
     itemKey = 'stances'
@@ -768,6 +813,8 @@ function getSlidePageCount(slide: any): number {
     itemCount = content.levels.length
   } else if (content.type === 'metrics' && content.kpis) {
     itemCount = content.kpis.length
+  } else if (content.type === 'sources' && content.sections) {
+    itemCount = content.sections.length
   } else if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && content.props?.stances) {
     itemCount = content.props.stances.length
   } else if (content.type === 'custom' && content.props?.items) {
@@ -785,12 +832,12 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
       return (
         <div className="text-center py-8">
           {content.badge && (
-            <div className="inline-block px-4 py-1 bg-gray-200 border-2 border-black rounded-full text-sm font-medium mb-4" style={{color: '#000'}}>
+            <div className="inline-block px-4 py-2 bg-sage-50 border-2 border-sage rounded-full text-sm font-medium mb-4" style={{background: '#f6f7f4', borderColor: '#6b7556', color: '#535d43'}}>
               {content.badge}
             </div>
           )}
-          <h1 className="text-4xl font-bold mb-4" style={{color: '#000'}}>{content.headline}</h1>
-          {content.subtitle && <p className="text-xl mb-6" style={{color: '#2d2d2d'}}>{content.subtitle}</p>}
+          <h1 className="text-4xl font-bold mb-4" style={{color: '#535d43'}}>{content.headline}</h1>
+          {content.subtitle && <p className="text-xl mb-6" style={{color: '#6b7556'}}>{content.subtitle}</p>}
 
           {content.metrics && content.metrics.length > 0 && (
             <div className="metrics-grid">
@@ -1094,13 +1141,20 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
       )
 
     case 'sources':
+      const allSections = content.sections || []
+      const displaySections = (startIdx !== undefined && endIdx !== undefined)
+        ? allSections.slice(startIdx, endIdx)
+        : allSections
       return (
         <>
           {content.sectionLabel && <div className="text-xs text-gray-500 mb-2">{content.sectionLabel}</div>}
           {content.heading && <h3 className="section-heading">{content.heading}</h3>}
+          {startIdx !== undefined && startIdx > 0 && (
+            <div className="text-sm text-gray-500 mb-2">(continued)</div>
+          )}
           
           <div className="sources-container">
-            {content.sections?.map((section: any, i: number) => (
+            {displaySections.map((section: any, i: number) => (
               <div key={i} className="sources-section">
                 <h4 className="sources-section-title">{section.title}</h4>
                 <ol className="sources-list" start={section.startNumber || 1}>
