@@ -17,32 +17,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge to main
         run: |
           set -e
 
-          # Get branch name
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          echo "Branch: $BRANCH_NAME"
+          echo "Merging $BRANCH_NAME into main..."
 
-          # Check if PR already exists
-          PR_URL=$(gh pr list --head "$BRANCH_NAME" --json url --jq '.[0].url')
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if [ -z "$PR_URL" ]; then
-            echo "Creating PR..."
-            PR_URL=$(gh pr create \
-              --title "Auto-merge: ${BRANCH_NAME}" \
-              --body "Automatically created PR from Claude branch." \
-              --base main \
-              --head "$BRANCH_NAME")
-            echo "Created: $PR_URL"
-          else
-            echo "PR already exists: $PR_URL"
-          fi
-
-          # Merge the PR directly
-          echo "Merging..."
-          gh pr merge "$PR_URL" --squash --delete-branch
+          git checkout main
+          git merge --squash "origin/$BRANCH_NAME"
+          git commit -m "Auto-merge: ${BRANCH_NAME}"
+          git push origin main
