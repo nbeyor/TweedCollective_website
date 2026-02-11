@@ -38,5 +38,5 @@ jobs:
               --json number --jq '.number')
           fi
 
-          # Enable auto-merge
-          gh pr merge "$PR_NUMBER" --auto --squash --delete-branch
+          # Merge the PR directly
+          gh pr merge "$PR_NUMBER" --squash --delete-branch
