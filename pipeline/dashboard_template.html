@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Dashboard</title>
+
+  <!-- Chart.js must load BEFORE the annotation plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #0A0A0C;
+      color: #F5F0EB;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.75rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .subtitle { color: #A8A29E; font-size: 0.875rem; margin-bottom: 2rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: rgba(245, 240, 235, 0.04);
+      border: 1px solid rgba(245, 240, 235, 0.12);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+    .card h2 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #A8A29E;
+    }
+    canvas { width: 100% !important; }
+  </style>
+</head>
+<body>
+  <h1>Portfolio Dashboard</h1>
+  <p class="subtitle">Auto-generated from the latest data export</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Sample Chart</h2>
+      <canvas id="chart1"></canvas>
+    </div>
+    <div class="card">
+      <h2>Sample Breakdown</h2>
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // This placeholder is replaced by refresh.py with actual data.
+    // __DATA_PLACEHOLDER__
+
+    // -- Fallback sample data when running the template directly --
+    if (typeof DATA === "undefined") {
+      var DATA = [
+        { label: "Alpha", value: "42" },
+        { label: "Beta",  value: "67" },
+        { label: "Gamma", value: "28" },
+        { label: "Delta", value: "55" },
+      ];
+    }
+
+    // Register the annotation plugin
+    Chart.register(window["chartjs-plugin-annotation"]);
+
+    const labels = DATA.map(d => d.label);
+    const values = DATA.map(d => parseFloat(d.value));
+
+    // Bar chart
+    new Chart(document.getElementById("chart1"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Value",
+          data: values,
+          backgroundColor: "rgba(106, 138, 120, 0.6)",
+          borderColor: "rgba(106, 138, 120, 1)",
+          borderWidth: 1,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "#F5F0EB" } },
+          annotation: {
+            annotations: {
+              avgLine: {
+                type: "line",
+                yMin: values.reduce((a, b) => a + b, 0) / values.length,
+                yMax: values.reduce((a, b) => a + b, 0) / values.length,
+                borderColor: "rgba(196, 181, 163, 0.7)",
+                borderWidth: 1,
+                borderDash: [6, 4],
+                label: {
+                  display: true,
+                  content: "Average",
+                  color: "#C4B5A3",
+                  position: "end",
+                },
+              },
+            },
+          },
+        },
+        scales: {
+          x: { ticks: { color: "#A8A29E" }, grid: { color: "rgba(245,240,235,0.06)" } },
+          y: { ticks: { color: "#A8A29E" }, grid: { color: "rgba(245,240,235,0.06)" } },
+        },
+      },
+    });
+
+    // Doughnut chart
+    new Chart(document.getElementById("chart2"), {
+      type: "doughnut",
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: [
+            "rgba(106,138,120,0.7)",
+            "rgba(196,181,163,0.7)",
+            "rgba(34,211,238,0.5)",
+            "rgba(168,162,158,0.5)",
+          ],
+          borderColor: "#0A0A0C",
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "#F5F0EB" } },
+        },
+      },
+    });
+  </script>
+</body>
+</html>
