@@ -56,6 +56,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',  // Private, only via direct link/invitation
   },
   {
+    id: 'dashboard',
+    title: 'Portfolio Dashboard',
+    shortTitle: 'Dashboard',
+    description: 'Interactive data dashboard with charts and analytics, refreshed from the latest data export.',
+    category: 'Dashboard',
+    icon: 'BarChart3',
+    date: '2025-02',
+    readTime: '5 min',
+    visibility: 'listed',
+  },
+  {
     id: 'ai-integration-framework',
     title: 'AI Integration Framework',
     shortTitle: 'AI Integration Framework',

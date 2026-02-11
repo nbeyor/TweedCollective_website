@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "python3 pipeline/refresh.py && next build",
+    "build:next": "next build",
+    "refresh-dashboard": "python3 pipeline/refresh.py",
     "start": "next start",
     "lint": "next lint"
   },
