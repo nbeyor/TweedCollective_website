@@ -64,7 +64,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     icon: 'BarChart3',
     date: '2025-02',
     readTime: '5 min',
-    visibility: 'listed',
+    visibility: 'unlisted',
   },
   {
     id: 'ai-integration-framework',
