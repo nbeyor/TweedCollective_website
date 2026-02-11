@@ -42,7 +42,7 @@ def load_data(csv_path: Path) -> list[dict]:
 def render(template: str, rows: list[dict]) -> str:
     """Replace placeholders in the template with data and inlined JS libraries."""
     data_json = json.dumps(rows, indent=2)
-    html = template.replace("// __DATA_PLACEHOLDER__", f"const DATA = {data_json};")
+    html = template.replace("// __DATA_PLACEHOLDER__", f"window.__DASHBOARD_DATA__ = {data_json};")
 
     # Inline Chart.js and annotation plugin to avoid external script loading issues
     chartjs_path = JS_DIR / "chart.umd.min.js"

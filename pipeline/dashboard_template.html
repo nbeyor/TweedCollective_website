@@ -62,17 +62,20 @@
     // __DATA_PLACEHOLDER__
 
     // -- Fallback sample data when running the template directly --
-    if (typeof DATA === "undefined") {
-      var DATA = [
+    const DATA = Array.isArray(window.__DASHBOARD_DATA__)
+      ? window.__DASHBOARD_DATA__
+      : [
         { label: "Alpha", value: "42" },
         { label: "Beta",  value: "67" },
         { label: "Gamma", value: "28" },
         { label: "Delta", value: "55" },
       ];
-    }
 
     // Register the annotation plugin
-    Chart.register(window["chartjs-plugin-annotation"]);
+    const annotationPlugin = window["chartjs-plugin-annotation"];
+    if (annotationPlugin) {
+      Chart.register(annotationPlugin);
+    }
 
     const labels = DATA.map(d => d.label);
     const values = DATA.map(d => parseFloat(d.value));
