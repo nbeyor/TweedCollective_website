@@ -35,15 +35,23 @@ export async function checkDocumentAccess(documentId: string): Promise<DocumentA
       return { hasAccess: false }
     }
 
+    // Admins always have access to all documents
+    const isAdmin = user.privateMetadata?.isAdmin === true ||
+                    user.publicMetadata?.role === 'admin'
+
+    if (isAdmin) {
+      return { hasAccess: true, userId }
+    }
+
     // Get document access from user's private metadata
     const documentAccess = user.privateMetadata?.documentAccess as string[] | undefined
-    
+
     if (!documentAccess || !Array.isArray(documentAccess)) {
       return { hasAccess: false, userId }
     }
 
     const hasAccess = documentAccess.includes(documentId)
-    
+
     return { hasAccess, userId }
   } catch (error) {
     console.error('Error checking document access:', error)
