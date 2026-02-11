@@ -22,6 +22,7 @@ PROJECT_ROOT = PIPELINE_DIR.parent
 TEMPLATE_PATH = PIPELINE_DIR / "dashboard_template.html"
 OUTPUT_PATH = PROJECT_ROOT / "content" / "documents" / "dashboard.html"
 DATA_DIR = PIPELINE_DIR / "data"
+JS_DIR = PROJECT_ROOT / "public" / "js"
 
 
 def find_latest_csv() -> Path:
@@ -39,9 +40,25 @@ def load_data(csv_path: Path) -> list[dict]:
 
 
 def render(template: str, rows: list[dict]) -> str:
-    """Replace the DATA_PLACEHOLDER in the template with JSON-encoded rows."""
+    """Replace placeholders in the template with data and inlined JS libraries."""
     data_json = json.dumps(rows, indent=2)
-    return template.replace("// __DATA_PLACEHOLDER__", f"const DATA = {data_json};")
+    html = template.replace("// __DATA_PLACEHOLDER__", f"const DATA = {data_json};")
+
+    # Inline Chart.js and annotation plugin to avoid external script loading issues
+    chartjs_path = JS_DIR / "chart.umd.min.js"
+    annotation_path = JS_DIR / "chartjs-plugin-annotation.min.js"
+
+    if chartjs_path.exists() and annotation_path.exists():
+        chartjs = chartjs_path.read_text(encoding="utf-8")
+        annotation = annotation_path.read_text(encoding="utf-8")
+        html = html.replace(
+            "// __CHARTJS_PLACEHOLDER__",
+            f"{chartjs}\n{annotation}"
+        )
+    else:
+        print("WARNING: Chart.js files not found in public/js/, scripts will not be inlined")
+
+    return html
 
 
 def main():
