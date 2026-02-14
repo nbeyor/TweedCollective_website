@@ -13,23 +13,42 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge to main
+      - name: Merge branch into main and push
         run: |
           set -e
 
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          echo "Merging $BRANCH_NAME into main..."
+          echo "=== Merging $BRANCH_NAME into main ==="
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git checkout main
+          # Explicitly fetch both branches
+          git fetch origin main
+          git fetch origin "$BRANCH_NAME"
+
+          # Reset local main to origin/main
+          git checkout -B main origin/main
+          echo "On main at: $(git rev-parse --short HEAD)"
+
+          # Squash-merge the feature branch
+          echo "Squash-merging origin/$BRANCH_NAME..."
           git merge --squash "origin/$BRANCH_NAME"
+
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to merge — branch is already up to date with main."
+            exit 0
+          fi
+
           git commit -m "Auto-merge: ${BRANCH_NAME}"
+          echo "Committed. Pushing to main..."
+
           git push origin main
+          echo "=== Done ==="

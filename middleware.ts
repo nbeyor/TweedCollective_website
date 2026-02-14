@@ -16,6 +16,7 @@ const isPublicRoute = createRouteMatcher([
   '/magic-link(.*)',
   '/api/webhooks(.*)',
   '/api/document-access(.*)',
+  '/api/dashboard-content(.*)',
   '/api/admin(.*)',
   '/api/magic-link(.*)',
 ]);
