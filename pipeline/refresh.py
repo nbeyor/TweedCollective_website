@@ -52,6 +52,13 @@ OUTPUT_ARCHIVE = PROJECT_ROOT / "content" / "documents" / "dashboard.html"
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JS_DIR = PROJECT_ROOT / "public" / "js"
 
+# Preferred sheet names (generic, not pull-specific)
+DASHBOARD_SHEET = "Current dashboard data"
+SURVEY_SHEET = "Current survey data"
+# Alternative names we also accept
+DASHBOARD_SHEET_ALTS = ("Current dashboard data", "PRJira metrics", "PR Jira metrics")
+SURVEY_SHEET_ALTS = ("Current survey data", "developer survey results", "Developer survey results")
+
 # Pull sheet columns (exact or normalized)
 PULL_COLS = [
     "JiraTicket", "Title", "FirstActivity", "FirstReadyForQADate",
@@ -73,10 +80,26 @@ def find_latest_xlsx() -> Path:
 
 
 def find_pull_sheet(xl) -> str:
+    """Prefer 'Current dashboard data', accept alternatives, fall back to 'Pull MM_DD_YY'."""
+    names = [n.strip() for n in xl.sheet_names]
+    for candidate in DASHBOARD_SHEET_ALTS:
+        if candidate in names:
+            return candidate
     pull_pattern = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
-    for name in xl.sheet_names:
-        if pull_pattern.match(name.strip()):
+    for name in names:
+        if pull_pattern.match(name):
             return name
+    return None
+
+
+def find_survey_sheet(xl) -> str | None:
+    """Prefer 'Current survey data', accept alternatives, fall back to 'Survey 1 results'."""
+    names = [n.strip() for n in xl.sheet_names]
+    for candidate in SURVEY_SHEET_ALTS:
+        if candidate in names:
+            return candidate
+    if "Survey 1 results" in names:
+        return "Survey 1 results"
     return None
 
 
@@ -87,12 +110,36 @@ def load_pull_sheet(path: Path, sheet_name: str):
     return df
 
 
-def load_survey_sheet(path: Path, sheet_name: str = "Survey 1 results"):
+def load_survey_sheet(path: Path, sheet_name: str | None = None):
+    """Load survey sheet. If sheet_name is None, tries to auto-detect."""
+    if sheet_name:
+        try:
+            return pd.read_excel(path, sheet_name=sheet_name)
+        except Exception:
+            return None
+    xl = pd.ExcelFile(path)
+    found = find_survey_sheet(xl)
+    if found:
+        try:
+            return pd.read_excel(path, sheet_name=found)
+        except Exception:
+            return None
+    return None
+
+
+def parse_export_date_from_filename(path: Path) -> str:
+    """Extract YYYY-MM-DD from filename. Falls back to file mtime if not found."""
+    name = path.stem  # filename without extension
+    # Match YYYY-MM-DD or YYYY_MM_DD or YYYYMMDD
+    m = re.search(r"(\d{4})[-_]?(\d{2})[-_]?(\d{2})", name)
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    # Fallback: file modification date
     try:
-        df = pd.read_excel(path, sheet_name=sheet_name)
-        return df
+        mtime = os.path.getmtime(path)
+        return datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
     except Exception:
-        return None
+        return ""
 
 
 def is_pilot(row) -> bool:
@@ -122,13 +169,13 @@ def aggregate_to_tickets(df):
     df["_pilot"] = df.apply(is_pilot, axis=1)
 
     qa_col = "QAChurnFiles" if "QAChurnFiles" in df.columns else ("QAChurnLines" if "QAChurnLines" in df.columns else None)
-    agg_dict = {"_pilot": ("_pilot", "max"), "_week": ("_week", "first")}
+    agg_dict = {"_pilot": "max", "_week": "first"}
     if qa_col:
-        agg_dict[qa_col] = (qa_col, "sum")
+        agg_dict[qa_col] = "sum"
     if "PRFiles" in df.columns:
-        agg_dict["PRFiles"] = ("PRFiles", "sum")
+        agg_dict["PRFiles"] = "sum"
     if "PRLines" in df.columns:
-        agg_dict["PRLines"] = ("PRLines", "sum")
+        agg_dict["PRLines"] = "sum"
 
     agg = df.groupby("JiraTicket", as_index=False).agg(agg_dict)
     if "QAChurnFiles" not in agg.columns and "QAChurnLines" not in agg.columns:
@@ -398,11 +445,14 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     # Heatmap
     heatmap = compute_heatmap(tickets[tickets["_week"] >= pilot_start])
 
+    export_date = parse_export_date_from_filename(path)
     return {
         "meta": {
             "title": "AI-Assisted Development - Pilot KPIs",
             "dataRangeStart": data_range_start,
             "dataRangeEnd": data_range_end,
+            "exportDate": export_date,
+            "exportFilename": path.name,
             "pilotStart": "Dec 1",
             "pilotCount": PILOT_ROSTER,
             "nonPilotCount": NON_PILOT_ROSTER,
@@ -485,6 +535,8 @@ def _empty_dashboard_data() -> dict:
             "title": "AI-Assisted Development - Pilot KPIs",
             "dataRangeStart": "",
             "dataRangeEnd": "",
+            "exportDate": "",
+            "exportFilename": "",
             "pilotStart": "Dec 1",
             "pilotCount": PILOT_ROSTER,
             "nonPilotCount": NON_PILOT_ROSTER,
@@ -579,7 +631,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i", type=Path, help="Path to xlsx file")
     parser.add_argument("--pull-sheet", "-p", type=str, help="Pull sheet name (e.g. 'Pull 02_11_26')")
-    parser.add_argument("--survey-sheet", "-s", type=str, default="Survey 1 results", help="Survey sheet name")
+    parser.add_argument("--survey-sheet", "-s", type=str, default=None, help="Survey sheet (default: auto-detect 'Current survey data' or 'Survey 1 results')")
     args = parser.parse_args()
 
     if args.input:
@@ -613,16 +665,16 @@ def main():
         OUTPUT_PATH.write_text(html, encoding="utf-8")
         OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
         OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
-        print(f"Dashboard (fallback) written to: {OUTPUT_PATH}")
+        print(f"Dashboard (no data) written to: {OUTPUT_PATH}")
         return
 
     xl = pd.ExcelFile(path)
     pull_sheet = args.pull_sheet or find_pull_sheet(xl)
     if not pull_sheet:
-        print("Error: No 'Pull MM_DD_YY' sheet found. Use --pull-sheet to specify.")
+        print(f"Error: No '{DASHBOARD_SHEET}' or 'Pull MM_DD_YY' sheet found. Use --pull-sheet to specify.")
         sys.exit(1)
 
-    survey_df = load_survey_sheet(path, args.survey_sheet)
+    survey_df = load_survey_sheet(path, args.survey_sheet or None)
     data = build_dashboard_data(path, pull_sheet, survey_df)
     errs = validate_dashboard_data(data)
     if errs:

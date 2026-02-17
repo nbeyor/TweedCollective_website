@@ -179,6 +179,8 @@
       <h1>${meta.title || "AI-Assisted Development - Pilot KPIs"}</h1>
       ${meta.noData ? '<p style="background:#fef3c7;border:1px solid #f59e0b;border-radius:6px;padding:0.5rem 1rem;margin-top:0.5rem;font-size:0.875rem;color:#92400e;">No export data. Place xlsx in pipeline/data/exports/ and run pipeline/refresh.py</p>' : ''}
       <div class="header-meta">
+        ${meta.exportDate ? `<span>EXPORT ${meta.exportDate}</span>` : ''}
+        ${meta.exportFilename ? `<span>SOURCE ${meta.exportFilename}</span>` : ''}
         <span>DATA ${meta.dataRangeStart || "—"} to ${meta.dataRangeEnd || "—"}</span>
         <span>PILOT START ${meta.pilotStart || "—"}</span>
         <span>PILOT ${meta.pilotCount ?? 6} devs</span>

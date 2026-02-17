@@ -9,6 +9,8 @@
 | title | string | Dashboard title |
 | dataRangeStart | string | ISO date (YYYY-MM-DD) or empty |
 | dataRangeEnd | string | ISO date (YYYY-MM-DD) or empty |
+| exportDate | string | Date parsed from filename (YYYY-MM-DD) or file mtime |
+| exportFilename | string | Source xlsx filename |
 | pilotStart | string | e.g. "Dec 1" |
 | pilotCount | number | Number of pilot developers |
 | nonPilotCount | number | Number of non-pilot developers |

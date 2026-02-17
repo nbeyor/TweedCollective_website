@@ -10,7 +10,26 @@ python pipeline/refresh.py
 python pipeline/refresh.py --input pipeline/data/exports/your_file.xlsx --pull-sheet "Pull 02_11_26"
 ```
 
-## Pull Sheet – Required Columns
+## Sheet names
+
+Use these tab names in your xlsx (recommended) so you don’t need to update each export:
+
+- **Current dashboard data** – PR/Jira metrics (preferred over legacy `Pull MM_DD_YY`)
+- **Current survey data** – developer survey results (preferred over legacy `Survey 1 results`)
+
+The pipeline will fall back to `Pull 02_11_26`-style and `Survey 1 results` if the generic names are missing.
+
+## Filename convention
+
+Include a date in the filename so the export date appears on the dashboard:
+
+- `dashboard_2026-02-16.xlsx`
+- `Pilot_Export_20260216.xlsx`
+- `metrics_2026_02_16.xlsx`
+
+Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is found, the file’s modification date is used.
+
+## Dashboard data sheet – required columns
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -36,6 +55,6 @@ python pipeline/refresh.py --input pipeline/data/exports/your_file.xlsx --pull-s
 
 **Pilot vs non-pilot:** `IncludeInPilot` true = pilot. Non-pilot spans all weeks. Pilot counts only from Dec 1, 2025 onward.
 
-## Survey Sheet (Optional)
+## Survey sheet (optional)
 
-Sheet name: `Survey 1 results`. Used for developer survey insights. Any column structure; pipeline looks for productivity, quality, and experience-related columns.
+Sheet name: **Current survey data** (or legacy `Survey 1 results`). Used for developer survey insights. Any column structure; pipeline looks for productivity, quality, and experience-related columns.
