@@ -3,150 +3,351 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio Dashboard</title>
-
+  <title>AI-Assisted Development - Pilot KPIs</title>
   <!-- Chart.js and annotation plugin inlined by refresh.py -->
   <script>
     // __CHARTJS_PLACEHOLDER__
   </script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #0A0A0C;
-      color: #F5F0EB;
-      padding: 2rem;
+      font-family: "DM Sans", Inter, system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 1.5rem 2rem 2rem;
+      font-size: 14px;
     }
-    h1 { font-size: 1.75rem; font-weight: 300; margin-bottom: 0.5rem; }
-    .subtitle { color: #A8A29E; font-size: 0.875rem; margin-bottom: 2rem; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-      gap: 1.5rem;
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e5e7eb;
     }
-    .card {
-      background: rgba(245, 240, 235, 0.04);
-      border: 1px solid rgba(245, 240, 235, 0.12);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-    }
-    .card h2 {
-      font-size: 0.875rem;
+    .header h1 {
+      font-size: 1.25rem;
       font-weight: 600;
-      margin-bottom: 1rem;
+      flex: 1 1 100%;
+    }
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      font-size: 0.75rem;
+      color: #6b7280;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #A8A29E;
     }
-    canvas { width: 100% !important; }
+    .header-meta span { white-space: nowrap; }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 1200px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .kpi-row { grid-template-columns: 1fr; }
+    }
+    .kpi-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    .kpi-card.pilot-good { border-left: 3px solid #15803d; }
+    .kpi-card.neutral { border-left: 3px solid #6b7280; }
+    .kpi-card h3 {
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+    }
+    .kpi-card .value { font-size: 1.5rem; font-weight: 600; }
+    .kpi-card .detail { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+    .kpi-card .vs-baseline { font-size: 0.75rem; color: #15803d; margin-top: 0.25rem; }
+    .chart-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .chart-card .subtitle {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+    .chart-container { position: relative; height: 280px; }
+    canvas { max-height: 280px; }
+    .lower-badge { font-size: 0.7rem; color: #15803d; font-weight: 600; margin-bottom: 0.5rem; }
+    .survey-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .survey-row { grid-template-columns: 1fr; }
+    }
+    .survey-panel {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    .survey-panel h4 { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; margin-bottom: 0.5rem; }
+    .survey-panel .quote { font-size: 0.875rem; font-style: italic; color: #4b5563; }
   </style>
 </head>
 <body>
-  <h1>Portfolio Dashboard</h1>
-  <p class="subtitle">Auto-generated from the latest data export</p>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Sample Chart</h2>
-      <canvas id="chart1"></canvas>
-    </div>
-    <div class="card">
-      <h2>Sample Breakdown</h2>
-      <canvas id="chart2"></canvas>
+  <div class="header" id="header"></div>
+  <div class="kpi-row" id="kpi-cards"></div>
+  <div class="chart-card">
+    <h2>Productivity</h2>
+    <p class="subtitle">Tickets per FTE-day. Lines = 4-week rolling avg. Dots = raw weekly. Weeks with &lt;5 tickets dimmed.</p>
+    <div class="chart-container">
+      <canvas id="chart-productivity"></canvas>
     </div>
   </div>
+  <div class="chart-card">
+    <h2>Quality - QA Churn Rate</h2>
+    <p class="subtitle">% of tickets requiring QA rework.</p>
+    <p class="lower-badge">LOWER IS BETTER</p>
+    <div class="chart-container">
+      <canvas id="chart-qa"></canvas>
+    </div>
+    <div id="qa-period-avg" style="margin-top:0.5rem;font-size:0.8rem;color:#6b7280;"></div>
+  </div>
+  <div class="survey-row" id="survey-panels"></div>
 
   <script>
-    // This placeholder is replaced by refresh.py with actual data.
     // __DATA_PLACEHOLDER__
 
-    // -- Fallback sample data when running the template directly --
-    const DATA = Array.isArray(window.__DASHBOARD_DATA__)
-      ? window.__DASHBOARD_DATA__
-      : [
-        { label: "Alpha", value: "42" },
-        { label: "Beta",  value: "67" },
-        { label: "Gamma", value: "28" },
-        { label: "Delta", value: "55" },
-      ];
+    const D = window.__DASHBOARD_DATA__ || {};
+    const meta = D.meta || {};
+    const kpi = D.kpiCards || {};
+    const prod = D.productivity || {};
+    const qa = D.qaChurn || {};
+    const survey = D.survey || {};
 
-    // Register the annotation plugin
+    // Header
+    document.getElementById("header").innerHTML = `
+      <h1>${meta.title || "AI-Assisted Development - Pilot KPIs"}</h1>
+      <div class="header-meta">
+        <span>DATA ${meta.dataRangeStart || "—"} to ${meta.dataRangeEnd || "—"}</span>
+        <span>PILOT START ${meta.pilotStart || "—"}</span>
+        <span>PILOT ${meta.pilotCount ?? 6} devs</span>
+        <span>NON-PILOT ${meta.nonPilotCount ?? 9} devs</span>
+        <span>VALID WEEKS ${meta.validWeeks ?? 0}</span>
+        <span>REFRESHED ${meta.refreshedAt || ""}</span>
+      </div>
+    `;
+
+    // KPI Cards
+    const pProd = kpi.pilotProductivity || {};
+    const pMult = kpi.productivityMultiple || {};
+    const pQa = kpi.pilotQaChurn || {};
+    const aiShare = kpi.aiOutputShare || {};
+    const avail = kpi.availability || {};
+    document.getElementById("kpi-cards").innerHTML = `
+      <div class="kpi-card pilot-good">
+        <h3>Pilot Productivity</h3>
+        <div class="value">${pProd.value ?? "—"}</div>
+        <div class="vs-baseline">${pProd.vsBaseline ? pProd.vsBaseline + " vs baseline" : ""}</div>
+        <div class="detail">${pProd.unit || "tickets / FTE-day"}</div>
+      </div>
+      <div class="kpi-card neutral">
+        <h3>Productivity Multiple</h3>
+        <div class="value">${pMult.value ?? "—"}</div>
+        <div class="detail">Pilot vs Non-Pilot</div>
+        <div class="detail">Non-pilot: ${pMult.nonPilotValue ?? "—"}</div>
+      </div>
+      <div class="kpi-card pilot-good">
+        <h3>Pilot QA Churn</h3>
+        <div class="value">${pQa.value ?? "—"}</div>
+        <div class="vs-baseline">${pQa.vsBaseline || ""}</div>
+        <div class="detail">Non-pilot: ${pQa.nonPilotValue ?? "—"}</div>
+      </div>
+      <div class="kpi-card neutral">
+        <h3>AI Output Share</h3>
+        <div class="value">${aiShare.value ?? "—"}</div>
+        <div class="detail">${aiShare.tickets || ""}</div>
+        <div class="detail">${aiShare.devs || ""}</div>
+      </div>
+      <div class="kpi-card neutral">
+        <h3>Availability</h3>
+        <div class="value">${avail.value ?? "—"}</div>
+        <div class="detail">${avail.detail || ""}</div>
+        <div class="detail">${avail.devCount ?? 0} pilot developers</div>
+      </div>
+    `;
+
+    // QA Period Avg
+    document.getElementById("qa-period-avg").textContent =
+      `PILOT PERIOD AVG ${qa.pilotPeriodAvg ?? "—"}% vs ${qa.nonPilotPeriodAvg ?? "—"}%`;
+
+    // Survey panels
+    const prodS = survey.productivity || {};
+    const qualS = survey.quality || {};
+    const expS = survey.experience || {};
+    document.getElementById("survey-panels").innerHTML = `
+      <div class="survey-panel">
+        <h4>Productivity perception</h4>
+        <div class="quote">${prodS.quote || "—"}</div>
+      </div>
+      <div class="survey-panel">
+        <h4>Quality concerns</h4>
+        <div class="quote">${qualS.quote || "—"}</div>
+      </div>
+      <div class="survey-panel">
+        <h4>Overall experience</h4>
+        <div class="quote">${expS.quote || "—"}</div>
+      </div>
+    `;
+
+    // Charts
     const annotationPlugin = window["chartjs-plugin-annotation"];
-    if (annotationPlugin) {
-      Chart.register(annotationPlugin);
-    }
+    if (annotationPlugin) Chart.register(annotationPlugin);
 
-    const labels = DATA.map(d => d.label);
-    const values = DATA.map(d => parseFloat(d.value));
+    const weeks = prod.weeks || [];
+    const baseline = prod.baseline ?? 0.169;
 
-    // Bar chart
-    new Chart(document.getElementById("chart1"), {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [{
-          label: "Value",
-          data: values,
-          backgroundColor: "rgba(106, 138, 120, 0.6)",
-          borderColor: "rgba(106, 138, 120, 1)",
-          borderWidth: 1,
-        }],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: "#F5F0EB" } },
-          annotation: {
-            annotations: {
-              avgLine: {
-                type: "line",
-                yMin: values.reduce((a, b) => a + b, 0) / values.length,
-                yMax: values.reduce((a, b) => a + b, 0) / values.length,
-                borderColor: "rgba(196, 181, 163, 0.7)",
-                borderWidth: 1,
-                borderDash: [6, 4],
-                label: {
-                  display: true,
-                  content: "Average",
-                  color: "#C4B5A3",
-                  position: "end",
+    if (weeks.length > 0) {
+      const pilotRoll = prod.pilot?.rolling || [];
+      const pilotRaw = prod.pilot?.raw || [];
+      const pilotDim = prod.pilot?.lowConfidence || [];
+      const npRoll = prod.nonPilot?.rolling || [];
+      const npRaw = prod.nonPilot?.raw || [];
+
+      new Chart(document.getElementById("chart-productivity"), {
+        type: "line",
+        data: {
+          labels: weeks,
+          datasets: [
+            {
+              label: `Pilot (n = ${meta.pilotCount ?? 6})`,
+              data: pilotRoll,
+              borderColor: "#15803d",
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              fill: false,
+              tension: 0.2,
+              pointRadius: pilotRaw.map((_, i) => (pilotDim[i] ? 3 : 6)),
+              pointBackgroundColor: pilotRaw.map((_, i) => (pilotDim[i] ? "rgba(21,128,61,0.4)" : "#15803d")),
+              pointHoverRadius: 8,
+            },
+            {
+              label: `Non-Pilot (n = ${meta.nonPilotCount ?? 9})`,
+              data: npRoll,
+              borderColor: "#d97706",
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderDash: [6, 4],
+              fill: false,
+              tension: 0.2,
+              pointRadius: npRaw.map((_, i) => (pilotDim[i] ? 2 : 4)),
+              pointBackgroundColor: npRaw.map((_, i) => (pilotDim[i] ? "rgba(217,119,6,0.4)" : "#d97706")),
+            },
+            {
+              label: "Baseline",
+              data: weeks.map(() => baseline),
+              borderColor: "rgba(107,114,128,0.7)",
+              borderWidth: 1,
+              borderDash: [4, 4],
+              fill: false,
+              pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom" },
+            annotation: {
+              annotations: {
+                last4wk: {
+                  type: "label",
+                  xValue: weeks.length - 1,
+                  yValue: Math.max(...(pilotRoll.concat(npRoll).filter(Number.isFinite)) || 0.4),
+                  content: `PILOT VS NON-PILOT (LAST 4WK) ${prod.last4wkComparison || ""}`,
+                  color: "#d97706",
+                  font: { size: 10 },
                 },
               },
             },
           },
+          scales: {
+            x: { ticks: { maxRotation: 45 }, grid: { display: false } },
+            y: {
+              title: { display: true, text: "Tickets / FTE-Day" },
+              min: 0,
+              max: 0.7,
+              ticks: { stepSize: 0.1 },
+            },
+          },
         },
-        scales: {
-          x: { ticks: { color: "#A8A29E" }, grid: { color: "rgba(245,240,235,0.06)" } },
-          y: { ticks: { color: "#A8A29E" }, grid: { color: "rgba(245,240,235,0.06)" } },
-        },
-      },
-    });
+      });
+    }
 
-    // Doughnut chart
-    new Chart(document.getElementById("chart2"), {
-      type: "doughnut",
-      data: {
-        labels,
-        datasets: [{
-          data: values,
-          backgroundColor: [
-            "rgba(106,138,120,0.7)",
-            "rgba(196,181,163,0.7)",
-            "rgba(34,211,238,0.5)",
-            "rgba(168,162,158,0.5)",
+    // QA Churn chart
+    const qaPilot = qa.pilot || [];
+    const qaNonPilot = qa.nonPilot || [];
+    if (weeks.length > 0 && (qaPilot.length || qaNonPilot.length)) {
+      new Chart(document.getElementById("chart-qa"), {
+        type: "line",
+        data: {
+          labels: weeks,
+          datasets: [
+            {
+              label: `Pilot`,
+              data: qaPilot,
+              borderColor: "#15803d",
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              fill: false,
+              tension: 0.2,
+            },
+            {
+              label: `Non-Pilot`,
+              data: qaNonPilot,
+              borderColor: "#d97706",
+              backgroundColor: "transparent",
+              borderWidth: 2,
+              borderDash: [6, 4],
+              fill: false,
+              tension: 0.2,
+            },
           ],
-          borderColor: "#0A0A0C",
-          borderWidth: 2,
-        }],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: "#F5F0EB" } },
         },
-      },
-    });
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          scales: {
+            x: { ticks: { maxRotation: 45 }, grid: { display: false } },
+            y: {
+              title: { display: true, text: "%" },
+              min: 0,
+              max: 50,
+              ticks: { stepSize: 5 },
+            },
+          },
+        },
+      });
+    }
   </script>
 </body>
 </html>
