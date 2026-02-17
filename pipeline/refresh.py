@@ -141,18 +141,25 @@ def aggregate_to_tickets(df):
 
 
 def compute_weekly_metrics(tickets):
+    """Non-pilot exists for all weeks. Pilot only from PILOT_START (Dec 1)."""
     if tickets.empty or "_week" not in tickets.columns:
         return pd.DataFrame()
 
+    pilot_start = pd.Timestamp(PILOT_START)
     pilot_ftedays = PILOT_ROSTER * 5
     non_pilot_ftedays = NON_PILOT_ROSTER * 5
 
     weeks = []
     for week, g in tickets.groupby("_week"):
-        pilot_tix = g[g["_pilot"]].shape[0]
+        week_ts = pd.Timestamp(week)
+        # Pilot only exists from Dec 1 onward; before that, pilot_tix = 0
+        if week_ts >= pilot_start:
+            pilot_tix = g[g["_pilot"]].shape[0]
+        else:
+            pilot_tix = 0
         non_pilot_tix = g[~g["_pilot"]].shape[0]
         weeks.append({
-            "week": pd.Timestamp(week),
+            "week": week_ts,
             "pilot_tickets": pilot_tix,
             "non_pilot_tickets": non_pilot_tix,
             "pilot_productivity": pilot_tix / pilot_ftedays if pilot_ftedays else 0,
@@ -164,9 +171,11 @@ def compute_weekly_metrics(tickets):
 
 
 def compute_qa_churn_weekly(tickets):
+    """Pilot churn only from PILOT_START; before that pilot_churn is null/0."""
     if tickets.empty or "_week" not in tickets.columns:
         return pd.DataFrame()
 
+    pilot_start = pd.Timestamp(PILOT_START)
     qa_col = "QAChurnFiles" if "QAChurnFiles" in tickets.columns else "QAChurnLines"
     if qa_col not in tickets.columns:
         return pd.DataFrame()
@@ -176,15 +185,16 @@ def compute_qa_churn_weekly(tickets):
 
     rows = []
     for week, g in tickets.groupby("_week"):
-        pilot_g = g[g["_pilot"]]
+        week_ts = pd.Timestamp(week)
+        pilot_g = g[g["_pilot"]] if week_ts >= pilot_start else pd.DataFrame()
         non_pilot_g = g[~g["_pilot"]]
-        pilot_churn = pilot_g["_has_qa_churn"].sum() / len(pilot_g) * 100 if len(pilot_g) else 0
+        pilot_churn = pilot_g["_has_qa_churn"].sum() / len(pilot_g) * 100 if len(pilot_g) else (None if week_ts < pilot_start else 0)
         non_pilot_churn = non_pilot_g["_has_qa_churn"].sum() / len(non_pilot_g) * 100 if len(non_pilot_g) else 0
         total = len(g)
         low_conf = total < MIN_TICKETS_THRESHOLD
         rows.append({
             "week": pd.Timestamp(week),
-            "pilot_churn_pct": round(pilot_churn, 1),
+            "pilot_churn_pct": None if pilot_churn is None else round(pilot_churn, 1),
             "non_pilot_churn_pct": round(non_pilot_churn, 1),
             "low_confidence": low_conf,
         })
@@ -203,12 +213,27 @@ def is_holiday_week(ts) -> bool:
         return False
 
 
-def _align_series(qa_df, week_index, col: str) -> list:
+def _align_series(qa_df, week_index, col: str, pilot_start_ts=None, use_null_before_pilot: bool = False) -> list:
+    """Align series to week_index. If use_null_before_pilot, use None for weeks before pilot_start."""
     if qa_df.empty or col not in qa_df.columns:
+        if use_null_before_pilot and pilot_start_ts is not None:
+            return [None if pd.Timestamp(w) < pilot_start_ts else 0.0 for w in week_index]
         return [0.0] * len(week_index)
     merged = pd.DataFrame({"week": week_index}).merge(
         qa_df[["week", col]], on="week", how="left"
     )
+    if use_null_before_pilot and pilot_start_ts is not None:
+        out = []
+        for _, r in merged.iterrows():
+            w = r["week"]
+            v = r[col]
+            if pd.Timestamp(w) < pilot_start_ts:
+                out.append(None)
+            elif pd.isna(v):
+                out.append(0.0)
+            else:
+                out.append(float(v))
+        return out
     return merged[col].fillna(0).tolist()
 
 
@@ -238,9 +263,10 @@ def parse_survey_insights(survey_df) -> dict:
 
 
 def compute_availability(df):
-    """Active pilot devs per week, total tickets per week."""
+    """Active pilot devs per week, total tickets per week. Pilot devs = 0 before PILOT_START."""
     if df.empty or "AuthorUUID" not in df.columns:
         return pd.DataFrame()
+    pilot_start = pd.Timestamp(PILOT_START)
     df = df.copy()
     date_col = "PRStart" if "PRStart" in df.columns else "FirstActivity"
     df["_date"] = pd.to_datetime(df[date_col], errors="coerce")
@@ -252,9 +278,10 @@ def compute_availability(df):
         df["_pilot"] = False
     rows = []
     for week, g in df.groupby("_week"):
-        pilot_devs = g[g["_pilot"]]["AuthorUUID"].nunique() if "_pilot" in g.columns and g["_pilot"].any() else 0
+        week_ts = pd.Timestamp(week)
+        pilot_devs = (g[g["_pilot"]]["AuthorUUID"].nunique() if week_ts >= pilot_start and "_pilot" in g.columns and g["_pilot"].any() else 0)
         total_tix = g["JiraTicket"].nunique() if "JiraTicket" in g.columns else len(g)
-        rows.append({"week": pd.Timestamp(week), "activePilotDevs": pilot_devs, "totalTickets": total_tix})
+        rows.append({"week": week_ts, "activePilotDevs": pilot_devs, "totalTickets": total_tix})
     return pd.DataFrame(rows)
 
 
@@ -283,7 +310,7 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     df = load_pull_sheet(path, pull_sheet)
     tickets = aggregate_to_tickets(df)
     if tickets.empty:
-        return _fallback_data()
+        return _empty_dashboard_data()
 
     # Include all data from DATA_START (July 2025), not just pilot period
     data_start = pd.Timestamp(DATA_START)
@@ -293,7 +320,7 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     qa_weekly = compute_qa_churn_weekly(tickets)
 
     if weekly.empty:
-        return _fallback_data()
+        return _empty_dashboard_data()
 
     pilot_start = pd.Timestamp(PILOT_START)
     pilot_weekly = weekly[weekly["week"] >= pilot_start]
@@ -310,8 +337,10 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     prod_multiple = pilot_prod / non_pilot_prod if non_pilot_prod else 0
 
     qa_pilot_period = qa_weekly[qa_weekly["week"] >= pilot_start] if not qa_weekly.empty else pd.DataFrame()
-    pilot_qa = qa_pilot_period["pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
+    pilot_qa_raw = qa_pilot_period["pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
+    pilot_qa = 0 if pd.isna(pilot_qa_raw) else pilot_qa_raw
     non_pilot_qa = qa_pilot_period["non_pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
+    non_pilot_qa = 0 if pd.isna(non_pilot_qa) else non_pilot_qa
 
     pilot_qa_vs_baseline = pilot_qa - BASELINE_QA_CHURN_PCT
     pilot_prod_vs_baseline = pilot_prod - BASELINE_PRODUCTIVITY
@@ -322,9 +351,15 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     valid_weeks = (pilot_weekly["total_tickets"] >= MIN_TICKETS_THRESHOLD).sum() if not pilot_weekly.empty else 0
     availability_pct = (pilot_weekly["pilot_tickets"] > 0).sum() / len(pilot_weekly) * 100 if len(pilot_weekly) else 0
 
-    # Rolling series
+    # Rolling series; pilot = null for weeks before Dec 1 so chart doesn't draw pilot line
     weekly_sorted = weekly.sort_values("week")
-    rolling_pilot = rolling_mean(weekly_sorted["pilot_productivity"], ROLLING_WINDOW)
+    pilot_start = pd.Timestamp(PILOT_START)
+    pilot_rolling = rolling_mean(weekly_sorted["pilot_productivity"], ROLLING_WINDOW)
+    pilot_raw_list = weekly_sorted["pilot_productivity"].tolist()
+    pilot_roll_list = pilot_rolling.tolist()
+    # Replace with null for weeks before pilot start
+    pilot_raw_out = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], pilot_raw_list)]
+    pilot_roll_out = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], pilot_roll_list)]
     rolling_np = rolling_mean(weekly_sorted["non_pilot_productivity"], ROLLING_WINDOW)
 
     # Last 4wk comparison for annotation
@@ -355,8 +390,9 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
         avail_pilot_devs = weekly_sorted["pilot_tickets"].tolist()
         avail_total_tickets = weekly_sorted["total_tickets"].tolist()
 
-    # Cumulative output
-    cum_pilot = weekly_sorted["pilot_tickets"].cumsum().tolist()
+    # Cumulative output; pilot = null before Dec 1
+    cum_pilot_raw = weekly_sorted["pilot_tickets"].cumsum().tolist()
+    cum_pilot = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], cum_pilot_raw)]
     cum_non_pilot = weekly_sorted["non_pilot_tickets"].cumsum().tolist()
 
     # Heatmap
@@ -402,8 +438,8 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
         "productivity": {
             "weeks": week_labels,
             "pilot": {
-                "rolling": rolling_pilot.tolist(),
-                "raw": weekly_sorted["pilot_productivity"].tolist(),
+                "rolling": pilot_roll_out,
+                "raw": pilot_raw_out,
                 "lowConfidence": weekly_sorted["low_confidence"].tolist(),
                 "holidayGap": holiday_gaps,
             },
@@ -416,7 +452,7 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
         },
         "qaChurn": {
             "weeks": week_labels,
-            "pilot": _align_series(qa_weekly, weekly_sorted["week"], "pilot_churn_pct"),
+            "pilot": _align_series(qa_weekly, weekly_sorted["week"], "pilot_churn_pct", pilot_start, use_null_before_pilot=True),
             "nonPilot": _align_series(qa_weekly, weekly_sorted["week"], "non_pilot_churn_pct"),
             "pilotPeriodAvg": round(pilot_qa, 1),
             "nonPilotPeriodAvg": round(non_pilot_qa, 1),
@@ -442,45 +478,84 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     }
 
 
-def _fallback_data() -> dict:
-    # Extended weeks from July 2025 with more variation (prototype-like)
-    weeks = ["Jul 7", "Jul 14", "Jul 21", "Jul 28", "Aug 4", "Aug 11", "Aug 18", "Aug 25", "Sep 1", "Sep 8", "Sep 15", "Sep 22", "Sep 29", "Oct 6", "Oct 13", "Oct 20", "Oct 27", "Nov 3", "Nov 10", "Nov 17", "Nov 24", "Dec 6", "Dec 13", "Dec 20", "Dec 27", "Jan 3", "Jan 10", "Jan 17", "Jan 24", "Jan 31", "Feb 7", "Feb 14"]
-    n = len(weeks)
-    # Pre-pilot (Jul–Nov): baseline-ish, low
-    base_pilot = [0.12 + (i % 5) * 0.02 for i in range(22)]
-    base_np = [0.15 + (i % 4) * 0.015 for i in range(22)]
-    # Pilot (Dec–Feb): more variation
-    pilot_raw = (base_pilot + [0.47, 0.53, 0.42, 0.18, 0.22, 0.38, 0.55, 0.41, 0.36, 0.33])[:n]
-    np_raw = (base_np + [0.32, 0.35, 0.31, 0.28, 0.25, 0.34, 0.38, 0.35, 0.33, 0.34])[:n]
-    pilot_roll = [sum(pilot_raw[max(0,i-3):i+1])/min(4,i+1) for i in range(n)]
-    np_roll = [sum(np_raw[max(0,i-3):i+1])/min(4,i+1) for i in range(n)]
-    low_conf = [i >= 23 and i <= 24 for i in range(n)]  # Dec 27, Jan 3
-    holiday_gap = [w in ("Dec 27", "Jan 3") for w in weeks]
-    qa_pilot = [22, 24, 21, 19, 20, 23, 18, 17, 16, 18, 19, 20, 21, 19, 18, 17, 19, 18, 20, 18, 17, 15, 20, 18, 12, 14, 19, 17, 19, 18, 19, 18]
-    qa_np = [18, 20, 19, 17, 18, 19, 16, 15, 16, 17, 18, 17, 16, 15, 16, 15, 16, 15, 17, 16, 15, 14, 16, 15, 11, 12, 15, 14, 16, 15, 15, 15]
-    pilot_tix = [max(1, int(p * 30)) for p in pilot_raw]
-    np_tix = [max(1, int(p * 45)) for p in np_raw]
-    cum_pilot = []
-    cum_np = []
-    cp, cn = 0, 0
-    for i in range(n):
-        cp += pilot_tix[i] if i < len(pilot_tix) else 0
-        cn += np_tix[i] if i < len(np_tix) else 0
-        cum_pilot.append(cp)
-        cum_np.append(cn)
-    avail_devs = [0] * 22 + [6, 5, 4, 1, 2, 5, 6, 5, 5, 5]
-    avail_tix = [(pilot_tix[i] if i < len(pilot_tix) else 0) + (np_tix[i] if i < len(np_tix) else 0) for i in range(n)]
+def _empty_dashboard_data() -> dict:
+    """Return empty structure when no xlsx or no valid data. No fake metrics."""
     return {
-        "meta": {"title": "AI-Assisted Development - Pilot KPIs", "dataRangeStart": "2025-07-07", "dataRangeEnd": "2026-02-14", "pilotStart": "Dec 1", "pilotCount": 6, "nonPilotCount": 9, "validWeeks": 9, "refreshedAt": datetime.now().strftime("%Y-%m-%d %H:%M")},
-        "kpiCards": {"pilotProductivity": {"value": 0.348, "vsBaseline": "+0.179", "unit": "tickets / FTE-day"}, "productivityMultiple": {"value": "1.03×", "nonPilotValue": 0.338}, "pilotQaChurn": {"value": "18.8%", "vsBaseline": "-4.3pp", "nonPilotValue": "15.1%"}, "aiOutputShare": {"value": "40.8%", "tickets": "96 of 235", "devs": "6 of 15"}, "availability": {"value": "81.8%", "detail": "weeks with ≥50% pilot active", "devCount": 6}},
-        "productivity": {"weeks": weeks, "pilot": {"rolling": pilot_roll, "raw": pilot_raw[:n], "lowConfidence": low_conf, "holidayGap": holiday_gap}, "nonPilot": {"rolling": np_roll, "raw": np_raw[:n]}, "baseline": 0.169, "last4wkComparison": "−40%"},
-        "qaChurn": {"weeks": weeks, "pilot": qa_pilot[:n], "nonPilot": qa_np[:n], "pilotPeriodAvg": 18.8, "nonPilotPeriodAvg": 15.1},
-        "availability": {"weeks": weeks, "activePilotDevs": avail_devs[:n], "totalTickets": avail_tix[:n]},
-        "cumulativeOutput": {"weeks": weeks, "pilot": cum_pilot[:n], "nonPilot": cum_np[:n]},
-        "heatmap": {"rows": ["0-300 lines", "301-1000", "1001+"], "cols": ["1-3 files", "4-10 files", "11+ files"], "cells": [{"pilot": 61, "nonPilot": 64, "pctDiff": 43, "label": "61/64"}, {"pilot": 18, "nonPilot": 22, "pctDiff": -15, "label": "18/22"}, {"pilot": 7, "nonPilot": 1, "pctDiff": 950, "label": "7/1"}, {"pilot": 4, "nonPilot": 22, "pctDiff": -73, "label": "4/22"}, {"pilot": 3, "nonPilot": 8, "pctDiff": -63, "label": "3/8"}, {"pilot": 2, "nonPilot": 4, "pctDiff": -50, "label": "2/4"}, {"pilot": 1, "nonPilot": 6, "pctDiff": -83, "label": "1/6"}, {"pilot": 0, "nonPilot": 2, "pctDiff": -100, "label": "0/2"}, {"pilot": 0, "nonPilot": 1, "pctDiff": -100, "label": "0/1"}]},
-        "methodology": "Metrics derived from Jira/GitLab PR exports. Productivity = tickets per FTE-day (6 pilot, 9 non-pilot). QA churn = % of tickets requiring QA rework. Rolling averages use 4-week window. Weeks with <5 tickets flagged low-confidence. Holiday weeks (Dec 27, Jan 3) dimmed. Pilot period starts Dec 1, 2025.",
-        "survey": {"productivity": {"stat": "4/7 report increased productivity", "quote": "4 devs report 10-49% gains..."}, "quality": {"stat": "5/7 often modify AI-generated code", "quote": "Primary concerns: bugs or logical errors..."}, "experience": {"stat": "7/7 recommend AI for bug fixing", "quote": "Devs want AI expanded into..."}},
+        "meta": {
+            "title": "AI-Assisted Development - Pilot KPIs",
+            "dataRangeStart": "",
+            "dataRangeEnd": "",
+            "pilotStart": "Dec 1",
+            "pilotCount": PILOT_ROSTER,
+            "nonPilotCount": NON_PILOT_ROSTER,
+            "validWeeks": 0,
+            "refreshedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "noData": True,
+        },
+        "kpiCards": {
+            "pilotProductivity": {"value": None, "vsBaseline": "—", "unit": "tickets / FTE-day"},
+            "productivityMultiple": {"value": "—", "nonPilotValue": None},
+            "pilotQaChurn": {"value": "—", "vsBaseline": "—", "nonPilotValue": "—"},
+            "aiOutputShare": {"value": "—", "tickets": "0 of 0", "devs": f"{PILOT_ROSTER} of {PILOT_ROSTER + NON_PILOT_ROSTER}"},
+            "availability": {"value": "—", "detail": "No data", "devCount": PILOT_ROSTER},
+        },
+        "productivity": {
+            "weeks": [],
+            "pilot": {"rolling": [], "raw": [], "lowConfidence": [], "holidayGap": []},
+            "nonPilot": {"rolling": [], "raw": []},
+            "baseline": BASELINE_PRODUCTIVITY,
+            "last4wkComparison": "—",
+        },
+        "qaChurn": {
+            "weeks": [],
+            "pilot": [],
+            "nonPilot": [],
+            "pilotPeriodAvg": None,
+            "nonPilotPeriodAvg": None,
+        },
+        "availability": {
+            "weeks": [],
+            "activePilotDevs": [],
+            "totalTickets": [],
+        },
+        "cumulativeOutput": {
+            "weeks": [],
+            "pilot": [],
+            "nonPilot": [],
+        },
+        "heatmap": {"rows": [], "cols": [], "cells": []},
+        "methodology": (
+            "Metrics derived from Jira/GitLab PR exports. Place export xlsx in pipeline/data/exports/. "
+            "Productivity = tickets per FTE-day. QA churn = % of tickets requiring QA rework. Pilot starts Dec 1, 2025."
+        ),
+        "survey": {
+            "productivity": {"stat": "—", "quote": ""},
+            "quality": {"stat": "—", "quote": ""},
+            "experience": {"stat": "—", "quote": ""},
+        },
     }
+
+
+def validate_dashboard_data(data: dict) -> list:
+    """Return list of validation errors. Empty list = valid."""
+    errs = []
+    required = ["meta", "kpiCards", "productivity", "qaChurn", "availability", "cumulativeOutput", "heatmap", "methodology", "survey"]
+    for k in required:
+        if k not in data:
+            errs.append(f"Missing top-level key: {k}")
+    if "meta" in data and not isinstance(data["meta"], dict):
+        errs.append("meta must be object")
+    if "productivity" in data:
+        p = data["productivity"]
+        if not isinstance(p.get("weeks", []), list):
+            errs.append("productivity.weeks must be array")
+        if "pilot" in p and not isinstance(p["pilot"], dict):
+            errs.append("productivity.pilot must be object")
+    if "qaChurn" in data:
+        q = data["qaChurn"]
+        if not isinstance(q.get("weeks", []), list):
+            errs.append("qaChurn.weeks must be array")
+    return errs
 
 
 def inject_template(template: str, data: dict) -> str:
@@ -517,21 +592,21 @@ def main():
             path = find_latest_xlsx()
         except FileNotFoundError as e:
             print(str(e))
-            print("Using fallback data. Output will show sample metrics.")
-            data = _fallback_data()
+            print("Output will show 'No data'. Place xlsx export in pipeline/data/exports/")
+            data = _empty_dashboard_data()
             template = TEMPLATE_PATH.read_text(encoding="utf-8")
             html = inject_template(template, data)
             OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
             OUTPUT_PATH.write_text(html, encoding="utf-8")
             OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
             OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
-            print(f"Dashboard (fallback) written to: {OUTPUT_PATH}")
+            print(f"Dashboard (no data) written to: {OUTPUT_PATH}")
             return
 
     if not HAS_PANDAS:
         print("pandas required for xlsx. Run: pip install -r requirements-pipeline.txt")
-        print("Using fallback data for now.")
-        data = _fallback_data()
+        print("Output will show 'No data'.")
+        data = _empty_dashboard_data()
         template = TEMPLATE_PATH.read_text(encoding="utf-8")
         html = inject_template(template, data)
         OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -549,6 +624,11 @@ def main():
 
     survey_df = load_survey_sheet(path, args.survey_sheet)
     data = build_dashboard_data(path, pull_sheet, survey_df)
+    errs = validate_dashboard_data(data)
+    if errs:
+        print("WARNING: Dashboard data validation issues:")
+        for e in errs:
+            print(f"  - {e}")
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
     html = inject_template(template, data)
 
