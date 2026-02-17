@@ -136,7 +136,16 @@
       padding: 1rem;
     }
     .survey-panel h4 { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; margin-bottom: 0.5rem; }
+    .survey-panel .stat { font-size: 0.875rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.25rem; }
     .survey-panel .quote { font-size: 0.875rem; font-style: italic; color: #4b5563; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1000px) { .three-col { grid-template-columns: 1fr; } }
+    .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; font-size: 0.7rem; }
+    .heatmap-cell { padding: 0.5rem; text-align: center; border-radius: 4px; }
+    .heatmap-cell.pilot-win { background: rgba(21,128,61,0.2); }
+    .heatmap-cell.np-win { background: rgba(217,119,6,0.2); }
+    .methodology { margin-top: 1.5rem; padding: 1rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.8rem; color: #4b5563; }
+    .methodology h3 { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; margin-bottom: 0.5rem; }
   </style>
 </head>
 <body>
@@ -158,19 +167,42 @@
     </div>
     <div id="qa-period-avg" style="margin-top:0.5rem;font-size:0.8rem;color:#6b7280;"></div>
   </div>
-  <div class="survey-row" id="survey-panels"></div>
+  <div class="three-col">
+    <div class="chart-card">
+      <h2>Availability</h2>
+      <p class="subtitle">Active pilot devs per week vs. total output.</p>
+      <div class="chart-container"><canvas id="chart-availability"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h2>Productivity by Size × Complexity</h2>
+      <p class="subtitle">Pilot advantage: green = pilot faster, red = non-pilot faster.</p>
+      <div id="heatmap-container" style="min-height:160px;"></div>
+    </div>
+    <div class="chart-card">
+      <h2>Cumulative Output</h2>
+      <p class="subtitle">Running total since pilot start.</p>
+      <div id="cumulative-label" style="font-size:0.75rem;color:#6b7280;margin-bottom:0.5rem;"></div>
+      <div class="chart-container"><canvas id="chart-cumulative"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <h2>Experience - Developer Survey</h2>
+    <p class="subtitle">Key findings across productivity, quality, and experience.</p>
+    <div class="survey-row" id="survey-panels"></div>
+  </div>
+  <div class="methodology" id="methodology"></div>
 
   <script>
     window.__DASHBOARD_DATA__ = {
   "meta": {
     "title": "AI-Assisted Development - Pilot KPIs",
-    "dataRangeStart": "\u2014",
-    "dataRangeEnd": "\u2014",
+    "dataRangeStart": "2025-07-07",
+    "dataRangeEnd": "2026-02-14",
     "pilotStart": "Dec 1",
     "pilotCount": 6,
     "nonPilotCount": 9,
-    "validWeeks": 0,
-    "refreshedAt": "2026-02-16 21:24"
+    "validWeeks": 9,
+    "refreshedAt": "2026-02-16 21:35"
   },
   "kpiCards": {
     "pilotProductivity": {
@@ -200,6 +232,27 @@
   },
   "productivity": {
     "weeks": [
+      "Jul 7",
+      "Jul 14",
+      "Jul 21",
+      "Jul 28",
+      "Aug 4",
+      "Aug 11",
+      "Aug 18",
+      "Aug 25",
+      "Sep 1",
+      "Sep 8",
+      "Sep 15",
+      "Sep 22",
+      "Sep 29",
+      "Oct 6",
+      "Oct 13",
+      "Oct 20",
+      "Oct 27",
+      "Nov 3",
+      "Nov 10",
+      "Nov 17",
+      "Nov 24",
       "Dec 6",
       "Dec 13",
       "Dec 20",
@@ -214,32 +267,129 @@
     ],
     "pilot": {
       "rolling": [
-        0.35,
-        0.36,
-        0.34,
-        0.33,
-        0.34,
-        0.35,
-        0.36,
-        0.35,
-        0.35,
-        0.34,
-        0.33
+        0.12,
+        0.13,
+        0.14,
+        0.15000000000000002,
+        0.16999999999999998,
+        0.165,
+        0.16,
+        0.155,
+        0.15000000000000002,
+        0.16999999999999998,
+        0.165,
+        0.16,
+        0.155,
+        0.15000000000000002,
+        0.16999999999999998,
+        0.165,
+        0.16,
+        0.155,
+        0.15000000000000002,
+        0.16999999999999998,
+        0.165,
+        0.16,
+        0.23249999999999998,
+        0.315,
+        0.39,
+        0.39999999999999997,
+        0.33749999999999997,
+        0.3,
+        0.3325,
+        0.38999999999999996,
+        0.42500000000000004,
+        0.4125
       ],
       "raw": [
-        0.4,
-        0.37,
-        0.3,
-        0.27,
-        0.33,
-        0.37,
-        0.4,
-        0.33,
-        0.33,
-        0.33,
-        0.3
+        0.12,
+        0.13999999999999999,
+        0.16,
+        0.18,
+        0.2,
+        0.12,
+        0.13999999999999999,
+        0.16,
+        0.18,
+        0.2,
+        0.12,
+        0.13999999999999999,
+        0.16,
+        0.18,
+        0.2,
+        0.12,
+        0.13999999999999999,
+        0.16,
+        0.18,
+        0.2,
+        0.12,
+        0.13999999999999999,
+        0.47,
+        0.53,
+        0.42,
+        0.18,
+        0.22,
+        0.38,
+        0.55,
+        0.41,
+        0.36,
+        0.33
       ],
       "lowConfidence": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "holidayGap": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
         false,
         false,
         false,
@@ -255,30 +405,72 @@
     },
     "nonPilot": {
       "rolling": [
-        0.32,
+        0.15,
+        0.15749999999999997,
+        0.16499999999999998,
+        0.1725,
+        0.17250000000000001,
+        0.1725,
+        0.1725,
+        0.1725,
+        0.17250000000000001,
+        0.1725,
+        0.1725,
+        0.1725,
+        0.17250000000000001,
+        0.1725,
+        0.1725,
+        0.1725,
+        0.17250000000000001,
+        0.1725,
+        0.1725,
+        0.1725,
+        0.17250000000000001,
+        0.1725,
+        0.20750000000000002,
+        0.24625,
+        0.28625,
+        0.315,
+        0.2975,
+        0.29500000000000004,
+        0.3125,
         0.33,
-        0.33,
-        0.33,
-        0.34,
-        0.34,
-        0.34,
-        0.34,
-        0.34,
-        0.34,
-        0.34
+        0.35,
+        0.35000000000000003
       ],
       "raw": [
+        0.15,
+        0.16499999999999998,
+        0.18,
+        0.195,
+        0.15,
+        0.16499999999999998,
+        0.18,
+        0.195,
+        0.15,
+        0.16499999999999998,
+        0.18,
+        0.195,
+        0.15,
+        0.16499999999999998,
+        0.18,
+        0.195,
+        0.15,
+        0.16499999999999998,
+        0.18,
+        0.195,
+        0.15,
+        0.16499999999999998,
+        0.32,
+        0.35,
+        0.31,
+        0.28,
+        0.25,
+        0.34,
+        0.38,
+        0.35,
         0.33,
-        0.33,
-        0.33,
-        0.33,
-        0.36,
-        0.33,
-        0.33,
-        0.36,
-        0.33,
-        0.33,
-        0.33
+        0.34
       ]
     },
     "baseline": 0.169,
@@ -286,6 +478,27 @@
   },
   "qaChurn": {
     "weeks": [
+      "Jul 7",
+      "Jul 14",
+      "Jul 21",
+      "Jul 28",
+      "Aug 4",
+      "Aug 11",
+      "Aug 18",
+      "Aug 25",
+      "Sep 1",
+      "Sep 8",
+      "Sep 15",
+      "Sep 22",
+      "Sep 29",
+      "Oct 6",
+      "Oct 13",
+      "Oct 20",
+      "Oct 27",
+      "Nov 3",
+      "Nov 10",
+      "Nov 17",
+      "Nov 24",
       "Dec 6",
       "Dec 13",
       "Dec 20",
@@ -299,27 +512,69 @@
       "Feb 14"
     ],
     "pilot": [
+      22,
+      24,
+      21,
       19,
       20,
+      23,
+      18,
+      17,
+      16,
+      18,
+      19,
+      20,
+      21,
+      19,
       18,
       17,
       19,
       18,
+      20,
+      18,
+      17,
+      15,
+      20,
+      18,
+      12,
+      14,
+      19,
+      17,
       19,
       18,
       19,
-      18,
-      19
+      18
     ],
     "nonPilot": [
+      18,
+      20,
+      19,
+      17,
+      18,
+      19,
+      16,
       15,
       16,
+      17,
+      18,
+      17,
+      16,
+      15,
+      16,
+      15,
+      16,
+      15,
+      17,
+      16,
+      15,
       14,
-      15,
-      15,
       16,
       15,
+      11,
+      12,
       15,
+      14,
+      16,
       15,
       15,
       15
@@ -327,18 +582,295 @@
     "pilotPeriodAvg": 18.8,
     "nonPilotPeriodAvg": 15.1
   },
+  "availability": {
+    "weeks": [
+      "Jul 7",
+      "Jul 14",
+      "Jul 21",
+      "Jul 28",
+      "Aug 4",
+      "Aug 11",
+      "Aug 18",
+      "Aug 25",
+      "Sep 1",
+      "Sep 8",
+      "Sep 15",
+      "Sep 22",
+      "Sep 29",
+      "Oct 6",
+      "Oct 13",
+      "Oct 20",
+      "Oct 27",
+      "Nov 3",
+      "Nov 10",
+      "Nov 17",
+      "Nov 24",
+      "Dec 6",
+      "Dec 13",
+      "Dec 20",
+      "Dec 27",
+      "Jan 3",
+      "Jan 10",
+      "Jan 17",
+      "Jan 24",
+      "Jan 31",
+      "Feb 7",
+      "Feb 14"
+    ],
+    "activePilotDevs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      5,
+      4,
+      1,
+      2,
+      5,
+      6,
+      5,
+      5,
+      5
+    ],
+    "totalTickets": [
+      9,
+      11,
+      12,
+      13,
+      12,
+      10,
+      12,
+      12,
+      11,
+      13,
+      11,
+      12,
+      10,
+      12,
+      14,
+      11,
+      10,
+      11,
+      13,
+      14,
+      9,
+      11,
+      28,
+      30,
+      25,
+      17,
+      17,
+      26,
+      33,
+      27,
+      24,
+      24
+    ]
+  },
+  "cumulativeOutput": {
+    "weeks": [
+      "Jul 7",
+      "Jul 14",
+      "Jul 21",
+      "Jul 28",
+      "Aug 4",
+      "Aug 11",
+      "Aug 18",
+      "Aug 25",
+      "Sep 1",
+      "Sep 8",
+      "Sep 15",
+      "Sep 22",
+      "Sep 29",
+      "Oct 6",
+      "Oct 13",
+      "Oct 20",
+      "Oct 27",
+      "Nov 3",
+      "Nov 10",
+      "Nov 17",
+      "Nov 24",
+      "Dec 6",
+      "Dec 13",
+      "Dec 20",
+      "Dec 27",
+      "Jan 3",
+      "Jan 10",
+      "Jan 17",
+      "Jan 24",
+      "Jan 31",
+      "Feb 7",
+      "Feb 14"
+    ],
+    "pilot": [
+      3,
+      7,
+      11,
+      16,
+      22,
+      25,
+      29,
+      33,
+      38,
+      44,
+      47,
+      51,
+      55,
+      60,
+      66,
+      69,
+      73,
+      77,
+      82,
+      88,
+      91,
+      95,
+      109,
+      124,
+      136,
+      141,
+      147,
+      158,
+      174,
+      186,
+      196,
+      205
+    ],
+    "nonPilot": [
+      6,
+      13,
+      21,
+      29,
+      35,
+      42,
+      50,
+      58,
+      64,
+      71,
+      79,
+      87,
+      93,
+      100,
+      108,
+      116,
+      122,
+      129,
+      137,
+      145,
+      151,
+      158,
+      172,
+      187,
+      200,
+      212,
+      223,
+      238,
+      255,
+      270,
+      284,
+      299
+    ]
+  },
+  "heatmap": {
+    "rows": [
+      "0-300 lines",
+      "301-1000",
+      "1001+"
+    ],
+    "cols": [
+      "1-3 files",
+      "4-10 files",
+      "11+ files"
+    ],
+    "cells": [
+      {
+        "pilot": 61,
+        "nonPilot": 64,
+        "pctDiff": 43,
+        "label": "61/64"
+      },
+      {
+        "pilot": 18,
+        "nonPilot": 22,
+        "pctDiff": -15,
+        "label": "18/22"
+      },
+      {
+        "pilot": 7,
+        "nonPilot": 1,
+        "pctDiff": 950,
+        "label": "7/1"
+      },
+      {
+        "pilot": 4,
+        "nonPilot": 22,
+        "pctDiff": -73,
+        "label": "4/22"
+      },
+      {
+        "pilot": 3,
+        "nonPilot": 8,
+        "pctDiff": -63,
+        "label": "3/8"
+      },
+      {
+        "pilot": 2,
+        "nonPilot": 4,
+        "pctDiff": -50,
+        "label": "2/4"
+      },
+      {
+        "pilot": 1,
+        "nonPilot": 6,
+        "pctDiff": -83,
+        "label": "1/6"
+      },
+      {
+        "pilot": 0,
+        "nonPilot": 2,
+        "pctDiff": -100,
+        "label": "0/2"
+      },
+      {
+        "pilot": 0,
+        "nonPilot": 1,
+        "pctDiff": -100,
+        "label": "0/1"
+      }
+    ]
+  },
+  "methodology": "Metrics derived from Jira/GitLab PR exports. Productivity = tickets per FTE-day (6 pilot, 9 non-pilot). QA churn = % of tickets requiring QA rework. Rolling averages use 4-week window. Weeks with <5 tickets flagged low-confidence. Holiday weeks (Dec 27, Jan 3) dimmed. Pilot period starts Dec 1, 2025.",
   "survey": {
     "productivity": {
-      "stat": "\u2014",
-      "quote": ""
+      "stat": "4/7 report increased productivity",
+      "quote": "4 devs report 10-49% gains..."
     },
     "quality": {
-      "stat": "\u2014",
-      "quote": ""
+      "stat": "5/7 often modify AI-generated code",
+      "quote": "Primary concerns: bugs or logical errors..."
     },
     "experience": {
-      "stat": "\u2014",
-      "quote": ""
+      "stat": "7/7 recommend AI for bug fixing",
+      "quote": "Devs want AI expanded into..."
     }
   }
 };
@@ -406,24 +938,60 @@
     document.getElementById("qa-period-avg").textContent =
       `PILOT PERIOD AVG ${qa.pilotPeriodAvg ?? "—"}% vs ${qa.nonPilotPeriodAvg ?? "—"}%`;
 
-    // Survey panels
+    // Survey panels (with stat + quote)
     const prodS = survey.productivity || {};
     const qualS = survey.quality || {};
     const expS = survey.experience || {};
     document.getElementById("survey-panels").innerHTML = `
       <div class="survey-panel">
-        <h4>Productivity perception</h4>
-        <div class="quote">${prodS.quote || "—"}</div>
+        <h4>PRODUCTIVITY</h4>
+        <div class="stat">${prodS.stat || "—"}</div>
+        <div class="quote">${prodS.quote || ""}</div>
       </div>
       <div class="survey-panel">
-        <h4>Quality concerns</h4>
-        <div class="quote">${qualS.quote || "—"}</div>
+        <h4>QUALITY</h4>
+        <div class="stat">${qualS.stat || "—"}</div>
+        <div class="quote">${qualS.quote || ""}</div>
       </div>
       <div class="survey-panel">
-        <h4>Overall experience</h4>
-        <div class="quote">${expS.quote || "—"}</div>
+        <h4>OVERALL EXPERIENCE</h4>
+        <div class="stat">${expS.stat || "—"}</div>
+        <div class="quote">${expS.quote || ""}</div>
       </div>
     `;
+
+    // Methodology
+    document.getElementById("methodology").innerHTML = `
+      <h3>Methodology</h3>
+      <p>${D.methodology || "—"}</p>
+    `;
+
+    // Heatmap
+    const hm = D.heatmap || {};
+    const cells = hm.cells || [];
+    const cols = hm.cols || [];
+    const rows = hm.rows || [];
+    if (cells.length && cols.length && rows.length) {
+      let html = '<table class="heatmap-grid" style="width:100%;border-collapse:collapse"><tr><th></th>';
+      cols.forEach(c => { html += `<th style="font-size:0.65rem;padding:4px">${c}</th>`; });
+      html += '</tr>';
+      for (let r = 0; r < rows.length; r++) {
+        html += `<tr><td style="font-size:0.65rem;padding:4px;text-align:right">${rows[r]}</td>`;
+        for (let c = 0; c < cols.length; c++) {
+          const cell = cells[r * cols.length + c] || {};
+          const cls = (cell.pctDiff || 0) > 0 ? 'pilot-win' : (cell.pctDiff || 0) < 0 ? 'np-win' : '';
+          const pct = cell.pctDiff > 0 ? '+' + cell.pctDiff + '%' : cell.pctDiff + '%';
+          html += `<td class="heatmap-cell ${cls}" style="padding:4px">${pct}<br>${cell.label || ''}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</table>';
+      document.getElementById("heatmap-container").innerHTML = html;
+    }
+
+    // Cumulative label
+    const aiVal = kpi.aiOutputShare?.value || '';
+    document.getElementById("cumulative-label").textContent = aiVal ? `${aiVal} OF DEVS – OUTPUT` : '';
 
     // Charts
     const annotationPlugin = window["chartjs-plugin-annotation"];
@@ -436,8 +1004,12 @@
       const pilotRoll = prod.pilot?.rolling || [];
       const pilotRaw = prod.pilot?.raw || [];
       const pilotDim = prod.pilot?.lowConfidence || [];
+      const holidayGap = prod.pilot?.holidayGap || [];
       const npRoll = prod.nonPilot?.rolling || [];
       const npRaw = prod.nonPilot?.raw || [];
+      const toNull = (arr, gap) => arr.map((v, i) => (gap[i] ? null : (Number.isFinite(v) ? v : null)));
+      const pilotRollData = toNull(pilotRoll, holidayGap);
+      const npRollData = toNull(npRoll, holidayGap);
 
       new Chart(document.getElementById("chart-productivity"), {
         type: "line",
@@ -446,27 +1018,29 @@
           datasets: [
             {
               label: `Pilot (n = ${meta.pilotCount ?? 6})`,
-              data: pilotRoll,
+              data: pilotRollData,
+              spanGaps: false,
               borderColor: "#15803d",
               backgroundColor: "transparent",
               borderWidth: 2,
               fill: false,
               tension: 0.2,
-              pointRadius: pilotRaw.map((_, i) => (pilotDim[i] ? 3 : 6)),
-              pointBackgroundColor: pilotRaw.map((_, i) => (pilotDim[i] ? "rgba(21,128,61,0.4)" : "#15803d")),
+              pointRadius: pilotRaw.map((_, i) => (pilotDim[i] || holidayGap[i] ? 3 : 6)),
+              pointBackgroundColor: pilotRaw.map((_, i) => (pilotDim[i] || holidayGap[i] ? "rgba(21,128,61,0.4)" : "#15803d")),
               pointHoverRadius: 8,
             },
             {
               label: `Non-Pilot (n = ${meta.nonPilotCount ?? 9})`,
-              data: npRoll,
+              data: npRollData,
+              spanGaps: false,
               borderColor: "#d97706",
               backgroundColor: "transparent",
               borderWidth: 2,
               borderDash: [6, 4],
               fill: false,
               tension: 0.2,
-              pointRadius: npRaw.map((_, i) => (pilotDim[i] ? 2 : 4)),
-              pointBackgroundColor: npRaw.map((_, i) => (pilotDim[i] ? "rgba(217,119,6,0.4)" : "#d97706")),
+              pointRadius: npRaw.map((_, i) => (pilotDim[i] || holidayGap[i] ? 2 : 4)),
+              pointBackgroundColor: npRaw.map((_, i) => (pilotDim[i] || holidayGap[i] ? "rgba(217,119,6,0.4)" : "#d97706")),
             },
             {
               label: "Baseline",
@@ -510,34 +1084,38 @@
       });
     }
 
-    // QA Churn chart
+    // QA Churn chart (holiday gap)
     const qaPilot = qa.pilot || [];
     const qaNonPilot = qa.nonPilot || [];
+    const qaPilotData = holidayGap.length ? qaPilot.map((v, i) => holidayGap[i] ? null : v) : qaPilot;
+    const qaNonPilotData = holidayGap.length ? qaNonPilot.map((v, i) => holidayGap[i] ? null : v) : qaNonPilot;
     if (weeks.length > 0 && (qaPilot.length || qaNonPilot.length)) {
       new Chart(document.getElementById("chart-qa"), {
         type: "line",
         data: {
           labels: weeks,
           datasets: [
-            {
-              label: `Pilot`,
-              data: qaPilot,
-              borderColor: "#15803d",
-              backgroundColor: "transparent",
-              borderWidth: 2,
-              fill: false,
-              tension: 0.2,
-            },
-            {
-              label: `Non-Pilot`,
-              data: qaNonPilot,
-              borderColor: "#d97706",
-              backgroundColor: "transparent",
-              borderWidth: 2,
-              borderDash: [6, 4],
-              fill: false,
-              tension: 0.2,
-            },
+            { label: "Pilot", data: qaPilotData, spanGaps: false, borderColor: "#15803d", backgroundColor: "transparent", borderWidth: 2, fill: false, tension: 0.2 },
+            { label: "Non-Pilot", data: qaNonPilotData, spanGaps: false, borderColor: "#d97706", backgroundColor: "transparent", borderWidth: 2, borderDash: [6, 4], fill: false, tension: 0.2 },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { x: { ticks: { maxRotation: 45 }, grid: { display: false } }, y: { title: { display: true, text: "%" }, min: 0, max: 50, ticks: { stepSize: 5 } } } },
+      });
+    }
+
+    // Availability chart (bar + line)
+    const av = D.availability || {};
+    const avWeeks = av.weeks || weeks;
+    const avDevs = av.activePilotDevs || [];
+    const avTickets = av.totalTickets || [];
+    if (avWeeks.length && (avDevs.length || avTickets.length)) {
+      new Chart(document.getElementById("chart-availability"), {
+        type: "bar",
+        data: {
+          labels: avWeeks,
+          datasets: [
+            { label: "Active Pilot Devs", data: avDevs, type: "bar", backgroundColor: "rgba(21,128,61,0.6)", borderColor: "#15803d", borderWidth: 1, yAxisID: "y" },
+            { label: "Total Tickets", data: avTickets, type: "line", borderColor: "#d97706", backgroundColor: "transparent", borderWidth: 2, borderDash: [4, 4], fill: false, tension: 0.2, yAxisID: "y1", pointRadius: 3 },
           ],
         },
         options: {
@@ -545,15 +1123,30 @@
           maintainAspectRatio: false,
           plugins: { legend: { position: "bottom" } },
           scales: {
-            x: { ticks: { maxRotation: 45 }, grid: { display: false } },
-            y: {
-              title: { display: true, text: "%" },
-              min: 0,
-              max: 50,
-              ticks: { stepSize: 5 },
-            },
+            x: { ticks: { maxRotation: 45, maxTicksLimit: 12 }, grid: { display: false } },
+            y: { type: "linear", position: "left", min: 0, max: 7, title: { display: true, text: "Devs" } },
+            y1: { type: "linear", position: "right", min: 0, grid: { drawOnChartArea: false }, title: { display: true, text: "Tickets" } },
           },
         },
+      });
+    }
+
+    // Cumulative Output chart
+    const cum = D.cumulativeOutput || {};
+    const cumWeeks = cum.weeks || weeks;
+    const cumPilot = cum.pilot || [];
+    const cumNonPilot = cum.nonPilot || [];
+    if (cumWeeks.length && (cumPilot.length || cumNonPilot.length)) {
+      new Chart(document.getElementById("chart-cumulative"), {
+        type: "line",
+        data: {
+          labels: cumWeeks,
+          datasets: [
+            { label: "Pilot", data: cumPilot, borderColor: "#15803d", backgroundColor: "transparent", borderWidth: 2, fill: false, tension: 0.1 },
+            { label: "Non-Pilot", data: cumNonPilot, borderColor: "#d97706", backgroundColor: "transparent", borderWidth: 2, borderDash: [6, 4], fill: false, tension: 0.1 },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { x: { ticks: { maxRotation: 45, maxTicksLimit: 12 }, grid: { display: false } }, y: { min: 0 } } },
       });
     }
   </script>
