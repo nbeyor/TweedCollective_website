@@ -644,28 +644,12 @@ def main():
             path = find_latest_xlsx()
         except FileNotFoundError as e:
             print(str(e))
-            print("Output will show 'No data'. Place xlsx export in pipeline/data/exports/")
-            data = _empty_dashboard_data()
-            template = TEMPLATE_PATH.read_text(encoding="utf-8")
-            html = inject_template(template, data)
-            OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-            OUTPUT_PATH.write_text(html, encoding="utf-8")
-            OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
-            OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
-            print(f"Dashboard (no data) written to: {OUTPUT_PATH}")
+            print("Skipping dashboard refresh (no xlsx). Keeping committed portfolio.html for deploy.")
             return
 
     if not HAS_PANDAS:
         print("pandas required for xlsx. Run: pip install -r requirements-pipeline.txt")
-        print("Output will show 'No data'.")
-        data = _empty_dashboard_data()
-        template = TEMPLATE_PATH.read_text(encoding="utf-8")
-        html = inject_template(template, data)
-        OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        OUTPUT_PATH.write_text(html, encoding="utf-8")
-        OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
-        OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
-        print(f"Dashboard (no data) written to: {OUTPUT_PATH}")
+        print("Skipping dashboard refresh. Keeping committed portfolio.html for deploy.")
         return
 
     xl = pd.ExcelFile(path)
