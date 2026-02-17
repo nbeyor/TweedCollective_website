@@ -4,7 +4,7 @@ Dashboard data pipeline.
 
 Reads the latest data export from pipeline/data/, renders it into
 dashboard_template.html, and writes the result to
-content/documents/dashboard.html so the Next.js API route can serve it.
+public/dashboards/portfolio.html for static serving (+ archive copy in content/).
 
 Usage:
     python3 pipeline/refresh.py                 # uses latest CSV in pipeline/data/
@@ -20,7 +20,10 @@ from pathlib import Path
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 TEMPLATE_PATH = PIPELINE_DIR / "dashboard_template.html"
-OUTPUT_PATH = PROJECT_ROOT / "content" / "documents" / "dashboard.html"
+# Primary output: public/ directory for reliable static serving
+OUTPUT_PATH = PROJECT_ROOT / "public" / "dashboards" / "portfolio.html"
+# Secondary copy: content/ directory for archival reference
+OUTPUT_ARCHIVE = PROJECT_ROOT / "content" / "documents" / "dashboard.html"
 DATA_DIR = PIPELINE_DIR / "data"
 JS_DIR = PROJECT_ROOT / "public" / "js"
 
@@ -74,6 +77,11 @@ def main():
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
     print(f"Dashboard written to: {OUTPUT_PATH}")
+
+    # Also write archive copy to content/documents/
+    OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
+    print(f"Archive copy written to: {OUTPUT_ARCHIVE}")
 
 
 if __name__ == "__main__":

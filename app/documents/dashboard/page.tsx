@@ -11,10 +11,11 @@ export default function DashboardPage() {
     >
       <div className="min-h-screen bg-void pt-20">
         <iframe
-          src="/api/dashboard-content"
+          src="/dashboards/portfolio.html"
           title="Portfolio Dashboard"
           className="w-full border-0"
           style={{ height: 'calc(100vh - 5rem)' }}
+          sandbox="allow-scripts allow-same-origin"
         />
       </div>
     </DocumentAccessWrapper>

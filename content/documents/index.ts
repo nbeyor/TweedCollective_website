@@ -88,17 +88,6 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     readTime: '0 min',
     visibility: 'unlisted',  // Not a real document, just an access permission
   },
-  {
-    id: 'dashboard',
-    title: 'Portfolio Dashboard',
-    shortTitle: 'Portfolio Dashboard',
-    description: 'Auto-generated dashboard from the latest data export.',
-    category: 'Dashboard',
-    icon: 'BarChart3',
-    date: '2025-01',
-    readTime: '5 min',
-    visibility: 'unlisted',  // Admin/internal access only, not listed publicly
-  },
 ]
 
 // ============================================
