@@ -1,0 +1,771 @@
+{
+  "generated": "2026-02-18 17:57",
+  "dataRange": "2025-07-02 to 2026-02-11",
+  "pilotStart": "2025-12-01",
+  "rollingWindow": 4,
+  "minTicketsThreshold": 5,
+  "config": {
+    "pilotCount": 6,
+    "nonPilotCount": 9,
+    "workdaysPerWeek": 5
+  },
+  "baseline": {
+    "tickets": 446,
+    "authors": 24,
+    "workdays": 110,
+    "productivity": 0.1689,
+    "qa_churn_rate": 0.2309,
+    "date_range": "2025-07-02 to 2025-11-27"
+  },
+  "summary": {
+    "pilot_tickets": 96,
+    "nonpilot_tickets": 139,
+    "total_tickets": 235,
+    "pilot_authors": 6,
+    "nonpilot_authors": 9,
+    "pilot_productivity": 0.3481,
+    "nonpilot_productivity": 0.3383,
+    "productivity_ratio": 1.03,
+    "pilot_qa_churn": 0.1875,
+    "nonpilot_qa_churn": 0.1511,
+    "ai_output_share": 0.4085,
+    "weeks_of_data": 9
+  },
+  "weekly": [
+    {
+      "week": "2025-12-06",
+      "totalTickets": 31,
+      "pilotTickets": 14,
+      "nonpilotTickets": 17,
+      "pilotProductivity": 0.4666666666666667,
+      "nonpilotProductivity": 0.37777777777777777,
+      "pilotProductivityRolling": null,
+      "nonpilotProductivityRolling": null,
+      "pilotProductivityStd": null,
+      "nonpilotProductivityStd": null,
+      "pilotQARate": 0.14285714285714285,
+      "nonpilotQARate": 0.17647058823529413,
+      "pilotQARateRolling": null,
+      "nonpilotQARateRolling": null,
+      "aiOutputShare": 0.45161290322580644,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-12-13",
+      "totalTickets": 30,
+      "pilotTickets": 19,
+      "nonpilotTickets": 11,
+      "pilotProductivity": 0.6333333333333333,
+      "nonpilotProductivity": 0.24444444444444444,
+      "pilotProductivityRolling": 0.55,
+      "nonpilotProductivityRolling": 0.3111111111111111,
+      "pilotProductivityStd": 0.11785113019775786,
+      "nonpilotProductivityStd": 0.09428090415820635,
+      "pilotQARate": 0.15789473684210525,
+      "nonpilotQARate": 0.2727272727272727,
+      "pilotQARateRolling": 0.15037593984962405,
+      "nonpilotQARateRolling": 0.22459893048128343,
+      "aiOutputShare": 0.6333333333333333,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-12-20",
+      "totalTickets": 37,
+      "pilotTickets": 14,
+      "nonpilotTickets": 23,
+      "pilotProductivity": 0.4666666666666667,
+      "nonpilotProductivity": 0.5111111111111111,
+      "pilotProductivityRolling": 0.5222222222222223,
+      "nonpilotProductivityRolling": 0.37777777777777777,
+      "pilotProductivityStd": 0.0962250448649376,
+      "nonpilotProductivityStd": 0.13333333333333333,
+      "pilotQARate": 0.21428571428571427,
+      "nonpilotQARate": 0.08695652173913043,
+      "pilotQARateRolling": 0.17167919799498746,
+      "nonpilotQARateRolling": 0.1787181275672324,
+      "aiOutputShare": 0.3783783783783784,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-12-27",
+      "totalTickets": 2,
+      "pilotTickets": 1,
+      "nonpilotTickets": 1,
+      "pilotProductivity": 0.03333333333333333,
+      "nonpilotProductivity": 0.022222222222222223,
+      "pilotProductivityRolling": null,
+      "nonpilotProductivityRolling": null,
+      "pilotProductivityStd": null,
+      "nonpilotProductivityStd": null,
+      "pilotQARate": 0.0,
+      "nonpilotQARate": 0.0,
+      "pilotQARateRolling": null,
+      "nonpilotQARateRolling": null,
+      "aiOutputShare": 0.5,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-01-03",
+      "totalTickets": 2,
+      "pilotTickets": 1,
+      "nonpilotTickets": 1,
+      "pilotProductivity": 0.03333333333333333,
+      "nonpilotProductivity": 0.022222222222222223,
+      "pilotProductivityRolling": null,
+      "nonpilotProductivityRolling": null,
+      "pilotProductivityStd": null,
+      "nonpilotProductivityStd": null,
+      "pilotQARate": 0.0,
+      "nonpilotQARate": 0.0,
+      "pilotQARateRolling": null,
+      "nonpilotQARateRolling": null,
+      "aiOutputShare": 0.5,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-01-10",
+      "totalTickets": 5,
+      "pilotTickets": 4,
+      "nonpilotTickets": 1,
+      "pilotProductivity": 0.13333333333333333,
+      "nonpilotProductivity": 0.022222222222222223,
+      "pilotProductivityRolling": 0.425,
+      "nonpilotProductivityRolling": 0.28888888888888886,
+      "pilotProductivityStd": 0.2097176232019653,
+      "nonpilotProductivityStd": 0.20846292265881908,
+      "pilotQARate": 0.0,
+      "nonpilotQARate": 0.0,
+      "pilotQARateRolling": 0.1287593984962406,
+      "nonpilotQARateRolling": 0.1340385956754243,
+      "aiOutputShare": 0.8,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-01-17",
+      "totalTickets": 34,
+      "pilotTickets": 16,
+      "nonpilotTickets": 18,
+      "pilotProductivity": 0.5333333333333333,
+      "nonpilotProductivity": 0.4,
+      "pilotProductivityRolling": 0.44166666666666665,
+      "nonpilotProductivityRolling": 0.29444444444444445,
+      "pilotProductivityStd": 0.21666666666666667,
+      "nonpilotProductivityStd": 0.2118894035613008,
+      "pilotQARate": 0.25,
+      "nonpilotQARate": 0.16666666666666666,
+      "pilotQARateRolling": 0.15554511278195488,
+      "nonpilotQARateRolling": 0.13158761528326746,
+      "aiOutputShare": 0.47058823529411764,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-01-24",
+      "totalTickets": 20,
+      "pilotTickets": 8,
+      "nonpilotTickets": 12,
+      "pilotProductivity": 0.26666666666666666,
+      "nonpilotProductivity": 0.26666666666666666,
+      "pilotProductivityRolling": 0.35000000000000003,
+      "nonpilotProductivityRolling": 0.3,
+      "pilotProductivityStd": 0.18358568490953678,
+      "nonpilotProductivityStd": 0.21042774387173022,
+      "pilotQARate": 0.125,
+      "nonpilotQARate": 0.0,
+      "pilotQARateRolling": 0.14732142857142858,
+      "nonpilotQARateRolling": 0.06340579710144928,
+      "aiOutputShare": 0.4,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-01-31",
+      "totalTickets": 21,
+      "pilotTickets": 8,
+      "nonpilotTickets": 13,
+      "pilotProductivity": 0.26666666666666666,
+      "nonpilotProductivity": 0.28888888888888886,
+      "pilotProductivityRolling": 0.3,
+      "nonpilotProductivityRolling": 0.24444444444444444,
+      "pilotProductivityStd": 0.16777409856157227,
+      "nonpilotProductivityStd": 0.15921618711262725,
+      "pilotQARate": 0.0,
+      "nonpilotQARate": 0.23076923076923078,
+      "pilotQARateRolling": 0.09375,
+      "nonpilotQARateRolling": 0.09935897435897437,
+      "aiOutputShare": 0.38095238095238093,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-02-07",
+      "totalTickets": 37,
+      "pilotTickets": 8,
+      "nonpilotTickets": 29,
+      "pilotProductivity": 0.26666666666666666,
+      "nonpilotProductivity": 0.6444444444444445,
+      "pilotProductivityRolling": 0.3333333333333333,
+      "nonpilotProductivityRolling": 0.4,
+      "pilotProductivityStd": 0.1333333333333334,
+      "nonpilotProductivityStd": 0.17308624363774702,
+      "pilotQARate": 0.375,
+      "nonpilotQARate": 0.13793103448275862,
+      "pilotQARateRolling": 0.1875,
+      "nonpilotQARateRolling": 0.133841732979664,
+      "aiOutputShare": 0.21621621621621623,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-02-14",
+      "totalTickets": 16,
+      "pilotTickets": 3,
+      "nonpilotTickets": 13,
+      "pilotProductivity": 0.1,
+      "nonpilotProductivity": 0.28888888888888886,
+      "pilotProductivityRolling": 0.225,
+      "nonpilotProductivityRolling": 0.37222222222222223,
+      "pilotProductivityStd": 0.08333333333333333,
+      "nonpilotProductivityStd": 0.18178357321197078,
+      "pilotQARate": 0.6666666666666666,
+      "nonpilotQARate": 0.23076923076923078,
+      "pilotQARateRolling": 0.29166666666666663,
+      "nonpilotQARateRolling": 0.14986737400530506,
+      "aiOutputShare": 0.1875,
+      "lowConfidence": false
+    }
+  ],
+  "baselineWeekly": [
+    {
+      "week": "2025-07-05",
+      "totalTickets": 2,
+      "nonpilotProductivity": 0.2,
+      "nonpilotQARate": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2025-07-12",
+      "totalTickets": 23,
+      "nonpilotProductivity": 0.5111111111111111,
+      "nonpilotQARate": 0.13043478260869565,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-07-19",
+      "totalTickets": 29,
+      "nonpilotProductivity": 0.4461538461538462,
+      "nonpilotQARate": 0.27586206896551724,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-07-26",
+      "totalTickets": 14,
+      "nonpilotProductivity": 0.3111111111111111,
+      "nonpilotQARate": 0.2857142857142857,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-08-02",
+      "totalTickets": 11,
+      "nonpilotProductivity": 0.36666666666666664,
+      "nonpilotQARate": 0.36363636363636365,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-08-09",
+      "totalTickets": 19,
+      "nonpilotProductivity": 0.34545454545454546,
+      "nonpilotQARate": 0.2631578947368421,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-08-16",
+      "totalTickets": 20,
+      "nonpilotProductivity": 0.3333333333333333,
+      "nonpilotQARate": 0.15,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-08-23",
+      "totalTickets": 27,
+      "nonpilotProductivity": 0.4153846153846154,
+      "nonpilotQARate": 0.25925925925925924,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-08-30",
+      "totalTickets": 14,
+      "nonpilotProductivity": 0.35,
+      "nonpilotQARate": 0.14285714285714285,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-09-06",
+      "totalTickets": 15,
+      "nonpilotProductivity": 0.375,
+      "nonpilotQARate": 0.2,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-09-13",
+      "totalTickets": 20,
+      "nonpilotProductivity": 0.4,
+      "nonpilotQARate": 0.15,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-09-20",
+      "totalTickets": 20,
+      "nonpilotProductivity": 0.4,
+      "nonpilotQARate": 0.4,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-09-27",
+      "totalTickets": 23,
+      "nonpilotProductivity": 0.41818181818181815,
+      "nonpilotQARate": 0.34782608695652173,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-10-04",
+      "totalTickets": 19,
+      "nonpilotProductivity": 0.2923076923076923,
+      "nonpilotQARate": 0.3157894736842105,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-10-11",
+      "totalTickets": 20,
+      "nonpilotProductivity": 0.4,
+      "nonpilotQARate": 0.35,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-10-18",
+      "totalTickets": 23,
+      "nonpilotProductivity": 0.38333333333333336,
+      "nonpilotQARate": 0.13043478260869565,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-10-25",
+      "totalTickets": 22,
+      "nonpilotProductivity": 0.44,
+      "nonpilotQARate": 0.045454545454545456,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-11-01",
+      "totalTickets": 24,
+      "nonpilotProductivity": 0.48,
+      "nonpilotQARate": 0.125,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-11-08",
+      "totalTickets": 37,
+      "nonpilotProductivity": 0.49333333333333335,
+      "nonpilotQARate": 0.3783783783783784,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-11-15",
+      "totalTickets": 30,
+      "nonpilotProductivity": 0.46153846153846156,
+      "nonpilotQARate": 0.3,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-11-22",
+      "totalTickets": 26,
+      "nonpilotProductivity": 0.37142857142857144,
+      "nonpilotQARate": 0.07692307692307693,
+      "lowConfidence": false
+    },
+    {
+      "week": "2025-11-29",
+      "totalTickets": 8,
+      "nonpilotProductivity": 0.26666666666666666,
+      "nonpilotQARate": 0.0,
+      "lowConfidence": false
+    }
+  ],
+  "sizeComplexity": [
+    {
+      "label": "0-300 / 1-3",
+      "size": "0-300",
+      "complexity": "1-3",
+      "pilot_tickets": 61,
+      "nonpilot_tickets": 64,
+      "pilot_productivity": 0.18484848484848485,
+      "nonpilot_productivity": 0.1292929292929293
+    },
+    {
+      "label": "0-300 / 4-10",
+      "size": "0-300",
+      "complexity": "4-10",
+      "pilot_tickets": 20,
+      "nonpilot_tickets": 27,
+      "pilot_productivity": 0.06060606060606061,
+      "nonpilot_productivity": 0.05454545454545454
+    },
+    {
+      "label": "0-300 / 11+",
+      "size": "0-300",
+      "complexity": "11+",
+      "pilot_tickets": 0,
+      "nonpilot_tickets": 7,
+      "pilot_productivity": 0.0,
+      "nonpilot_productivity": 0.014141414141414142
+    },
+    {
+      "label": "301-1000 / 1-3",
+      "size": "301-1000",
+      "complexity": "1-3",
+      "pilot_tickets": 0,
+      "nonpilot_tickets": 1,
+      "pilot_productivity": 0.0,
+      "nonpilot_productivity": 0.00202020202020202
+    },
+    {
+      "label": "301-1000 / 4-10",
+      "size": "301-1000",
+      "complexity": "4-10",
+      "pilot_tickets": 7,
+      "nonpilot_tickets": 1,
+      "pilot_productivity": 0.021212121212121213,
+      "nonpilot_productivity": 0.00202020202020202
+    },
+    {
+      "label": "301-1000 / 11+",
+      "size": "301-1000",
+      "complexity": "11+",
+      "pilot_tickets": 4,
+      "nonpilot_tickets": 22,
+      "pilot_productivity": 0.012121212121212121,
+      "nonpilot_productivity": 0.044444444444444446
+    },
+    {
+      "label": "1001+ / 4-10",
+      "size": "1001+",
+      "complexity": "4-10",
+      "pilot_tickets": 0,
+      "nonpilot_tickets": 1,
+      "pilot_productivity": 0.0,
+      "nonpilot_productivity": 0.00202020202020202
+    },
+    {
+      "label": "1001+ / 11+",
+      "size": "1001+",
+      "complexity": "11+",
+      "pilot_tickets": 4,
+      "nonpilot_tickets": 16,
+      "pilot_productivity": 0.012121212121212121,
+      "nonpilot_productivity": 0.03232323232323232
+    }
+  ],
+  "cumulative": [
+    {
+      "week": "2025-12-06",
+      "pilot_cumulative": 14,
+      "nonpilot_cumulative": 17,
+      "total_cumulative": 31,
+      "ai_share": 0.4516
+    },
+    {
+      "week": "2025-12-13",
+      "pilot_cumulative": 33,
+      "nonpilot_cumulative": 28,
+      "total_cumulative": 61,
+      "ai_share": 0.541
+    },
+    {
+      "week": "2025-12-20",
+      "pilot_cumulative": 47,
+      "nonpilot_cumulative": 51,
+      "total_cumulative": 98,
+      "ai_share": 0.4796
+    },
+    {
+      "week": "2025-12-27",
+      "pilot_cumulative": 48,
+      "nonpilot_cumulative": 52,
+      "total_cumulative": 100,
+      "ai_share": 0.48
+    },
+    {
+      "week": "2026-01-03",
+      "pilot_cumulative": 49,
+      "nonpilot_cumulative": 53,
+      "total_cumulative": 102,
+      "ai_share": 0.4804
+    },
+    {
+      "week": "2026-01-10",
+      "pilot_cumulative": 53,
+      "nonpilot_cumulative": 54,
+      "total_cumulative": 107,
+      "ai_share": 0.4953
+    },
+    {
+      "week": "2026-01-17",
+      "pilot_cumulative": 69,
+      "nonpilot_cumulative": 72,
+      "total_cumulative": 141,
+      "ai_share": 0.4894
+    },
+    {
+      "week": "2026-01-24",
+      "pilot_cumulative": 77,
+      "nonpilot_cumulative": 84,
+      "total_cumulative": 161,
+      "ai_share": 0.4783
+    },
+    {
+      "week": "2026-01-31",
+      "pilot_cumulative": 85,
+      "nonpilot_cumulative": 97,
+      "total_cumulative": 182,
+      "ai_share": 0.467
+    },
+    {
+      "week": "2026-02-07",
+      "pilot_cumulative": 93,
+      "nonpilot_cumulative": 126,
+      "total_cumulative": 219,
+      "ai_share": 0.4247
+    },
+    {
+      "week": "2026-02-14",
+      "pilot_cumulative": 96,
+      "nonpilot_cumulative": 139,
+      "total_cumulative": 235,
+      "ai_share": 0.4085
+    }
+  ],
+  "availability": [
+    {
+      "week": "2025-12-06",
+      "active_pilot_devs": 6,
+      "total_pilot_devs": 6,
+      "availability_pct": 1.0
+    },
+    {
+      "week": "2025-12-13",
+      "active_pilot_devs": 6,
+      "total_pilot_devs": 6,
+      "availability_pct": 1.0
+    },
+    {
+      "week": "2025-12-20",
+      "active_pilot_devs": 5,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.8333
+    },
+    {
+      "week": "2025-12-27",
+      "active_pilot_devs": 1,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.1667
+    },
+    {
+      "week": "2026-01-03",
+      "active_pilot_devs": 1,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.1667
+    },
+    {
+      "week": "2026-01-10",
+      "active_pilot_devs": 3,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.5
+    },
+    {
+      "week": "2026-01-17",
+      "active_pilot_devs": 6,
+      "total_pilot_devs": 6,
+      "availability_pct": 1.0
+    },
+    {
+      "week": "2026-01-24",
+      "active_pilot_devs": 4,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.6667
+    },
+    {
+      "week": "2026-01-31",
+      "active_pilot_devs": 6,
+      "total_pilot_devs": 6,
+      "availability_pct": 1.0
+    },
+    {
+      "week": "2026-02-07",
+      "active_pilot_devs": 5,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.8333
+    },
+    {
+      "week": "2026-02-14",
+      "active_pilot_devs": 4,
+      "total_pilot_devs": 6,
+      "availability_pct": 0.6667
+    }
+  ],
+  "survey": {
+    "respondents": 7,
+    "total_pilot": 6,
+    "response_rate": 1.1667,
+    "productivity_perception": {
+      "positive": 4,
+      "neutral": 1,
+      "negative": 2,
+      "detail": {
+        "10% to 24% more productive": 3,
+        "10% to 24% less productive": 2,
+        "No noticeable change (0%)": 1,
+        "25% to 49% more productive": 1
+      }
+    },
+    "modification_frequency": {
+      "Often": 4,
+      "Sometimes": 2,
+      "Almost always": 1
+    },
+    "tasks_used": [
+      {
+        "label": "Understanding existing code",
+        "count": 7,
+        "pct": 1.0
+      },
+      {
+        "label": "Code generation",
+        "count": 7,
+        "pct": 1.0
+      },
+      {
+        "label": "Debugging",
+        "count": 5,
+        "pct": 0.7143
+      },
+      {
+        "label": "Writing tests",
+        "count": 5,
+        "pct": 0.7143
+      },
+      {
+        "label": "Refactoring",
+        "count": 5,
+        "pct": 0.7143
+      },
+      {
+        "label": "Learning new frameworks or languages",
+        "count": 4,
+        "pct": 0.5714
+      },
+      {
+        "label": "Documentation",
+        "count": 1,
+        "pct": 0.1429
+      }
+    ],
+    "scenarios_encouraged": [
+      {
+        "label": "Bug fixing",
+        "count": 7,
+        "pct": 1.0
+      },
+      {
+        "label": "Prototyping",
+        "count": 6,
+        "pct": 0.8571
+      },
+      {
+        "label": "Test generation",
+        "count": 6,
+        "pct": 0.8571
+      },
+      {
+        "label": "Legacy code work",
+        "count": 4,
+        "pct": 0.5714
+      },
+      {
+        "label": "Production feature development",
+        "count": 3,
+        "pct": 0.4286
+      },
+      {
+        "label": "Other",
+        "count": 2,
+        "pct": 0.2857
+      },
+      {
+        "label": "Documentation",
+        "count": 1,
+        "pct": 0.1429
+      }
+    ],
+    "risks_observed": [
+      {
+        "label": "Bugs or logical errors",
+        "count": 5,
+        "pct": 0.7143
+      },
+      {
+        "label": "Performance issues",
+        "count": 3,
+        "pct": 0.4286
+      },
+      {
+        "label": "Maintainability concerns",
+        "count": 3,
+        "pct": 0.4286
+      },
+      {
+        "label": "None observed",
+        "count": 2,
+        "pct": 0.2857
+      },
+      {
+        "label": "Security concerns",
+        "count": 1,
+        "pct": 0.1429
+      }
+    ],
+    "quotes": [
+      {
+        "benefit": "Parsing large amounts of text into a digestible form like logs or big c# objects that I was not already familiar with",
+        "drawback": "Hallucinations when working on anything sufficiently complex",
+        "recommendation": "Rather than having AI take the very first pass on tickets, first understand the requirements and underlying code, perhaps marking certain areas with comments where you would like to see changes, then ",
+        "name": "Kevin"
+      },
+      {
+        "benefit": "it help get to locate root cause faster , good for code analysis , problem analysis , speed up the development and unit testing.",
+        "drawback": "In order to get correct and appropriate answer from pilot, sometime lot of contexual information need to provide  about problem.",
+        "recommendation": "Define specific md files that would define or reference to coding standards , best practices , platform tech information. ",
+        "name": "Sumeet"
+      },
+      {
+        "benefit": "To be able to more efficiently identify the work area in the code base and get professional suggestion regarding to the solution",
+        "drawback": "This is specific to copilot: I get connection or authentication error while trying to use it to create new branch. Also for some complex items, it will keep loading and never comes back with solution",
+        "recommendation": "I would like to see it gets more streamlined and integrated with all the different services, e.g. jira, bitbucket so that those workflow errors don't occur",
+        "name": "Haifeng"
+      },
+      {
+        "benefit": "Multitasking while AI was working on changes for a ticket",
+        "drawback": "AI solutions that did too much, changed unnecessary code",
+        "recommendation": "A better code review process for AI generated code. As we use AI more, developers' primary role is reviewing code, and there should be a robust peer review process for all work. ",
+        "name": "Will"
+      },
+      {
+        "benefit": "The benefit is very task-dependent. It was a huge timesaver on generating powershell scripts to have teamcity call octopus and pull version numbers out of files. That's usually really google-intensive",
+        "drawback": "No secret that it can be confidently wrong. It only has to send you down one or two wrong paths to erase the benefit on a task.",
+        "recommendation": "Success is going to depend on people more than AI. If people don't take responsibility for understanding what it's generating and keeping it on the rails then tech debt is going to accumulate really f",
+        "name": "Josh"
+      },
+      {
+        "benefit": "Identifying bottlenecks like Inefficient DOM manipulation, Expensive grid operations, Unmanaged subscription and nested chains, Memory leaks, Redundant calls, Change detection issues, Large object man",
+        "drawback": "Sometimes provides incomplete code suggestions, limited awareness of project context with state management and other libraries. framework, inaccurate recommendations for older versions of DevExtreme.",
+        "recommendation": "Support for legacy or version specific Libraries and frameworks, More debugging assistance.",
+        "name": "Bharath"
+      }
+    ]
+  }
+}
