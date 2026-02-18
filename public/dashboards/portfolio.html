@@ -140,12 +140,17 @@
     .survey-panel .quote { font-size: 0.875rem; font-style: italic; color: #4b5563; }
     .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
     @media (max-width: 1000px) { .three-col { grid-template-columns: 1fr; } }
-    .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; font-size: 0.7rem; }
-    .heatmap-cell { padding: 0.5rem; text-align: center; border-radius: 4px; }
+    .heatmap-container { min-height: 240px; display: flex; align-items: stretch; }
+    .heatmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.8rem; width: 100%; flex: 1; }
+    .heatmap-cell { padding: 0.75rem; text-align: center; border-radius: 4px; min-width: 0; }
     .heatmap-cell.pilot-win { background: rgba(21,128,61,0.2); }
     .heatmap-cell.np-win { background: rgba(217,119,6,0.2); }
-    .methodology { margin-top: 1.5rem; padding: 1rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.8rem; color: #4b5563; }
-    .methodology h3 { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; margin-bottom: 0.5rem; }
+    .methodology { margin-top: 1.5rem; padding: 1.25rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.85rem; color: #4b5563; }
+    .methodology h3 { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; margin-bottom: 0.75rem; }
+    .methodology dl { margin: 0; }
+    .methodology dt { font-weight: 600; color: #1a1a1a; margin-top: 0.5rem; margin-bottom: 0.15rem; }
+    .methodology dt:first-of-type { margin-top: 0; }
+    .methodology dd { margin-left: 0; }
   </style>
 </head>
 <body>
@@ -176,7 +181,7 @@
     <div class="chart-card">
       <h2>Productivity by Size × Complexity</h2>
       <p class="subtitle">Pilot advantage: green = pilot faster, red = non-pilot faster.</p>
-      <div id="heatmap-container" style="min-height:160px;"></div>
+      <div id="heatmap-container" class="heatmap-container"></div>
     </div>
     <div class="chart-card">
       <h2>Cumulative Output</h2>
@@ -201,10 +206,11 @@
     "exportDate": "2026-02-11",
     "exportFilename": "20260211 PullRequests - Dashboard.xlsx",
     "pilotStart": "Dec 1",
+    "pilotStartDate": "2025-12-01",
     "pilotCount": 6,
     "nonPilotCount": 9,
     "validWeeks": 9,
-    "refreshedAt": "2026-02-17 15:45"
+    "refreshedAt": "2026-02-18 09:32"
   },
   "kpiCards": {
     "pilotProductivity": {
@@ -690,27 +696,6 @@
   },
   "cumulativeOutput": {
     "weeks": [
-      "Jul 7",
-      "Jul 14",
-      "Jul 21",
-      "Jul 28",
-      "Aug 4",
-      "Aug 11",
-      "Aug 18",
-      "Aug 25",
-      "Sep 1",
-      "Sep 8",
-      "Sep 15",
-      "Sep 22",
-      "Sep 29",
-      "Oct 6",
-      "Oct 13",
-      "Oct 20",
-      "Oct 27",
-      "Nov 3",
-      "Nov 10",
-      "Nov 17",
-      "Nov 24",
       "Dec 1",
       "Dec 8",
       "Dec 15",
@@ -724,27 +709,6 @@
       "Feb 9"
     ],
     "pilot": [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
       20,
       34,
       49,
@@ -758,38 +722,17 @@
       97
     ],
     "nonPilot": [
-      20,
-      38,
-      46,
-      57,
-      74,
-      80,
-      93,
-      101,
-      110,
-      118,
-      130,
-      138,
-      146,
-      149,
-      165,
-      177,
-      196,
-      220,
-      240,
-      248,
-      255,
-      271,
-      281,
-      303,
-      304,
-      305,
-      307,
-      321,
-      331,
-      339,
-      364,
-      370
+      16,
+      26,
+      48,
+      49,
+      50,
+      52,
+      66,
+      76,
+      84,
+      109,
+      115
     ]
   },
   "heatmap": {
@@ -860,19 +803,44 @@
       }
     ]
   },
-  "methodology": "Metrics derived from Jira/GitLab PR exports. Productivity = tickets per FTE-day (6 pilot, 9 non-pilot). QA churn = % of tickets requiring QA rework. Rolling averages use 4-week window. Weeks with <5 tickets flagged low-confidence. Holiday weeks (Dec 27, Jan 3) dimmed. Pilot period starts Dec 1, 2025.",
+  "methodology": [
+    {
+      "term": "Productivity",
+      "def": "Tickets \u00f7 (Authors \u00d7 Workdays). Roster-based: 6 pilot, 9 non-pilot counted every week."
+    },
+    {
+      "term": "QA Churn Rate",
+      "def": "Tickets with QAChurnLines > 0 \u00f7 Total tickets."
+    },
+    {
+      "term": "Availability",
+      "def": "Unique pilot devs with PR activity in a week \u00f7 6."
+    },
+    {
+      "term": "Pilot ticket",
+      "def": "\u22651 PR by pilot dev AND completed after pilot start (2025-12-01)."
+    },
+    {
+      "term": "Low-confidence weeks",
+      "def": "(<5 tickets) are dimmed and excluded from rolling averages."
+    },
+    {
+      "term": "Rolling average",
+      "def": "4-week window, min 2 points, high-confidence only."
+    }
+  ],
   "survey": {
     "productivity": {
-      "stat": "\u2014",
+      "stat": "4 more, 2 less productive (n=7)",
       "quote": "10% to 24% more productive"
     },
     "quality": {
-      "stat": "\u2014",
-      "quote": ""
+      "stat": "Often",
+      "quote": "Almost always"
     },
     "experience": {
-      "stat": "\u2014",
-      "quote": ""
+      "stat": "6 responses",
+      "quote": "Rather than having AI take the very first pass on tickets, first understand the requirements and underlying code, perhaps marking certain areas with comments where you would like to see changes, then \u2026"
     }
   }
 };
@@ -965,11 +933,19 @@
       </div>
     `;
 
-    // Methodology
-    document.getElementById("methodology").innerHTML = `
-      <h3>Methodology</h3>
-      <p>${D.methodology || "—"}</p>
-    `;
+    // Methodology (structured list or fallback)
+    const methodology = D.methodology || [];
+    let methodologyHtml = '<h3>Methodology</h3>';
+    if (Array.isArray(methodology) && methodology.length > 0) {
+      methodologyHtml += '<dl>';
+      methodology.forEach(item => {
+        methodologyHtml += `<dt>${item.term || ""}</dt><dd>${item.def || ""}</dd>`;
+      });
+      methodologyHtml += '</dl>';
+    } else {
+      methodologyHtml += `<p>${typeof methodology === 'string' ? methodology : '—'}</p>`;
+    }
+    document.getElementById("methodology").innerHTML = methodologyHtml;
 
     // Heatmap
     const hm = D.heatmap || {};
@@ -1062,7 +1038,8 @@
             },
             {
               label: "Baseline",
-              data: weeks.map(() => baseline),
+              data: weeks.map((_, i) => holidayGap[i] ? null : baseline),
+              spanGaps: false,
               borderColor: "rgba(107,114,128,0.7)",
               borderWidth: 1,
               borderDash: [4, 4],
@@ -1130,14 +1107,16 @@
     const avWeeks = av.weeks || weeks;
     const avDevs = av.activePilotDevs || [];
     const avTickets = av.totalTickets || [];
-    if (avWeeks.length && (avDevs.some(v => v != null && Number.isFinite(v)) || avTickets.some(v => v != null && Number.isFinite(v)))) {
+    const avDevsGapped = holidayGap.length ? avDevs.map((v, i) => holidayGap[i] ? null : v) : avDevs;
+    const avTicketsGapped = holidayGap.length ? avTickets.map((v, i) => holidayGap[i] ? null : v) : avTickets;
+    if (avWeeks.length && (avDevsGapped.some(v => v != null && Number.isFinite(v)) || avTicketsGapped.some(v => v != null && Number.isFinite(v)))) {
       new Chart(document.getElementById("chart-availability"), {
         type: "bar",
         data: {
           labels: avWeeks,
           datasets: [
-            { label: "Active Pilot Devs", data: avDevs, type: "bar", backgroundColor: "rgba(21,128,61,0.6)", borderColor: "#15803d", borderWidth: 1, yAxisID: "y" },
-            { label: "Total Tickets", data: avTickets, type: "line", borderColor: "#d97706", backgroundColor: "transparent", borderWidth: 2, borderDash: [4, 4], fill: false, tension: 0.2, yAxisID: "y1", pointRadius: 3 },
+            { label: "Active Pilot Devs", data: avDevsGapped, spanGaps: false, type: "bar", backgroundColor: "rgba(21,128,61,0.6)", borderColor: "#15803d", borderWidth: 1, yAxisID: "y" },
+            { label: "Total Tickets", data: avTicketsGapped, spanGaps: false, type: "line", borderColor: "#d97706", backgroundColor: "transparent", borderWidth: 2, borderDash: [4, 4], fill: false, tension: 0.2, yAxisID: "y1", pointRadius: 3 },
           ],
         },
         options: {
@@ -1178,7 +1157,7 @@
 
     // Heatmap empty state
     if (!cells.length || !cols.length || !rows.length) {
-      document.getElementById("heatmap-container").innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:120px;color:#6b7280;font-size:0.9rem;">No data</div>';
+      document.getElementById("heatmap-container").innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:200px;color:#6b7280;font-size:0.9rem;">No data</div>';
     }
   </script>
 </body>

@@ -291,21 +291,36 @@ def parse_survey_insights(survey_df) -> dict:
             "quality": {"stat": "—", "quote": ""},
             "experience": {"stat": "—", "quote": ""},
         }
-    # Minimal parsing: use first text column or a known survey column
     out = {"productivity": {"stat": "—", "quote": ""}, "quality": {"stat": "—", "quote": ""}, "experience": {"stat": "—", "quote": ""}}
     for col in survey_df.columns:
-        if "productiv" in str(col).lower():
-            vals = survey_df[col].dropna().astype(str)
-            if len(vals):
-                out["productivity"]["quote"] = vals.iloc[0][:120] + "…" if len(vals.iloc[0]) > 120 else vals.iloc[0]
-        elif "quality" in str(col).lower() or "churn" in str(col).lower():
-            vals = survey_df[col].dropna().astype(str)
-            if len(vals):
-                out["quality"]["quote"] = vals.iloc[0][:120] + "…" if len(vals.iloc[0]) > 120 else vals.iloc[0]
-        elif "experience" in str(col).lower() or "overall" in str(col).lower():
-            vals = survey_df[col].dropna().astype(str)
-            if len(vals):
-                out["experience"]["quote"] = vals.iloc[0][:120] + "…" if len(vals.iloc[0]) > 120 else vals.iloc[0]
+        c = str(col).lower()
+        vals = survey_df[col].dropna().astype(str)
+        vals = vals[vals.str.strip() != ""]
+        if len(vals) == 0:
+            continue
+        if "compared to" in c and "productiv" in c:
+            # e.g. "Compared to working without AI, approximately how much more or less productive..."
+            more = vals.str.contains("more productive", case=False).sum()
+            less = vals.str.contains("less productive", case=False).sum()
+            same = vals.str.contains("no noticeable|0%", case=False, regex=True).sum()
+            n = len(vals)
+            if more > 0:
+                out["productivity"]["stat"] = f"{more}/{n} report increased productivity"
+            if more > 0 and less == 0 and same == 0:
+                out["productivity"]["stat"] = f"{more}/{n} report increased productivity"
+            elif more > 0 or less > 0:
+                out["productivity"]["stat"] = f"{more} more, {less} less productive (n={n})"
+            out["productivity"]["quote"] = vals.iloc[0][:150] + "…" if len(vals.iloc[0]) > 150 else vals.iloc[0]
+        elif "modify" in c and ("ai-generated" in c or "code" in c):
+            # Quality: "How often did you need to significantly modify AI-generated code..."
+            out["quality"]["stat"] = vals.value_counts().index[0] if len(vals) else "—"
+            out["quality"]["quote"] = vals.iloc[0][:150] + "…" if len(vals.iloc[0]) > 150 else vals.iloc[0]
+        elif "benefits" in c or "drawbacks" in c or "improvements" in c:
+            # Experience: benefits, drawbacks, improvements
+            combined = " ".join(vals.astype(str).tolist()[:3])  # first 3 responses
+            out["experience"]["quote"] = (combined[:200] + "…") if len(combined) > 200 else combined
+            if out["experience"]["stat"] == "—":
+                out["experience"]["stat"] = f"{len(vals)} responses"
     return out
 
 
@@ -427,20 +442,24 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     data_range_start = weekly_sorted["week"].min().strftime("%Y-%m-%d")
     data_range_end = weekly_sorted["week"].max().strftime("%Y-%m-%d")
 
-    # Availability (from raw df, aligned to weekly)
+    # Availability (from raw df, aligned to weekly); use null for holiday weeks (gap)
     avail_df = compute_availability(df)
     if not avail_df.empty:
         merged_avail = weekly_sorted[["week"]].merge(avail_df, on="week", how="left")
-        avail_pilot_devs = merged_avail["activePilotDevs"].fillna(0).astype(int).tolist()
-        avail_total_tickets = merged_avail["totalTickets"].fillna(0).astype(int).tolist()
+        av_devs_raw = merged_avail["activePilotDevs"].fillna(0).astype(int).tolist()
+        av_tix_raw = merged_avail["totalTickets"].fillna(0).astype(int).tolist()
+        avail_pilot_devs = [None if g else v for g, v in zip(holiday_gaps, av_devs_raw)]
+        avail_total_tickets = [None if g else v for g, v in zip(holiday_gaps, av_tix_raw)]
     else:
-        avail_pilot_devs = weekly_sorted["pilot_tickets"].tolist()
-        avail_total_tickets = weekly_sorted["total_tickets"].tolist()
+        avail_pilot_devs = [None if g else int(v) for g, v in zip(holiday_gaps, weekly_sorted["pilot_tickets"])]
+        avail_total_tickets = [None if g else int(v) for g, v in zip(holiday_gaps, weekly_sorted["total_tickets"])]
 
-    # Cumulative output; pilot = null before Dec 1
-    cum_pilot_raw = weekly_sorted["pilot_tickets"].cumsum().tolist()
-    cum_pilot = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], cum_pilot_raw)]
-    cum_non_pilot = weekly_sorted["non_pilot_tickets"].cumsum().tolist()
+    # Cumulative output from pilot start only; pilot = null before Dec 1
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    mask_from_pilot = weekly_sorted["week"] >= pilot_start_ts
+    cum_weeks = weekly_sorted.loc[mask_from_pilot, "week"]
+    cum_pilot_raw = weekly_sorted.loc[mask_from_pilot, "pilot_tickets"].cumsum().tolist()
+    cum_non_pilot_raw = weekly_sorted.loc[mask_from_pilot, "non_pilot_tickets"].cumsum().tolist()
 
     # Heatmap
     heatmap = compute_heatmap(tickets[tickets["_week"] >= pilot_start])
@@ -454,6 +473,7 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
             "exportDate": export_date,
             "exportFilename": path.name,
             "pilotStart": "Dec 1",
+            "pilotStartDate": PILOT_START,
             "pilotCount": PILOT_ROSTER,
             "nonPilotCount": NON_PILOT_ROSTER,
             "validWeeks": int(valid_weeks),
@@ -513,17 +533,19 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
             "totalTickets": avail_total_tickets,
         },
         "cumulativeOutput": {
-            "weeks": week_labels,
-            "pilot": cum_pilot,
-            "nonPilot": cum_non_pilot,
+            "weeks": [fmt_week(d) for d in cum_weeks],
+            "pilot": cum_pilot_raw,
+            "nonPilot": cum_non_pilot_raw,
         },
         "heatmap": heatmap,
-        "methodology": (
-            "Metrics derived from Jira/GitLab PR exports. Productivity = tickets per FTE-day (6 pilot, 9 non-pilot). "
-            "QA churn = % of tickets requiring QA rework. Rolling averages use 4-week window. "
-            "Weeks with <5 tickets flagged low-confidence. Holiday weeks (Dec 27, Jan 3) dimmed. "
-            "Pilot period starts Dec 1, 2025."
-        ),
+        "methodology": [
+            {"term": "Productivity", "def": "Tickets ÷ (Authors × Workdays). Roster-based: 6 pilot, 9 non-pilot counted every week."},
+            {"term": "QA Churn Rate", "def": "Tickets with QAChurnLines > 0 ÷ Total tickets."},
+            {"term": "Availability", "def": "Unique pilot devs with PR activity in a week ÷ 6."},
+            {"term": "Pilot ticket", "def": f"≥1 PR by pilot dev AND completed after pilot start ({PILOT_START})."},
+            {"term": "Low-confidence weeks", "def": "(<5 tickets) are dimmed and excluded from rolling averages."},
+            {"term": "Rolling average", "def": "4-week window, min 2 points, high-confidence only."},
+        ],
         "survey": survey,
     }
 
@@ -576,10 +598,14 @@ def _empty_dashboard_data() -> dict:
             "nonPilot": [],
         },
         "heatmap": {"rows": [], "cols": [], "cells": []},
-        "methodology": (
-            "Metrics derived from Jira/GitLab PR exports. Place export xlsx in pipeline/data/exports/. "
-            "Productivity = tickets per FTE-day. QA churn = % of tickets requiring QA rework. Pilot starts Dec 1, 2025."
-        ),
+        "methodology": [
+            {"term": "Productivity", "def": "Tickets ÷ (Authors × Workdays). Roster-based: 6 pilot, 9 non-pilot counted every week."},
+            {"term": "QA Churn Rate", "def": "Tickets with QAChurnLines > 0 ÷ Total tickets."},
+            {"term": "Availability", "def": "Unique pilot devs with PR activity in a week ÷ 6."},
+            {"term": "Pilot ticket", "def": "≥1 PR by pilot dev AND completed after pilot start."},
+            {"term": "Low-confidence weeks", "def": "(<5 tickets) are dimmed and excluded from rolling averages."},
+            {"term": "Rolling average", "def": "4-week window, min 2 points, high-confidence only."},
+        ],
         "survey": {
             "productivity": {"stat": "—", "quote": ""},
             "quality": {"stat": "—", "quote": ""},
