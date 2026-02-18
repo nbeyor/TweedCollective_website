@@ -1,6 +1,35 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  LineController,
+  BarElement,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js'
+import annotationPlugin from 'chartjs-plugin-annotation'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarController,
+  LineController,
+  BarElement,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler,
+  annotationPlugin,
+)
+
 import type { DashboardData } from './types'
 import { DashboardHeader } from './charts/DashboardHeader'
 import { KpiCards } from './charts/KpiCards'
