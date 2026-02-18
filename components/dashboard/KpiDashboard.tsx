@@ -79,7 +79,7 @@ export function KpiDashboard() {
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
         <DashboardHeader data={data} />
         <KpiCards data={data} />
         <ProductivityChart data={data} />
