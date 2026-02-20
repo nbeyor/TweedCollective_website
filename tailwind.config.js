@@ -47,10 +47,10 @@ module.exports = {
         'burgundy': '#722F37',
       },
       fontFamily: {
-        'sans': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'display': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'body': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'mono': ['"JetBrains Mono"', '"SF Mono"', 'Monaco', 'monospace'],
+        'sans': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'display': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'body': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'mono': ['var(--font-jetbrains-mono)', '"SF Mono"', 'Monaco', 'monospace'],
       },
       fontSize: {
         'hero': ['clamp(2.5rem, 5.5vw, 4rem)', { lineHeight: '1.1', fontWeight: '300' }],

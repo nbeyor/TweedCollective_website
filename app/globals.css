@@ -11,7 +11,7 @@
   }
   
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
     color: #F5F4F0;
     background-color: #0A0A0C;
     font-feature-settings: "kern" 1, "liga" 1;
@@ -19,7 +19,7 @@
 
   /* Typography - Dark Theme */
   h1 {
-    font-family: "Inter", -apple-system, sans-serif;
+    font-family: var(--font-inter), -apple-system, sans-serif;
     font-size: clamp(2.5rem, 5.5vw, 4rem);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -28,7 +28,7 @@
   }
 
   h2 {
-    font-family: "Inter", -apple-system, sans-serif;
+    font-family: var(--font-inter), -apple-system, sans-serif;
     font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -37,7 +37,7 @@
   }
 
   h3 {
-    font-family: "Inter", -apple-system, sans-serif;
+    font-family: var(--font-inter), -apple-system, sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -46,7 +46,7 @@
   }
 
   h4 {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter), sans-serif;
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -55,7 +55,7 @@
   }
 
   h5, h6 {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter), sans-serif;
     font-weight: 600;
     letter-spacing: 0;
     line-height: 1.4;
@@ -89,7 +89,7 @@
 
   /* Monospace Labels */
   .mono-label {
-    font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
+    font-family: var(--font-jetbrains-mono), "SF Mono", Monaco, monospace;
     font-size: 0.6875rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -98,7 +98,7 @@
   }
 
   .caption {
-    font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
+    font-family: var(--font-jetbrains-mono), "SF Mono", Monaco, monospace;
     font-size: 0.75rem;
     font-weight: 500;
     line-height: 1.4;
@@ -108,7 +108,7 @@
   }
 
   .mono {
-    font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
+    font-family: var(--font-jetbrains-mono), "SF Mono", Monaco, monospace;
     font-size: 0.875rem;
     font-feature-settings: "liga" 0;
   }
