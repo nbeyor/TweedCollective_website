@@ -68,9 +68,9 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
   },
   {
     id: 'apollo-wcg-ai-diligence',
-    title: 'Apollo: AI Diligence — WCG Acquisition Analysis',
+    title: 'Apollo: AI Diligence — Buyer Acquisition Analysis',
     shortTitle: 'Apollo AI Diligence',
-    description: 'AI-focused due diligence assessment for the WCG potential acquisition of Apollo.',
+    description: 'AI-focused due diligence assessment for the Buyer potential acquisition of Apollo.',
     category: 'Due Diligence',
     icon: 'Shield',
     date: '2026-02',

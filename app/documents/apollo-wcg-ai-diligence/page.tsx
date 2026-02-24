@@ -7,10 +7,26 @@ import {
   Shield, TrendingUp, Target, Zap, BarChart3, Users, Brain,
   AlertTriangle, Check, Database, Lock, Rocket, Layers, Network,
   Building2, UserCog, Gauge, Package, ArrowRight, Clock,
-  GitBranch, Search, FileText, Briefcase
+  GitBranch, Search, FileText, Briefcase, AlertCircle
 } from 'lucide-react'
+import {
+  Chart as ChartJS,
+  CategoryScale, LinearScale, BarElement, PointElement, LineElement,
+  RadialLinearScale, ArcElement,
+  Title, Tooltip, Legend, Filler
+} from 'chart.js'
+import { Bar, Doughnut } from 'react-chartjs-2'
 
-// Rating badge component
+ChartJS.register(
+  CategoryScale, LinearScale, BarElement, PointElement, LineElement,
+  RadialLinearScale, ArcElement,
+  Title, Tooltip, Legend, Filler
+)
+
+// ============================================
+// Shared Visual Components
+// ============================================
+
 function RatingBadge({ rating, size = 'sm' }: { rating: string; size?: 'sm' | 'lg' }) {
   const colorMap: Record<string, string> = {
     'HIGH': 'bg-green-500/20 text-green-300 border-green-500/30',
@@ -19,14 +35,13 @@ function RatingBadge({ rating, size = 'sm' }: { rating: string; size?: 'sm' | 'l
     'MEDIUM-LOW': 'bg-yellow-500/15 text-yellow-300 border-yellow-500/25',
     'LOW-MEDIUM': 'bg-yellow-500/15 text-yellow-300 border-yellow-500/25',
     'LOW': 'bg-red-500/20 text-red-300 border-red-500/30',
-    'GAP': 'bg-cream/10 text-cream/50 border-cream/20',
+    'GAP': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   }
   const cls = colorMap[rating] || colorMap['MEDIUM']
   const pad = size === 'lg' ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs'
   return <span className={`inline-flex items-center rounded-full border font-mono font-medium ${cls} ${pad}`}>{rating}</span>
 }
 
-// R/Y/G indicator
 function StatusDot({ color }: { color: 'green' | 'yellow' | 'red' | 'unknown' }) {
   const cls: Record<string, string> = {
     green: 'bg-green-400',
@@ -37,11 +52,99 @@ function StatusDot({ color }: { color: 'green' | 'yellow' | 'red' | 'unknown' })
   return <span className={`inline-block w-3 h-3 rounded-full ${cls[color]}`} />
 }
 
-// Readiness icon
 function ReadinessIcon({ status }: { status: 'ready' | 'developing' | 'unknown' | 'strong' }) {
   if (status === 'ready' || status === 'strong') return <Check className="w-4 h-4 text-green-400 inline" />
   if (status === 'developing') return <AlertTriangle className="w-4 h-4 text-yellow-400 inline" />
   return <Search className="w-4 h-4 text-cream/40 inline" />
+}
+
+function GapSticker({ count, label }: { count: number; label?: string }) {
+  return (
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/90 text-void rounded shadow-lg shadow-amber-500/20 rotate-[-1deg] select-none">
+      <AlertCircle className="w-3.5 h-3.5" />
+      <span className="text-[10px] font-bold uppercase tracking-wider">{count} {label || (count === 1 ? 'Gap' : 'Gaps')}</span>
+    </div>
+  )
+}
+
+function GapCallout({ children, gapCount }: { children: React.ReactNode; gapCount: number }) {
+  return (
+    <div className="relative p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+      <div className="absolute -top-3 right-4">
+        <GapSticker count={gapCount} />
+      </div>
+      <div className="flex items-center gap-2 mb-2">
+        <AlertCircle className="w-4 h-4 text-amber-400" />
+        <span className="text-xs uppercase tracking-wider text-amber-300 font-semibold">Open Questions &amp; Gaps</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function GapTag() {
+  return <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/20 text-amber-300 text-[9px] font-bold uppercase tracking-wider rounded border border-amber-500/30 mx-0.5">GAP</span>
+}
+
+// Site network growth chart data
+const siteGrowthData = {
+  labels: ['May 2021', 'Jun 2022', 'Nov 2023', 'Sep 2025', 'Oct 2025'],
+  datasets: [{
+    label: 'Connected Study Sites (thousands)',
+    data: [8.5, 10, 18, 37, 65],
+    backgroundColor: ['rgba(74, 93, 76, 0.6)', 'rgba(74, 93, 76, 0.65)', 'rgba(74, 93, 76, 0.7)', 'rgba(74, 93, 76, 0.8)', 'rgba(107, 142, 111, 0.9)'],
+    borderColor: 'rgba(107, 142, 111, 1)',
+    borderWidth: 1,
+    borderRadius: 4,
+  }],
+}
+
+const siteGrowthOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        label: (ctx: any) => `${ctx.parsed?.y ?? 0}K sites`,
+      },
+    },
+  },
+  scales: {
+    x: {
+      ticks: { color: 'rgba(245, 244, 240, 0.5)', font: { size: 10 } },
+      grid: { display: false },
+      border: { color: 'rgba(245, 244, 240, 0.1)' },
+    },
+    y: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ticks: { color: 'rgba(245, 244, 240, 0.4)', font: { size: 10 }, callback: (v: any) => `${v}K` },
+      grid: { color: 'rgba(245, 244, 240, 0.05)' },
+      border: { display: false },
+      beginAtZero: true,
+    },
+  },
+}
+
+// Asset scorecard donut data factory
+function assetDonut(score: number, color: string) {
+  return {
+    data: {
+      labels: ['Score', 'Remaining'],
+      datasets: [{
+        data: [score, 100 - score],
+        backgroundColor: [color, 'rgba(245, 244, 240, 0.05)'],
+        borderWidth: 0,
+        cutout: '75%',
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    },
+  }
 }
 
 const slides: Slide[] = [
@@ -61,7 +164,7 @@ const slides: Slide[] = [
           Apollo: AI Diligence
         </h1>
         <p className="text-xl md:text-2xl text-cream/70 mb-6 max-w-3xl">
-          WCG (WIRB–Copernicus Group) — Potential Acquisition Analysis
+          Buyer — Potential Acquisition Analysis
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-cream/50 mb-10">
           <span>Prepared for: Novo Holdings</span>
@@ -168,16 +271,15 @@ const slides: Slide[] = [
             </ul>
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
-          <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Open Questions</div>
+        <GapCallout gapCount={5}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• What is Apollo&apos;s current ARR and growth rate? (No public revenue disclosures beyond 2019 ~$2M)</li>
-            <li>• Conversion rate from free StudyOrganizer users to paid eBinders?</li>
-            <li>• Of 65K &quot;connected&quot; sites, how many are active paying users vs. sponsor-deployed?</li>
-            <li>• Revenue split between site-facing vs. sponsor-facing products?</li>
-            <li>• Competitive impact of Veeva SiteVault&apos;s free eISF on acquisition costs and churn?</li>
+            <li>• What is Apollo&apos;s current ARR and growth rate? <GapTag /> No public revenue disclosures beyond 2019 ~$2M</li>
+            <li>• Conversion rate from free StudyOrganizer users to paid eBinders? <GapTag /></li>
+            <li>• Of 65K &quot;connected&quot; sites, how many are active paying users vs. sponsor-deployed? <GapTag /></li>
+            <li>• Revenue split between site-facing vs. sponsor-facing products? <GapTag /></li>
+            <li>• Competitive impact of Veeva SiteVault&apos;s free eISF on acquisition costs and churn? <GapTag /></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -196,28 +298,24 @@ const slides: Slide[] = [
         </div>
         <div className="grid md:grid-cols-2 gap-6 mt-6">
           <div>
-            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Public Growth Data Points</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-sage/40">
-                    <th className="text-left p-2 text-cream/80 font-medium">Metric</th>
-                    <th className="text-left p-2 text-cream/80 font-medium">Value</th>
-                    <th className="text-left p-2 text-cream/80 font-medium">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="text-cream/70">
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Total Funding</td><td className="p-2">$116M (Seed–C-1)</td><td className="p-2">Through Jun 2022</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Revenue (Last Disclosed)</td><td className="p-2">~$2M</td><td className="p-2">2019</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Enterprise Value (Est.)</td><td className="p-2">~$400M</td><td className="p-2">Undated</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Connected Sites</td><td className="p-2">8.5K → 65K</td><td className="p-2">May 2021 → Oct 2025</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Sponsors</td><td className="p-2">600+</td><td className="p-2">Oct 2025</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Countries</td><td className="p-2">90+</td><td className="p-2">Oct 2025</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Monthly Workflows</td><td className="p-2">7.2M</td><td className="p-2">Current</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Monthly Remote Monitoring</td><td className="p-2">5.8M</td><td className="p-2">Current</td></tr>
-                  <tr className="border-b border-cream/5"><td className="p-2 font-medium text-cream/90">Lead Investor</td><td className="p-2">Insight Partners</td><td className="p-2">Series C & C-1</td></tr>
-                </tbody>
-              </table>
+            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Site Network Growth</h3>
+            <div className="h-44 mb-4">
+              <Bar data={siteGrowthData} options={siteGrowthOptions} />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: 'Total Funding', val: '$116M', sub: 'Seed–C-1' },
+                { label: 'Revenue (Last Disclosed)', val: '~$2M', sub: '2019' },
+                { label: 'Enterprise Value', val: '~$400M', sub: 'Est.' },
+                { label: 'Sponsors', val: '600+', sub: 'Oct 2025' },
+                { label: 'Monthly Workflows', val: '7.2M', sub: 'Current' },
+                { label: 'Remote Monitoring', val: '5.8M/mo', sub: 'Current' },
+              ].map((m) => (
+                <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
+                  <div className="text-sm font-serif text-sage-300">{m.val}</div>
+                  <div className="text-[10px] text-cream/50">{m.label}</div>
+                </div>
+              ))}
             </div>
           </div>
           <div>
@@ -236,7 +334,7 @@ const slides: Slide[] = [
                 </div>
               ))}
               <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 mt-4">
-                <p className="text-xs text-yellow-200"><span className="font-medium">INFERENCE:</span> Revenue likely well above $2M today given 7–8× site growth since 2019, multi-product expansion, and $116M fundraising — but exact figure is a GAP.</p>
+                <p className="text-xs text-yellow-200"><span className="font-medium">INFERENCE:</span> Revenue likely well above $2M today given 7–8× site growth since 2019, multi-product expansion, and $116M fundraising — but exact figure is a <GapTag />.</p>
               </div>
             </div>
           </div>
@@ -381,8 +479,8 @@ const slides: Slide[] = [
         <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
           <div className="text-xs uppercase tracking-wider text-red-300 mb-1">Mismatches / Missing Bets</div>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• No publicly announced AI for participant recruitment optimization (contrast with WCG Total Enrollment)</li>
-            <li>• No publicly announced AI for protocol optimization or amendment prediction (contrast with WCG Trial IntelX)</li>
+            <li>• No publicly announced AI for participant recruitment optimization (contrast with Buyer Total Enrollment)</li>
+            <li>• No publicly announced AI for protocol optimization or amendment prediction (contrast with Buyer Trial IntelX)</li>
             <li>• No publicly announced AI for diversity/equity in site or participant selection</li>
           </ul>
         </div>
@@ -473,15 +571,14 @@ const slides: Slide[] = [
             <p className="text-xs text-cream/70">Several smaller competitors (TrialKit, Longboat, Complion) but none have Apollo&apos;s network scale. Greater risk from sponsor-built internal tools or CRO-specific platforms that bypass third-party site enablement entirely.</p>
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-purple-500/10 border-l-4 border-purple-500">
-          <div className="text-xs uppercase tracking-wider text-purple-300 mb-1">Open Questions</div>
+        <GapCallout gapCount={4}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• What is Veeva SiteVault&apos;s current site count and growth trajectory vs. Apollo?</li>
-            <li>• Are any major CROs building proprietary site enablement platforms?</li>
-            <li>• How quickly could a frontier AI model + low-code platform replicate Apollo&apos;s document management?</li>
-            <li>• What is the switching cost for sites currently on Apollo eBinders?</li>
+            <li>• What is Veeva SiteVault&apos;s current site count and growth trajectory vs. Apollo? <GapTag /></li>
+            <li>• Are any major CROs building proprietary site enablement platforms? <GapTag /></li>
+            <li>• How quickly could a frontier AI model + low-code platform replicate Apollo&apos;s document management? <GapTag /></li>
+            <li>• What is the switching cost for sites currently on Apollo eBinders? <GapTag /></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -658,10 +755,22 @@ const slides: Slide[] = [
           <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
           <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability</h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-4 mt-6">
-          <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
-            <Clock className="w-5 h-5 text-green-400 mb-2" />
-            <h3 className="text-sm font-semibold text-green-300 mb-3">Build in Days</h3>
+        {/* Difficulty gradient bar */}
+        <div className="mt-6 mb-2">
+          <div className="flex items-center gap-0">
+            <div className="flex-1 h-2 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 rounded-full" />
+          </div>
+          <div className="flex justify-between text-[9px] font-mono text-cream/40 mt-1">
+            <span>Easy to replicate</span>
+            <span>Hard to replicate</span>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="p-4 bg-green-500/5 border-t-2 border-green-500 rounded-xl">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-green-300">Build in Days</h3>
+              <span className="text-[10px] font-mono bg-green-500/20 text-green-300 px-2 py-0.5 rounded">LOW MOAT</span>
+            </div>
             <ul className="space-y-2 text-xs text-cream/70">
               <li>• Basic document storage and retrieval (any cloud storage)</li>
               <li>• Simple electronic signature (DocuSign, Adobe Sign)</li>
@@ -669,24 +778,28 @@ const slides: Slide[] = [
               <li>• Template-based feasibility survey distribution</li>
             </ul>
           </div>
-          <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
-            <Clock className="w-5 h-5 text-yellow-400 mb-2" />
-            <h3 className="text-sm font-semibold text-yellow-300 mb-3">Build in Weeks</h3>
+          <div className="p-4 bg-yellow-500/5 border-t-2 border-yellow-500 rounded-xl">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-yellow-300">Build in Weeks</h3>
+              <span className="text-[10px] font-mono bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded">MED MOAT</span>
+            </div>
             <ul className="space-y-2 text-xs text-cream/70">
               <li>• Document version control with audit trail</li>
-              <li>• AI-powered contract redlining (LLM + parser — not GxP-validated)</li>
+              <li>• AI-powered contract redlining (LLM — not GxP-validated)</li>
               <li>• Basic remote document access with auth/logging</li>
               <li>• Study startup document checklist automation</li>
             </ul>
           </div>
-          <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
-            <Lock className="w-5 h-5 text-red-400 mb-2" />
-            <h3 className="text-sm font-semibold text-red-300 mb-3">Hard / Months+</h3>
+          <div className="p-4 bg-red-500/5 border-t-2 border-red-500 rounded-xl">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-red-300">Hard / Months+</h3>
+              <span className="text-[10px] font-mono bg-red-500/20 text-red-300 px-2 py-0.5 rounded">HIGH MOAT</span>
+            </div>
             <ul className="space-y-2 text-xs text-cream/70">
-              <li>• Full 21 CFR Part 11 compliant eISF with validated audit trails and eSignatures</li>
-              <li>• Bidirectional sponsor↔site doc exchange with eTMF integration (SiteLink equivalent)</li>
-              <li>• Network of 65K+ connected sites generating cross-study intelligence</li>
-              <li>• GxP-validated AI workflows meeting FDA, EMA, HIPAA, GDPR, EU Annex 11, ICH E6 R3</li>
+              <li>• Full 21 CFR Part 11 compliant eISF with validated audit trails</li>
+              <li>• Bidirectional sponsor↔site doc exchange (SiteLink equiv.)</li>
+              <li>• Network of 65K+ sites generating cross-study intelligence</li>
+              <li>• GxP-validated AI meeting FDA, EMA, HIPAA, GDPR, ICH E6 R3</li>
             </ul>
           </div>
         </div>
@@ -711,31 +824,41 @@ const slides: Slide[] = [
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           {[
-            { asset: 'Product', color: 'yellow' as const, rating: 'YELLOW', bullets: ['#1 rated site enablement platform for 6 consecutive years', 'Comprehensive suite covering site + sponsor workflows', 'AI capabilities newly launched (Oct 2025) but unproven at scale'] },
-            { asset: 'Data', color: 'green' as const, rating: 'GREEN', bullets: ['65K+ connected sites generating operational workflow data', '7.2M monthly workflows', 'Cross-study/cross-sponsor site performance data is unique and defensible'] },
-            { asset: 'Channel', color: 'green' as const, rating: 'GREEN', bullets: ['Dual go-to-market (site-up + sponsor-down)', '600+ sponsors deploying to sites', 'Free StudyOrganizer as top-of-funnel'] },
-            { asset: 'Relationships', color: 'yellow' as const, rating: 'YELLOW', bullets: ['Broad but depth unclear — 65K sites but unknown split of direct vs. sponsor-deployed', 'Existing WCG partnership (Nov 2023)', 'Insight Partners as lead investor'] },
-          ].map((a) => (
-            <div key={a.asset} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-              <div className="flex items-center gap-2 mb-3">
-                <StatusDot color={a.color} />
-                <h3 className="text-sm font-semibold text-cream">{a.asset}</h3>
+            { asset: 'Product', score: 60, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'YELLOW', bullets: ['#1 rated site enablement for 6 consecutive years', 'Comprehensive suite (site + sponsor)', 'AI capabilities newly launched but unproven'] },
+            { asset: 'Data', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['65K+ sites generating workflow data', '7.2M monthly workflows', 'Cross-sponsor performance data is unique'] },
+            { asset: 'Channel', score: 80, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['Dual GTM (site-up + sponsor-down)', '600+ sponsors deploying to sites', 'Free StudyOrganizer funnel'] },
+            { asset: 'Relationships', score: 55, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'YELLOW', bullets: ['Broad but depth unclear', 'Existing Buyer partnership (Nov 2023)', 'Insight Partners as lead investor'] },
+          ].map((a) => {
+            const donut = assetDonut(a.score, a.donutColor)
+            return (
+              <div key={a.asset} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <StatusDot color={a.dotColor} />
+                    <h3 className="text-sm font-semibold text-cream">{a.asset}</h3>
+                  </div>
+                </div>
+                <div className="w-16 h-16 mx-auto mb-2 relative">
+                  <Doughnut data={donut.data} options={donut.options} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xs font-bold text-cream/70">{a.score}</span>
+                  </div>
+                </div>
+                <ul className="space-y-1 text-[10px] text-cream/60">
+                  {a.bullets.map((b, i) => <li key={i}>• {b}</li>)}
+                </ul>
               </div>
-              <ul className="space-y-1.5 text-xs text-cream/70">
-                {a.bullets.map((b, i) => <li key={i}>• {b}</li>)}
-              </ul>
-            </div>
-          ))}
+            )
+          })}
         </div>
-        <div className="p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
-          <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Open Questions</div>
+        <GapCallout gapCount={4}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• What % of site relationships are direct-contracted vs. sponsor-deployed (portability risk)?</li>
-            <li>• Depth of sponsor relationships — multi-year, multi-study commitments?</li>
-            <li>• How sticky are the technology integrations (CTMS, eTMF, identity systems)?</li>
-            <li>• Actual user engagement depth per site (DAU, MAU, workflow completion rates)?</li>
+            <li>• What % of site relationships are direct-contracted vs. sponsor-deployed? <GapTag /></li>
+            <li>• Depth of sponsor relationships — multi-year, multi-study? <GapTag /></li>
+            <li>• How sticky are the technology integrations (CTMS, eTMF)? <GapTag /></li>
+            <li>• Actual user engagement depth per site (DAU, MAU)? <GapTag /></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -778,7 +901,7 @@ const slides: Slide[] = [
             <div className="grid md:grid-cols-2 gap-3 text-xs text-cream/70">
               <ul className="space-y-1.5">
                 <li>• Sites build entire regulatory document trail within eBinders — switching requires migrating compliance-critical records</li>
-                <li>• Integration APIs connect to CTMS, eTMF, identity systems (WCG Velos, TruLab, Yunu, Greenphire)</li>
+                <li>• Integration APIs connect to CTMS, eTMF, identity systems (Buyer Velos, TruLab, Yunu, Greenphire)</li>
               </ul>
               <ul className="space-y-1.5">
                 <li>• SOC 2 Type 2 attested, 21 CFR Part 11 compliant, GDPR/HIPAA/Annex 11/ICH E6 R3</li>
@@ -840,7 +963,7 @@ const slides: Slide[] = [
                 <td className="p-2 font-medium text-cream/90">ParticipantLink StudyReady database</td>
                 <td className="p-2">Yes</td>
                 <td className="p-2">Unclear</td>
-                <td className="p-2 text-cream/40">GAP</td>
+                <td className="p-2"><GapTag /></td>
                 <td className="p-2 text-yellow-300">Moderate</td>
               </tr>
               <tr className="border-b border-cream/5">
@@ -853,14 +976,13 @@ const slides: Slide[] = [
             </tbody>
           </table>
         </div>
-        <div className="p-3 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50">
-          <div className="text-xs uppercase tracking-wider text-yellow-300 mb-1">Most Important Data Constraints</div>
+        <GapCallout gapCount={3}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• Customer agreements may limit ability to aggregate and monetize operational data</li>
-            <li>• HIPAA and GDPR constrain participant-level data use</li>
-            <li>• AI value depends on contractual rights to use aggregated data for model training — <span className="text-yellow-300 font-medium">CRITICAL diligence question</span></li>
+            <li>• Customer agreements may limit ability to aggregate and monetize operational data <GapTag /></li>
+            <li>• HIPAA and GDPR constrain participant-level data use <GapTag /></li>
+            <li>• Contractual rights to use aggregated data for AI model training <GapTag /> — <span className="text-amber-300 font-medium">CRITICAL diligence question</span></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -899,9 +1021,10 @@ const slides: Slide[] = [
           </div>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="p-3 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50">
-            <div className="text-xs uppercase tracking-wider text-yellow-300 mb-1">Concentration & Fragility</div>
-            <p className="text-xs text-cream/70"><span className="text-cream/40">GAP:</span> Unknown % of revenue from top 10/20 sponsors. Pareto principle likely applies.</p>
+          <div className="relative p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
+            <div className="absolute -top-2.5 right-3"><GapSticker count={1} /></div>
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Concentration &amp; Fragility</div>
+            <p className="text-xs text-cream/70"><GapTag /> Unknown % of revenue from top 10/20 sponsors. Pareto principle likely applies.</p>
           </div>
           <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
             <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Replication Difficulty</div>
@@ -926,10 +1049,10 @@ const slides: Slide[] = [
         </div>
         <div className="space-y-3 mt-4">
           {[
-            { name: 'WCG Clinical (Partner since Nov 2023)', detail: 'Direct integration between Apollo eBinders and WCG ClinTech/ClinSphere. ~250K+ annual document exchanges. Relationship predates announcement — Apollo and WCG Velos integrated Dec 2021.', tag: 'Strategic' },
+            { name: 'Buyer Clinical (Partner since Nov 2023)', detail: 'Direct integration between Apollo eBinders and Buyer ClinTech/ClinSphere. ~250K+ annual document exchanges. Relationship predates announcement — Apollo and Buyer Velos integrated Dec 2021.', tag: 'Strategic' },
             { name: 'Insight Partners (Lead Investor)', detail: 'Led Series C ($80M) and C-1 ($27M). Significant board influence likely.', tag: 'Financial' },
             { name: 'Sponsor Relationships (600+)', detail: 'Major pharma deploying across global portfolios. Apollo supported Pfizer\u2019s COVID-19 vaccine trials.', tag: 'Commercial' },
-            { name: 'Technology Partners', detail: 'Greenphire, TruLab, Yunu, WCG Velos — embed Apollo deeper in clinical trial tech stack.', tag: 'Integration' },
+            { name: 'Technology Partners', detail: 'Greenphire, TruLab, Yunu, Buyer Velos — embed Apollo deeper in clinical trial tech stack.', tag: 'Integration' },
             { name: 'VersaTrial (Acquired Sept 2023)', detail: 'Expanded capabilities in feasibility response times and staff communication.', tag: 'M&A' },
           ].map((rel) => (
             <div key={rel.name} className="p-4 bg-white/5 border border-cream/10 rounded-xl flex items-start gap-4">
@@ -977,14 +1100,14 @@ const slides: Slide[] = [
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-xl bg-taupe-500/10 border-l-4 border-taupe-500">
-          <div className="text-xs uppercase tracking-wider text-taupe-300 mb-1">Open Questions</div>
+        <GapCallout gapCount={4}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• Current total headcount and headcount by function?</li>
-            <li>• Engineering-to-total ratio? Dedicated AI/ML team size?</li>
-            <li>• Leadership attrition — several leaders appear relatively new (CRO, COO, VP Engineering)?</li>
+            <li>• Current total headcount and headcount by function? <GapTag /></li>
+            <li>• Engineering-to-total ratio? Dedicated AI/ML team size? <GapTag /></li>
+            <li>• Leadership attrition — several leaders appear relatively new? <GapTag /></li>
+            <li>• Resourcing balance cannot be assessed without headcount data <GapTag /></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -1081,8 +1204,13 @@ const slides: Slide[] = [
             <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">INFERENCE:</span> Belgrade office likely houses meaningful engineering, consistent with cost-efficient offshore development common in PE-backed SaaS.</p>
           </div>
         </div>
-        <div className="p-3 rounded-xl bg-cream/5 border border-cream/10">
-          <p className="text-xs text-cream/50"><span className="font-medium text-cream/70">Key GAPs:</span> Actual headcount by function; engineering team size; dedicated AI/ML headcount; contractor vs. FTE ratio; attrition rates.</p>
+        <div className="relative p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
+          <div className="absolute -top-2.5 right-3"><GapSticker count={5} /></div>
+          <div className="flex items-center gap-2 mb-1">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[10px] uppercase tracking-wider text-amber-300 font-semibold">Key Gaps</span>
+          </div>
+          <p className="text-xs text-cream/60">Actual headcount by function <GapTag /> · Engineering team size <GapTag /> · Dedicated AI/ML headcount <GapTag /> · Contractor vs. FTE ratio <GapTag /> · Attrition rates <GapTag /></p>
         </div>
       </div>
     ),
@@ -1157,15 +1285,14 @@ const slides: Slide[] = [
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-xl bg-gold/10 border-l-4 border-gold">
-          <div className="text-xs uppercase tracking-wider text-gold mb-1">Open Questions</div>
+        <GapCallout gapCount={4}>
           <ul className="text-xs text-cream/70 space-y-1">
-            <li>• What LLM/AI models power the workflows? (Own models vs. API to OpenAI/Anthropic)</li>
-            <li>• Cost structure of AI features? (LLM API costs, infrastructure investment)</li>
-            <li>• How are AI outputs validated for GxP compliance?</li>
-            <li>• Customer evidence for AI feature value? (Pilot results, time savings, accuracy)</li>
+            <li>• What LLM/AI models power the workflows? (Own vs. API) <GapTag /></li>
+            <li>• Cost structure of AI features? (LLM API costs, infra investment) <GapTag /></li>
+            <li>• How are AI outputs validated for GxP compliance? <GapTag /></li>
+            <li>• Customer evidence for AI feature value? (Pilot results, accuracy) <GapTag /></li>
           </ul>
-        </div>
+        </GapCallout>
       </div>
     ),
   },
@@ -1201,9 +1328,16 @@ const slides: Slide[] = [
             </div>
           ))}
         </div>
-        <div className="p-3 rounded-xl bg-cream/5 border border-cream/10">
+        <div className="p-3 rounded-xl bg-cream/5 border border-cream/10 mb-2">
           <p className="text-xs text-cream/70">All capabilities: HITL AI, built on GxP-compliant infrastructure, full audit traceability, 21 CFR Part 11 support, interoperability APIs.</p>
-          <p className="text-xs text-yellow-300 mt-1"><span className="font-medium">Key GAP:</span> No publicly disclosed AI for internal operations. No details on underlying models, vendors, pilot results, or accuracy metrics.</p>
+        </div>
+        <div className="relative p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
+          <div className="absolute -top-2.5 right-3"><GapSticker count={2} /></div>
+          <div className="flex items-center gap-2 mb-1">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[10px] uppercase tracking-wider text-amber-300 font-semibold">Key Gaps</span>
+          </div>
+          <p className="text-xs text-cream/60">No publicly disclosed AI for internal operations <GapTag /> · No details on underlying models, vendors, pilot results, or accuracy metrics <GapTag /></p>
         </div>
       </div>
     ),
@@ -1338,7 +1472,7 @@ const slides: Slide[] = [
               external: 'Pricing Power (differentiation); Speed-to-Close (faster deployment decisions)',
               proof: 'No public pilot results. Limited availability Oct 2025.',
               replicability: 'MEDIUM', replicabilityNote: 'AI feature replicable, but 65K+ site dataset is not',
-              comparables: 'WCG ClinSphere Total Feasibility; Veeva SiteVault; TrialHub'
+              comparables: 'Buyer ClinSphere Total Feasibility; Veeva SiteVault; TrialHub'
             },
             {
               title: 'AI-Powered Contract Redlining',
@@ -1346,7 +1480,7 @@ const slides: Slide[] = [
               external: 'Speed-to-Close (direct startup reduction); Pricing Power (unique in site enablement)',
               proof: 'No public pilot results. Limited availability Oct 2025.',
               replicability: 'HIGH', replicabilityNote: 'Contract redlining via LLM is rapidly commoditizing',
-              comparables: 'Harvey, CoCounsel, Ironclad, WCG study startup solutions'
+              comparables: 'Harvey, CoCounsel, Ironclad, Buyer study startup solutions'
             },
             {
               title: 'AI-Powered Risk Monitoring',
@@ -1354,7 +1488,7 @@ const slides: Slide[] = [
               external: 'Pricing Power (sponsors value risk intel); Speed-to-Close (proactive risk mgmt)',
               proof: 'No public pilot results. Limited availability Oct 2025.',
               replicability: 'MEDIUM-LOW', replicabilityNote: 'Requires operational audit trail data unique to Apollo',
-              comparables: 'WCG Trial IntelX; IQVIA analytics; Medidata Rave analytics'
+              comparables: 'Buyer Trial IntelX; IQVIA analytics; Medidata Rave analytics'
             },
           ].map((ex) => (
             <div key={ex.title} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1373,9 +1507,19 @@ const slides: Slide[] = [
                   <p className="text-yellow-300/70 mt-0.5">{ex.proof}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 mt-2 text-[10px]">
-                <span className="text-cream/40">Replicability: <RatingBadge rating={ex.replicability} /></span>
-                <span className="text-cream/50">{ex.replicabilityNote}</span>
+              <div className="flex items-center gap-3 mt-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-cream/40">Replicability:</span>
+                  <RatingBadge rating={ex.replicability} />
+                </div>
+                <div className="flex-1 h-1.5 bg-cream/10 rounded-full overflow-hidden max-w-[120px]">
+                  <div className={`h-full rounded-full ${
+                    ex.replicability === 'HIGH' ? 'bg-red-400 w-[85%]' :
+                    ex.replicability === 'MEDIUM' ? 'bg-yellow-400 w-[55%]' :
+                    'bg-green-400 w-[30%]'
+                  }`} />
+                </div>
+                <span className="text-[10px] text-cream/50">{ex.replicabilityNote}</span>
               </div>
               <p className="text-[10px] text-cream/40 mt-1">Comparables: {ex.comparables}</p>
             </div>
@@ -1399,9 +1543,9 @@ const slides: Slide[] = [
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           {[
-            { asset: 'Data', rating: 'HIGH', why: 'Apollo\u2019s 65K+ site ops data + WCG\u2019s 80K+ protocol dataset = industry\u2019s most comprehensive clinical trial intelligence asset' },
-            { asset: 'Channel', rating: 'HIGH', why: 'WCG\u2019s sponsor relationships (94% of FDA-approved therapeutics) could drive Apollo adoption; Apollo\u2019s site network drives WCG adoption' },
-            { asset: 'Product', rating: 'MEDIUM-HIGH', why: 'Apollo fills site enablement gap in WCG\u2019s ClinSphere; WCG\u2019s IRB, training, feasibility complement Apollo' },
+            { asset: 'Data', rating: 'HIGH', why: 'Apollo\u2019s 65K+ site ops data + Buyer\u2019s 80K+ protocol dataset = industry\u2019s most comprehensive clinical trial intelligence asset' },
+            { asset: 'Channel', rating: 'HIGH', why: 'Buyer\u2019s sponsor relationships (94% of FDA-approved therapeutics) could drive Apollo adoption; Apollo\u2019s site network drives Buyer adoption' },
+            { asset: 'Product', rating: 'MEDIUM-HIGH', why: 'Apollo fills site enablement gap in Buyer\u2019s ClinSphere; Buyer\u2019s IRB, training, feasibility complement Apollo' },
             { asset: 'Relationships', rating: 'MEDIUM', why: 'Existing partnership (Nov 2023) provides integration foundation; non-exclusive nature means relationship could be maintained without acquisition' },
           ].map((s) => (
             <div key={s.asset} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1413,15 +1557,24 @@ const slides: Slide[] = [
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50">
+        <div className="p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50 mb-2">
           <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Key Constraints</div>
           <ul className="text-xs text-cream/70 space-y-1">
             <li>• Apollo funded by Insight Partners ($116M); acquisition must satisfy return expectations</li>
-            <li>• WCG is PE-owned (LGP, Arsenal, Novo) — math must align with capital structure</li>
+            <li>• Buyer is PE-owned (LGP, Arsenal, Novo) — math must align with capital structure</li>
             <li>• ClinSphere and Apollo built on different tech stacks; deep integration requires significant engineering</li>
             <li>• Data rights and privacy — combining datasets requires contractual assessment, HIPAA/GDPR compliance</li>
           </ul>
         </div>
+        <GapCallout gapCount={5}>
+          <ul className="text-xs text-cream/70 space-y-1">
+            <li>• Would Insight Partners support acquisition at current valuation? <GapTag /></li>
+            <li>• How deep is current technical integration between Apollo and Buyer? <GapTag /></li>
+            <li>• Customer base overlap? <GapTag /></li>
+            <li>• Exclusive data or technology provisions in partnership agreement? <GapTag /></li>
+            <li>• How would Apollo&apos;s site-first brand be maintained under Buyer? <GapTag /></li>
+          </ul>
+        </GapCallout>
       </div>
     ),
   },
@@ -1442,7 +1595,7 @@ const slides: Slide[] = [
           <table className="w-full border-collapse text-[10px]">
             <thead>
               <tr className="border-b-2 border-blue-500/40">
-                <th className="text-left p-2 text-cream/80 font-medium min-w-[100px]">WCG ↓ / Apollo →</th>
+                <th className="text-left p-2 text-cream/80 font-medium min-w-[100px]">Buyer ↓ / Apollo →</th>
                 <th className="text-left p-2 text-cream/80 font-medium">Apollo Data (65K sites)</th>
                 <th className="text-left p-2 text-cream/80 font-medium">Apollo Channel (Sites)</th>
                 <th className="text-left p-2 text-cream/80 font-medium">Apollo Product</th>
@@ -1451,28 +1604,28 @@ const slides: Slide[] = [
             </thead>
             <tbody className="text-cream/70">
               <tr className="border-b border-cream/5">
-                <td className="p-2 font-medium text-blue-300">WCG Data (80K+ protocols)</td>
+                <td className="p-2 font-medium text-blue-300">Buyer Data (80K+ protocols)</td>
                 <td className="p-2"><span className="text-green-300 font-bold">HIGH</span> — Combined intelligence for predictive site performance</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span> — Enhances site recs</td>
                 <td className="p-2"><span className="text-green-300 font-bold">HIGH</span> — Protocol data powers AI feasibility</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span></td>
               </tr>
               <tr className="border-b border-cream/5">
-                <td className="p-2 font-medium text-blue-300">WCG Channel (94% FDA)</td>
+                <td className="p-2 font-medium text-blue-300">Buyer Channel (94% FDA)</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span> — Broader data collection</td>
                 <td className="p-2"><span className="text-green-300 font-bold">HIGH</span> — Sponsors deploy Apollo to thousands more sites</td>
                 <td className="p-2"><span className="text-green-300 font-bold">HIGH</span> — Bundle with IRB, training</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span></td>
               </tr>
               <tr className="border-b border-cream/5">
-                <td className="p-2 font-medium text-blue-300">WCG Product (ClinSphere)</td>
+                <td className="p-2 font-medium text-blue-300">Buyer Product (ClinSphere)</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span> — Enhances Trial IntelX</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span></td>
                 <td className="p-2"><span className="text-green-300 font-bold">HIGH</span> — Fills site enablement gap; IRB/training integration</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span></td>
               </tr>
               <tr className="border-b border-cream/5">
-                <td className="p-2 font-medium text-blue-300">WCG Relationships (PE)</td>
+                <td className="p-2 font-medium text-blue-300">Buyer Relationships (PE)</td>
                 <td className="p-2 text-cream/40">Low-Med</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span> — Brand credibility</td>
                 <td className="p-2"><span className="text-yellow-300">Med</span></td>
@@ -1508,28 +1661,28 @@ const slides: Slide[] = [
         <div className="space-y-3 mt-4">
           {[
             {
-              num: '1', title: 'Apollo Site Data × WCG Protocol Data → Combined Intelligence',
+              num: '1', title: 'Apollo Site Data × Buyer Protocol Data → Combined Intelligence',
               value: 'Unified view from protocol design through site execution; predictive modeling connecting protocol complexity to real-world site performance',
               prereq: 'Data sharing agreement; unified data model; combined analytics infra; AI team',
               constraint: 'Customer consent and contractual rights to combine data across platforms'
             },
             {
-              num: '2', title: 'WCG IRB/Training Channel → Apollo Site Network → Bundled Site Enablement',
+              num: '2', title: 'Buyer IRB/Training Channel → Apollo Site Network → Bundled Site Enablement',
               value: 'Bundle Apollo deployment with IRB approval; automate IRB docs/training into eBinders — existing partnership targets 250K+ annual doc exchanges',
               prereq: 'Deep integration of eReview Manager/IRBNet with Apollo eBinders; coordinated sales',
               constraint: 'Sites may resist mandatory adoption; sponsor procurement may not support bundles'
             },
             {
-              num: '3', title: 'Apollo AI × WCG Trial IntelX → End-to-End AI-Powered Trial Management',
+              num: '3', title: 'Apollo AI × Buyer Trial IntelX → End-to-End AI-Powered Trial Management',
               value: 'Single AI-powered platform from protocol design through study conduct',
               prereq: 'Unified AI architecture; aligned governance; combined AI/ML team; consistent validation',
               constraint: 'Different tech stacks; different AI maturity levels; integration complexity'
             },
             {
-              num: '4', title: 'WCG Brand → Apollo Market Position → Accelerated Enterprise Adoption',
-              value: 'WCG\u2019s 55+ year brand credibility accelerates adoption at conservative, risk-averse sites/sponsors',
-              prereq: 'Brand architecture decision (maintain Apollo vs. integrate into WCG); sales enablement',
-              constraint: 'Apollo\u2019s "site-made" identity may be diluted by WCG (perceived as sponsor-centric)'
+              num: '4', title: 'Buyer Brand → Apollo Market Position → Accelerated Enterprise Adoption',
+              value: 'Buyer\u2019s 55+ year brand credibility accelerates adoption at conservative, risk-averse sites/sponsors',
+              prereq: 'Brand architecture decision (maintain Apollo vs. integrate into Buyer); sales enablement',
+              constraint: 'Apollo\u2019s "site-made" identity may be diluted by Buyer (perceived as sponsor-centric)'
             },
           ].map((conn) => (
             <div key={conn.num} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
@@ -1561,7 +1714,20 @@ const slides: Slide[] = [
           <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer ↔ Target Synergies</div>
           <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (3 Waves)</h2>
         </div>
-        <div className="overflow-x-auto mt-4">
+        {/* Visual timeline bar */}
+        <div className="flex items-center gap-0 mt-4 mb-2">
+          {[
+            { label: 'Wave 1: 0–6 mo', color: 'bg-green-500', width: 'w-1/6' },
+            { label: 'Wave 2: 6–18 mo', color: 'bg-yellow-500', width: 'w-2/6' },
+            { label: 'Wave 3: 18–36 mo', color: 'bg-purple-500', width: 'w-3/6' },
+          ].map((w) => (
+            <div key={w.label} className={`${w.width} flex flex-col items-center`}>
+              <div className={`w-full h-3 ${w.color} first:rounded-l-full last:rounded-r-full`} />
+              <span className="text-[9px] font-mono text-cream/40 mt-1">{w.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[10px]">
             <thead>
               <tr className="border-b-2 border-blue-500/40">
@@ -1635,9 +1801,9 @@ const slides: Slide[] = [
         <div className="space-y-4 mt-4">
           {[
             {
-              num: '1', title: 'Channel Cross-Sell: Deploy Apollo to WCG Sponsor Base',
+              num: '1', title: 'Channel Cross-Sell: Deploy Apollo to Buyer Sponsor Base',
               buckets: 'Speed-to-Close, Productivity',
-              assumptions: ['# WCG sponsor clients not on Apollo', 'Apollo avg ACV per sponsor', 'Conversion rate from WCG referrals', 'Time to close'],
+              assumptions: ['# Buyer sponsor clients not on Apollo', 'Apollo avg ACV per sponsor', 'Conversion rate from Buyer referrals', 'Time to close'],
               output: 'Incremental Apollo ARR'
             },
             {
@@ -1649,7 +1815,7 @@ const slides: Slide[] = [
             {
               num: '3', title: 'Operational Efficiency: Automated IRB→eBinders Document Flow',
               buckets: 'Cost, Speed',
-              assumptions: ['Current manual processing cost per site per study', '# sites on both WCG IRB and Apollo', 'Automation rate', 'Cost savings per doc'],
+              assumptions: ['Current manual processing cost per site per study', '# sites on both Buyer IRB and Apollo', 'Automation rate', 'Cost savings per doc'],
               output: 'Annual cost savings'
             },
           ].map((init) => (
@@ -1666,8 +1832,8 @@ const slides: Slide[] = [
                   <span className="text-[10px] text-cream/40 font-medium">Key Assumptions (INPUTS NEEDED):</span>
                   <ul className="mt-1 space-y-0.5">
                     {init.assumptions.map((a, i) => (
-                      <li key={i} className="text-[10px] text-yellow-300/60 flex items-center gap-1">
-                        <span className="text-yellow-400/50">[GAP]</span> {a}
+                      <li key={i} className="text-[10px] text-cream/60 flex items-center gap-1">
+                        <GapTag /> {a}
                       </li>
                     ))}
                   </ul>
@@ -1711,17 +1877,17 @@ const slides: Slide[] = [
             </thead>
             <tbody className="text-cream/70">
               {[
-                ['AI feature adoption rate (% sponsors, 12 mo)', '[GAP]', '[GAP]', '[GAP]'],
-                ['Channel cross-sell conversion (% WCG → Apollo)', '[GAP]', '[GAP]', '[GAP]'],
-                ['Site retention vs. Veeva competition', '[GAP]', '[GAP]', '[GAP]'],
-                ['AI pricing premium (incremental ARPU)', '[GAP]', '[GAP]', '[GAP]'],
-                ['Integration timeline for WCG × Apollo data', '[GAP]', '[GAP]', '[GAP]'],
-              ].map((row, i) => (
+                'AI feature adoption rate (% sponsors, 12 mo)',
+                'Channel cross-sell conversion (% Buyer → Apollo)',
+                'Site retention vs. Veeva competition',
+                'AI pricing premium (incremental ARPU)',
+                'Integration timeline for Buyer × Apollo data',
+              ].map((label, i) => (
                 <tr key={i} className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">{row[0]}</td>
-                  <td className="p-2 text-cream/40 font-mono">{row[1]}</td>
-                  <td className="p-2 text-cream/40 font-mono">{row[2]}</td>
-                  <td className="p-2 text-cream/40 font-mono">{row[3]}</td>
+                  <td className="p-2 font-medium text-cream/90">{label}</td>
+                  <td className="p-2"><GapTag /></td>
+                  <td className="p-2"><GapTag /></td>
+                  <td className="p-2"><GapTag /></td>
                 </tr>
               ))}
             </tbody>
@@ -1733,7 +1899,7 @@ const slides: Slide[] = [
             {[
               { num: '1', title: 'AI adoption rate', detail: 'Features are <6 months old; early adoption data is the strongest leading indicator' },
               { num: '2', title: 'Veeva competitive response', detail: 'If SiteVault aggressively adds AI and maintains free pricing, site growth could decelerate' },
-              { num: '3', title: 'WCG channel leverage', detail: 'Existing partnership is a testable hypothesis; actual conversion data would validate cross-sell thesis' },
+              { num: '3', title: 'Buyer channel leverage', detail: 'Existing partnership is a testable hypothesis; actual conversion data would validate cross-sell thesis' },
               { num: '4', title: 'Data rights & integration speed', detail: 'Combined data asset is highest-value synergy but depends on contractual rights and engineering investment' },
               { num: '5', title: 'Apollo financial trajectory', detail: 'Without baseline ARR, growth rate, and margin structure, sensitivity analysis cannot be populated' },
             ].map((a) => (
@@ -1752,11 +1918,11 @@ const slides: Slide[] = [
   },
 ]
 
-export default function ApolloWCGAIDiligencePage() {
+export default function ApolloBuyerAIDiligencePage() {
   return (
     <DocumentAccessWrapper documentId="apollo-wcg-ai-diligence">
       <PresentationLayout
-        title="Apollo: AI Diligence — WCG Acquisition Analysis"
+        title="Apollo: AI Diligence — Buyer Acquisition Analysis"
         subtitle="Confidential — Public Sources Only"
         slides={slides}
         classificationBanner="Confidential — Public Sources Only · Tweed Collective · February 2026"
