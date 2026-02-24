@@ -16,13 +16,15 @@ interface PresentationLayoutProps {
   subtitle?: string
   slides: Slide[]
   logo?: React.ReactNode
+  classificationBanner?: string
 }
 
 export default function PresentationLayout({
   title,
   subtitle,
   slides,
-  logo
+  logo,
+  classificationBanner
 }: PresentationLayoutProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -272,8 +274,15 @@ export default function PresentationLayout({
         </div>
       </div>
 
+      {/* Classification Banner */}
+      {classificationBanner && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center py-1.5 bg-void/80 backdrop-blur-sm border-t border-cream/10">
+          <span className="text-[10px] uppercase tracking-[0.15em] text-cream/30 font-mono">{classificationBanner}</span>
+        </div>
+      )}
+
       {/* Keyboard hint */}
-      <div className="fixed bottom-4 left-4 text-xs text-zinc hidden lg:block font-mono">
+      <div className={`fixed ${classificationBanner ? 'bottom-8' : 'bottom-4'} left-4 text-xs text-zinc hidden lg:block font-mono`}>
         ← → to navigate • F for fullscreen • ESC to close
       </div>
     </div>

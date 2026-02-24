@@ -11,7 +11,7 @@
  */
 
 import { DocumentConfig, DocumentMeta, DocumentVisibility } from '@/lib/types'
-import { BarChart3, Code2, Dna, FileText, Settings, LucideIcon } from 'lucide-react'
+import { BarChart3, Code2, Dna, FileText, Settings, Shield, LucideIcon } from 'lucide-react'
 
 // ============================================
 // Document Configurations
@@ -67,6 +67,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'apollo-wcg-ai-diligence',
+    title: 'Apollo: AI Diligence — WCG Acquisition Analysis',
+    shortTitle: 'Apollo AI Diligence',
+    description: 'AI-focused due diligence assessment for the WCG potential acquisition of Apollo.',
+    category: 'Due Diligence',
+    icon: 'Shield',
+    date: '2026-02',
+    readTime: '45 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'ai-integration-framework',
     title: 'AI Integration Framework',
     shortTitle: 'AI Integration Framework',
@@ -103,6 +114,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Dna,
   FileText,
   Settings,
+  Shield,
 }
 
 /**
