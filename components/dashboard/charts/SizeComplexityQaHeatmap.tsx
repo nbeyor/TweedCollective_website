@@ -42,7 +42,7 @@ export function SizeComplexityQaHeatmap({ data }: Props) {
         Size × Complexity — QA Churn
       </h3>
       <p className="text-[10px] text-[#a8a29e] mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Green = pilot has lower churn (better quality), red = non-pilot lower
+        Cell = how much lower pilot&apos;s churn is vs non-pilot. +39% = pilot has 39% less churn (green = better). Red = non-pilot has lower churn.
       </p>
 
       <div className="overflow-auto">
