@@ -78,6 +78,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'mercury-buyer-ai-diligence',
+    title: 'Mercury: AI Diligence — Buyer Acquisition Analysis',
+    shortTitle: 'Mercury AI Diligence',
+    description: 'AI-focused due diligence assessment for the Buyer potential acquisition of Mercury.',
+    category: 'Due Diligence',
+    icon: 'Shield',
+    date: '2026-02',
+    readTime: '45 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'ai-integration-framework',
     title: 'AI Integration Framework',
     shortTitle: 'AI Integration Framework',
