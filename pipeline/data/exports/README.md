@@ -7,7 +7,7 @@ Place your most recent xlsx export here. The `refresh.py` pipeline reads from th
 python pipeline/refresh.py
 # Uses the latest xlsx; auto-detects Pull sheet
 
-python pipeline/refresh.py --input pipeline/data/exports/your_file.xlsx --pull-sheet "Pull 02_11_26"
+python pipeline/refresh.py --input pipeline/data/exports/your_file.xlsx --sheet "Pull 02_11_26"
 ```
 
 ## Sheet names
@@ -39,8 +39,7 @@ Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is 
 | FirstReadyForQADate | date | Ready for QA date |
 | PRStart | date | PR start (used for week bucketing if present) |
 | PREnd | date | PR end |
-| AuthorUUID | string | Developer identifier |
-| IncludeInPilot | bool/number | True/1 = pilot; False/0 = non-pilot. Pilot data only from Dec 1 onward. |
+| AuthorUUID | string | Developer identifier (pilot vs non-pilot determined by PILOT_UUIDS in refresh.py) |
 | PRFiles | number | Files changed in PR |
 | PRLines | number | Lines changed in PR |
 | PRAI | number | AI-related metric |
@@ -51,9 +50,9 @@ Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is 
 | QAChurnLines | number | QA rework lines (fallback if QAChurnFiles missing) |
 | QAChurnAI | number | QA churn AI metric |
 
-**Date bucketing:** Uses `PRStart` if present, else `FirstActivity`. Weeks are Sunday-start.
+**Date bucketing:** Uses `PREnd` for week assignment. Weeks are Saturday-end.
 
-**Pilot vs non-pilot:** `IncludeInPilot` true = pilot. Non-pilot spans all weeks. Pilot counts only from Dec 1, 2025 onward.
+**Pilot vs non-pilot:** AuthorUUID matched against PILOT_UUIDS list in `pipeline/refresh.py`. Pilot tickets count only from Dec 1, 2025 onward.
 
 ## Survey sheet (optional)
 

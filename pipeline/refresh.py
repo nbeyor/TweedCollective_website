@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Dashboard data pipeline.
+AI Software Dev KPI Dashboard - Data Pipeline
 
-Reads xlsx export from pipeline/data/exports/, computes KPIs from the Pull sheet,
-parses Survey 1 results if present, and injects JSON into dashboard_template.html.
-Output: public/dashboards/portfolio.html (+ archive in content/documents/).
+Single source of truth for dashboard data. Reads xlsx from pipeline/data/exports/,
+uses PILOT_UUIDS for pilot identification, computes KPIs, and writes
+public/data/dashboard-data.json for the React dashboard.
 
 Usage:
     python pipeline/refresh.py
-        # Uses latest xlsx in pipeline/data/exports/; auto-detects Pull sheet
-    python pipeline/refresh.py --input path/to/file.xlsx --pull-sheet "Pull 02_11_26"
+        # Uses latest xlsx in pipeline/data/exports/; auto-detects sheets
+    python pipeline/refresh.py --input path/to/file.xlsx --sheet "Pull 02_11_26"
 """
 
 import argparse
@@ -17,85 +17,66 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from collections import Counter
+from datetime import datetime, date
 from pathlib import Path
 
 try:
     import pandas as pd
+    import numpy as np
     HAS_PANDAS = True
 except ImportError:
     pd = None
+    np = None
     HAS_PANDAS = False
 
-# -----------------------------------------------------------------------------
-# Config (update when team changes)
-# -----------------------------------------------------------------------------
-DATA_START = "2025-07-01"  # Include all data from earliest available
-PILOT_START = "2025-12-01"
-NON_PILOT_ROSTER = 9
-PILOT_ROSTER = 6
+# ── CONFIG ──────────────────────────────────────────────────────────────────
+PILOT_UUIDS = [
+    '5b7b8122-68d5-4d44-b30c-de245a77c85c',
+    '92d8106c-b379-443d-aa4c-7bff1d81daf7',
+    '315708a7-d25d-44ff-a0c3-069db5ac5974',
+    '987bb5a0-e18e-4b08-b48c-7515018a2f99',
+    'c2f7dc76-f7ec-4be3-9dd7-caf78b33ab94',
+    'bdb6a72b-3bb0-4000-9560-a6d1de234827',
+]
+PILOT_START = '2025-12-01'
+WORKDAYS_PER_WEEK = 5
 ROLLING_WINDOW = 4
 MIN_TICKETS_THRESHOLD = 5
-BASELINE_PRODUCTIVITY = 0.169
-BASELINE_QA_CHURN_PCT = 23.0
-# Holiday weeks (week-start dates): excluded from KPI means, shown as gaps in charts
-# Dec 22 week (Christmas), Dec 29 week (New Year)
-HOLIDAY_WEEK_STRS = ("2025-12-22", "2025-12-29")
+NON_PILOT_ROSTER = 9
 
-# -----------------------------------------------------------------------------
 # Paths
-# -----------------------------------------------------------------------------
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
-TEMPLATE_PATH = PIPELINE_DIR / "dashboard_template.html"
-OUTPUT_PATH = PROJECT_ROOT / "public" / "dashboards" / "portfolio.html"
-OUTPUT_ARCHIVE = PROJECT_ROOT / "content" / "documents" / "dashboard.html"
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
-JS_DIR = PROJECT_ROOT / "public" / "js"
+JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "dashboard-data.json"
 
-# Preferred sheet names (generic, not pull-specific)
-DASHBOARD_SHEET = "Current dashboard data"
-SURVEY_SHEET = "Current survey data"
-# Alternative names we also accept
+# Sheet names (auto-detect)
 DASHBOARD_SHEET_ALTS = ("Current dashboard data", "PRJira metrics", "PR Jira metrics")
 SURVEY_SHEET_ALTS = ("Current survey data", "developer survey results", "Developer survey results")
-
-# Pull sheet columns (exact or normalized)
-PULL_COLS = [
-    "JiraTicket", "Title", "FirstActivity", "FirstReadyForQADate",
-    "PRStart", "PREnd", "AuthorUUID", "IncludeInPilot",
-    "PRFiles", "PRLines", "PRAI", "ChurnFiles", "ChurnLines", "ChurnAI",
-    "QAChurnFiles", "QAChurnLines", "QAChurnAI",
-]
-
-
-def normalize_col(s: str) -> str:
-    return s.strip() if isinstance(s, str) else str(s)
+PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 
 
 def find_latest_xlsx() -> Path:
     xlsx_files = sorted(EXPORTS_DIR.glob("*.xlsx"), key=os.path.getmtime, reverse=True)
     if not xlsx_files:
-        raise FileNotFoundError(f"No xlsx files in {EXPORTS_DIR}. Place your export there.")
+        raise FileNotFoundError(f"No xlsx files in {EXPORTS_DIR}")
     return xlsx_files[0]
 
 
-def find_pull_sheet(xl) -> str:
-    """Prefer 'Current dashboard data', accept alternatives, fall back to 'Pull MM_DD_YY'."""
-    names = [n.strip() for n in xl.sheet_names]
+def find_pull_sheet(xl) -> str | None:
+    names = [str(n).strip() for n in xl.sheet_names]
     for candidate in DASHBOARD_SHEET_ALTS:
         if candidate in names:
             return candidate
-    pull_pattern = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
     for name in names:
-        if pull_pattern.match(name):
+        if PULL_PATTERN.match(name):
             return name
-    return None
+    return names[0] if names else None
 
 
 def find_survey_sheet(xl) -> str | None:
-    """Prefer 'Current survey data', accept alternatives, fall back to 'Survey 1 results'."""
-    names = [n.strip() for n in xl.sheet_names]
+    names = [str(n).strip() for n in xl.sheet_names]
     for candidate in SURVEY_SHEET_ALTS:
         if candidate in names:
             return candidate
@@ -104,568 +85,433 @@ def find_survey_sheet(xl) -> str | None:
     return None
 
 
-def load_pull_sheet(path: Path, sheet_name: str):
-    df = pd.read_excel(path, sheet_name=sheet_name)
-    # Normalize column names (strip whitespace, handle case)
-    df.columns = [normalize_col(c) for c in df.columns]
-    return df
+def load_data(input_path, sheet_name=None):
+    p = Path(input_path)
+    if p.suffix in ('.xlsx', '.xls'):
+        return pd.read_excel(p, sheet_name=sheet_name or 0)
+    return pd.read_csv(p, parse_dates=['FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'])
 
 
-def load_survey_sheet(path: Path, sheet_name: str | None = None):
-    """Load survey sheet. If sheet_name is None, tries to auto-detect."""
-    if sheet_name:
-        try:
-            return pd.read_excel(path, sheet_name=sheet_name)
-        except Exception:
-            return None
-    xl = pd.ExcelFile(path)
-    found = find_survey_sheet(xl)
-    if found:
-        try:
-            return pd.read_excel(path, sheet_name=found)
-        except Exception:
-            return None
-    return None
+def aggregate_to_tickets(prs):
+    prs = prs.copy()
+    prs['is_pilot_author'] = prs['AuthorUUID'].isin(PILOT_UUIDS)
+    pilot_start_ts = pd.Timestamp(PILOT_START)
 
+    def agg_ticket(g):
+        return pd.Series({
+            'PRCount': len(g),
+            'FirstActivity': g['FirstActivity'].min(),
+            'PREnd': g['PREnd'].max(),
+            'AuthorUUIDs': ','.join(g['AuthorUUID'].unique().astype(str)),
+            'HasPilotUUID': int(g['is_pilot_author'].any()),
+            'MaxFiles': g['PRFiles'].max(),
+            'TotalLines': g['PRLines'].sum(),
+            'TotalChurnLines': g['ChurnLines'].sum(),
+            'TotalQAChurnLines': g['QAChurnLines'].sum(),
+            'HasPRAI': int((g['PRAI'] > 0).any()),
+        })
 
-def parse_export_date_from_filename(path: Path) -> str:
-    """Extract YYYY-MM-DD from filename. Falls back to file mtime if not found."""
-    name = path.stem  # filename without extension
-    # Match YYYY-MM-DD or YYYY_MM_DD or YYYYMMDD
-    m = re.search(r"(\d{4})[-_]?(\d{2})[-_]?(\d{2})", name)
-    if m:
-        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
-    # Fallback: file modification date
-    try:
-        mtime = os.path.getmtime(path)
-        return datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
-    except Exception:
-        return ""
-
-
-def is_pilot(row) -> bool:
-    v = row.get("IncludeInPilot")
-    if pd.isna(v):
-        return False
-    if isinstance(v, bool):
-        return v
-    if isinstance(v, (int, float)):
-        return v != 0
-    s = str(v).strip().lower()
-    return s in ("1", "true", "yes", "y")
-
-
-def aggregate_to_tickets(df):
-    if df.empty or "JiraTicket" not in df.columns:
-        return pd.DataFrame()
-
-    date_col = "PRStart" if "PRStart" in df.columns else "FirstActivity"
-    if date_col not in df.columns:
-        return pd.DataFrame()
-
-    df = df.copy()
-    df["_date"] = pd.to_datetime(df[date_col], errors="coerce")
-    df = df.dropna(subset=["_date", "JiraTicket"])
-    df["_week"] = df["_date"].dt.to_period("W-SUN").dt.start_time
-    df["_pilot"] = df.apply(is_pilot, axis=1)
-
-    qa_col = "QAChurnFiles" if "QAChurnFiles" in df.columns else ("QAChurnLines" if "QAChurnLines" in df.columns else None)
-    agg_dict = {"_pilot": "max", "_week": "first"}
-    if qa_col:
-        agg_dict[qa_col] = "sum"
-    if "PRFiles" in df.columns:
-        agg_dict["PRFiles"] = "sum"
-    if "PRLines" in df.columns:
-        agg_dict["PRLines"] = "sum"
-
-    agg = df.groupby("JiraTicket", as_index=False).agg(agg_dict)
-    if "QAChurnFiles" not in agg.columns and "QAChurnLines" not in agg.columns:
-        agg["QAChurnFiles"] = 0
-    if "PRFiles" not in agg.columns:
-        agg["PRFiles"] = 1
-    if "PRLines" not in agg.columns:
-        agg["PRLines"] = 100
-    return agg
+    tickets = prs.groupby('JiraTicket').apply(agg_ticket).reset_index()
+    tickets['PREndDate'] = pd.to_datetime(tickets['PREnd']).dt.normalize()
+    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    tickets['IsPilotTicket'] = ((tickets['HasPilotUUID'] == 1) & (tickets['PREndDate'] >= pilot_start_ts)).astype(int)
+    tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
+    tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, 1000, np.inf], labels=['0-300', '301-1000', '1001+'], right=True)
+    tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 3, 10, np.inf], labels=['1-3', '4-10', '11+'], right=True)
+    return tickets
 
 
 def compute_weekly_metrics(tickets):
-    """Non-pilot exists for all weeks. Pilot only from PILOT_START (Dec 1)."""
-    if tickets.empty or "_week" not in tickets.columns:
-        return pd.DataFrame()
-
-    pilot_start = pd.Timestamp(PILOT_START)
-    pilot_ftedays = PILOT_ROSTER * 5
-    non_pilot_ftedays = NON_PILOT_ROSTER * 5
-
-    weeks = []
-    for week, g in tickets.groupby("_week"):
-        week_ts = pd.Timestamp(week)
-        # Pilot only exists from Dec 1 onward; before that, pilot_tix = 0
-        if week_ts >= pilot_start:
-            pilot_tix = g[g["_pilot"]].shape[0]
-        else:
-            pilot_tix = 0
-        non_pilot_tix = g[~g["_pilot"]].shape[0]
-        weeks.append({
-            "week": week_ts,
-            "pilot_tickets": pilot_tix,
-            "non_pilot_tickets": non_pilot_tix,
-            "pilot_productivity": pilot_tix / pilot_ftedays if pilot_ftedays else 0,
-            "non_pilot_productivity": non_pilot_tix / non_pilot_ftedays if non_pilot_ftedays else 0,
-            "total_tickets": pilot_tix + non_pilot_tix,
-            "low_confidence": (pilot_tix + non_pilot_tix) < MIN_TICKETS_THRESHOLD,
-        })
-    return pd.DataFrame(weeks)
-
-
-def compute_qa_churn_weekly(tickets):
-    """Pilot churn only from PILOT_START; before that pilot_churn is null/0."""
-    if tickets.empty or "_week" not in tickets.columns:
-        return pd.DataFrame()
-
-    pilot_start = pd.Timestamp(PILOT_START)
-    qa_col = "QAChurnFiles" if "QAChurnFiles" in tickets.columns else "QAChurnLines"
-    if qa_col not in tickets.columns:
-        return pd.DataFrame()
-
-    tickets = tickets.copy()
-    tickets["_has_qa_churn"] = tickets[qa_col].fillna(0) > 0
-
-    rows = []
-    for week, g in tickets.groupby("_week"):
-        week_ts = pd.Timestamp(week)
-        pilot_g = g[g["_pilot"]] if week_ts >= pilot_start else pd.DataFrame()
-        non_pilot_g = g[~g["_pilot"]]
-        pilot_churn = pilot_g["_has_qa_churn"].sum() / len(pilot_g) * 100 if len(pilot_g) else (None if week_ts < pilot_start else 0)
-        non_pilot_churn = non_pilot_g["_has_qa_churn"].sum() / len(non_pilot_g) * 100 if len(non_pilot_g) else 0
-        total = len(g)
-        low_conf = total < MIN_TICKETS_THRESHOLD
-        rows.append({
-            "week": pd.Timestamp(week),
-            "pilot_churn_pct": None if pilot_churn is None else round(pilot_churn, 1),
-            "non_pilot_churn_pct": round(non_pilot_churn, 1),
-            "low_confidence": low_conf,
-        })
-    return pd.DataFrame(rows)
-
-
-def rolling_mean(series, window: int):
-    return series.rolling(window=window, min_periods=1).mean()
-
-
-def is_holiday_week(ts) -> bool:
-    try:
-        s = pd.Timestamp(ts).strftime("%Y-%m-%d")
-        return s in HOLIDAY_WEEK_STRS
-    except Exception:
-        return False
-
-
-def _align_series(qa_df, week_index, col: str, pilot_start_ts=None, use_null_before_pilot: bool = False) -> list:
-    """Align series to week_index. If use_null_before_pilot, use None for weeks before pilot_start."""
-    if qa_df.empty or col not in qa_df.columns:
-        if use_null_before_pilot and pilot_start_ts is not None:
-            return [None if pd.Timestamp(w) < pilot_start_ts else 0.0 for w in week_index]
-        return [0.0] * len(week_index)
-    merged = pd.DataFrame({"week": week_index}).merge(
-        qa_df[["week", col]], on="week", how="left"
-    )
-    if use_null_before_pilot and pilot_start_ts is not None:
-        out = []
-        for _, r in merged.iterrows():
-            w = r["week"]
-            v = r[col]
-            if pd.Timestamp(w) < pilot_start_ts:
-                out.append(None)
-            elif pd.isna(v):
-                out.append(0.0)
-            else:
-                out.append(float(v))
-        return out
-    return merged[col].fillna(0).tolist()
-
-
-def parse_survey_insights(survey_df) -> dict:
-    if survey_df is None or survey_df.empty:
-        return {
-            "productivity": {"stat": "—", "quote": ""},
-            "quality": {"stat": "—", "quote": ""},
-            "experience": {"stat": "—", "quote": ""},
-        }
-    out = {"productivity": {"stat": "—", "quote": ""}, "quality": {"stat": "—", "quote": ""}, "experience": {"stat": "—", "quote": ""}}
-    for col in survey_df.columns:
-        c = str(col).lower()
-        vals = survey_df[col].dropna().astype(str)
-        vals = vals[vals.str.strip() != ""]
-        if len(vals) == 0:
-            continue
-        if "compared to" in c and "productiv" in c:
-            # e.g. "Compared to working without AI, approximately how much more or less productive..."
-            more = vals.str.contains("more productive", case=False).sum()
-            less = vals.str.contains("less productive", case=False).sum()
-            same = vals.str.contains("no noticeable|0%", case=False, regex=True).sum()
-            n = len(vals)
-            if more > 0:
-                out["productivity"]["stat"] = f"{more}/{n} report increased productivity"
-            if more > 0 and less == 0 and same == 0:
-                out["productivity"]["stat"] = f"{more}/{n} report increased productivity"
-            elif more > 0 or less > 0:
-                out["productivity"]["stat"] = f"{more} more, {less} less productive (n={n})"
-            out["productivity"]["quote"] = vals.iloc[0][:150] + "…" if len(vals.iloc[0]) > 150 else vals.iloc[0]
-        elif "modify" in c and ("ai-generated" in c or "code" in c):
-            # Quality: "How often did you need to significantly modify AI-generated code..."
-            out["quality"]["stat"] = vals.value_counts().index[0] if len(vals) else "—"
-            out["quality"]["quote"] = vals.iloc[0][:150] + "…" if len(vals.iloc[0]) > 150 else vals.iloc[0]
-        elif "benefits" in c or "drawbacks" in c or "improvements" in c:
-            # Experience: benefits, drawbacks, improvements
-            combined = " ".join(vals.astype(str).tolist()[:3])  # first 3 responses
-            out["experience"]["quote"] = (combined[:200] + "…") if len(combined) > 200 else combined
-            if out["experience"]["stat"] == "—":
-                out["experience"]["stat"] = f"{len(vals)} responses"
-    return out
-
-
-def compute_availability(df):
-    """Active pilot devs per week, total tickets per week. Pilot devs = 0 before PILOT_START."""
-    if df.empty or "AuthorUUID" not in df.columns:
-        return pd.DataFrame()
-    pilot_start = pd.Timestamp(PILOT_START)
-    df = df.copy()
-    date_col = "PRStart" if "PRStart" in df.columns else "FirstActivity"
-    df["_date"] = pd.to_datetime(df[date_col], errors="coerce")
-    df = df.dropna(subset=["_date"])
-    df["_week"] = df["_date"].dt.to_period("W-SUN").dt.start_time
-    if "IncludeInPilot" in df.columns:
-        df["_pilot"] = df.apply(is_pilot, axis=1)
-    else:
-        df["_pilot"] = False
-    rows = []
-    for week, g in df.groupby("_week"):
-        week_ts = pd.Timestamp(week)
-        pilot_devs = (g[g["_pilot"]]["AuthorUUID"].nunique() if week_ts >= pilot_start and "_pilot" in g.columns and g["_pilot"].any() else 0)
-        total_tix = g["JiraTicket"].nunique() if "JiraTicket" in g.columns else len(g)
-        rows.append({"week": week_ts, "activePilotDevs": pilot_devs, "totalTickets": total_tix})
-    return pd.DataFrame(rows)
-
-
-def compute_heatmap(tickets):
-    """Size×Complexity: rows=lines (0-300, 301-1k, 1k+), cols=files (1-3, 4-10, 11+)."""
-    if tickets.empty or "PRFiles" not in tickets.columns or "PRLines" not in tickets.columns:
-        return {"rows": [], "cols": [], "cells": []}
-    files_bins = [(1, 3), (4, 10), (11, 9999)]
-    lines_bins = [(0, 300), (301, 1000), (1001, 999999)]
-    rows = ["0-300 lines", "301-1000", "1001+"]
-    cols = ["1-3 files", "4-10 files", "11+ files"]
-    cells = []
-    for (lmin, lmax) in lines_bins:
-        for (fmin, fmax) in files_bins:
-            mask = (tickets["PRFiles"] >= fmin) & (tickets["PRFiles"] <= fmax) & (tickets["PRLines"] >= lmin) & (tickets["PRLines"] <= lmax)
-            g = tickets[mask]
-            pilot_n = int(g[g["_pilot"]].shape[0])
-            np_n = int(g[~g["_pilot"]].shape[0])
-            total = pilot_n + np_n
-            pct = round((pilot_n - np_n) / total * 100, 0) if total else 0
-            cells.append({"pilot": pilot_n, "nonPilot": np_n, "pctDiff": int(pct), "label": f"{pilot_n}/{np_n}"})
-    return {"rows": rows, "cols": cols, "cells": cells}
-
-
-def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
-    df = load_pull_sheet(path, pull_sheet)
-    tickets = aggregate_to_tickets(df)
-    if tickets.empty:
-        return _empty_dashboard_data()
-
-    # Include all data from DATA_START (July 2025), not just pilot period
-    data_start = pd.Timestamp(DATA_START)
-    tickets = tickets[tickets["_week"] >= data_start]
-
-    weekly = compute_weekly_metrics(tickets)
-    qa_weekly = compute_qa_churn_weekly(tickets)
-
-    if weekly.empty:
-        return _empty_dashboard_data()
-
-    pilot_start = pd.Timestamp(PILOT_START)
-    pilot_weekly = weekly[weekly["week"] >= pilot_start].copy()
-
-    # Exclude holiday weeks from KPI calculations (show as gaps in charts, not in means)
-    pilot_weekly["_holiday"] = pilot_weekly["week"].apply(is_holiday_week)
-    pilot_weekly_active = pilot_weekly[~pilot_weekly["_holiday"]]
-
-    # KPIs (pilot period only, excluding holidays)
-    pilot_tickets_only = tickets[(tickets["_pilot"]) & (tickets["_week"] >= pilot_start)]
-    non_pilot_tickets_only = tickets[(~tickets["_pilot"]) & (tickets["_week"] >= pilot_start)]
-    pilot_tix_total = pilot_tickets_only["JiraTicket"].nunique()
-    non_pilot_tix_total = non_pilot_tickets_only["JiraTicket"].nunique()
-    total_tix = pilot_tix_total + non_pilot_tix_total
-
-    pilot_prod = pilot_weekly_active["pilot_productivity"].mean() if not pilot_weekly_active.empty else 0
-    non_pilot_prod = pilot_weekly_active["non_pilot_productivity"].mean() if not pilot_weekly_active.empty else 0
-    prod_multiple = pilot_prod / non_pilot_prod if non_pilot_prod else 0
-
-    qa_pilot_period = qa_weekly[qa_weekly["week"] >= pilot_start] if not qa_weekly.empty else pd.DataFrame()
-    if not qa_pilot_period.empty:
-        qa_pilot_period = qa_pilot_period[~qa_pilot_period["week"].apply(is_holiday_week)]
-    pilot_qa_raw = qa_pilot_period["pilot_churn_pct"].dropna().mean() if not qa_pilot_period.empty else 0
-    pilot_qa = 0 if pd.isna(pilot_qa_raw) else pilot_qa_raw
-    non_pilot_qa = qa_pilot_period["non_pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
-    non_pilot_qa = 0 if pd.isna(non_pilot_qa) else non_pilot_qa
-
-    pilot_qa_vs_baseline = pilot_qa - BASELINE_QA_CHURN_PCT
-    pilot_prod_vs_baseline = pilot_prod - BASELINE_PRODUCTIVITY
-
-    total_devs = PILOT_ROSTER + NON_PILOT_ROSTER
-    ai_share_pct = pilot_tix_total / total_tix * 100 if total_tix else 0
-
-    valid_weeks = (pilot_weekly_active["total_tickets"] >= MIN_TICKETS_THRESHOLD).sum() if not pilot_weekly_active.empty else 0
-    availability_pct = (pilot_weekly_active["pilot_tickets"] > 0).sum() / len(pilot_weekly_active) * 100 if len(pilot_weekly_active) else 0
-
-    # Rolling series; pilot = null for weeks before Dec 1 so chart doesn't draw pilot line
-    weekly_sorted = weekly.sort_values("week")
-    pilot_start = pd.Timestamp(PILOT_START)
-    pilot_rolling = rolling_mean(weekly_sorted["pilot_productivity"], ROLLING_WINDOW)
-    pilot_raw_list = weekly_sorted["pilot_productivity"].tolist()
-    pilot_roll_list = pilot_rolling.tolist()
-    # Replace with null for weeks before pilot start
-    pilot_raw_out = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], pilot_raw_list)]
-    pilot_roll_out = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], pilot_roll_list)]
-    rolling_np = rolling_mean(weekly_sorted["non_pilot_productivity"], ROLLING_WINDOW)
-
-    # Last 4wk comparison for annotation (excluding holiday weeks)
-    last_4 = weekly_sorted[~weekly_sorted["week"].apply(is_holiday_week)].tail(ROLLING_WINDOW)
-    last_pilot = last_4["pilot_productivity"].mean()
-    last_np = last_4["non_pilot_productivity"].mean()
-    last_4wk_pct = ((last_pilot - last_np) / last_np * 100) if last_np else 0
-
-    survey = parse_survey_insights(survey_df)
-
-    def fmt_week(d):
-        try:
-            return d.strftime("%b ") + str(d.day)
-        except Exception:
-            return str(d)
-    week_labels = [fmt_week(d) for d in weekly_sorted["week"]]
-    holiday_gaps = [is_holiday_week(d) for d in weekly_sorted["week"]]
-    data_range_start = weekly_sorted["week"].min().strftime("%Y-%m-%d")
-    data_range_end = weekly_sorted["week"].max().strftime("%Y-%m-%d")
-
-    # Availability (from raw df, aligned to weekly); use null for holiday weeks (gap)
-    avail_df = compute_availability(df)
-    if not avail_df.empty:
-        merged_avail = weekly_sorted[["week"]].merge(avail_df, on="week", how="left")
-        av_devs_raw = merged_avail["activePilotDevs"].fillna(0).astype(int).tolist()
-        av_tix_raw = merged_avail["totalTickets"].fillna(0).astype(int).tolist()
-        avail_pilot_devs = [None if g else v for g, v in zip(holiday_gaps, av_devs_raw)]
-        avail_total_tickets = [None if g else v for g, v in zip(holiday_gaps, av_tix_raw)]
-    else:
-        avail_pilot_devs = [None if g else int(v) for g, v in zip(holiday_gaps, weekly_sorted["pilot_tickets"])]
-        avail_total_tickets = [None if g else int(v) for g, v in zip(holiday_gaps, weekly_sorted["total_tickets"])]
-
-    # Cumulative output from pilot start only; pilot = null before Dec 1
     pilot_start_ts = pd.Timestamp(PILOT_START)
-    mask_from_pilot = weekly_sorted["week"] >= pilot_start_ts
-    cum_weeks = weekly_sorted.loc[mask_from_pilot, "week"]
-    cum_pilot_raw = weekly_sorted.loc[mask_from_pilot, "pilot_tickets"].cumsum().tolist()
-    cum_non_pilot_raw = weekly_sorted.loc[mask_from_pilot, "non_pilot_tickets"].cumsum().tolist()
+    all_weeks = tickets['WeekEnding'].dropna().unique()
+    all_weeks = pd.DatetimeIndex(all_weeks).sort_values()
 
-    # Heatmap
-    heatmap = compute_heatmap(tickets[tickets["_week"] >= pilot_start])
+    rows = []
+    for week in all_weeks:
+        wk_tickets = tickets[tickets['WeekEnding'] == week]
+        pilot_tix = wk_tickets[wk_tickets['IsPilotTicket'] == 1]
+        nonpilot_tix = wk_tickets[wk_tickets['IsPilotTicket'] == 0]
 
-    export_date = parse_export_date_from_filename(path)
+        if week >= pilot_start_ts:
+            pilot_authors = len(PILOT_UUIDS)
+            nonpilot_authors = NON_PILOT_ROSTER
+        else:
+            all_pre = set()
+            for uuids_str in wk_tickets['AuthorUUIDs']:
+                all_pre.update(str(uuids_str).split(','))
+            nonpilot_authors = max(len(all_pre), 1)
+            pilot_authors = 0
+
+        total_tickets = len(wk_tickets)
+        pilot_count = len(pilot_tix)
+        nonpilot_count = len(nonpilot_tix)
+
+        pilot_prod = pilot_count / (pilot_authors * WORKDAYS_PER_WEEK) if pilot_authors > 0 else 0
+        nonpilot_prod = nonpilot_count / (nonpilot_authors * WORKDAYS_PER_WEEK) if nonpilot_authors > 0 else 0
+
+        pilot_qa = pilot_tix['HasQAChurn'].sum() / pilot_count if pilot_count > 0 else None
+        nonpilot_qa = nonpilot_tix['HasQAChurn'].sum() / nonpilot_count if nonpilot_count > 0 else None
+        ai_share = pilot_count / total_tickets if total_tickets > 0 and week >= pilot_start_ts else None
+
+        rows.append({
+            'WeekEnding': week,
+            'TotalTickets': total_tickets,
+            'PilotTickets': pilot_count,
+            'NonPilotTickets': nonpilot_count,
+            'PilotAuthors': pilot_authors,
+            'NonPilotAuthors': nonpilot_authors,
+            'PilotProductivity': pilot_prod,
+            'NonPilotProductivity': nonpilot_prod,
+            'PilotQAChurnRate': pilot_qa,
+            'NonPilotQAChurnRate': nonpilot_qa,
+            'AIOutputShare': ai_share,
+            'LowConfidence': total_tickets < MIN_TICKETS_THRESHOLD,
+        })
+
+    weekly = pd.DataFrame(rows)
+
+    pilot_mask = weekly['WeekEnding'] >= pilot_start_ts
+    confident = weekly[pilot_mask & ~weekly['LowConfidence']].copy()
+
+    for col in ['PilotProductivity', 'NonPilotProductivity', 'PilotQAChurnRate', 'NonPilotQAChurnRate']:
+        roll_col = f'{col}_Rolling'
+        std_col = f'{col}_Std'
+        weekly[roll_col] = None
+        weekly[std_col] = None
+        if len(confident) >= 2:
+            rolled = confident[col].rolling(window=ROLLING_WINDOW, min_periods=2)
+            confident[roll_col] = rolled.mean()
+            confident[std_col] = rolled.std()
+            weekly.loc[confident.index, roll_col] = confident[roll_col]
+            weekly.loc[confident.index, std_col] = confident[std_col]
+
+    return weekly
+
+
+def compute_size_complexity(tickets):
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    pilot_tix = tickets[tickets['IsPilotTicket'] == 1]
+    nonpilot_tix = tickets[(tickets['PREndDate'] >= pilot_start_ts) & (tickets['IsPilotTicket'] == 0)]
+
+    pilot_period_weeks = len(tickets[tickets['PREndDate'] >= pilot_start_ts]['WeekEnding'].unique())
+    pilot_fte_days = len(PILOT_UUIDS) * max(pilot_period_weeks, 1) * WORKDAYS_PER_WEEK
+    nonpilot_fte_days = NON_PILOT_ROSTER * max(pilot_period_weeks, 1) * WORKDAYS_PER_WEEK
+
+    buckets = []
+    for size in ['0-300', '301-1000', '1001+']:
+        for complexity in ['1-3', '4-10', '11+']:
+            p = pilot_tix[(pilot_tix['SizeBucket'] == size) & (pilot_tix['ComplexityBucket'] == complexity)]
+            np_ = nonpilot_tix[(nonpilot_tix['SizeBucket'] == size) & (nonpilot_tix['ComplexityBucket'] == complexity)]
+            if len(p) > 0 or len(np_) > 0:
+                buckets.append({
+                    'label': f'{size} / {complexity}',
+                    'size': size,
+                    'complexity': complexity,
+                    'pilot_tickets': int(len(p)),
+                    'nonpilot_tickets': int(len(np_)),
+                    'pilot_productivity': len(p) / pilot_fte_days if pilot_fte_days > 0 else 0,
+                    'nonpilot_productivity': len(np_) / nonpilot_fte_days if nonpilot_fte_days > 0 else 0,
+                })
+    return buckets
+
+
+def compute_baseline(tickets):
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    baseline = tickets[tickets['PREndDate'] < pilot_start_ts]
+    total = len(baseline)
+    authors_set = set()
+    for uuids_str in baseline['AuthorUUIDs']:
+        authors_set.update(str(uuids_str).split(','))
+    authors = len(authors_set)
+    workdays = len(baseline['WeekEnding'].unique()) * WORKDAYS_PER_WEEK
+    productivity = total / (authors * workdays) if authors * workdays > 0 else 0
+    qa_churn_rate = baseline['HasQAChurn'].sum() / total if total > 0 else 0
+    pre_min = baseline['PREndDate'].min()
+    pre_max = baseline['PREndDate'].max()
+    date_range = f"{pre_min.strftime('%Y-%m-%d')} to {pre_max.strftime('%Y-%m-%d')}" if total > 0 else ''
     return {
-        "meta": {
-            "title": "AI-Assisted Development - Pilot KPIs",
-            "dataRangeStart": data_range_start,
-            "dataRangeEnd": data_range_end,
-            "exportDate": export_date,
-            "exportFilename": path.name,
-            "pilotStart": "Dec 1",
-            "pilotStartDate": PILOT_START,
-            "pilotCount": PILOT_ROSTER,
-            "nonPilotCount": NON_PILOT_ROSTER,
-            "validWeeks": int(valid_weeks),
-            "refreshedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        },
-        "kpiCards": {
-            "pilotProductivity": {
-                "value": round(pilot_prod, 3),
-                "vsBaseline": f"{pilot_prod_vs_baseline:+.3f}" if pilot_prod_vs_baseline >= 0 else f"{pilot_prod_vs_baseline:.3f}",
-                "unit": "tickets / FTE-day",
-            },
-            "productivityMultiple": {
-                "value": f"{prod_multiple:.2f}×",
-                "nonPilotValue": round(non_pilot_prod, 3),
-            },
-            "pilotQaChurn": {
-                "value": f"{pilot_qa:.1f}%",
-                "vsBaseline": f"{pilot_qa_vs_baseline:+.1f}pp" if pilot_qa_vs_baseline <= 0 else f"{pilot_qa_vs_baseline:.1f}pp",
-                "nonPilotValue": f"{non_pilot_qa:.1f}%",
-            },
-            "aiOutputShare": {
-                "value": f"{ai_share_pct:.1f}%",
-                "tickets": f"{pilot_tix_total} of {total_tix}",
-                "devs": f"{PILOT_ROSTER} of {total_devs}",
-            },
-            "availability": {
-                "value": f"{availability_pct:.1f}%",
-                "detail": "weeks with ≥50% pilot active",
-                "devCount": PILOT_ROSTER,
-            },
-        },
-        "productivity": {
-            "weeks": week_labels,
-            "pilot": {
-                "rolling": pilot_roll_out,
-                "raw": pilot_raw_out,
-                "lowConfidence": weekly_sorted["low_confidence"].tolist(),
-                "holidayGap": holiday_gaps,
-            },
-            "nonPilot": {
-                "rolling": rolling_np.tolist(),
-                "raw": weekly_sorted["non_pilot_productivity"].tolist(),
-            },
-            "baseline": BASELINE_PRODUCTIVITY,
-            "last4wkComparison": f"{last_4wk_pct:+.0f}%",
-        },
-        "qaChurn": {
-            "weeks": week_labels,
-            "pilot": _align_series(qa_weekly, weekly_sorted["week"], "pilot_churn_pct", pilot_start, use_null_before_pilot=True),
-            "nonPilot": _align_series(qa_weekly, weekly_sorted["week"], "non_pilot_churn_pct"),
-            "pilotPeriodAvg": round(pilot_qa, 1),
-            "nonPilotPeriodAvg": round(non_pilot_qa, 1),
-        },
-        "availability": {
-            "weeks": week_labels,
-            "activePilotDevs": avail_pilot_devs,
-            "totalTickets": avail_total_tickets,
-        },
-        "cumulativeOutput": {
-            "weeks": [fmt_week(d) for d in cum_weeks],
-            "pilot": cum_pilot_raw,
-            "nonPilot": cum_non_pilot_raw,
-        },
-        "heatmap": heatmap,
-        "methodology": [
-            {"term": "Productivity", "def": "Tickets ÷ (Authors × Workdays). Roster-based: 6 pilot, 9 non-pilot counted every week."},
-            {"term": "QA Churn Rate", "def": "Tickets with QAChurnLines > 0 ÷ Total tickets."},
-            {"term": "Availability", "def": "Unique pilot devs with PR activity in a week ÷ 6."},
-            {"term": "Pilot ticket", "def": f"≥1 PR by pilot dev AND completed after pilot start ({PILOT_START})."},
-            {"term": "Low-confidence weeks", "def": "(<5 tickets) are dimmed and excluded from rolling averages."},
-            {"term": "Rolling average", "def": "4-week window, min 2 points, high-confidence only."},
-        ],
-        "survey": survey,
+        'tickets': int(total),
+        'authors': authors,
+        'workdays': workdays,
+        'productivity': round(productivity, 4),
+        'qa_churn_rate': round(qa_churn_rate, 4),
+        'date_range': date_range,
     }
 
 
-def _empty_dashboard_data() -> dict:
-    """Return empty structure when no xlsx or no valid data. No fake metrics."""
+def compute_pilot_summary(tickets, weekly):
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    pilot_tix = tickets[tickets['IsPilotTicket'] == 1]
+    nonpilot_tix = tickets[(tickets['PREndDate'] >= pilot_start_ts) & (tickets['IsPilotTicket'] == 0)]
+    pilot_weeks = weekly[(weekly['WeekEnding'] >= pilot_start_ts) & ~weekly['LowConfidence']]
+
+    pilot_prod_avg = pilot_weeks['PilotProductivity'].mean() if len(pilot_weeks) > 0 else 0
+    nonpilot_prod_avg = pilot_weeks['NonPilotProductivity'].mean() if len(pilot_weeks) > 0 else 0
+
+    pilot_qa = pilot_tix['HasQAChurn'].sum() / len(pilot_tix) if len(pilot_tix) > 0 else 0
+    nonpilot_qa = nonpilot_tix['HasQAChurn'].sum() / len(nonpilot_tix) if len(nonpilot_tix) > 0 else 0
+
+    total_tix = len(pilot_tix) + len(nonpilot_tix)
+    ai_share = len(pilot_tix) / total_tix if total_tix > 0 else 0
+
     return {
-        "meta": {
-            "title": "AI-Assisted Development - Pilot KPIs",
-            "dataRangeStart": "",
-            "dataRangeEnd": "",
-            "exportDate": "",
-            "exportFilename": "",
-            "pilotStart": "Dec 1",
-            "pilotCount": PILOT_ROSTER,
-            "nonPilotCount": NON_PILOT_ROSTER,
-            "validWeeks": 0,
-            "refreshedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "noData": True,
-        },
-        "kpiCards": {
-            "pilotProductivity": {"value": None, "vsBaseline": "—", "unit": "tickets / FTE-day"},
-            "productivityMultiple": {"value": "—", "nonPilotValue": None},
-            "pilotQaChurn": {"value": "—", "vsBaseline": "—", "nonPilotValue": "—"},
-            "aiOutputShare": {"value": "—", "tickets": "0 of 0", "devs": f"{PILOT_ROSTER} of {PILOT_ROSTER + NON_PILOT_ROSTER}"},
-            "availability": {"value": "—", "detail": "No data", "devCount": PILOT_ROSTER},
-        },
-        "productivity": {
-            "weeks": [],
-            "pilot": {"rolling": [], "raw": [], "lowConfidence": [], "holidayGap": []},
-            "nonPilot": {"rolling": [], "raw": []},
-            "baseline": BASELINE_PRODUCTIVITY,
-            "last4wkComparison": "—",
-        },
-        "qaChurn": {
-            "weeks": [],
-            "pilot": [],
-            "nonPilot": [],
-            "pilotPeriodAvg": None,
-            "nonPilotPeriodAvg": None,
-        },
-        "availability": {
-            "weeks": [],
-            "activePilotDevs": [],
-            "totalTickets": [],
-        },
-        "cumulativeOutput": {
-            "weeks": [],
-            "pilot": [],
-            "nonPilot": [],
-        },
-        "heatmap": {"rows": [], "cols": [], "cells": []},
-        "methodology": [
-            {"term": "Productivity", "def": "Tickets ÷ (Authors × Workdays). Roster-based: 6 pilot, 9 non-pilot counted every week."},
-            {"term": "QA Churn Rate", "def": "Tickets with QAChurnLines > 0 ÷ Total tickets."},
-            {"term": "Availability", "def": "Unique pilot devs with PR activity in a week ÷ 6."},
-            {"term": "Pilot ticket", "def": "≥1 PR by pilot dev AND completed after pilot start."},
-            {"term": "Low-confidence weeks", "def": "(<5 tickets) are dimmed and excluded from rolling averages."},
-            {"term": "Rolling average", "def": "4-week window, min 2 points, high-confidence only."},
-        ],
-        "survey": {
-            "productivity": {"stat": "—", "quote": ""},
-            "quality": {"stat": "—", "quote": ""},
-            "experience": {"stat": "—", "quote": ""},
-        },
+        'pilot_tickets': int(len(pilot_tix)),
+        'nonpilot_tickets': int(len(nonpilot_tix)),
+        'total_tickets': total_tix,
+        'pilot_authors': len(PILOT_UUIDS),
+        'nonpilot_authors': NON_PILOT_ROSTER,
+        'pilot_productivity': round(pilot_prod_avg, 4),
+        'nonpilot_productivity': round(nonpilot_prod_avg, 4),
+        'productivity_ratio': round(pilot_prod_avg / nonpilot_prod_avg, 2) if nonpilot_prod_avg > 0 else 0,
+        'pilot_qa_churn': round(pilot_qa, 4),
+        'nonpilot_qa_churn': round(nonpilot_qa, 4),
+        'ai_output_share': round(ai_share, 4),
+        'weeks_of_data': int(len(pilot_weeks)),
     }
 
 
-def validate_dashboard_data(data: dict) -> list:
-    """Return list of validation errors. Empty list = valid."""
-    errs = []
-    required = ["meta", "kpiCards", "productivity", "qaChurn", "availability", "cumulativeOutput", "heatmap", "methodology", "survey"]
-    for k in required:
-        if k not in data:
-            errs.append(f"Missing top-level key: {k}")
-    if "meta" in data and not isinstance(data["meta"], dict):
-        errs.append("meta must be object")
-    if "productivity" in data:
-        p = data["productivity"]
-        if not isinstance(p.get("weeks", []), list):
-            errs.append("productivity.weeks must be array")
-        if "pilot" in p and not isinstance(p["pilot"], dict):
-            errs.append("productivity.pilot must be object")
-    if "qaChurn" in data:
-        q = data["qaChurn"]
-        if not isinstance(q.get("weeks", []), list):
-            errs.append("qaChurn.weeks must be array")
-    return errs
+def compute_cumulative(tickets):
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    pilot_period = tickets[tickets['PREndDate'] >= pilot_start_ts]
+    weeks = sorted(pilot_period['WeekEnding'].unique())
+    cum = []
+    p_total, np_total = 0, 0
+    for w in weeks:
+        wk = pilot_period[pilot_period['WeekEnding'] == w]
+        p_total += len(wk[wk['IsPilotTicket'] == 1])
+        np_total += len(wk[wk['IsPilotTicket'] == 0])
+        cum.append({
+            'week': pd.Timestamp(w).strftime('%Y-%m-%d'),
+            'pilot_cumulative': p_total,
+            'nonpilot_cumulative': np_total,
+            'total_cumulative': p_total + np_total,
+            'ai_share': round(p_total / (p_total + np_total), 4) if (p_total + np_total) > 0 else 0,
+        })
+    return cum
 
 
-def inject_template(template: str, data: dict) -> str:
-    data_json = json.dumps(data, indent=2)
-    # Escape for embedding in JS
-    js = f"window.__DASHBOARD_DATA__ = {data_json};"
-    html = template.replace("// __DATA_PLACEHOLDER__", js)
+def compute_availability(prs):
+    prs = prs.copy()
+    prs['is_pilot'] = prs['AuthorUUID'].isin(PILOT_UUIDS)
+    pilot_prs = prs[prs['is_pilot']]
+    pilot_prs = pilot_prs.copy()
+    pilot_prs['WeekEnding'] = pd.to_datetime(pilot_prs['PREnd']).dt.to_period('W-SAT').dt.end_time.dt.normalize()
 
-    chartjs_path = JS_DIR / "chart.umd.min.js"
-    annotation_path = JS_DIR / "chartjs-plugin-annotation.min.js"
-    if chartjs_path.exists() and annotation_path.exists():
-        chartjs = chartjs_path.read_text(encoding="utf-8")
-        annotation = annotation_path.read_text(encoding="utf-8")
-        html = html.replace("// __CHARTJS_PLACEHOLDER__", f"{chartjs}\n{annotation}")
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    weeks = sorted(pilot_prs['WeekEnding'].unique())
+    result = []
+    for w in weeks:
+        if w < pilot_start_ts:
+            continue
+        wk = pilot_prs[pilot_prs['WeekEnding'] == w]
+        active_devs = wk['AuthorUUID'].nunique()
+        result.append({
+            'week': pd.Timestamp(w).strftime('%Y-%m-%d'),
+            'active_pilot_devs': active_devs,
+            'total_pilot_devs': len(PILOT_UUIDS),
+            'availability_pct': round(active_devs / len(PILOT_UUIDS), 4),
+        })
+    return result
+
+
+def parse_survey(survey_path, sheet_name=None):
+    if sheet_name:
+        sheets_to_try = [sheet_name]
     else:
-        print("WARNING: Chart.js files not found in public/js/, scripts will not be inlined")
-    return html
+        xl = pd.ExcelFile(survey_path)
+        found = find_survey_sheet(xl)
+        sheets_to_try = [found] if found else []
+
+    for sn in sheets_to_try:
+        try:
+            df = pd.read_excel(survey_path, sheet_name=sn)
+        except Exception:
+            continue
+
+        try:
+            prod_col = next(c for c in df.columns if 'productive' in str(c).lower())
+            mod_col = next(c for c in df.columns if 'modify' in str(c).lower())
+            task_col = next(c for c in df.columns if 'tasks' in str(c).lower())
+            scenario_col = next(c for c in df.columns if 'scenarios' in str(c).lower())
+            risk_col = next(c for c in df.columns if 'issues or risks' in str(c).lower())
+            benefit_col = next(c for c in df.columns if 'biggest benefits' in str(c).lower())
+            drawback_col = next(c for c in df.columns if 'drawbacks' in str(c).lower())
+            recommend_col = next(c for c in df.columns if 'improvements' in str(c).lower())
+        except StopIteration:
+            continue
+
+        n = len(df)
+        prod_counts = df[prod_col].value_counts().to_dict()
+        positive = sum(v for k, v in prod_counts.items() if 'more productive' in str(k).lower())
+        neutral = sum(v for k, v in prod_counts.items() if 'no noticeable' in str(k).lower())
+        negative = sum(v for k, v in prod_counts.items() if 'less productive' in str(k).lower())
+        mod_counts = df[mod_col].value_counts().to_dict()
+
+        def parse_multi(col):
+            all_items = []
+            for row in df[col]:
+                items = [t.strip().rstrip(';') for t in str(row).split(';') if t.strip() and t.strip() != 'nan']
+                all_items.extend(items)
+            return [{'label': k, 'count': v, 'pct': round(v / n, 4)} for k, v in Counter(all_items).most_common()]
+
+        tasks = parse_multi(task_col)
+        scenarios = parse_multi(scenario_col)
+        risks = parse_multi(risk_col)
+
+        quotes = []
+        for _, row in df.iterrows():
+            entry = {}
+            name = str(row.get('Name', '')).split()[0] if pd.notna(row.get('Name')) else 'Anon'
+            if pd.notna(row.get(benefit_col)):
+                entry['benefit'] = str(row[benefit_col])[:500]
+            if pd.notna(row.get(drawback_col)):
+                entry['drawback'] = str(row[drawback_col])[:500]
+            if pd.notna(row.get(recommend_col)):
+                entry['recommendation'] = str(row[recommend_col])[:500]
+            if entry:
+                entry['name'] = name
+                quotes.append(entry)
+
+        return {
+            'respondents': n,
+            'total_pilot': len(PILOT_UUIDS),
+            'response_rate': round(n / len(PILOT_UUIDS), 4),
+            'productivity_perception': {
+                'positive': int(positive),
+                'neutral': int(neutral),
+                'negative': int(negative),
+                'detail': {str(k): int(v) for k, v in prod_counts.items()},
+            },
+            'modification_frequency': {str(k): int(v) for k, v in mod_counts.items()},
+            'tasks_used': tasks,
+            'scenarios_encouraged': scenarios,
+            'risks_observed': risks,
+            'quotes': quotes,
+        }
+    return None
+
+
+def _sanitize_for_json(obj):
+    """Recursively replace NaN/Inf with None so JSON is valid."""
+    if obj is None:
+        return None
+    if isinstance(obj, dict):
+        return {k: _sanitize_for_json(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize_for_json(x) for x in obj]
+    if isinstance(obj, (pd.Timestamp, datetime, date)):
+        return obj.strftime('%Y-%m-%d')
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.floating, float)):
+        if obj != obj or obj == float('inf') or obj == float('-inf'):
+            return None
+        return round(float(obj), 6)
+    if isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    try:
+        if pd.isna(obj):
+            return None
+    except (TypeError, ValueError):
+        pass
+    return obj
+
+
+def serialize(obj):
+    """Used as json.dumps default for remaining edge cases."""
+    if isinstance(obj, (pd.Timestamp, datetime, date)):
+        return obj.strftime('%Y-%m-%d')
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.floating,)):
+        return None if np.isnan(obj) else round(float(obj), 6)
+    if isinstance(obj, (np.bool_,)):
+        return bool(obj)
+    if pd.isna(obj):
+        return None
+    raise TypeError(f"Not serializable: {type(obj)} {obj}")
+
+
+def build_dashboard_data(input_path, sheet_name=None):
+    prs = load_data(input_path, sheet_name)
+    tickets = aggregate_to_tickets(prs)
+    weekly = compute_weekly_metrics(tickets)
+    size_complexity = compute_size_complexity(tickets)
+    baseline = compute_baseline(tickets)
+    summary = compute_pilot_summary(tickets, weekly)
+    cumulative = compute_cumulative(tickets)
+    availability = compute_availability(prs)
+    survey = parse_survey(input_path)
+
+    pilot_start_ts = pd.Timestamp(PILOT_START)
+    pilot_weekly = weekly[weekly['WeekEnding'] >= pilot_start_ts]
+    weekly_chart = []
+    for _, row in pilot_weekly.iterrows():
+        weekly_chart.append({
+            'week': row['WeekEnding'].strftime('%Y-%m-%d'),
+            'totalTickets': int(row['TotalTickets']),
+            'pilotTickets': int(row['PilotTickets']),
+            'nonpilotTickets': int(row['NonPilotTickets']),
+            'pilotProductivity': row['PilotProductivity'],
+            'nonpilotProductivity': row['NonPilotProductivity'],
+            'pilotProductivityRolling': row.get('PilotProductivity_Rolling'),
+            'nonpilotProductivityRolling': row.get('NonPilotProductivity_Rolling'),
+            'pilotProductivityStd': row.get('PilotProductivity_Std'),
+            'nonpilotProductivityStd': row.get('NonPilotProductivity_Std'),
+            'pilotQARate': row['PilotQAChurnRate'],
+            'nonpilotQARate': row['NonPilotQAChurnRate'],
+            'pilotQARateRolling': row.get('PilotQAChurnRate_Rolling'),
+            'nonpilotQARateRolling': row.get('NonPilotQAChurnRate_Rolling'),
+            'aiOutputShare': row['AIOutputShare'],
+            'lowConfidence': bool(row['LowConfidence']),
+        })
+
+    pre_pilot = weekly[weekly['WeekEnding'] < pilot_start_ts]
+    baseline_weekly = []
+    for _, row in pre_pilot.iterrows():
+        baseline_weekly.append({
+            'week': row['WeekEnding'].strftime('%Y-%m-%d'),
+            'totalTickets': int(row['TotalTickets']),
+            'nonpilotProductivity': row['NonPilotProductivity'],
+            'nonpilotQARate': row['NonPilotQAChurnRate'],
+            'lowConfidence': bool(row['LowConfidence']),
+        })
+
+    pre_min = prs['PREnd'].min()
+    pre_max = prs['PREnd'].max()
+    data_range = f"{pd.Timestamp(pre_min).strftime('%Y-%m-%d')} to {pd.Timestamp(pre_max).strftime('%Y-%m-%d')}"
+
+    return {
+        'generated': datetime.now().strftime('%Y-%m-%d %H:%M'),
+        'dataRange': data_range,
+        'pilotStart': PILOT_START,
+        'rollingWindow': ROLLING_WINDOW,
+        'minTicketsThreshold': MIN_TICKETS_THRESHOLD,
+        'config': {
+            'pilotCount': len(PILOT_UUIDS),
+            'nonPilotCount': NON_PILOT_ROSTER,
+            'workdaysPerWeek': WORKDAYS_PER_WEEK,
+        },
+        'baseline': baseline,
+        'summary': summary,
+        'weekly': weekly_chart,
+        'baselineWeekly': baseline_weekly,
+        'sizeComplexity': size_complexity,
+        'cumulative': cumulative,
+        'availability': availability,
+        'survey': survey,
+    }
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", "-i", type=Path, help="Path to xlsx file")
-    parser.add_argument("--pull-sheet", "-p", type=str, help="Pull sheet name (e.g. 'Pull 02_11_26')")
-    parser.add_argument("--survey-sheet", "-s", type=str, default=None, help="Survey sheet (default: auto-detect 'Current survey data' or 'Survey 1 results')")
+    parser = argparse.ArgumentParser(description='Generate AI Dev KPI Dashboard JSON')
+    parser.add_argument('--input', '-i', type=Path, help='Path to xlsx file (default: latest in exports/)')
+    parser.add_argument('--sheet', '-s', type=str, help='PR sheet name (default: auto-detect)')
     args = parser.parse_args()
+
+    if not HAS_PANDAS:
+        print("pandas required. Run: pip install pandas openpyxl")
+        sys.exit(1)
 
     if args.input:
         path = Path(args.input)
@@ -677,37 +523,31 @@ def main():
             path = find_latest_xlsx()
         except FileNotFoundError as e:
             print(str(e))
-            print("Skipping dashboard refresh (no xlsx). Keeping committed portfolio.html for deploy.")
+            print("Skipping refresh. Keeping existing dashboard-data.json.")
             return
 
-    if not HAS_PANDAS:
-        print("pandas required for xlsx. Run: pip install -r requirements-pipeline.txt")
-        print("Skipping dashboard refresh. Keeping committed portfolio.html for deploy.")
-        return
-
     xl = pd.ExcelFile(path)
-    pull_sheet = args.pull_sheet or find_pull_sheet(xl)
+    pull_sheet = args.sheet or find_pull_sheet(xl)
     if not pull_sheet:
-        print(f"Error: No '{DASHBOARD_SHEET}' or 'Pull MM_DD_YY' sheet found. Use --pull-sheet to specify.")
+        print("Error: No Pull/dashboard sheet found. Use --sheet to specify.")
         sys.exit(1)
 
-    survey_df = load_survey_sheet(path, args.survey_sheet or None)
-    data = build_dashboard_data(path, pull_sheet, survey_df)
-    errs = validate_dashboard_data(data)
-    if errs:
-        print("WARNING: Dashboard data validation issues:")
-        for e in errs:
-            print(f"  - {e}")
-    template = TEMPLATE_PATH.read_text(encoding="utf-8")
-    html = inject_template(template, data)
+    data = build_dashboard_data(path, pull_sheet)
+    data = _sanitize_for_json(data)
+    json_str = json.dumps(data, default=serialize, indent=2)
 
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(html, encoding="utf-8")
-    OUTPUT_ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_ARCHIVE.write_text(html, encoding="utf-8")
-    print(f"Dashboard written to: {OUTPUT_PATH}")
-    print(f"Archive copy: {OUTPUT_ARCHIVE}")
+    JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    JSON_OUTPUT.write_text(json_str, encoding='utf-8')
+    print(f"JSON written to: {JSON_OUTPUT}")
+
+    print(f"\nSummary:")
+    print(f"  Pilot: {data['summary']['pilot_tickets']} tickets, "
+          f"productivity {data['summary']['pilot_productivity']:.3f} tickets/FTE-day")
+    print(f"  Non-Pilot: {data['summary']['nonpilot_tickets']} tickets, "
+          f"productivity {data['summary']['nonpilot_productivity']:.3f} tickets/FTE-day")
+    print(f"  Ratio: {data['summary']['productivity_ratio']}×")
+    print(f"  QA Churn: Pilot {data['summary']['pilot_qa_churn']:.1%} vs Non-Pilot {data['summary']['nonpilot_qa_churn']:.1%}")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
