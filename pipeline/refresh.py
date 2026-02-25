@@ -38,8 +38,9 @@ ROLLING_WINDOW = 4
 MIN_TICKETS_THRESHOLD = 5
 BASELINE_PRODUCTIVITY = 0.169
 BASELINE_QA_CHURN_PCT = 23.0
-# Holiday weeks: dimmed, line can gap (Dec 27 2025, Jan 3 2026, etc.)
-HOLIDAY_WEEK_STRS = ("2025-12-27", "2026-01-03", "2025-12-20", "2026-01-10")
+# Holiday weeks (week-start dates): excluded from KPI means, shown as gaps in charts
+# Dec 22 week (Christmas), Dec 29 week (New Year)
+HOLIDAY_WEEK_STRS = ("2025-12-22", "2025-12-29")
 
 # -----------------------------------------------------------------------------
 # Paths
@@ -255,7 +256,7 @@ def rolling_mean(series, window: int):
 def is_holiday_week(ts) -> bool:
     try:
         s = pd.Timestamp(ts).strftime("%Y-%m-%d")
-        return s in ("2025-12-27", "2026-01-03", "2025-12-20", "2026-01-10")
+        return s in HOLIDAY_WEEK_STRS
     except Exception:
         return False
 
@@ -385,21 +386,27 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
         return _empty_dashboard_data()
 
     pilot_start = pd.Timestamp(PILOT_START)
-    pilot_weekly = weekly[weekly["week"] >= pilot_start]
+    pilot_weekly = weekly[weekly["week"] >= pilot_start].copy()
 
-    # KPIs (pilot period only)
+    # Exclude holiday weeks from KPI calculations (show as gaps in charts, not in means)
+    pilot_weekly["_holiday"] = pilot_weekly["week"].apply(is_holiday_week)
+    pilot_weekly_active = pilot_weekly[~pilot_weekly["_holiday"]]
+
+    # KPIs (pilot period only, excluding holidays)
     pilot_tickets_only = tickets[(tickets["_pilot"]) & (tickets["_week"] >= pilot_start)]
     non_pilot_tickets_only = tickets[(~tickets["_pilot"]) & (tickets["_week"] >= pilot_start)]
     pilot_tix_total = pilot_tickets_only["JiraTicket"].nunique()
     non_pilot_tix_total = non_pilot_tickets_only["JiraTicket"].nunique()
     total_tix = pilot_tix_total + non_pilot_tix_total
 
-    pilot_prod = pilot_weekly["pilot_productivity"].mean() if not pilot_weekly.empty else 0
-    non_pilot_prod = pilot_weekly["non_pilot_productivity"].mean() if not pilot_weekly.empty else 0
+    pilot_prod = pilot_weekly_active["pilot_productivity"].mean() if not pilot_weekly_active.empty else 0
+    non_pilot_prod = pilot_weekly_active["non_pilot_productivity"].mean() if not pilot_weekly_active.empty else 0
     prod_multiple = pilot_prod / non_pilot_prod if non_pilot_prod else 0
 
     qa_pilot_period = qa_weekly[qa_weekly["week"] >= pilot_start] if not qa_weekly.empty else pd.DataFrame()
-    pilot_qa_raw = qa_pilot_period["pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
+    if not qa_pilot_period.empty:
+        qa_pilot_period = qa_pilot_period[~qa_pilot_period["week"].apply(is_holiday_week)]
+    pilot_qa_raw = qa_pilot_period["pilot_churn_pct"].dropna().mean() if not qa_pilot_period.empty else 0
     pilot_qa = 0 if pd.isna(pilot_qa_raw) else pilot_qa_raw
     non_pilot_qa = qa_pilot_period["non_pilot_churn_pct"].mean() if not qa_pilot_period.empty else 0
     non_pilot_qa = 0 if pd.isna(non_pilot_qa) else non_pilot_qa
@@ -410,8 +417,8 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     total_devs = PILOT_ROSTER + NON_PILOT_ROSTER
     ai_share_pct = pilot_tix_total / total_tix * 100 if total_tix else 0
 
-    valid_weeks = (pilot_weekly["total_tickets"] >= MIN_TICKETS_THRESHOLD).sum() if not pilot_weekly.empty else 0
-    availability_pct = (pilot_weekly["pilot_tickets"] > 0).sum() / len(pilot_weekly) * 100 if len(pilot_weekly) else 0
+    valid_weeks = (pilot_weekly_active["total_tickets"] >= MIN_TICKETS_THRESHOLD).sum() if not pilot_weekly_active.empty else 0
+    availability_pct = (pilot_weekly_active["pilot_tickets"] > 0).sum() / len(pilot_weekly_active) * 100 if len(pilot_weekly_active) else 0
 
     # Rolling series; pilot = null for weeks before Dec 1 so chart doesn't draw pilot line
     weekly_sorted = weekly.sort_values("week")
@@ -424,8 +431,8 @@ def build_dashboard_data(path: Path, pull_sheet: str, survey_df) -> dict:
     pilot_roll_out = [None if w < pilot_start else v for w, v in zip(weekly_sorted["week"], pilot_roll_list)]
     rolling_np = rolling_mean(weekly_sorted["non_pilot_productivity"], ROLLING_WINDOW)
 
-    # Last 4wk comparison for annotation
-    last_4 = weekly_sorted.tail(ROLLING_WINDOW)
+    # Last 4wk comparison for annotation (excluding holiday weeks)
+    last_4 = weekly_sorted[~weekly_sorted["week"].apply(is_holiday_week)].tail(ROLLING_WINDOW)
     last_pilot = last_4["pilot_productivity"].mean()
     last_np = last_4["non_pilot_productivity"].mean()
     last_4wk_pct = ((last_pilot - last_np) / last_np * 100) if last_np else 0
