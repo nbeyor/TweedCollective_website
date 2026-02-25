@@ -101,13 +101,13 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
   },
   {
     id: 'ai-opportunity-roadmap',
-    title: 'AI Opportunity & Roadmap Evaluation',
-    shortTitle: 'AI Opportunity Roadmap',
-    description: 'Outside-in strategic framework for assessing operating company AI maturity, initiative portfolio, and value creation roadmap.',
-    category: 'Assessment Template',
+    title: 'MKG: AI Opportunity & Roadmap Assessment',
+    shortTitle: 'MKG AI Assessment',
+    description: 'Strategic evaluation of MKG\'s AI ecosystem — ION platform, initiative portfolio, moat analysis, and value creation roadmap.',
+    category: 'Strategic Assessment',
     icon: 'Compass',
     date: '2026-02',
-    readTime: '20 min',
+    readTime: '25 min',
     visibility: 'unlisted',
   },
   {
