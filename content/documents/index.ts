@@ -11,7 +11,7 @@
  */
 
 import { DocumentConfig, DocumentMeta, DocumentVisibility } from '@/lib/types'
-import { BarChart3, Code2, Dna, FileText, Settings, Shield, LucideIcon } from 'lucide-react'
+import { BarChart3, Code2, Compass, Dna, FileText, Settings, Shield, LucideIcon } from 'lucide-react'
 
 // ============================================
 // Document Configurations
@@ -100,6 +100,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',  // Placeholder for future content
   },
   {
+    id: 'ai-opportunity-roadmap',
+    title: 'AI Opportunity & Roadmap Evaluation',
+    shortTitle: 'AI Opportunity Roadmap',
+    description: 'Outside-in strategic framework for assessing operating company AI maturity, initiative portfolio, and value creation roadmap.',
+    category: 'Assessment Template',
+    icon: 'Compass',
+    date: '2026-02',
+    readTime: '20 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',
@@ -122,6 +133,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
 const ICON_MAP: Record<string, LucideIcon> = {
   BarChart3,
   Code2,
+  Compass,
   Dna,
   FileText,
   Settings,
