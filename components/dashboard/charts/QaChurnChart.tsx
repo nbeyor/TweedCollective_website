@@ -10,6 +10,7 @@ interface Props {
 
 const PILOT_COLOR = '#15803d'
 const NONPILOT_COLOR = '#d97706'
+const MUTED_COLOR = 'rgba(168,162,158,0.3)'
 const BASELINE_COLOR = '#94a3b8'
 
 function formatWeekLabel(w: string) {
@@ -19,62 +20,96 @@ function formatWeekLabel(w: string) {
 
 export function QaChurnChart({ data }: Props) {
   const { baselineWeekly, weekly, baseline } = data
+  const pilotStartIdx = baselineWeekly.length
 
   const merged = useMemo(() => {
-    const baseConfident = baselineWeekly
-      .filter(b => !b.lowConfidence)
-      .map(b => ({
-        week: b.week,
-        npRate: b.nonpilotQARate,
-        pilotRate: null as number | null,
-        isPilotPeriod: false,
-      }))
+    const baseEntries = baselineWeekly.map(b => ({
+      week: b.week,
+      nonpilotRate: b.nonpilotQARate,
+      pilotRate: null as number | null,
+      lowConfidence: b.lowConfidence,
+      isPilotPeriod: false,
+      pilotRolling: null as number | null,
+    }))
 
-    const pilotConfident = weekly
-      .filter(w => !w.lowConfidence)
-      .map(w => ({
-        week: w.week,
-        npRate: w.nonpilotQARate,
-        pilotRate: w.pilotQARate,
-        isPilotPeriod: true,
-      }))
+    const pilotEntries = weekly.map(w => ({
+      week: w.week,
+      nonpilotRate: w.nonpilotQARate,
+      pilotRate: w.pilotQARate,
+      lowConfidence: w.lowConfidence,
+      isPilotPeriod: true,
+      pilotRolling: w.pilotQARateRolling,
+    }))
 
-    return [...baseConfident, ...pilotConfident]
+    return [...baseEntries, ...pilotEntries]
   }, [baselineWeekly, weekly])
 
-  const pilotStartIdx = useMemo(() => {
-    return merged.findIndex(e => e.isPilotPeriod)
-  }, [merged])
+  // Compute non-pilot QA rolling across full timeline (same logic as productivity chart)
+  const npRolling = useMemo(() => {
+    const window = data.rollingWindow
+    return merged.map((_, i) => {
+      const windowEntries = merged.slice(Math.max(0, i - window + 1), i + 1)
+        .filter(e => !e.lowConfidence)
+        .filter(e => e.nonpilotRate != null)
+      if (windowEntries.length < 2) return null
+      const avg = windowEntries.reduce((s, e) => s + (e.nonpilotRate ?? 0), 0) / windowEntries.length
+      return avg * 100
+    })
+  }, [merged, data.rollingWindow])
 
   const labels = merged.map(e => formatWeekLabel(e.week))
 
   const chartData = {
     labels,
     datasets: [
+      // 1. Pilot rolling avg — solid green line, pilot period only
       {
-        label: 'Pilot QA Churn',
-        data: merged.map(e => e.pilotRate != null ? e.pilotRate * 100 : null),
+        label: 'Pilot (rolling avg)',
+        data: merged.map(e => e.pilotRolling != null ? e.pilotRolling * 100 : null),
         borderColor: PILOT_COLOR,
-        backgroundColor: PILOT_COLOR,
+        backgroundColor: 'transparent',
         borderWidth: 2.5,
         tension: 0.3,
-        pointRadius: merged.map(e => e.isPilotPeriod ? 4 : 0),
-        pointStyle: 'circle',
+        pointRadius: 0,
+        pointHoverRadius: 4,
         spanGaps: false,
         order: 2,
       },
+      // 2. Non-pilot rolling avg — dashed amber, full timeline
       {
-        label: 'Non-Pilot QA Churn',
-        data: merged.map(e => e.npRate != null ? e.npRate * 100 : null),
+        label: 'Non-Pilot (rolling avg)',
+        data: npRolling,
         borderColor: NONPILOT_COLOR,
-        backgroundColor: NONPILOT_COLOR,
+        backgroundColor: 'transparent',
         borderWidth: 2,
         borderDash: [6, 3],
         tension: 0.3,
-        pointRadius: 3,
-        pointStyle: 'rectRot',
+        pointRadius: 0,
+        pointHoverRadius: 4,
         spanGaps: false,
         order: 3,
+      },
+      // 3. Pilot raw dots — green circles, pilot period only
+      {
+        label: 'Pilot (weekly)',
+        data: merged.map(e => e.isPilotPeriod && e.pilotRate != null ? e.pilotRate * 100 : null),
+        borderColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : PILOT_COLOR),
+        backgroundColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : PILOT_COLOR),
+        pointRadius: merged.map(e => e.isPilotPeriod ? (e.lowConfidence ? 3 : 4) : 0),
+        pointStyle: 'circle',
+        showLine: false,
+        order: 1,
+      },
+      // 4. Non-pilot raw dots — amber diamonds, full timeline
+      {
+        label: 'Non-Pilot (weekly)',
+        data: merged.map(e => e.nonpilotRate != null ? e.nonpilotRate * 100 : null),
+        borderColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : NONPILOT_COLOR),
+        backgroundColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : NONPILOT_COLOR),
+        pointRadius: merged.map(e => e.lowConfidence ? 2.5 : 3),
+        pointStyle: 'rectRot',
+        showLine: false,
+        order: 1,
       },
     ],
   }
@@ -122,6 +157,7 @@ export function QaChurnChart({ data }: Props) {
           boxHeight: 6,
           font: { family: 'DM Sans, sans-serif', size: 11 },
           color: '#57534e',
+          filter: (item: { text: string }) => !item.text.includes('weekly'),
         },
       },
       tooltip: {
@@ -180,7 +216,7 @@ export function QaChurnChart({ data }: Props) {
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Quality — QA Churn Rate (High-Confidence Weeks Only)
+        Quality — QA Churn Rate
       </h2>
       <div style={{ height: 300 }}>
         <Line data={chartData} options={options as never} />

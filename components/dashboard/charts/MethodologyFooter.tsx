@@ -22,6 +22,9 @@ export function MethodologyFooter({ data }: Props) {
           <strong className="text-[#1c1917]">QA Churn Rate:</strong> Tickets with QAChurnLines &gt; 0 ÷ Total tickets.
         </div>
         <div>
+          <strong className="text-[#1c1917]">Summary QA churn (&quot;vs baseline&quot;):</strong> Aggregate: total tickets with churn ÷ total tickets over each full period (baseline vs pilot). Not a mean of weekly rates.
+        </div>
+        <div>
           <strong className="text-[#1c1917]">Availability:</strong> Unique pilot devs with any PR activity that week ÷ {data.config.pilotCount}.
         </div>
         <div>
