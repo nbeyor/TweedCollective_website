@@ -510,8 +510,8 @@ def main():
     args = parser.parse_args()
 
     if not HAS_PANDAS:
-        print("pandas required. Run: pip install pandas openpyxl")
-        sys.exit(1)
+        print("pandas not available. Skipping refresh. Using committed dashboard-data.json.")
+        return
 
     if args.input:
         path = Path(args.input)
