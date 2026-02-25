@@ -42,7 +42,7 @@ export function SizeComplexityQaHeatmap({ data }: Props) {
         Size × Complexity — QA Churn
       </h3>
       <p className="text-[10px] text-[#a8a29e] mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Cell = how much lower pilot&apos;s churn is vs non-pilot. +39% = pilot has 39% less churn (green = better). Red = non-pilot has lower churn.
+        −39% = pilot has 39% less churn (green = better). Red = non-pilot lower churn. Subscript: pilot/non-pilot tickets in bucket.
       </p>
 
       <div className="overflow-auto">
@@ -99,9 +99,9 @@ export function SizeComplexityQaHeatmap({ data }: Props) {
                     )
                   }
 
-                  const diff = (nonpilotQa - pilotQa) / nonpilotQa
-                  const bgColor = getDiffColor(diff)
-                  const textColor = getDiffTextColor(diff)
+                  const diff = (pilotQa - nonpilotQa) / nonpilotQa
+                  const bgColor = getDiffColor(-diff)
+                  const textColor = getDiffTextColor(-diff)
 
                   return (
                     <td key={key} className="p-1 text-center">
@@ -114,7 +114,7 @@ export function SizeComplexityQaHeatmap({ data }: Props) {
                           {diff >= 0 ? '+' : ''}{(diff * 100).toFixed(0)}%
                         </div>
                         <div className="text-[9px] mt-0.5" style={{ color: textColor, opacity: 0.7 }}>
-                          {entry.pilot_tickets}/{entry.nonpilot_tickets}
+                          {entry.pilot_tickets}/{entry.nonpilot_tickets} tix
                         </div>
                       </div>
                     </td>

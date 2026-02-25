@@ -42,7 +42,7 @@ export function SizeComplexityHeatmap({ data }: Props) {
         Size × Complexity — Productivity
       </h3>
       <p className="text-[10px] text-[#a8a29e] mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Green = pilot faster, red = non-pilot faster
+        Green = pilot faster, red = non-pilot faster. Subscript: pilot/non-pilot tickets in bucket.
       </p>
 
       <div className="overflow-auto">
@@ -98,7 +98,7 @@ export function SizeComplexityHeatmap({ data }: Props) {
                           {diff >= 0 ? '+' : ''}{(diff * 100).toFixed(0)}%
                         </div>
                         <div className="text-[9px] mt-0.5" style={{ color: textColor, opacity: 0.7 }}>
-                          {entry.pilot_tickets}/{entry.nonpilot_tickets}
+                          {entry.pilot_tickets}/{entry.nonpilot_tickets} tix
                         </div>
                       </div>
                     </td>
