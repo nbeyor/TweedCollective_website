@@ -74,6 +74,8 @@ export interface SizeComplexityEntry {
   nonpilot_tickets: number;
   pilot_productivity: number;
   nonpilot_productivity: number;
+  pilot_qa_churn?: number;
+  nonpilot_qa_churn?: number;
 }
 
 export interface CumulativeEntry {

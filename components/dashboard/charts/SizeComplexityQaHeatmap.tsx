@@ -11,25 +11,25 @@ const SIZES = ['0-300', '301-1000', '1001+']
 const COMPLEXITIES = ['1-3', '4-10', '11+']
 
 function getDiffColor(diff: number): string {
-  if (diff >= 1.0) return '#15803d'
-  if (diff >= 0.5) return '#22c55e'
-  if (diff >= 0.2) return '#86efac'
+  if (diff >= 0.3) return '#15803d'
+  if (diff >= 0.15) return '#22c55e'
+  if (diff >= 0.05) return '#86efac'
   if (diff > 0) return '#dcfce7'
-  if (diff <= -1.0) return '#dc2626'
-  if (diff <= -0.5) return '#ef4444'
-  if (diff <= -0.2) return '#fca5a5'
+  if (diff <= -0.3) return '#dc2626'
+  if (diff <= -0.15) return '#ef4444'
+  if (diff <= -0.05) return '#fca5a5'
   return '#fee2e2'
 }
 
 function getDiffTextColor(diff: number): string {
-  if (Math.abs(diff) >= 0.5) return '#ffffff'
+  if (Math.abs(diff) >= 0.15) return '#ffffff'
   if (diff > 0) return '#15803d'
   return '#dc2626'
 }
 
-export function SizeComplexityHeatmap({ data }: Props) {
+export function SizeComplexityQaHeatmap({ data }: Props) {
   const grid = useMemo(() => {
-    const lookup: Record<string, typeof data.sizeComplexity[0]> = {}
+    const lookup: Record<string, (typeof data.sizeComplexity)[0]> = {}
     for (const entry of data.sizeComplexity) {
       lookup[`${entry.size}|${entry.complexity}`] = entry
     }
@@ -37,12 +37,12 @@ export function SizeComplexityHeatmap({ data }: Props) {
   }, [data.sizeComplexity])
 
   return (
-    <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 shadow-sm mt-4">
       <h3 className="text-sm font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Size × Complexity — Productivity
+        Size × Complexity — QA Churn
       </h3>
       <p className="text-[10px] text-[#a8a29e] mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Green = pilot faster, red = non-pilot faster
+        Green = pilot has lower churn (better quality), red = non-pilot lower
       </p>
 
       <div className="overflow-auto">
@@ -83,7 +83,23 @@ export function SizeComplexityHeatmap({ data }: Props) {
                     )
                   }
 
-                  const diff = (entry.pilot_productivity - entry.nonpilot_productivity) / entry.nonpilot_productivity
+                  const pilotQa = entry.pilot_qa_churn ?? 0
+                  const nonpilotQa = entry.nonpilot_qa_churn ?? 0
+                  if (entry.nonpilot_tickets === 0 || nonpilotQa === 0) {
+                    return (
+                      <td
+                        key={key}
+                        className="p-1 text-center"
+                        style={{ backgroundColor: '#fafaf9' }}
+                      >
+                        <div className="rounded-md py-2 px-1">
+                          <span className="text-xs text-[#a8a29e]">—</span>
+                        </div>
+                      </td>
+                    )
+                  }
+
+                  const diff = (nonpilotQa - pilotQa) / nonpilotQa
                   const bgColor = getDiffColor(diff)
                   const textColor = getDiffTextColor(diff)
 
@@ -92,7 +108,7 @@ export function SizeComplexityHeatmap({ data }: Props) {
                       <div
                         className="rounded-md py-2 px-1"
                         style={{ backgroundColor: bgColor }}
-                        title={`Pilot: ${entry.pilot_productivity.toFixed(4)} (${entry.pilot_tickets} tix)\nNon-pilot: ${entry.nonpilot_productivity.toFixed(4)} (${entry.nonpilot_tickets} tix)`}
+                        title={`Pilot: ${(pilotQa * 100).toFixed(1)}% (${entry.pilot_tickets} tix)\nNon-pilot: ${(nonpilotQa * 100).toFixed(1)}% (${entry.nonpilot_tickets} tix)`}
                       >
                         <div className="text-xs font-semibold" style={{ color: textColor }}>
                           {diff >= 0 ? '+' : ''}{(diff * 100).toFixed(0)}%

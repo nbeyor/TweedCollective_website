@@ -25,10 +25,11 @@ export function KpiCards({ data }: Props) {
   const pilotChurnBetter = summary.pilot_qa_churn <= summary.nonpilot_qa_churn
   const productivityDelta = ((summary.pilot_productivity - baseline.productivity) / baseline.productivity) * 100
   const churnDelta = ((summary.pilot_qa_churn - baseline.qa_churn_rate) / baseline.qa_churn_rate) * 100
+  const qaMultiple = summary.nonpilot_qa_churn > 0 ? summary.pilot_qa_churn / summary.nonpilot_qa_churn : 1
 
   const cards: CardDef[] = [
     {
-      label: 'Pilot Productivity',
+      label: 'Pilot Productivity (vs baseline)',
       value: summary.pilot_productivity.toFixed(3),
       delta: `${productivityDelta >= 0 ? '+' : ''}${productivityDelta.toFixed(0)}% vs baseline`,
       context: `tickets / FTE-day (baseline: ${baseline.productivity.toFixed(3)})`,
@@ -36,7 +37,7 @@ export function KpiCards({ data }: Props) {
       accentBg: '#dcfce7',
     },
     {
-      label: 'Productivity Multiple',
+      label: 'Productivity Multiple (vs non-pilot)',
       value: `${summary.productivity_ratio.toFixed(2)}×`,
       delta: summary.productivity_ratio >= 1 ? 'Pilot ≥ Non-Pilot' : 'Non-Pilot ahead',
       context: `${summary.weeks_of_data} high-confidence weeks`,
@@ -44,12 +45,20 @@ export function KpiCards({ data }: Props) {
       accentBg: '#dcfce7',
     },
     {
-      label: 'Pilot QA Churn',
+      label: 'Pilot QA Churn (vs baseline)',
       value: `${(summary.pilot_qa_churn * 100).toFixed(1)}%`,
       delta: `${churnDelta >= 0 ? '+' : ''}${churnDelta.toFixed(0)}% vs baseline (${(baseline.qa_churn_rate * 100).toFixed(1)}%)`,
       context: `Non-pilot: ${(summary.nonpilot_qa_churn * 100).toFixed(1)}%`,
       accent: pilotChurnBetter ? '#15803d' : '#d97706',
       accentBg: pilotChurnBetter ? '#dcfce7' : '#fef3c7',
+    },
+    {
+      label: 'QA Multiple (vs non-pilot)',
+      value: `${qaMultiple.toFixed(2)}×`,
+      delta: qaMultiple <= 1 ? 'Pilot ≤ Non-Pilot (better)' : 'Non-Pilot lower churn',
+      context: `Pilot ${(summary.pilot_qa_churn * 100).toFixed(1)}% ÷ NP ${(summary.nonpilot_qa_churn * 100).toFixed(1)}% (lower better)`,
+      accent: qaMultiple <= 1 ? '#15803d' : '#d97706',
+      accentBg: qaMultiple <= 1 ? '#dcfce7' : '#fef3c7',
     },
     {
       label: 'AI Output Share',
@@ -70,7 +79,7 @@ export function KpiCards({ data }: Props) {
   ]
 
   return (
-    <div className="grid grid-cols-5 gap-4 mb-8">
+    <div className="grid grid-cols-3 gap-4 mb-8">
       {cards.map((card) => (
         <div
           key={card.label}

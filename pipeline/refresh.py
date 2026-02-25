@@ -203,6 +203,8 @@ def compute_size_complexity(tickets):
             p = pilot_tix[(pilot_tix['SizeBucket'] == size) & (pilot_tix['ComplexityBucket'] == complexity)]
             np_ = nonpilot_tix[(nonpilot_tix['SizeBucket'] == size) & (nonpilot_tix['ComplexityBucket'] == complexity)]
             if len(p) > 0 or len(np_) > 0:
+                pilot_qa = p['HasQAChurn'].sum() / len(p) if len(p) > 0 else 0
+                nonpilot_qa = np_['HasQAChurn'].sum() / len(np_) if len(np_) > 0 else 0
                 buckets.append({
                     'label': f'{size} / {complexity}',
                     'size': size,
@@ -211,6 +213,8 @@ def compute_size_complexity(tickets):
                     'nonpilot_tickets': int(len(np_)),
                     'pilot_productivity': len(p) / pilot_fte_days if pilot_fte_days > 0 else 0,
                     'nonpilot_productivity': len(np_) / nonpilot_fte_days if nonpilot_fte_days > 0 else 0,
+                    'pilot_qa_churn': pilot_qa,
+                    'nonpilot_qa_churn': nonpilot_qa,
                 })
     return buckets
 

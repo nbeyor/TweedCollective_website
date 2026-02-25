@@ -37,6 +37,7 @@ import { ProductivityChart } from './charts/ProductivityChart'
 import { QaChurnChart } from './charts/QaChurnChart'
 import { AvailabilityChart } from './charts/AvailabilityChart'
 import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
+import { SizeComplexityQaHeatmap } from './charts/SizeComplexityQaHeatmap'
 import { CumulativeChart } from './charts/CumulativeChart'
 import { SurveySection } from './charts/SurveySection'
 import { MethodologyFooter } from './charts/MethodologyFooter'
@@ -87,7 +88,10 @@ export function KpiDashboard() {
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <AvailabilityChart data={data} />
-          <SizeComplexityHeatmap data={data} />
+          <div>
+            <SizeComplexityHeatmap data={data} />
+            <SizeComplexityQaHeatmap data={data} />
+          </div>
           <CumulativeChart data={data} />
         </div>
 
