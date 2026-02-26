@@ -116,7 +116,7 @@ const slides: Slide[] = [
             <strong className="text-sage-bright"> KINETICS</strong> (internal efficiency),
             <strong className="text-gold"> DIFFUSION</strong> (client-facing AI products), and the
             <strong className="text-helix-cyan"> ION Data Lake</strong> (proprietary data backbone).
-            AI maturity: <strong className="text-cream">Upper-Mid / Structured &amp; Scaling</strong>. Strong governance, meaningful tooling, but fragmented portfolio and limited closed-loop measurement.
+            Meaningful tooling exists across the portfolio, but tools are fragmented and lack closed-loop measurement. The critical next step is connecting these point solutions into cohesive business process workflows.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
@@ -124,7 +124,7 @@ const slides: Slide[] = [
             <h3 className="text-sm font-semibold text-cream mb-3">AI Maturity Radar</h3>
             <RadarChart
               labels={['Strategy', 'Data Assets', 'Workflow Integration', 'External Differentiation', 'Governance', 'Measurement']}
-              values={[7, 9, 6, 6, 8, 4]}
+              values={[7, 9, 6, 6, 6, 4]}
               height={250}
             />
           </div>
@@ -360,10 +360,13 @@ const slides: Slide[] = [
               yLabel="Strategic Value →"
               quadrants={['Accelerate', 'Double Down', 'Reposition', 'Cut']}
               points={[
-                { label: 'Route Reagent', x: 0.2, y: 0.9 },
-                { label: 'Editorial Consol.', x: 0.5, y: 0.85 },
-                { label: 'Pantheon Pred.', x: 0.8, y: 0.95 },
-                { label: 'Verba', x: 0.4, y: 0.4 },
+                { label: 'Pantheon', x: 0.75, y: 0.9 },
+                { label: 'Plexus', x: 0.55, y: 0.85 },
+                { label: 'Orion', x: 0.5, y: 0.78 },
+                { label: 'BloomLab', x: 0.4, y: 0.7 },
+                { label: 'PerspectivX', x: 0.3, y: 0.6 },
+                { label: 'MagpAI', x: 0.2, y: 0.45 },
+                { label: 'Verba', x: 0.45, y: 0.35 },
               ]}
               height={290}
             />
@@ -653,6 +656,42 @@ const slides: Slide[] = [
             </div>
           ))}
         </div>
+
+        <div className="p-4 rounded-xl border-2 border-helix-cyan/30 bg-helix-cyan/5">
+          <div className="flex items-center gap-3 mb-3">
+            <Database className="w-5 h-5 text-helix-cyan" />
+            <div>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider bg-green-500/20 text-green-300 border-green-500/30 mr-2">Double Down</span>
+              <span className="text-sm font-semibold text-cream">Foundation: ION Data Lake</span>
+            </div>
+          </div>
+          <p className="text-xs text-cream/70 leading-relaxed">
+            The ION Data Lake is the connective tissue that makes every initiative above more valuable. Investing in connecting data assets across claims, engagement, advisory, and publication sources is the prerequisite for Pantheon&apos;s predictive layer, Plexus&apos;s influence mapping, and Orion&apos;s patient identification. Without a strong, unified data foundation, individual tools remain isolated point solutions.
+          </p>
+        </div>
+
+        <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5">
+          <div className="flex items-center gap-2 mb-3">
+            <Layers className="w-4 h-4 text-amber-400" />
+            <span className="text-xs uppercase tracking-wider text-amber-300 font-semibold">Critical Enabler: Workflow Integration</span>
+          </div>
+          <p className="text-xs text-cream/70 leading-relaxed mb-3">
+            The current AI portfolio reads as fragmented — 20+ branded tools creating spot efficiencies but not connected to each other or to end-to-end business processes. The highest-leverage move is not building more tools, but <strong className="text-cream/90">connecting existing tools along core business process workflows</strong>.
+          </p>
+          <div className="grid md:grid-cols-3 gap-3">
+            {[
+              { workflow: 'Editorial → MLR → Delivery', tools: 'Route Reagent + Annotation Activation + Compliance Core', gap: 'Not yet connected end-to-end' },
+              { workflow: 'HCP Intelligence → Engagement', tools: 'Pantheon + Plexus + engagement data', gap: 'Search-only; no predictive loop' },
+              { workflow: 'Research → Insight → Action', tools: 'MagpAI + BloomLab + PerspectivX', gap: 'Three separate tools, one workflow' },
+            ].map((item, i) => (
+              <div key={i} className="p-2.5 bg-white/5 border border-cream/5 rounded-lg">
+                <h5 className="text-[10px] uppercase tracking-wider text-cream/50 mb-1">{item.workflow}</h5>
+                <p className="text-[10px] text-cream/70 mb-1"><strong className="text-cream/80">Tools:</strong> {item.tools}</p>
+                <p className="text-[10px] text-amber-300/70"><strong>Gap:</strong> {item.gap}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     ),
   },
@@ -805,13 +844,13 @@ const slides: Slide[] = [
     content: (
       <div className="space-y-6 px-4">
         <SectionHeader section="Section 11" title="Final Recommendation" />
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           {[
             {
               num: '01',
               title: 'Unified AI Editorial Platform',
               subtitle: '90-day measurable win',
-              desc: 'Consolidate Route Reagent + Annotation Activation + editorial tooling into a single platform. Measure: routing rounds, turnaround days, cost per job.',
+              desc: 'Consolidate Route Reagent + Annotation Activation + editorial tooling into a single connected workflow. Measure: routing rounds, turnaround days, cost per job.',
               color: 'border-green-500/30 bg-green-500/5',
               iconColor: 'text-green-400',
             },
@@ -831,6 +870,14 @@ const slides: Slide[] = [
               color: 'border-gold/30 bg-gold/5',
               iconColor: 'text-gold',
             },
+            {
+              num: '04',
+              title: 'Connect the Workflow',
+              subtitle: 'Integration over proliferation',
+              desc: 'Map AI tools against core business process workflows. Stop building point solutions; start connecting existing tools into end-to-end chains that compound value across the ION Data Lake.',
+              color: 'border-helix-cyan/30 bg-helix-cyan/5',
+              iconColor: 'text-helix-cyan',
+            },
           ].map(card => (
             <div key={card.num} className={`p-5 rounded-xl border ${card.color}`}>
               <span className={`text-3xl font-mono font-bold ${card.iconColor} opacity-50`}>{card.num}</span>
@@ -844,12 +891,14 @@ const slides: Slide[] = [
           <div className="grid md:grid-cols-2 gap-4 text-sm text-cream/70">
             <div className="space-y-2">
               <h4 className="text-xs uppercase tracking-wider text-cream/40 mb-2">Operating Principles</h4>
+              <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-sage-bright flex-shrink-0" />Connect before you build — map tools to workflows first</p>
               <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-sage-bright flex-shrink-0" />Consolidate overlapping tools</p>
               <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-sage-bright flex-shrink-0" />Measure relentlessly</p>
               <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-sage-bright flex-shrink-0" />Encode medical expertise into guardrails</p>
             </div>
             <div className="space-y-2">
               <h4 className="text-xs uppercase tracking-wider text-cream/40 mb-2">Strategic Shifts</h4>
+              <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-gold flex-shrink-0" />From point solutions → integrated workflow AI</p>
               <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-gold flex-shrink-0" />Shift 81qd toward subscription model</p>
               <p className="flex items-start gap-2"><ArrowRight className="w-3 h-3 mt-1 text-gold flex-shrink-0" />AI should change what MKG can charge — not just what it costs</p>
             </div>
