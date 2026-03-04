@@ -25,13 +25,13 @@ export const slides: SlideData[] = [
       headline: 'Mercury: AI Diligence',
       subtitle: 'Buyer — Potential Acquisition Analysis',
       metrics: [
-        { value: 'Novo Holdings', label: 'Prepared for' },
+        { value: 'WCG Clinical', label: 'Prepared for' },
         { value: 'Tweed Collective', label: 'Prepared by' },
-        { value: 'February 2026', label: 'Date' },
+        { value: 'March 2026', label: 'Date' },
       ],
       insightBox: {
         label: 'Confidential',
-        text: 'Public Sources Only',
+        text: 'Public Sources + Diligence Call Materials',
       },
     },
   },
