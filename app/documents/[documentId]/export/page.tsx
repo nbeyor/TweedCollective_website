@@ -8,6 +8,9 @@ import { DOCUMENT_CONFIGS } from '@/content/documents'
 import { slides as salmonSlides } from '@/content/documents/salmon-ai-genomics'
 import { slides as healthTechSlides } from '@/content/documents/health-tech-market'
 import { slides as vibeSlides } from '@/content/documents/vibe-coding'
+import { slides as apolloSlides } from '@/content/documents/apollo-wcg-ai-diligence'
+import { slides as mercurySlides } from '@/content/documents/mercury-buyer-ai-diligence'
+import { slides as aiOpportunitySlides } from '@/content/documents/ai-opportunity-roadmap'
 
 // Import design system
 import { spacing, typography, colors } from '@/lib/slideTemplates'
@@ -83,22 +86,15 @@ export default async function DocumentExportPage({
   }
 
   // Get slides for this document
-  let slides: any[] = []
-  switch (documentId) {
-    case 'salmon-ai-genomics':
-      slides = salmonSlides
-      break
-    case 'health-tech-market':
-    case 'health-tech-market-2024':
-      slides = healthTechSlides
-      break
-    case 'vibe-coding':
-    case 'vibe-coding-in-enterprise-for-pe':
-      slides = vibeSlides
-      break
-    default:
-      slides = []
+  const slideMap: Record<string, any[]> = {
+    'salmon-ai-genomics': salmonSlides,
+    'health-tech-market-2024': healthTechSlides,
+    'vibe-coding-in-enterprise-for-pe': vibeSlides,
+    'apollo-wcg-ai-diligence': apolloSlides,
+    'mercury-buyer-ai-diligence': mercurySlides,
+    'ai-opportunity-roadmap': aiOpportunitySlides,
   }
+  const slides = slideMap[documentId] || []
 
   return (
     <>

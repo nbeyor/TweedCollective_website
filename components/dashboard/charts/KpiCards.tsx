@@ -2,6 +2,14 @@
 
 import React from 'react'
 import type { DashboardData } from '../types'
+import { chartTheme, colors } from '@/lib/slideTemplates'
+
+const PILOT_ACCENT = chartTheme.dashboard.pilot
+const PILOT_BG = colors.green[100]
+const NONPILOT_ACCENT = chartTheme.dashboard.nonPilot
+const NONPILOT_BG = '#fef3c7'
+const NEUTRAL_ACCENT = colors.neutral[600]
+const NEUTRAL_BG = colors.neutral[100]
 
 interface Props {
   data: DashboardData
@@ -28,19 +36,19 @@ export function KpiCards({ data }: Props) {
   const qaMultiple = summary.nonpilot_qa_churn > 0 ? summary.pilot_qa_churn / summary.nonpilot_qa_churn : 1
 
   const cards: CardDef[] = [
-    { label: 'Pilot Productivity (vs baseline)', value: summary.pilot_productivity.toFixed(3), delta: `${productivityDelta >= 0 ? '+' : ''}${productivityDelta.toFixed(0)}% vs baseline`, context: `tickets / FTE-day (baseline: ${baseline.productivity.toFixed(3)})`, accent: '#15803d', accentBg: '#dcfce7' },
-    { label: 'Productivity Multiple (vs non-pilot)', value: `${summary.productivity_ratio.toFixed(2)}×`, delta: summary.productivity_ratio >= 1 ? 'Pilot ≥ Non-Pilot' : 'Non-Pilot ahead', context: `${summary.weeks_of_data} high-confidence weeks`, accent: '#15803d', accentBg: '#dcfce7' },
+    { label: 'Pilot Productivity (vs baseline)', value: summary.pilot_productivity.toFixed(3), delta: `${productivityDelta >= 0 ? '+' : ''}${productivityDelta.toFixed(0)}% vs baseline`, context: `tickets / FTE-day (baseline: ${baseline.productivity.toFixed(3)})`, accent: PILOT_ACCENT, accentBg: PILOT_BG },
+    { label: 'Productivity Multiple (vs non-pilot)', value: `${summary.productivity_ratio.toFixed(2)}×`, delta: summary.productivity_ratio >= 1 ? 'Pilot ≥ Non-Pilot' : 'Non-Pilot ahead', context: `${summary.weeks_of_data} high-confidence weeks`, accent: PILOT_ACCENT, accentBg: PILOT_BG },
     {
       label: 'AI Output Share',
       value: `${(summary.ai_output_share * 100).toFixed(1)}%`,
       delta: `${summary.pilot_tickets} of ${summary.total_tickets} tickets`,
       context: `${((data.config.pilotCount / (data.config.pilotCount + data.config.nonPilotCount)) * 100).toFixed(0)}% of developers`,
-      accent: '#57534e',
-      accentBg: '#f5f5f4',
+      accent: NEUTRAL_ACCENT,
+      accentBg: NEUTRAL_BG,
     },
-    { label: 'Pilot QA Churn (vs baseline)', value: `${(summary.pilot_qa_churn * 100).toFixed(1)}%`, delta: `${churnDelta >= 0 ? '+' : ''}${churnDelta.toFixed(0)}% vs baseline (${(baseline.qa_churn_rate * 100).toFixed(1)}%)`, context: `Non-pilot: ${(summary.nonpilot_qa_churn * 100).toFixed(1)}%`, accent: pilotChurnBetter ? '#15803d' : '#d97706', accentBg: pilotChurnBetter ? '#dcfce7' : '#fef3c7' },
-    { label: 'QA Multiple (vs non-pilot)', value: `${qaMultiple.toFixed(2)}×`, delta: qaMultiple <= 1 ? 'Pilot ≤ Non-Pilot (better)' : 'Non-Pilot lower churn', context: `Pilot ${(summary.pilot_qa_churn * 100).toFixed(1)}% ÷ NP ${(summary.nonpilot_qa_churn * 100).toFixed(1)}% (lower better)`, accent: qaMultiple <= 1 ? '#15803d' : '#d97706', accentBg: qaMultiple <= 1 ? '#dcfce7' : '#fef3c7' },
-    { label: 'Availability', value: `${availabilityPct.toFixed(0)}%`, delta: `${weeksAbove50} of ${availability.length} weeks ≥ 50% active`, context: `${data.config.pilotCount} pilot developers`, accent: '#15803d', accentBg: '#dcfce7' },
+    { label: 'Pilot QA Churn (vs baseline)', value: `${(summary.pilot_qa_churn * 100).toFixed(1)}%`, delta: `${churnDelta >= 0 ? '+' : ''}${churnDelta.toFixed(0)}% vs baseline (${(baseline.qa_churn_rate * 100).toFixed(1)}%)`, context: `Non-pilot: ${(summary.nonpilot_qa_churn * 100).toFixed(1)}%`, accent: pilotChurnBetter ? PILOT_ACCENT : NONPILOT_ACCENT, accentBg: pilotChurnBetter ? PILOT_BG : NONPILOT_BG },
+    { label: 'QA Multiple (vs non-pilot)', value: `${qaMultiple.toFixed(2)}×`, delta: qaMultiple <= 1 ? 'Pilot ≤ Non-Pilot (better)' : 'Non-Pilot lower churn', context: `Pilot ${(summary.pilot_qa_churn * 100).toFixed(1)}% ÷ NP ${(summary.nonpilot_qa_churn * 100).toFixed(1)}% (lower better)`, accent: qaMultiple <= 1 ? PILOT_ACCENT : NONPILOT_ACCENT, accentBg: qaMultiple <= 1 ? PILOT_BG : NONPILOT_BG },
+    { label: 'Availability', value: `${availabilityPct.toFixed(0)}%`, delta: `${weeksAbove50} of ${availability.length} weeks ≥ 50% active`, context: `${data.config.pilotCount} pilot developers`, accent: PILOT_ACCENT, accentBg: PILOT_BG },
   ]
 
   return (

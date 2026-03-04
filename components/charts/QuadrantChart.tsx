@@ -2,6 +2,7 @@
 
 import './chartSetup'
 import { Scatter } from 'react-chartjs-2'
+import { chartTheme } from '@/lib/slideTemplates'
 
 interface QuadrantPoint {
   label: string
@@ -30,7 +31,7 @@ export default function QuadrantChart({
   const data = {
     datasets: [{
       data: points.map(p => ({ x: p.x, y: p.y })),
-      backgroundColor: '#6B8E6F',
+      backgroundColor: chartTheme.primary,
       borderColor: '#F5F4F0',
       borderWidth: 1,
       pointRadius: 8,

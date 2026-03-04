@@ -2,6 +2,7 @@
 
 import './chartSetup'
 import { Bar } from 'react-chartjs-2'
+import { chartTheme } from '@/lib/slideTemplates'
 
 interface BarItem {
   label: string
@@ -24,7 +25,7 @@ export default function HorizontalBarChart({
   suffix = '',
   maxValue,
   height,
-  color = '#6B8E6F',
+  color = chartTheme.primary,
 }: HorizontalBarChartProps) {
   const computedHeight = height || Math.max(200, items.length * 40 + 60)
 

@@ -2,6 +2,7 @@
 
 import './chartSetup'
 import { Radar } from 'react-chartjs-2'
+import { chartTheme } from '@/lib/slideTemplates'
 
 interface RadarChartProps {
   labels: string[]
@@ -17,7 +18,7 @@ export default function RadarChart({
   values,
   maxValue = 10,
   title,
-  color = '#6B8E6F',
+  color = chartTheme.primary,
   height = 300,
 }: RadarChartProps) {
   const data = {

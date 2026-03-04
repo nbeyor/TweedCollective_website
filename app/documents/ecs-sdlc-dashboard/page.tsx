@@ -7,8 +7,8 @@ import { KpiDashboard } from '@/components/dashboard/KpiDashboard'
 export default function DashboardPage() {
   return (
     <DocumentAccessWrapper
-      documentId="dashboard"
-      documentTitle="AI Dev Pilot — KPI Dashboard"
+      documentId="ecs-sdlc-dashboard"
+      documentTitle="eCS SDLC Dashboard — AI Dev Pilot KPIs"
     >
       <KpiDashboard />
     </DocumentAccessWrapper>

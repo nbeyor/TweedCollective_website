@@ -19,7 +19,7 @@ export function DashboardHeader({ data }: Props) {
   return (
     <div className="mb-8">
       <h1 className="text-[1.75rem] font-semibold text-[#1c1917] mb-2" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        AI-Assisted Development — Pilot KPIs
+        eCS SDLC Dashboard — AI Dev Pilot KPIs
       </h1>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
         <span>

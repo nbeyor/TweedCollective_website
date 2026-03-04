@@ -765,6 +765,43 @@ export function getGridColumns(columns: 2 | 3 | 4 = 3): string {
 }
 
 // ============================================
+// Chart Theme (shared colors for Chart.js components)
+// ============================================
+
+export const chartTheme = {
+  /** Default primary color for chart elements (bars, lines, points) */
+  primary: '#6B8E6F',
+  /** Text/label color (cream at 70% opacity) */
+  text: 'rgba(245, 244, 240, 0.7)',
+  /** Muted text color (cream at 50% opacity) */
+  textMuted: 'rgba(245, 244, 240, 0.5)',
+  /** Faint text for subtle labels (cream at 25%) */
+  textFaint: 'rgba(245, 244, 240, 0.25)',
+  /** Grid line color */
+  grid: 'rgba(245, 244, 240, 0.05)',
+  /** Angular/radial grid lines */
+  gridSubtle: 'rgba(245, 244, 240, 0.1)',
+  /** Border between chart and background */
+  border: 'rgba(245, 244, 240, 0.1)',
+  /** Chart background border color (void) */
+  voidBorder: 'rgba(10, 10, 12, 0.8)',
+  /** Title color */
+  title: '#F5F4F0',
+  /** Palette for multi-series charts (pie, donut, etc.) */
+  palette: [
+    '#6B8E6F', '#A89685', '#D4AF37', '#22D3EE', '#B5846F',
+    '#C4A772', '#4A5D4C', '#5C7360', '#B87333', '#722F37',
+  ],
+  /** Dashboard-specific colors */
+  dashboard: {
+    pilot: colors.green[700],       // #15803d
+    nonPilot: '#d97706',            // amber
+    baseline: '#94a3b8',
+    muted: 'rgba(168,162,158,0.3)',
+  },
+} as const
+
+// ============================================
 // Type Exports
 // ============================================
 
