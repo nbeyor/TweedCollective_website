@@ -3,15 +3,16 @@
 import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
 import type { DashboardData } from '../types'
+import { chartTheme } from '@/lib/slideTemplates'
 
 interface Props {
   data: DashboardData
 }
 
-const PILOT_COLOR = '#15803d'
-const NONPILOT_COLOR = '#d97706'
-const MUTED_COLOR = 'rgba(168,162,158,0.3)'
-const BASELINE_COLOR = '#94a3b8'
+const PILOT_COLOR = chartTheme.dashboard.pilot
+const NONPILOT_COLOR = chartTheme.dashboard.nonPilot
+const MUTED_COLOR = chartTheme.dashboard.muted
+const BASELINE_COLOR = chartTheme.dashboard.baseline
 
 function formatWeekLabel(w: string) {
   const d = new Date(w + 'T00:00:00')

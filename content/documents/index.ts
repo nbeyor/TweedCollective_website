@@ -7,7 +7,10 @@
  * When adding a new document:
  * 1. Add the document config to DOCUMENT_CONFIGS below
  * 2. Create the content file in content/documents/{document-id}.ts
- * 3. Create the page in app/documents/{document-id}/page.tsx
+ * 3. Register the content file in content/documents/loader.ts
+ *
+ * Documents are rendered by the dynamic route at app/documents/[documentId]/page.tsx.
+ * Do NOT create static page files for individual documents.
  */
 
 import { DocumentConfig, DocumentMeta, DocumentVisibility } from '@/lib/types'
@@ -56,10 +59,10 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',  // Private, only via direct link/invitation
   },
   {
-    id: 'dashboard',
-    title: 'Portfolio Dashboard',
-    shortTitle: 'Dashboard',
-    description: 'Interactive data dashboard with charts and analytics, refreshed from the latest data export.',
+    id: 'ecs-sdlc-dashboard',
+    title: 'eCS SDLC Dashboard — AI Dev Pilot KPIs',
+    shortTitle: 'eCS SDLC Dashboard',
+    description: 'Interactive KPI dashboard tracking AI-assisted development pilot metrics for the eCS SDLC initiative.',
     category: 'Dashboard',
     icon: 'BarChart3',
     date: '2025-02',

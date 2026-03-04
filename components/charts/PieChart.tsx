@@ -2,11 +2,9 @@
 
 import './chartSetup'
 import { Doughnut, Pie as PieJS } from 'react-chartjs-2'
+import { chartTheme } from '@/lib/slideTemplates'
 
-const DEFAULT_COLORS = [
-  '#6B8E6F', '#A89685', '#D4AF37', '#22D3EE', '#B5846F',
-  '#C4A772', '#4A5D4C', '#5C7360', '#B87333', '#722F37',
-]
+const DEFAULT_COLORS = chartTheme.palette
 
 interface Segment {
   label: string
