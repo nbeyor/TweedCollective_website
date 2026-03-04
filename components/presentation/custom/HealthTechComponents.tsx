@@ -7,7 +7,7 @@ import { iconRegistry } from '@/lib/slideTemplates'
 
 function resolveIcon(name: string) {
   const lucideName = (iconRegistry as Record<string, string>)[name] || name
-  return (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[lucideName]
+  return (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[lucideName]
 }
 
 export function StageSlide({ stage }: { stage: string }) {
