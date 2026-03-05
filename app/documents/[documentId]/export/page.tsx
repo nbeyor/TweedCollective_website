@@ -15,8 +15,9 @@ import { slides as aiOpportunitySlides } from '@/content/documents/ai-opportunit
 // Import design system
 import { spacing, typography, colors } from '@/lib/slideTemplates'
 
-// Client component for print button
+// Client components
 import PrintButton from './PrintButton'
+import ExportCustomSlide from './ExportCustomSlide'
 
 // Design system values for CSS (extracted for inline styles)
 const exportStyles = {
@@ -758,6 +759,182 @@ export default async function DocumentExportPage({
           border-radius: 0.25rem;
           margin-top: 0.5rem;
         }
+
+        /* B&W overrides for custom slide components (diligence, etc.) */
+        .export-custom-slide {
+          color: #000;
+          background: #fff;
+          font-size: 0.8125rem;
+          line-height: 1.4;
+          height: 100%;
+          overflow: hidden;
+        }
+
+        /* Override dark backgrounds to white/light */
+        .export-custom-slide,
+        .export-custom-slide div,
+        .export-custom-slide section,
+        .export-custom-slide article,
+        .export-custom-slide aside,
+        .export-custom-slide header,
+        .export-custom-slide footer {
+          background-color: #fff !important;
+          background-image: none !important;
+        }
+
+        /* Light accent backgrounds for visual hierarchy */
+        .export-custom-slide [class*="bg-emerald"],
+        .export-custom-slide [class*="bg-green"],
+        .export-custom-slide [class*="bg-teal"],
+        .export-custom-slide [class*="bg-cyan"] {
+          background-color: #f0f0f0 !important;
+        }
+
+        .export-custom-slide [class*="bg-red"],
+        .export-custom-slide [class*="bg-rose"],
+        .export-custom-slide [class*="bg-orange"],
+        .export-custom-slide [class*="bg-amber"],
+        .export-custom-slide [class*="bg-yellow"] {
+          background-color: #f5f5f5 !important;
+        }
+
+        /* All text to dark/black */
+        .export-custom-slide,
+        .export-custom-slide * {
+          color: #000 !important;
+        }
+
+        .export-custom-slide [class*="text-gray"],
+        .export-custom-slide [class*="text-neutral"],
+        .export-custom-slide [class*="text-slate"] {
+          color: #333 !important;
+        }
+
+        /* Borders to visible gray */
+        .export-custom-slide [class*="border"] {
+          border-color: #999 !important;
+        }
+
+        .export-custom-slide [class*="divide"] > * + * {
+          border-color: #ccc !important;
+        }
+
+        /* Ensure headings stand out */
+        .export-custom-slide h1,
+        .export-custom-slide h2,
+        .export-custom-slide h3,
+        .export-custom-slide h4 {
+          color: #000 !important;
+          font-weight: 600;
+        }
+
+        /* Scale down content for print density */
+        .export-custom-slide p,
+        .export-custom-slide li,
+        .export-custom-slide td,
+        .export-custom-slide th,
+        .export-custom-slide span {
+          font-size: 0.75rem !important;
+          line-height: 1.35 !important;
+        }
+
+        .export-custom-slide h2 {
+          font-size: 1.125rem !important;
+        }
+
+        .export-custom-slide h3 {
+          font-size: 0.9375rem !important;
+        }
+
+        .export-custom-slide h4 {
+          font-size: 0.8125rem !important;
+        }
+
+        /* Make badges/pills readable */
+        .export-custom-slide [class*="rounded-full"],
+        .export-custom-slide [class*="badge"],
+        .export-custom-slide [class*="pill"],
+        .export-custom-slide [class*="tag"] {
+          background-color: #f0f0f0 !important;
+          color: #000 !important;
+          border: 1px solid #999 !important;
+        }
+
+        /* Charts: invert for readability on white */
+        .export-custom-slide canvas {
+          filter: invert(1) hue-rotate(180deg);
+          max-height: 150px;
+        }
+
+        /* Tables */
+        .export-custom-slide table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        .export-custom-slide th {
+          background-color: #f0f0f0 !important;
+          border-bottom: 2px solid #000 !important;
+          font-size: 0.75rem !important;
+          padding: 0.375rem !important;
+        }
+
+        .export-custom-slide td {
+          border-bottom: 1px solid #ccc !important;
+          padding: 0.375rem !important;
+        }
+
+        /* Reduce spacing for print density */
+        .export-custom-slide [class*="gap-"] {
+          gap: 0.5rem !important;
+        }
+
+        .export-custom-slide [class*="p-4"],
+        .export-custom-slide [class*="p-5"],
+        .export-custom-slide [class*="p-6"],
+        .export-custom-slide [class*="p-8"] {
+          padding: 0.5rem !important;
+        }
+
+        .export-custom-slide [class*="mb-4"],
+        .export-custom-slide [class*="mb-6"],
+        .export-custom-slide [class*="mb-8"] {
+          margin-bottom: 0.375rem !important;
+        }
+
+        .export-custom-slide [class*="mt-4"],
+        .export-custom-slide [class*="mt-6"],
+        .export-custom-slide [class*="mt-8"] {
+          margin-top: 0.375rem !important;
+        }
+
+        /* SVG icons to black */
+        .export-custom-slide svg {
+          color: #000 !important;
+          stroke: #000 !important;
+        }
+
+        /* Hide decorative shadows/glows */
+        .export-custom-slide [class*="shadow"],
+        .export-custom-slide [class*="glow"] {
+          box-shadow: none !important;
+        }
+
+        .export-custom-slide [class*="ring"] {
+          box-shadow: none !important;
+        }
+
+        /* Opacity overrides — ensure everything is fully visible */
+        .export-custom-slide [class*="opacity-"] {
+          opacity: 1 !important;
+        }
+
+        /* Backdrop/blur overrides */
+        .export-custom-slide [class*="backdrop"] {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          background-color: #f5f5f5 !important;
+        }
       `}} />
 
       {/* Print instruction header (hidden on print) */}
@@ -1338,6 +1515,16 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
               ))}
             </div>
           </>
+        )
+      }
+
+      // Fallback: render registered custom components via client wrapper
+      if (content.componentId && !content.props?.items && !content.props?.regions) {
+        return (
+          <ExportCustomSlide
+            componentId={content.componentId}
+            props={content.props || {}}
+          />
         )
       }
 
