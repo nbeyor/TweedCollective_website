@@ -8,7 +8,7 @@ import { RatingBadge, SectionHeader } from '../shared/DiligenceComponents'
 import {
   Check, AlertTriangle, Rocket, TrendingUp, DollarSign, Zap,
   Brain, Database, Users, Target, BarChart3, ArrowRight, ArrowUpRight,
-  Layers, AlertCircle, Minus, CheckCircle2,
+  Layers, AlertCircle, Minus, CheckCircle2, FileText,
 } from 'lucide-react'
 
 // ---- SLIDE 2: Executive Summary ----
@@ -130,44 +130,63 @@ const cardIconMap: Record<string, React.ReactNode> = {
   Layers: <Layers className="w-5 h-5 text-taupe-light" />,
   Brain: <Brain className="w-5 h-5 text-helix-cyan" />,
   AlertCircle: <AlertCircle className="w-5 h-5 text-gold" />,
+  FileText: <FileText className="w-5 h-5 text-sage-bright" />,
 }
 
-export function AssessmentTableSlide({ sectionLabel, heading, subtitle, table, cards }: {
+const valuePotentialColor: Record<string, string> = {
+  High: 'text-green-300',
+  Moderate: 'text-yellow-300',
+  Low: 'text-cream/40',
+  'Low-Moderate': 'text-cream/50',
+}
+
+type TableSection = {
+  title: string
+  highlight?: boolean
+  headers: string[]
+  rows: Array<{ name: string; description: string; valueSource: string; valuePotential: string }>
+}
+
+export function AssessmentTableSlide({ sectionLabel, heading, subtitle, pipelineCallout, tableSections, cards }: {
   sectionLabel: string
   heading: string
   subtitle: string
-  table: { headers: string[]; rows: Array<{ name: string; stage: string; stageColor: string; kpi: string; value: string; measured: string }> }
+  pipelineCallout?: string
+  tableSections: TableSection[]
   cards: Array<{ name: string; description: string; icon: string; highlight: boolean }>
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-cream/10">
-                {table.headers.map((h, i) => (
-                  <th key={i} className={`text-left py-2 pr-4 text-cream/50 font-medium ${i === 3 ? 'text-right' : ''}`}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row, i) => (
-                <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
-                  <td className="py-2.5 pr-4">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${stageColorMap[row.stageColor] || stageColorMap.neutral}`}>{row.stage}</span>
-                  </td>
-                  <td className="py-2.5 pr-4 text-cream/60">{row.kpi}</td>
-                  <td className="py-2.5 pr-4 text-right text-cream/80 font-mono">{row.value}</td>
-                  <td className="py-2.5 text-cream/60">{row.measured}</td>
+      {tableSections.map((section, si) => (
+        <div key={si} className={`p-4 border rounded-xl ${section.highlight ? 'bg-sage/5 border-sage/30' : 'bg-white/5 border-cream/10'}`}>
+          <h3 className={`text-sm font-semibold mb-3 ${section.highlight ? 'text-sage-bright' : 'text-cream/70'}`}>{section.title}</h3>
+          {section.highlight && pipelineCallout && (
+            <p className="text-[11px] text-cream/60 italic mb-3 leading-relaxed">{pipelineCallout}</p>
+          )}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-cream/10">
+                  {section.headers.map((h, i) => (
+                    <th key={i} className="text-left py-2 pr-4 text-cream/50 font-medium">{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {section.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
+                    <td className="py-2.5 pr-4 text-cream/60">{row.description}</td>
+                    <td className="py-2.5 pr-4 text-cream/60">{row.valueSource}</td>
+                    <td className={`py-2.5 pr-4 font-medium ${valuePotentialColor[row.valuePotential] || 'text-cream/50'}`}>{row.valuePotential}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      ))}
       <div className="grid md:grid-cols-4 gap-3">
         {cards.map(card => (
           <div key={card.name} className={`p-3 rounded-xl border ${card.highlight ? 'bg-sage/10 border-sage/30' : 'bg-white/5 border-cream/10'}`}>
