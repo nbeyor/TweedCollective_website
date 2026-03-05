@@ -29,7 +29,7 @@ export const slides: SlideData[] = [
       metrics: [
         { value: 'MKG Leadership', label: 'Prepared for' },
         { value: 'Tweed Collective', label: 'Prepared by' },
-        { value: 'February 2026', label: 'Date' },
+        { value: 'March 2026', label: 'Date' },
       ],
       insightBox: {
         label: 'Confidential',
@@ -51,26 +51,24 @@ export const slides: SlideData[] = [
       props: {
         sectionLabel: 'Section 01',
         heading: 'Executive Summary',
-        summaryText: 'MKG has built a structured AI ecosystem under the ION platform, organized into KINETICS (internal efficiency), DIFFUSION (client-facing AI products), and the ION Data Lake (proprietary data backbone). Meaningful tooling exists across the portfolio, but tools are fragmented and lack closed-loop measurement. The critical next step is connecting these point solutions into cohesive business process workflows.',
+        summaryText: 'MKG has built a structured AI ecosystem under the ION platform, organized into KINETICS (internal efficiency tools), DIFFUSION (client-facing AI products), and the ION Data Lake (proprietary data backbone). AI maturity level: Upper-Mid / Structured & Scaling. Strong governance and meaningful tooling, but a fragmented portfolio and limited closed-loop measurement.',
         radarChart: {
           labels: ['Strategy', 'Data Assets', 'Workflow Integration', 'External Differentiation', 'Governance', 'Measurement'],
-          values: [7, 9, 6, 6, 6, 4],
+          values: [6, 8, 6, 6, 8, 4],
           height: 250,
         },
         strengths: [
           'Proprietary ION Data Lake (claims, engagement, advisory, publication data)',
-          'Medical & compliance expertise deeply embedded in organization',
-          'Disciplined build-vs-ROI governance process',
+          'Deep medical & compliance expertise embedded across teams',
         ],
         risks: [
           'Portfolio sprawl across 20+ branded AI tools',
           'Limited closed-loop ROI measurement (especially 81qd)',
-          'Risk of LLM wrapper commoditization in client-facing tools',
+          'Risk of commoditization in client-facing tools (LLM wrapper displacement)',
         ],
         immediateFocus: [
-          'Make Route Reagent flagship 90-day measurable win',
-          'Consolidate editorial AI stack',
-          'Move Pantheon → predictive intelligence layer',
+          'Rationalize AI products and combine adjacent offerings',
+          'Focus data assets to create true differentiation',
         ],
       },
     },
@@ -121,10 +119,10 @@ export const slides: SlideData[] = [
           title: 'Economic Sensitivities',
           headers: ['Area', 'AI Impact Potential', 'EBITDA Sensitivity'],
           rows: [
-            { area: 'Editorial Workflow', impact: 'High', ebitda: 'High' },
+            { area: 'Editorial Workflow', impact: 'Moderate', ebitda: 'High' },
             { area: 'Predictive Analytics', impact: 'High', ebitda: 'High' },
-            { area: 'Market Research', impact: 'Moderate', ebitda: 'Moderate' },
-            { area: 'Creative Automation', impact: 'Low', ebitda: 'Low' },
+            { area: 'Market Research', impact: 'High', ebitda: 'Moderate' },
+            { area: 'Creative Automation', impact: 'Moderate', ebitda: 'Low' },
           ],
         },
       },
@@ -132,78 +130,88 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 4: AI INITIATIVE INVENTORY — KINETICS (Internal)
+  // SLIDE 4: AI INITIATIVE INVENTORY -- KINETICS (Internal)
   // ================================================================
   {
     id: 'kinetics',
-    title: 'KINETICS — Internal AI Initiatives',
+    title: 'KINETICS -- Internal AI Initiatives',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        sectionLabel: 'Section 03 — Internal',
-        heading: 'KINETICS — Internal AI Initiatives',
-        subtitle: 'Efficiency tools powering internal workflows',
+        sectionLabel: 'Section 03 -- Internal',
+        heading: 'KINETICS -- Internal AI Initiatives',
+        subtitle: 'Enterprise + productivity tooling under the ION platform',
         table: {
-          headers: ['Initiative', 'Stage', 'KPI', 'Est. Annual Value', 'Measured?'],
+          headers: ['Initiative', 'Notes'],
           rows: [
-            { name: 'Route Reagent', stage: 'Beta', stageColor: 'yellow', kpi: 'Routing rounds ↓', value: '$700K+', measured: 'Projected' },
-            { name: 'Annotation Activation', stage: 'Pilot', stageColor: 'taupe', kpi: 'MLR prep time ↓', value: 'TBD', measured: 'No' },
-            { name: 'ChatMKG', stage: 'Live', stageColor: 'green', kpi: 'Adoption rate', value: 'Indirect', measured: 'Yes (usage)' },
-            { name: 'Compliance Core', stage: 'Early', stageColor: 'neutral', kpi: 'Red flag detection', value: 'TBD', measured: 'No' },
+            { name: 'ION (Internal AI Portal)', notes: 'Employee interface / access layer; includes secure routing to internal tools and data assets' },
+            { name: 'ChatMKG / Secure LLM Access', notes: 'Secure model access, workspace, search, transcription, compliance-oriented controls' },
+            { name: 'Route Reagent', notes: 'Internal quality control / editorial pre-checks' },
+            { name: 'Annotation Activation', notes: 'Scientific fact-checking + citation/annotation automation for MLR readiness' },
+            { name: 'Brand Bonds', notes: 'Brand/department knowledge assistant' },
+            { name: 'Case Catalyst', notes: 'Case study builder + searchable archive for re-use and packaging' },
+            { name: 'Compliance Core', notes: 'Regulatory "red flag" detection and guideline checks' },
+            { name: 'Conversation Centrifuge', notes: 'Interview/advisory-board distillation and structuring' },
+            { name: 'Meeting Nucleus', notes: 'Meeting capture + structured outputs' },
+            { name: 'Practice Master', notes: 'Institutional affiliation intelligence / practice mapping' },
+            { name: 'Sentiment Tracker', notes: 'Continuous HCP sentiment assessment' },
+            { name: 'Strategic Brief', notes: 'Brief strengthening through guided workflow' },
+            { name: 'Strategic Synthesis', notes: 'Brief generation from high-level inputs into structured plans' },
+            { name: 'Undermind', notes: 'Research surrogate for deeper literature exploration' },
           ],
         },
         cards: [
-          { name: 'Route Reagent', description: 'AI-driven editorial routing — reduces review rounds by 25%', icon: 'Rocket', highlight: true },
-          { name: 'Annotation Activation', description: 'Automated MLR annotation and reference prep', icon: 'Layers', highlight: false },
-          { name: 'ChatMKG', description: 'Internal knowledge assistant for organizational queries', icon: 'Brain', highlight: false },
-          { name: 'Compliance Core', description: 'AI-powered regulatory red-flag detection', icon: 'AlertCircle', highlight: false },
+          { name: 'Route Reagent', description: 'Internal quality control / editorial pre-checks', icon: 'Rocket', highlight: true },
+          { name: 'Annotation Activation', description: 'Scientific fact-checking + citation/annotation automation for MLR readiness', icon: 'Layers', highlight: true },
+          { name: 'ChatMKG', description: 'Secure model access, workspace, search, transcription, compliance-oriented controls', icon: 'Brain', highlight: false },
+          { name: 'Compliance Core', description: 'Regulatory red-flag detection and guideline checks', icon: 'AlertCircle', highlight: false },
         ],
       },
     },
   },
 
   // ================================================================
-  // SLIDE 5: AI INITIATIVE INVENTORY — DIFFUSION (External) + Portfolio
+  // SLIDE 5: AI INITIATIVE INVENTORY -- DIFFUSION (External) + Portfolio
   // ================================================================
   {
     id: 'diffusion',
-    title: 'DIFFUSION — Client-Facing AI + Portfolio',
+    title: 'DIFFUSION -- Client-Facing AI + Portfolio',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'DiffusionSlide',
       props: {
-        sectionLabel: 'Section 03 — External',
-        heading: 'DIFFUSION — Client-Facing AI Products',
+        sectionLabel: 'Section 03 -- External',
+        heading: 'DIFFUSION -- Client-Facing AI Products',
         subtitle: 'Revenue-generating and differentiating AI offerings',
         table: {
           headers: ['Initiative', 'Positioning', 'Revenue', 'Diff. Risk'],
           rows: [
-            { name: 'MagpAI', positioning: 'Research augmentation', revenue: 'Add-on', risk: 'Moderate' },
-            { name: 'BloomLab', positioning: 'Qual/quant hybrid', revenue: 'Project', risk: 'Lower' },
+            { name: 'MagpAI', positioning: 'Research augmentation / simulation', revenue: 'Add-on', risk: 'Moderate' },
+            { name: 'BloomLab', positioning: 'Real-time qual/quant hybrid', revenue: 'Project-based', risk: 'Lower' },
             { name: 'PerspectivX', positioning: 'Concept scoring', revenue: 'Add-on', risk: 'Moderate' },
             { name: 'Verba', positioning: 'Ad board synthesis', revenue: 'Embedded', risk: 'Higher' },
-            { name: 'Pantheon', positioning: 'HCP search', revenue: 'Project', risk: 'Mod→High' },
-            { name: 'Plexus', positioning: 'Influence mapping', revenue: 'Core', risk: 'Strong' },
-            { name: 'Orion', positioning: 'Patient ID', revenue: 'Analytics', risk: 'Strong' },
+            { name: 'Pantheon', positioning: 'HCP search / profiling', revenue: 'Project / subscription', risk: 'Lower' },
+            { name: 'Plexus', positioning: 'Influence mapping', revenue: 'Core analytics', risk: 'Lower' },
+            { name: 'Orion', positioning: 'Patient identification', revenue: 'Analytics', risk: 'Moderate' },
           ],
         },
         quadrantChart: {
           title: 'Portfolio Prioritization',
           icon: 'Zap',
-          xLabel: 'Complexity →',
-          yLabel: 'Strategic Value →',
+          xLabel: 'Complexity -->',
+          yLabel: 'Strategic Value -->',
           quadrants: ['Accelerate', 'Double Down', 'Reposition', 'Cut'],
           points: [
-            { label: 'Pantheon', x: 0.75, y: 0.9 },
-            { label: 'Plexus', x: 0.55, y: 0.85 },
-            { label: 'Orion', x: 0.5, y: 0.78 },
-            { label: 'BloomLab', x: 0.4, y: 0.7 },
-            { label: 'PerspectivX', x: 0.3, y: 0.6 },
-            { label: 'MagpAI', x: 0.2, y: 0.45 },
-            { label: 'Verba', x: 0.45, y: 0.35 },
+            { label: 'BloomLab', x: 0.5, y: 0.85 },
+            { label: 'Verba', x: 0.35, y: 0.9 },
+            { label: 'Pantheon', x: 0.6, y: 0.85 },
+            { label: 'Plexus', x: 0.7, y: 0.9 },
+            { label: 'MagpAI', x: 0.4, y: 0.35 },
+            { label: 'PerspectivX', x: 0.55, y: 0.4 },
+            { label: 'Orion', x: 0.65, y: 0.45 },
           ],
           height: 290,
         },
@@ -232,9 +240,8 @@ export const slides: SlideData[] = [
           items: [
             { label: 'ION Data Lake', value: 9 },
             { label: 'Medical Expertise', value: 8 },
-            { label: 'Workflow Control', value: 6 },
-            { label: 'Model Sophistication', value: 5 },
-            { label: 'Closed-Loop Attribution', value: 4 },
+            { label: 'Workflow Control', value: 5 },
+            { label: 'Model Sophistication', value: 2 },
           ],
           suffix: '/10',
           maxValue: 10,
@@ -242,12 +249,12 @@ export const slides: SlideData[] = [
         },
         dataFlow: {
           componentId: 'DataFlowDiagram',
-          title: 'Data Flow — ION Platform',
+          title: 'Data Flow -- ION Platform',
           icon: 'Database',
           sources: ['Claims Data', 'Advisory Boards', 'Speaker Bureau', 'Engagement Data', 'Publications'],
           outputs: ['Pantheon', 'PerspectivX', 'Predictive Models'],
         },
-        insightText: "The ION Data Lake is MKG's strongest moat — proprietary claims, engagement, advisory, and publication data that cannot be replicated by competitors or foundation models. The path to higher value is moving from search (Pantheon today) to prediction (where Pantheon must go).",
+        insightText: "The ION Data Lake is MKG's strongest moat -- proprietary claims, engagement, advisory, and publication data that cannot be replicated by competitors or foundation models. The path to higher value is moving from search (Pantheon today) to prediction (where Pantheon must go).",
       },
     },
   },
@@ -291,24 +298,26 @@ export const slides: SlideData[] = [
           'No enterprise AI KPI dashboard',
           'No clear AI product strategy owner',
           'Limited attribution analytics FTE',
+          'AI activation appears organically grown vs. prioritized top-down',
+          'Multiple build teams distributed across the business, suggesting a decentralized investment model vs. a centrally allocated roadmap',
         ],
       },
     },
   },
 
   // ================================================================
-  // SLIDE 8: INTERNAL VALUE STORY — ROUTE REAGENT
+  // SLIDE 8: INTERNAL VALUE STORY -- ROUTE REAGENT
   // ================================================================
   {
     id: 'route-reagent',
-    title: 'Internal Value — Route Reagent',
+    title: 'Internal Value -- Route Reagent',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'RouteReagentSlide',
       props: {
         sectionLabel: 'Section 06',
-        heading: 'Internal Value Story — Route Reagent',
+        heading: 'Internal Value Story -- Route Reagent',
         subtitle: 'Flagship 90-day measurable win',
         metrics: [
           { metric: 'Avg Routing Rounds', before: '6', target: '4.5', delta: '-25%' },
@@ -323,12 +332,12 @@ export const slides: SlideData[] = [
             { label: 'Savings per job', value: '$250' },
             { label: 'Total Annual Savings', value: '~$750,000', highlight: true },
             { label: 'Build Cost', value: '~$50,000' },
-            { label: 'ROI Year 1', value: '~15×', highlight: true },
+            { label: 'ROI Year 1', value: '~15x', highlight: true },
           ],
           roiHighlight: {
-            value: '15×',
+            value: '15x',
             label: 'Year 1 ROI',
-            sublabel: '$50K build → $750K annual savings',
+            sublabel: '$50K build -> $750K annual savings',
           },
         },
       },
@@ -336,26 +345,26 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 9: CUSTOMER-FACING VALUE — PANTHEON
+  // SLIDE 9: CUSTOMER-FACING VALUE -- PANTHEON
   // ================================================================
   {
     id: 'pantheon',
-    title: 'External Value — Predictive Pantheon',
+    title: 'External Value -- Predictive Pantheon',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'PantheonSlide',
       props: {
         sectionLabel: 'Section 07',
-        heading: 'Customer-Facing Value — Predictive Pantheon',
+        heading: 'Customer-Facing Value -- Predictive Pantheon',
         subtitle: 'From search tool to predictive intelligence layer',
         metrics: [
-          { metric: 'Project Revenue', current: '$500K', future: '$500K', delta: '—' },
+          { metric: 'Project Revenue', current: '$500K', future: '$500K', delta: '--' },
           { metric: 'Subscription Add-on', current: '$0', future: '$150K', delta: '+$150K' },
           { metric: 'Retention', current: '75%', future: '85%', delta: '+10pts' },
           { metric: 'Upsell Rate', current: '20%', future: '35%', delta: '+15pts' },
         ],
-        evolutionThesis: "Today, Pantheon is an HCP search tool — useful but commoditizable. By layering predictive models on top of the ION Data Lake (behavior change alerts, engagement scoring, prescriber trajectory), Pantheon transforms from a lookup tool into a strategic intelligence layer — defensible, subscription-ready, and impossible to replicate without MKG's proprietary longitudinal data.",
+        evolutionThesis: "Today, Pantheon is an HCP search tool -- useful but commoditizable. By layering predictive models on top of the ION Data Lake (behavior change alerts, engagement scoring, prescriber trajectory), Pantheon transforms from a lookup tool into a strategic intelligence layer -- defensible, subscription-ready, and impossible to replicate without MKG's proprietary longitudinal data. Key assumptions: predictive layer priced at $150K/customer/year, retention improves from 75% to 85% due to measurable performance lift, and upsell rate improves from 20% to 35% because Predictive + Mapping increases cross-sell pull-through.",
       },
     },
   },
@@ -377,22 +386,10 @@ export const slides: SlideData[] = [
           {
             action: 'Double Down',
             variant: 'green',
-            items: ['Route Reagent', 'Editorial Platform Consolidation'],
-          },
-          {
-            action: 'Accelerate',
-            variant: 'sage',
-            items: ['Pantheon Predictive', 'Behavior change alerts'],
-          },
-          {
-            action: 'Reposition',
-            variant: 'taupe',
-            items: ['Verba (feature, not SKU)', 'MagpAI (augmentation layer)'],
-          },
-          {
-            action: 'Pause / Evaluate',
-            variant: 'red',
-            items: ['Low-usage niche internal tools'],
+            items: [
+              'Rationalize the AI product portfolio and combine adjacent products (e.g., Route Reagent + Annotation Activation into a single workflow offering)',
+              'Focus data assets to create true differentiation (tighten around the Data Lake + medical expertise + ION platform)',
+            ],
           },
         ],
         foundation: {
@@ -404,11 +401,11 @@ export const slides: SlideData[] = [
         workflowIntegration: {
           title: 'Critical Enabler: Workflow Integration',
           icon: 'Layers',
-          description: 'The current AI portfolio reads as fragmented — 20+ branded tools creating spot efficiencies but not connected to each other or to end-to-end business processes. The highest-leverage move is not building more tools, but connecting existing tools along core business process workflows.',
+          description: 'The current AI portfolio reads as fragmented -- 20+ branded tools creating spot efficiencies but not connected to each other or to end-to-end business processes. The highest-leverage move is not building more tools, but connecting existing tools along core business process workflows.',
           workflows: [
-            { workflow: 'Editorial → MLR → Delivery', tools: 'Route Reagent + Annotation Activation + Compliance Core', gap: 'Not yet connected end-to-end' },
-            { workflow: 'HCP Intelligence → Engagement', tools: 'Pantheon + Plexus + engagement data', gap: 'Search-only; no predictive loop' },
-            { workflow: 'Research → Insight → Action', tools: 'MagpAI + BloomLab + PerspectivX', gap: 'Three separate tools, one workflow' },
+            { workflow: 'Editorial -> MLR -> Delivery', tools: 'Route Reagent + Annotation Activation + Compliance Core', gap: 'Not yet connected end-to-end' },
+            { workflow: 'HCP Intelligence -> Engagement', tools: 'Pantheon + Plexus + engagement data', gap: 'Search-only; no predictive loop' },
+            { workflow: 'Research -> Insight -> Action', tools: 'MagpAI + BloomLab + PerspectivX', gap: 'Three separate tools, one workflow' },
           ],
         },
       },
@@ -432,16 +429,16 @@ export const slides: SlideData[] = [
           title: 'Organizational Readiness',
           items: [
             { dimension: 'Leadership Alignment', score: 8, color: 'green' },
-            { dimension: 'AI Fluency', score: 7, color: 'green' },
-            { dimension: 'Product Focus', score: 5, color: 'yellow' },
-            { dimension: 'KPI Discipline', score: 4, color: 'red' },
+            { dimension: 'AI Fluency', score: 5, color: 'yellow' },
+            { dimension: 'Product Focus', score: 4, color: 'red' },
+            { dimension: 'KPI Discipline', score: 2, color: 'red' },
           ],
         },
         requiredActions: {
           title: 'Required Actions',
           icon: 'Target',
           items: [
-            { action: 'Hire AI Product Strategy Lead', urgency: 'Immediate', description: 'Single owner for initiative portfolio, consolidation, and product-market fit' },
+            { action: 'Hire Senior Product Manager (AI Product Leader)', urgency: 'Immediate', description: 'Single owner for requirements, prioritization, and portfolio consolidation' },
             { action: 'Closed-loop analytics FTE', urgency: 'Q2 2026', description: 'Dedicated role to build attribution from AI interventions to client outcomes' },
             { action: 'Enterprise AI KPI dashboard', urgency: 'Q2 2026', description: 'Unified view of usage, adoption, ROI, and initiative health across KINETICS + DIFFUSION' },
           ],
@@ -463,29 +460,29 @@ export const slides: SlideData[] = [
       props: {
         sectionLabel: 'Section 10',
         heading: 'Quantifying "Getting It Right"',
-        subtitle: 'The financial case for focused AI execution',
+        subtitle: 'Internal (cost/productivity) vs External (revenue uplift)',
         ebitdaModel: {
-          title: 'EBITDA Impact Model',
+          title: 'Internal Value (Cost / Productivity Uplift)',
           icon: 'TrendingUp',
           headers: ['Category', 'Year 1', 'Year 3'],
           rows: [
-            { category: 'Editorial Efficiency', year1: '$1.0M', year3: '$2.5M' },
-            { category: 'Subscription Shift', year1: '$0.5M', year3: '$3.0M' },
-            { category: 'Retention Lift', year1: '$0.3M', year3: '$1.0M' },
+            { category: 'Editorial Efficiency / Cycle Time', year1: '$1.0M', year3: '$2.5M' },
+            { category: 'QA / Compliance Automation', year1: '$0.3M', year3: '$0.8M' },
+            { category: 'Other Internal Productivity', year1: '$0.2M', year3: '$0.7M' },
           ],
-          totals: { label: 'Total EBITDA Impact', year1: '$1.8M', year3: '$6.5M' },
+          totals: { label: 'Total Internal Impact', year1: '$1.5M', year3: '$4.0M' },
         },
         enterpriseValue: {
-          title: 'Enterprise Value Impact (Year 3)',
+          title: 'External Value (Revenue Uplift)',
           icon: 'BarChart3',
           lineItems: [
-            { label: 'Current EBITDA', value: '$20M' },
-            { label: 'AI Impact (Year 3)', value: '+$6.5M', color: 'green' },
-            { label: 'New EBITDA', value: '$26.5M', bold: true },
+            { label: 'Predictive Pantheon Add-on Revenue', value: '$0.5M / $3.0M', color: 'green' },
+            { label: 'Retention / Expansion Lift', value: '$0.3M / $2.0M', color: 'green' },
+            { label: 'Other Differentiated Products', value: '$0.2M / $0.5M' },
+            { label: 'Total External Impact', value: '$1.0M / $5.5M', bold: true },
           ],
           multiples: [
-            { label: 'At 10× multiple', value: '+$65M EV' },
-            { label: 'At 12× multiple', value: '+$78M EV' },
+            { label: 'EBITDA uplift formula', value: '(External rev x GM) + Internal savings - Incremental opex' },
           ],
         },
       },
@@ -508,43 +505,43 @@ export const slides: SlideData[] = [
         recommendations: [
           {
             num: '01',
-            title: 'Unified AI Editorial Platform',
-            subtitle: '90-day measurable win',
-            description: 'Consolidate Route Reagent + Annotation Activation + editorial tooling into a single connected workflow. Measure: routing rounds, turnaround days, cost per job.',
+            title: 'Rationalize the AI Portfolio',
+            subtitle: 'Consolidate adjacent SKUs',
+            description: 'Stop building net-new products until overlap is addressed. Combine adjacent offerings (e.g., Route Reagent + Annotation Activation) into unified workflow solutions.',
             variant: 'green',
           },
           {
             num: '02',
-            title: 'Predictive Intelligence Layer',
-            subtitle: 'Pantheon evolution',
-            description: 'Transform Pantheon from HCP lookup to predictive engine. Layer behavior change alerts, engagement scoring, prescriber trajectory on ION Data Lake.',
+            title: 'Differentiate Through Data + Expertise',
+            subtitle: 'Defensible moat',
+            description: 'Focus on the ION Data Lake and medical expertise as the defensible moat. These are the assets competitors and foundation models cannot replicate.',
             variant: 'sage',
           },
           {
             num: '03',
-            title: 'Closed-Loop ROI Pilot',
-            subtitle: '1 therapeutic area',
-            description: 'Pick one TA, instrument end-to-end attribution from AI-generated insight → HCP engagement → prescriber behavior. Prove the loop works before scaling.',
+            title: 'Instrument ROI',
+            subtitle: 'Closed-loop measurement',
+            description: 'Build closed-loop measurement that connects product usage to outcomes to willingness to pay. Without attribution, AI investment decisions remain faith-based.',
             variant: 'gold',
           },
           {
             num: '04',
-            title: 'Connect the Workflow',
-            subtitle: 'Integration over proliferation',
-            description: 'Map AI tools against core business process workflows. Stop building point solutions; start connecting existing tools into end-to-end chains that compound value across the ION Data Lake.',
+            title: 'Operationalize Delivery',
+            subtitle: 'Product-led prioritization',
+            description: 'Product-led prioritization with clear ownership (Senior PM / AI Product Leader) and a single intake/prioritization process across the organization.',
             variant: 'cyan',
           },
         ],
         operatingPrinciples: [
-          'Connect before you build — map tools to workflows first',
-          'Consolidate overlapping tools',
-          'Measure relentlessly',
-          'Encode medical expertise into guardrails',
+          'Consolidate overlapping tools before building new ones',
+          'Differentiate through data and medical expertise',
+          'Measure relentlessly -- closed-loop attribution',
+          'Single owner for AI product strategy',
         ],
         strategicShifts: [
-          'From point solutions → integrated workflow AI',
-          'Shift 81qd toward subscription model',
-          'AI should change what MKG can charge — not just what it costs',
+          'From point solutions -> integrated workflow AI',
+          'From portfolio sprawl -> focused, defensible products',
+          'AI should change what MKG can charge -- not just what it costs',
         ],
       },
     },

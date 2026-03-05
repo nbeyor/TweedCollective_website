@@ -109,7 +109,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     description: 'Strategic evaluation of MKG\'s AI ecosystem — ION platform, initiative portfolio, moat analysis, and value creation roadmap.',
     category: 'Strategic Assessment',
     icon: 'Compass',
-    date: '2026-02',
+    date: '2026-03',
     readTime: '25 min',
     visibility: 'unlisted',
   },
