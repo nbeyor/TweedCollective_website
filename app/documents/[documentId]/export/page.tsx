@@ -182,12 +182,25 @@ export default async function DocumentExportPage({
           position: relative;
         }
 
+        .export-slide.export-slide-auto {
+          height: auto;
+          min-height: 7.5in;
+          overflow: visible;
+        }
+
         @media print {
           .export-slide {
             margin: 0;
             border: none;
             height: 7.5in;
             width: 10in;
+          }
+
+          .export-slide.export-slide-auto {
+            height: auto;
+            min-height: auto;
+            overflow: visible;
+            page-break-inside: auto;
           }
         }
 
@@ -767,7 +780,14 @@ export default async function DocumentExportPage({
           font-size: 0.8125rem;
           line-height: 1.4;
           height: 100%;
-          overflow: hidden;
+          overflow: visible;
+        }
+
+        /* Print break hints for custom slide children */
+        .export-custom-slide > div > div,
+        .export-custom-slide > div > section {
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
 
         /* Override dark backgrounds to white/light */
@@ -964,11 +984,18 @@ export default async function DocumentExportPage({
             
             // Hide header for title/cover slides
             const isTitleSlide = slide.content?.type === 'title'
-            
+
+            // Custom component slides need auto height to avoid content clipping
+            const isCustomComponent = slide.content?.type === 'custom' &&
+              slide.content?.componentId &&
+              !slide.content?.props?.items &&
+              !slide.content?.props?.regions &&
+              slide.content?.componentId !== 'AdoptionStancesDetailedSlide'
+
             pages.push(
-              <div 
-                key={`${slide.id}-page-${pageIdx}`} 
-                className={`export-slide ${showPageBreak ? 'page-break' : ''}`}
+              <div
+                key={`${slide.id}-page-${pageIdx}`}
+                className={`export-slide ${isCustomComponent ? 'export-slide-auto' : ''} ${showPageBreak ? 'page-break' : ''}`}
               >
                 {!isTitleSlide && (
                   <div className="slide-header">
