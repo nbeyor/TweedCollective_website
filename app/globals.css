@@ -415,6 +415,22 @@ body {
   color: var(--cream);
 }
 
+@media print {
+  html, body {
+    background: white !important;
+    color: #000 !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+  }
+  p {
+    color: #333 !important;
+  }
+  .bg-void {
+    background: white !important;
+  }
+}
+
 /* Selection Styling */
 ::selection {
   background: rgba(139, 92, 246, 0.3);

@@ -98,7 +98,7 @@ export default async function DocumentExportPage({
   const slides = slideMap[documentId] || []
 
   return (
-    <>
+    <div data-export-view>
       <style dangerouslySetInnerHTML={{__html: `
         /* Hide website header and footer on export page */
         header,
@@ -126,6 +126,20 @@ export default async function DocumentExportPage({
           background: white;
           padding: 0 !important;
           margin: 0 !important;
+        }
+
+        /* Override global dark theme for export context */
+        [data-export-view] h1,
+        [data-export-view] h2,
+        [data-export-view] h3,
+        [data-export-view] h4,
+        [data-export-view] h5,
+        [data-export-view] h6 {
+          color: #000;
+        }
+
+        [data-export-view] p {
+          color: #333;
         }
 
         @page {
@@ -273,26 +287,26 @@ export default async function DocumentExportPage({
           grid-template-columns: repeat(4, 1fr);
         }
 
-        .card {
+        .export-card {
           padding: 0.75rem;
           border: 1px solid #6b7556;
           border-radius: 0.375rem;
           background: #fff;
         }
 
-        .card-title {
+        .export-card-title {
           font-weight: 600;
           font-size: 0.875rem;
           color: #535d43;
           margin-bottom: 0.375rem;
         }
 
-        .card-description {
+        .export-card-description {
           color: #2d2d2d;
           font-size: 0.8125rem;
         }
 
-        .card-icon {
+        .export-card-icon {
           color: #6b7556;
         }
 
@@ -1019,7 +1033,7 @@ export default async function DocumentExportPage({
           return pages
         })}
       </div>
-    </>
+    </div>
   )
 }
 
@@ -1183,7 +1197,7 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
 
           {isFirstGridPage && content.headerSection && (
             <div className="content-section">
-              <h4 className="font-semibold mb-2" style={{fontSize: '0.875rem'}}>{content.headerSection.heading}</h4>
+              <h4 className="font-semibold mb-2" style={{fontSize: '0.875rem', color: '#000'}}>{content.headerSection.heading}</h4>
               <ul>
                 {content.headerSection.items.map((item: string, i: number) => (
                   <li key={i}>{item}</li>
@@ -1194,10 +1208,10 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
 
           <div className={`card-grid cols-${content.columns || 3}`}>
             {displayGridItems.map((item: any, i: number) => (
-              <div key={i} className="card">
-                {item.title && <div className="card-title">{item.title}</div>}
+              <div key={i} className="export-card">
+                {item.title && <div className="export-card-title">{item.title}</div>}
                 {item.subtitle && <div className="text-sm text-gray-500 mb-2" style={{fontSize: '0.75rem'}}>{item.subtitle}</div>}
-                {item.description && <div className="card-description">{item.description}</div>}
+                {item.description && <div className="export-card-description">{item.description}</div>}
                 {item.items && (
                   <ul className="mt-2">
                     {item.items.map((listItem: string, j: number) => (
@@ -1299,7 +1313,7 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
 
           {content.groups.map((group: any, i: number) => (
             <div key={i} className="content-section">
-              {group.title && <h4 className="font-semibold mb-2">{group.title}</h4>}
+              {group.title && <h4 className="font-semibold mb-2" style={{color: '#000'}}>{group.title}</h4>}
               <ul>
                 {group.items.map((item: any, j: number) => (
                   <li key={j}>
