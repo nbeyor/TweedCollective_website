@@ -22,7 +22,7 @@ import {
   Title, Tooltip, Legend, Filler
 } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
-import { RatingBadge, StatusDot, ReadinessIcon, GapSticker, GapCallout, GapTag } from '../shared/DiligenceComponents'
+import { RatingBadge, StatusDot, ReadinessIcon } from '../shared/DiligenceComponents'
 
 ChartJS.register(
   CategoryScale, LinearScale, BarElement, PointElement, LineElement,
@@ -102,24 +102,25 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 02</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
-            <p className="text-cream/50 text-sm">Slide titles by chapter</p>
+            <p className="text-cream/50 text-sm">Key findings by chapter</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-6">
             {[
-              { chapter: 'A — Growth Thesis Alignment', slides: ['Growth Thesis Alignment — Exec Summary', 'Growth Projections', 'Offering + AI ↔ Growth Drivers', 'AI Roadmap Fit', 'Scenarios for Outcomes'], color: 'border-sage' },
-              { chapter: 'B — Disruption Risk', slides: ['Disruption Risk — Exec Summary', 'Who Could Disrupt', 'What They Would Build', 'What Must Change', '"Build-It-Today" Replicability'], color: 'border-purple-500' },
-              { chapter: 'C — Underlying Asset Value', slides: ['Asset Value — Exec Summary (R/Y/G)', 'Product Asset Strength', 'Data Asset Strength', 'Channel Asset Strength', 'Relationship Asset Strength'], color: 'border-green-500' },
-              { chapter: 'D — Team + Operating Model', slides: ['Team + Ops — Exec Summary', 'People & Roles', 'Functional Coverage', 'Operating Model Maturity'], color: 'border-taupe' },
-              { chapter: 'E — AI Assessment', slides: ['AI Assessment — Exec Summary', 'AI Inventory', 'Architecture + Readiness', 'AI Value Framework', 'AI Value & Proof — Examples'], color: 'border-gold' },
-              { chapter: 'F — Buyer ↔ Target Synergies', slides: ['Synergies — Exec Summary', 'Synergy Connections Matrix', 'Synergy Detail', 'Synergy Pathways (3 Waves)'], color: 'border-blue-500' },
-              { chapter: 'G — Quantified Impact', slides: ['Priority Initiatives', 'Sensitivity → Growth Curve'], color: 'border-red-400' },
+              { chapter: 'A — Growth Thesis Alignment', slides: ['Apollo\u2019s growth is anchored in a large, embedded, and highly sticky site footprint (90%+ retention) built around EISF; this installed base is a major asset for monetization expansion.', 'The most material AI value creation path is TrialFlow (workflow orchestration), but it is gated by data availability and rights.'], color: 'border-sage' },
+              { chapter: 'B — What Has to Be True', slides: ['Growth is not primarily driven by additional site network expansion; Apollo is near saturation in EISF penetration and must shift to a new monetization model that expands ARPU via bundles, AI features, and potentially services.', 'Retention must remain high as the foundation for monetization expansion.'], color: 'border-yellow-500' },
+              { chapter: 'C — Product + AI Initiatives', slides: ['Apollo has a broad portfolio of AI initiatives, but the value narrative should be centered on TrialFlow/Flowbot as the scalable orchestration layer rather than disconnected automations.', 'A persistent risk: many AI initiatives lack clear monetization/value linkage; tighten the story around where value is created and captured.'], color: 'border-gold' },
+              { chapter: 'D — Commercial / Operating Model', slides: ['The next growth phase likely requires evolving from a product-only posture to a service-enabled model, where cross-product operational data informs measurable workflow/ops improvements.', 'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes.'], color: 'border-taupe' },
+              { chapter: 'E — Competitive / Disruption Risk', slides: ['Platform displacement risk is low given deep workflow embedding, form design investment, and stickiness; wholesale \u201CAI eats the workflow\u201D is unlikely (massive change management required).', 'The bigger competitive risk emerges at the edges of the EISF core and as Apollo moves toward services, where alternative data systems/products could limit growth.'], color: 'border-purple-500' },
+              { chapter: 'F — Defensibility + Data Rights', slides: ['Apollo\u2019s moat is strongest in channel + relationships + deployment; product is solid but could be better, and data value is constrained by rights/access.', 'The highest-value rights question is two-tier data rights; site performance rights appear TBD / not clearly covered.'], color: 'border-green-500' },
+              { chapter: 'G — Team + Execution', slides: ['The current team has been effective at building and penetrating the network; the next phase (services + monetization expansion) may require different leadership capabilities.', 'Engineering scale appears high relative to \u201Cdocument-management-like\u201D scope; execution efficiency is unclear.'], color: 'border-red-400' },
+              { chapter: 'H — Integration with WCG', slides: ['Near-term value comes from WCG as a channel driving Apollo product deployment and revenue uplift; longer-term upside comes from combining Apollo product data with WCG operational data to enable service/ops lift.'], color: 'border-blue-500' },
             ].map((ch) => (
               <div key={ch.chapter} className={`p-4 bg-white/5 border-l-4 ${ch.color} rounded-r-lg`}>
                 <h3 className="text-sm font-semibold text-cream mb-2">{ch.chapter}</h3>
                 <ul className="space-y-1">
                   {ch.slides.map((s, i) => (
                     <li key={i} className="text-xs text-cream/60 flex items-start gap-2">
-                      <span className="text-cream/30 font-mono mt-px">·</span>
+                      <span className="text-cream/30 font-mono mt-px">&bull;</span>
                       <span>{s}</span>
                     </li>
                   ))}
@@ -141,10 +142,10 @@ function buildSlideContentMap() {
               <TrendingUp className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Drivers of Growth</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• Connected site network expansion (65K+ sites, 600+ sponsors, 90+ countries) — 65K sites &asymp; 1/5 of active trial sites; Apollo ~5x ahead of closest competitor [TRANSCRIPT]</li>
-                <li>• Multi-product platform upsell: eBinders &rarr; SiteLink &rarr; eTMF &rarr; eConsent &rarr; Site Feasibility &rarr; Site Selection</li>
-                <li>• Growth shifted from site-by-site (first 100 took ~6 yrs) to sponsor-driven bulk deployment — up to 500 sites/week during peaks [TRANSCRIPT]</li>
-                <li>• AI-augmented workflow modules entering market as independent SKUs (feasibility, site selection, Doc QC, risk-based reporting)</li>
+                <li>• <span className="text-cream/90 font-medium">Connected site network</span> is a massive asset: 65K+ sites, 600+ sponsors, 90+ countries, very low churn (90%+ stickiness); Apollo ~5x ahead of closest competitor</li>
+                <li>• <span className="text-cream/90 font-medium">EISF is the core product</span> from which multi-product upsell expands: eBinders &rarr; SiteLink &rarr; eTMF &rarr; eConsent &rarr; Site Feasibility &rarr; Site Selection</li>
+                <li>• Growth shifted from site-by-site (first 100 took ~6 yrs) to sponsor-driven bulk deployment &mdash; up to 500 sites/week during peaks</li>
+                <li>• Broader push toward digitization + expanding digital footprint &rarr; growing appetite for data across the clinical trial ecosystem</li>
                 <li>• Regulatory tailwinds: ICH E6 R3 mandates + FDA eSource guidance favoring electronic workflows</li>
               </ul>
             </div>
@@ -152,19 +153,19 @@ function buildSlideContentMap() {
               <Brain className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">AI Opportunities</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• Site Feasibility — automates 500&ndash;1,000 questionnaires/yr per site using knowledge library [TRANSCRIPT]</li>
-                <li>• Doc QC — Tesseract OCR for deterministic checks + LLM for semantic checks (blank pages, readability, ordering) [TRANSCRIPT]</li>
-                <li>• Risk-Based Reporting — structured + unstructured data overlay producing risk heat maps and exec summaries [TRANSCRIPT]</li>
-                <li>• Trial Flow — workflow orchestration POC (like Monday.com/MS Project for trial startup) [TRANSCRIPT]</li>
-                <li>• FlowBot — AI assistant embedded in eBinders for role-based onboarding [TRANSCRIPT]</li>
-                <li>• Sponsor-side operational intelligence from aggregated site performance data</li>
+                <li>• <span className="text-cream/90 font-medium">TrialFlow / Workflow Orchestration</span> &mdash; the primary AI value creation path; intelligent orchestration of trial operations with task dependencies (like Monday.com/MS Project for trial startup)</li>
+                <li>• <span className="text-yellow-300 font-medium">Key dependency:</span> TrialFlow requires data capture + usable rights (may not have rights to use/operationalize)</li>
+                <li>• Site Feasibility &mdash; automates 500&ndash;1,000 questionnaires/yr per site using knowledge library</li>
+                <li>• Doc QC &mdash; Tesseract OCR for deterministic checks + LLM for semantic checks (blank pages, readability, ordering)</li>
+                <li>• Risk-Based Reporting &mdash; structured + unstructured data overlay producing risk heat maps and exec summaries</li>
+                <li>• FlowBot &mdash; AI assistant embedded in eBinders for role-based onboarding</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Target className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Alignment</h3>
               <RatingBadge rating="HIGH" size="lg" />
-              <p className="text-xs text-cream/70 mt-2">Apollo&apos;s AI roadmap directly targets the two largest time sinks in clinical trials — study startup and ongoing monitoring. 2026 strategy organized around a &ldquo;3 on 3&rdquo; goal: 3 new AI workflows targeting $3M AI-specific ARR, up from $0 in 2025. AI priced as independent SKUs, not bundled. [TRANSCRIPT]</p>
+              <p className="text-xs text-cream/70 mt-2">Apollo&apos;s AI roadmap directly targets the two largest time sinks in clinical trials — study startup and ongoing monitoring. 2026 strategy organized around a &ldquo;3 on 3&rdquo; goal: 3 new AI workflows targeting $3M AI-specific ARR, up from $0 in 2025. AI priced as independent SKUs, not bundled.</p>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <AlertTriangle className="w-6 h-6 text-yellow-400 mb-2" />
@@ -174,19 +175,10 @@ function buildSlideContentMap() {
                 <li>• Regulatory push toward decentralized trials and remote monitoring post-COVID</li>
                 <li>• Veeva SiteVault&apos;s free eISF creating pricing pressure on site-facing product</li>
                 <li>• PE consolidation across clinical trial technology (e.g., WCG&apos;s own LGP/Arsenal/Novo recapitalization)</li>
-                <li>• Apollo TA mix &asymp; 50% oncology, TA-agnostic infrastructure — site selection may introduce TA-specific patient data [TRANSCRIPT]</li>
+                <li>• Apollo TA mix &asymp; 50% oncology, TA-agnostic infrastructure — site selection may introduce TA-specific patient data</li>
               </ul>
             </div>
           </div>
-          <GapCallout gapCount={5}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• What is Apollo&apos;s current ARR and growth rate? Avg revenue ~$1,500/study site [TRANSCRIPT]; feasibility adds ~$500 [TRANSCRIPT]; but total ARR not disclosed. <GapTag /></li>
-              <li>• Conversion rate from free StudyOrganizer users to paid eBinders? <GapTag /></li>
-              <li>• Of 65K &quot;connected&quot; sites, how many are active paying users vs. sponsor-deployed? ~400 total customers confirmed [TRANSCRIPT]. <GapTag /></li>
-              <li>• Revenue split between site-facing vs. sponsor-facing products? Balanced portfolio described but not broken out. <GapTag /></li>
-              <li>• Competitive impact of Veeva SiteVault&apos;s free eISF on acquisition costs and churn? <GapTag /></li>
-            </ul>
-          </GapCallout>
         </div>
   )
 
@@ -205,11 +197,11 @@ function buildSlideContentMap() {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: 'Total Funding', val: '$116M', sub: 'Seed–C-1' },
-                  { label: 'Total Customers', val: '~400', sub: '[TRANSCRIPT]' },
-                  { label: 'Avg Rev / Study Site', val: '~$1,500', sub: '[TRANSCRIPT]' },
-                  { label: 'Feasibility Add-on', val: '~$500', sub: '[TRANSCRIPT]' },
+                  { label: 'Total Customers', val: '~400', sub: '' },
+                  { label: 'Avg Rev / Study Site', val: '~$1,500', sub: '' },
+                  { label: 'Feasibility Add-on', val: '~$500', sub: '' },
                   { label: 'AI Revenue Entering 2026', val: '$0', sub: '→ $3M target' },
-                  { label: 'eConsent YoY Growth', val: '~75%', sub: '[TRANSCRIPT]' },
+                  { label: 'eConsent YoY Growth', val: '~75%', sub: '' },
                   { label: 'Monthly Workflows', val: '7.2M', sub: 'Current' },
                   { label: 'Remote Monitoring', val: '5.8M/mo', sub: 'Current' },
                 ].map((m) => (
@@ -224,24 +216,18 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
               <div className="space-y-3">
                 {[
-                  'Site network growth must continue: sponsor-driven deployments pulling in new sites at scale (first 100 customers took ~6 yrs, now 500 sites/week at peaks)',
-                  'Multi-product bundles must become the standard commercial motion — moving beyond individual product sales [TRANSCRIPT]',
+                  'Apollo is likely near saturation in EISF penetration — growth is not primarily driven by additional site network expansion',
+                  'Apollo must monetize the footprint in a new way: bundles, AI features, and/or services that stitch products together to expand ARPU',
+                  'Trial operations / stitching is the center of the growth thesis — evolution toward a service-enabled model',
+                  'Retention must remain high as the foundation for monetization expansion (90%+ stickiness must hold against Veeva\u2019s free SiteVault)',
                   'AI features must prove value: "3 on 3" target of $3M AI ARR from three new SKUs, up from $0',
-                  'Retention must hold against Veeva\u2019s free SiteVault eISF offering (eBinders strategy: "protect the core")',
-                  'eConsent must sustain ~75% YoY growth trajectory [TRANSCRIPT]',
-                  'Sponsor-side revenue must scale faster than site-side revenue (higher ACV, stickier)',
+                  'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes',
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
                     <ArrowRight className="w-3 h-3 text-sage-300 mt-0.5 flex-shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
-                <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 mt-4">
-                  <p className="text-xs text-yellow-200"><span className="font-medium">INFERENCE:</span> If 65K study sites generate avg ~$1,500 each, site-side eISF alone could represent up to ~$97.5M in revenue potential — but not all 65K are direct-paying (many are sponsor-deployed). Actual site-side revenue depends on the ratio of direct-contracted vs. sponsor-provisioned sites. <GapTag /></p>
-                </div>
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 mt-2">
-                  <p className="text-xs text-red-200"><span className="font-medium">M&amp;A GAP:</span> Budgets product — Apollo is &ldquo;actively looking for a partner or to buy&rdquo; a budgets/contracting tool [TRANSCRIPT]. This has M&amp;A implications.</p>
-                </div>
               </div>
             </div>
           </div>
@@ -317,8 +303,8 @@ function buildSlideContentMap() {
             </table>
           </div>
           <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
-            <p className="text-xs text-cream/70 mb-2">Product portfolio maps to a &ldquo;crossing the chasm&rdquo; framework: document management &rarr; connected trial execution &rarr; automation (AI agents + traditional) &rarr; intelligence products built on accumulated data. [TRANSCRIPT]</p>
-            <p className="text-xs text-cream/50"><span className="font-medium">Gaps:</span> Revenue contribution by product line not disclosed. Doc QC / risk-based reporting pricing still in development. LLM token consumption cost model acknowledged as &ldquo;a point of attention&rdquo; &mdash; doing as much as possible deterministically before hitting LLM. [TRANSCRIPT]</p>
+            <p className="text-xs text-cream/70 mb-2">Product portfolio maps to a &ldquo;crossing the chasm&rdquo; framework: document management &rarr; connected trial execution &rarr; automation (AI agents + traditional) &rarr; intelligence products built on accumulated data.</p>
+            <p className="text-xs text-cream/50">Revenue contribution by product line not disclosed. Doc QC / risk-based reporting pricing still in development. LLM token consumption cost model acknowledged as &ldquo;a point of attention&rdquo; &mdash; doing as much as possible deterministically before hitting LLM.</p>
           </div>
         </div>
   )
@@ -334,10 +320,10 @@ function buildSlideContentMap() {
             <div className="space-y-3">
               <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-2">AI Roadmap Themes</h3>
               {[
-                { id: 'T1', title: 'Site Identification & Feasibility', desc: 'AI-assisted questionnaire completion from knowledge library; sponsor-side site selection with API for custom scoring; ~10 test customers in LA [TRANSCRIPT]' },
-                { id: 'T2', title: 'Study Start-Up Automation', desc: 'Doc exchange between eTMF and eISF; Trial Flow (POC) for workflow orchestration with task dependencies [TRANSCRIPT]' },
-                { id: 'T3', title: 'Document Quality & Compliance', desc: 'Doc QC pipeline: batch processing, blank pages, readability, ordering, title-content matching. Tesseract OCR + LLM semantic checks [TRANSCRIPT]' },
-                { id: 'T4', title: 'Risk-Based Reporting & Intelligence', desc: 'Structured + unstructured data overlay producing risk heat maps, exec summaries, recommended actions. Site-facing first, then sponsor-facing [TRANSCRIPT]' },
+                { id: 'T1', title: 'Site Identification & Feasibility', desc: 'AI-assisted questionnaire completion from knowledge library; sponsor-side site selection with API for custom scoring; ~10 test customers in LA' },
+                { id: 'T2', title: 'Study Start-Up Automation', desc: 'Doc exchange between eTMF and eISF; Trial Flow (POC) for workflow orchestration with task dependencies' },
+                { id: 'T3', title: 'Document Quality & Compliance', desc: 'Doc QC pipeline: batch processing, blank pages, readability, ordering, title-content matching. Tesseract OCR + LLM semantic checks' },
+                { id: 'T4', title: 'Risk-Based Reporting & Intelligence', desc: 'Structured + unstructured data overlay producing risk heat maps, exec summaries, recommended actions. Site-facing first, then sponsor-facing' },
               ].map((t) => (
                 <div key={t.id} className="p-3 bg-sage-500/10 border border-sage-500/30 rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
@@ -375,14 +361,14 @@ function buildSlideContentMap() {
               ))}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
-            <div className="text-xs uppercase tracking-wider text-red-300 mb-1">Mismatches / Missing Bets</div>
+          <div className="p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Additional Opportunities</div>
+            <p className="text-xs text-cream/70 mb-2">Strong product basis with underlying data &mdash; additional opportunities in:</p>
             <ul className="text-xs text-cream/70 space-y-1">
-              <li>• No AI for participant recruitment. EMR &ldquo;print to file&rdquo; integration exists (~25% of customers) but not yet a data asset &mdash; Ryan Jones confirmed this gap [TRANSCRIPT]</li>
-              <li>• No AI for protocol optimization or amendment prediction (contrast with WCG&apos;s ClinSphere Trial IntelX)</li>
-              <li>• No AI for diversity/equity in site or participant selection</li>
-              <li>• Budgets/contracting &mdash; actively seeking to partner or acquire a budgets tool; key gap in study startup workflow [TRANSCRIPT]</li>
-              <li>• FlowBot (AI assistant for eBinders) positioned as feature, not standalone &mdash; potential for deeper AI-assisted UX [TRANSCRIPT]</li>
+              <li>• <span className="text-cream/90 font-medium">Recruitment</span> &mdash; EMR &ldquo;print to file&rdquo; integration exists (~25% of customers) but not yet a data asset</li>
+              <li>• <span className="text-cream/90 font-medium">Protocol optimization</span> &mdash; no AI for protocol optimization or amendment prediction (contrast with WCG&apos;s ClinSphere Trial IntelX)</li>
+              <li>• <span className="text-cream/90 font-medium">Budgeting</span> &mdash; actively seeking to partner or acquire a budgets tool; key element in study startup workflow</li>
+              <li>• <span className="text-yellow-300 font-medium">Flowbot/TrialFlow</span> could unlock these opportunities <span className="text-cream/90 font-medium">if data access/rights allow</span></li>
             </ul>
           </div>
         </div>
@@ -399,9 +385,9 @@ function buildSlideContentMap() {
               <Rocket className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-green-300 mb-2">Platform Flywheel Accelerates</h3>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> AI workflows drive measurable startup time reduction; sponsors adopt Apollo as default site enablement; &ldquo;3 on 3&rdquo; AI revenue target exceeded; multi-product bundles become standard commercial motion; site network crosses 100K [TRANSCRIPT]</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> AI adoption &gt;30% in year one; Doc QC deployed at Merck and expanded to other top-20 pharma; eConsent continues 75%+ growth; site churn &lt;5%</div>
-                <div><span className="text-cream/50 font-medium">Implications:</span> Apollo becomes system-of-record for trial operations (their stated vision [TRANSCRIPT]); commands premium pricing</div>
+                <div><span className="text-cream/50 font-medium">What becomes true:</span> AI workflows drive measurable startup time reduction; evolution toward service-enabled model; &ldquo;3 on 3&rdquo; AI revenue target exceeded; multi-product bundles become standard commercial motion</div>
+                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Evidence of customers using multiple Apollo products + operational data to drive service/workflow changes; AI adoption &gt;30% in year one; eConsent continues 75%+ growth; site churn &lt;5%</div>
+                <div><span className="text-cream/50 font-medium">Implications:</span> Apollo becomes system-of-record for trial operations; commands premium pricing via service-enabled model</div>
               </div>
             </div>
             <div className="p-5 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
@@ -409,17 +395,17 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-yellow-300 mb-2">Steady Growth, Competitive Pressure</h3>
               <div className="space-y-3 text-xs text-cream/70">
                 <div><span className="text-cream/50 font-medium">What becomes true:</span> AI workflows deliver moderate value but face adoption friction; Veeva SiteVault erodes site-level pricing; Apollo grows primarily through sponsor-side products; $3M AI ARR target partially met</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Site growth decelerates; AI adoption &lt;15%; LLM token costs compress margins on AI products</div>
-                <div><span className="text-cream/50 font-medium">Implications:</span> Strong but niche player; WCG acquisition still valuable for channel and data synergies but AI upside more limited</div>
+                <div><span className="text-cream/50 font-medium">Leading indicators:</span> AI adoption &lt;15%; LLM token costs compress margins on AI products; services model cannot be accessed</div>
+                <div><span className="text-cream/50 font-medium">Implications:</span> Risk of being stuck at a product play that has topped out if services model cannot be accessed; WCG acquisition still valuable for channel synergies but upside more limited</div>
               </div>
             </div>
             <div className="p-5 bg-blue-500/5 border border-blue-500/20 rounded-xl">
               <Building2 className="w-6 h-6 text-blue-400 mb-2" />
               <h3 className="text-sm font-semibold text-blue-300 mb-2">Integration Accelerant (WCG-Specific)</h3>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> WCG acquisition closes; IRB&rarr;eBinders integration deepens (already underway with eConsent-IRB [TRANSCRIPT]); combined data asset enables unique intelligence products; WCG channel deploys Apollo to thousands more sites; Doc QC rolled out across WCG sponsor base</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Post-close Wave 1 integration &lt;6 months; Merck Doc QC expands to 5+ pharma via WCG; combined data product in market within 18 months</div>
-                <div><span className="text-cream/50 font-medium">Implications:</span> Combined entity becomes dominant in site enablement + trial operations</div>
+                <div><span className="text-cream/50 font-medium">What becomes true:</span> WCG acquisition closes; WCG is a channel deploying Apollo products; expect net uplift in Apollo product revenue via WCG distribution; IRB&rarr;eBinders integration deepens</div>
+                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Post-close Wave 1 integration &lt;6 months; combined data product in market within 18 months; evidence of Apollo + WCG operational data driving additional uplift</div>
+                <div><span className="text-cream/50 font-medium">Implications:</span> Longer-term upside from combining Apollo product data + WCG operational data to drive additional uplift; combined entity becomes dominant in site enablement + trial operations</div>
               </div>
             </div>
           </div>
@@ -437,17 +423,17 @@ function buildSlideContentMap() {
               <Building2 className="w-6 h-6 text-purple-400 mb-2" />
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-sm font-semibold text-cream">Mode 1: Platform Displacement</h3>
-                <RatingBadge rating="MEDIUM-HIGH" />
+                <RatingBadge rating="LOW" />
               </div>
-              <p className="text-xs text-cream/70">&ldquo;A better Apollo&rdquo; &mdash; a competitor builds a superior site enablement platform. Most likely vector: Veeva SiteVault (free eISF, strong sponsor relationships). Apollo acknowledged Veeva but positioned themselves as ~5x ahead in site network scale and the creator of the eISF category. [TRANSCRIPT]</p>
+              <p className="text-xs text-cream/70">&ldquo;A better Apollo&rdquo; &mdash; platform displacement risk is low given strong product, deep deployment, and high stickiness (90%+ retention). Deep form/workflow design investment creates significant change management barriers for sites.</p>
             </div>
             <div className="p-5 bg-white/5 border border-cream/10 rounded-xl">
               <Brain className="w-6 h-6 text-purple-400 mb-2" />
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-sm font-semibold text-cream">Mode 2: Upstream Capture</h3>
-                <RatingBadge rating="MEDIUM" />
+                <RatingBadge rating="LOW" />
               </div>
-              <p className="text-xs text-cream/70">&ldquo;AI eats the workflow&rdquo; &mdash; AI-native tools eliminate manual workflows Apollo digitizes. Apollo&apos;s &ldquo;crossing the chasm&rdquo; framework explicitly addresses this &mdash; AI as additive layer, not replacement. Doc QC approach (deterministic + LLM) shows pragmatic integration. [TRANSCRIPT]</p>
+              <p className="text-xs text-cream/70">&ldquo;AI eats the workflow&rdquo; &mdash; very unlikely given deep form/workflow design + significant change management required. AI disruption is more likely at product edges (further from EISF core), via point automation, rather than wholesale workflow displacement.</p>
             </div>
             <div className="p-5 bg-white/5 border border-cream/10 rounded-xl">
               <Package className="w-6 h-6 text-purple-400 mb-2" />
@@ -455,17 +441,12 @@ function buildSlideContentMap() {
                 <h3 className="text-sm font-semibold text-cream">Mode 3: Ecosystem Commoditization</h3>
                 <RatingBadge rating="LOW-MEDIUM" />
               </div>
-              <p className="text-xs text-cream/70">&ldquo;Everyone does it&rdquo; &mdash; Apollo&apos;s workflows become table-stakes features in CTMS, eTMF, or EDC platforms. Most likely: Medidata, Oracle, or Veeva embedding eISF. Apollo&apos;s architecture is explicitly &ldquo;open&rdquo; and &ldquo;API-first&rdquo; &mdash; they expose APIs for sponsors to integrate rather than pretending one-size-fits-all. [TRANSCRIPT]</p>
+              <p className="text-xs text-cream/70">&ldquo;Everyone does it&rdquo; &mdash; reasonable risk: point solutions from CTMS/ETMF and others may exploit ecosystem access points. Most likely: Medidata, Oracle, or Veeva embedding eISF capabilities.</p>
             </div>
           </div>
-          <GapCallout gapCount={4}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• What is Veeva SiteVault&apos;s current site count and growth trajectory vs. Apollo? <GapTag /></li>
-              <li>• Are any major CROs building proprietary site enablement platforms? <GapTag /></li>
-              <li>• How quickly could a frontier AI model + low-code platform replicate Apollo&apos;s document management? <GapTag /></li>
-              <li>• What is the switching cost for sites currently on Apollo eBinders? <GapTag /></li>
-            </ul>
-          </GapCallout>
+          <div className="p-3 rounded-xl bg-purple-500/10 border-l-4 border-purple-500/50">
+            <p className="text-xs text-cream/70"><span className="text-purple-300 font-medium">Summary:</span> Low platform displacement risk; the bigger risk is services-growth interference by other products/data systems at the edges of the EISF core.</p>
+          </div>
         </div>
   )
 
@@ -532,21 +513,21 @@ function buildSlideContentMap() {
                 concept: 'Integrated sponsor-to-site platform combining free eISF with AI-powered document exchange, monitoring, and feasibility',
                 functions: 'Electronic binder management, remote SDV, document exchange, AI feasibility, automated TMF reconciliation',
                 position: 'Between sponsor eTMF and site ISF — the exact position Apollo occupies',
-                why: 'Free base tier removes cost objection; existing sponsor relationships create pull-through; regulatory compliance established'
+                why: 'Free tier is a meaningful point displacement risk for EISF; existing sponsor relationships create pull-through; regulatory compliance established'
               },
               {
                 mode: 'Competitors / CRO Build',
-                concept: 'CRO-specific operational platform integrating site selection, monitoring, and document management',
+                concept: 'Solving operations/automation via a different product suite — not necessarily centered on EISF',
                 functions: 'Site performance scoring, CRA workflow management, integrated document exchange, monitoring optimization',
-                position: 'Embedded within CRO operational workflow, bypassing third-party site enablement',
+                position: 'Embedded within CRO operational workflow, offering alternative data systems/products',
                 why: 'CRO has direct implementation control; data stays within ecosystem; customized to CRO processes'
               },
               {
                 mode: 'Niche / LLM-Based Build',
                 concept: 'Lightweight document management + AI contract redlining built on commercial LLM APIs',
                 functions: 'Document upload/storage, AI document review, template-based contract generation, basic compliance checking',
-                position: 'Single-sponsor or single-site tool, not a network platform',
-                why: '80% functionality at 20% cost for small portfolios; rapid deployment; no vendor lock-in'
+                position: 'At most local/site-specific, not ecosystem-wide — limited likelihood of scaling',
+                why: 'Rapid deployment for small portfolios but lacks network effects, regulatory validation, and cross-sponsor data'
               },
             ].map((row) => (
               <div key={row.mode} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -636,6 +617,7 @@ function buildSlideContentMap() {
                 <li>• Basic study info organizer (bookmark/password manager)</li>
                 <li>• Template-based feasibility survey distribution</li>
               </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Lacks: channel access, embedded workflows/design efficiencies, change management leverage</p>
             </div>
             <div className="p-4 bg-yellow-500/5 border-t-2 border-yellow-500 rounded-xl">
               <div className="flex items-center justify-between mb-2">
@@ -648,6 +630,7 @@ function buildSlideContentMap() {
                 <li>• Basic remote document access with auth/logging</li>
                 <li>• Study startup document checklist automation</li>
               </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Lacks: channel access, embedded workflows/design efficiencies, change management leverage</p>
             </div>
             <div className="p-4 bg-red-500/5 border-t-2 border-red-500 rounded-xl">
               <div className="flex items-center justify-between mb-2">
@@ -660,10 +643,11 @@ function buildSlideContentMap() {
                 <li>• Network of 65K+ sites generating cross-study intelligence</li>
                 <li>• GxP-validated AI meeting FDA, EMA, HIPAA, GDPR, ICH E6 R3</li>
               </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Harder to replicate: embed + access + relationships</p>
             </div>
           </div>
           <div className="p-3 rounded-xl bg-purple-500/10 border-l-4 border-purple-500">
-            <p className="text-xs text-cream/70"><span className="font-medium text-purple-300">Key Takeaway:</span> Apollo&apos;s most defensible assets are the site network (65K+) and the regulatory compliance framework. Product functionality excluding network and compliance layers is replicable in weeks-to-months.</p>
+            <p className="text-xs text-cream/70"><span className="font-medium text-purple-300">Key Takeaway:</span> Apollo&apos;s most defensible assets are the site network (65K+) and the regulatory compliance framework. Product functionality excluding network and compliance layers is replicable in weeks-to-months. Note: a new cross-system data asset might be buildable faster externally, while Apollo may struggle to retroactively extract/normalize data (rights + structure).</p>
           </div>
         </div>
   )
@@ -676,10 +660,10 @@ function buildSlideContentMap() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {[
-              { asset: 'Product', score: 80, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['Six products spanning site + sponsor workflows, all built natively', 'eBinders is "Box.net for clinical research"; eConsent is "DocuSign for clinical research" growing 75% YoY', 'Three AI-native products in development; unified data model across all products'] },
-              { asset: 'Data', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['65K+ sites generating operational data; 50M+ docs with 20K added/day', 'Milestone-based audit trail data (with rights to use)', 'Data quality: 50-60% sponsor side very clean, 15-20% good from sites'] },
-              { asset: 'Channel', score: 80, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['Dual go-to-market confirmed: site-up + sponsor-down', '~400 total customers; sponsor deals driving 500 sites/week peaks', 'Deployed in every Merck/Pfizer study, every FSO IQVIA study'] },
-              { asset: 'Relationships', score: 80, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'GREEN', bullets: ['Merck, Pfizer, IQVIA as named anchor customers', 'Merck co-developing Doc QC (5,000 hrs/month problem)', 'Existing WCG partnership; eConsent has completed IRB integrations'] },
+              { asset: 'Product', score: 60, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'MEDIUM', bullets: ['Six products spanning site + sponsor workflows, all built natively', 'Strong but could be better; EISF is the core from which multi-product upsell expands', 'Three AI-native products in development; unified data model across all products'] },
+              { asset: 'Data', score: 25, donutColor: 'rgba(239, 68, 68, 0.7)', dotColor: 'red' as const, rating: 'LOW', bullets: ['Data is created on-platform but rights/access unclear; hard to operationalize', 'Milestone-based audit trail data (rights to use partially confirmed)', 'Data quality: 50-60% sponsor side very clean, 15-20% good from sites; two-tier data rights are the key question'] },
+              { asset: 'Channel', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['Strong penetration and deployment; dual go-to-market: site-up + sponsor-down', '~400 total customers; sponsor deals driving 500 sites/week peaks', 'Deployed in every Merck/Pfizer study, every FSO IQVIA study'] },
+              { asset: 'Relationships', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['Merck, Pfizer, IQVIA as named anchor customers', 'Merck co-developing Doc QC (5,000 hrs/month problem)', 'Existing WCG partnership; eConsent has completed IRB integrations'] },
             ].map((a) => {
               const donut = assetDonut(a.score, a.donutColor)
               return (
@@ -703,14 +687,9 @@ function buildSlideContentMap() {
               )
             })}
           </div>
-          <GapCallout gapCount={4}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• What % of site relationships are direct-contracted vs. sponsor-deployed? <GapTag /></li>
-              <li>• Depth of sponsor relationships — multi-year, multi-study commitments? <GapTag /></li>
-              <li>• How sticky are the technology integrations (CTMS, eTMF, identity systems)? <GapTag /></li>
-              <li>• Actual user engagement depth per site (daily active users, workflow completion rates)? <GapTag /></li>
-            </ul>
-          </GapCallout>
+          <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
+            <p className="text-xs text-cream/70"><span className="text-sage-300 font-medium">Summary:</span> Apollo&apos;s moat is strongest in channel + relationships + deployment; product is solid but improvable; data value is constrained by rights/access.</p>
+          </div>
         </div>
   )
 
@@ -800,7 +779,7 @@ function buildSlideContentMap() {
                   <td className="p-2 font-medium text-cream/90">Site performance signals (enrollment, startup, compliance)</td>
                   <td className="p-2">Yes — derived from audit trail</td>
                   <td className="p-2">Medium-High — cross-sponsor view unique</td>
-                  <td className="p-2 text-green-300">Covered under business use</td>
+                  <td className="p-2 text-yellow-300">TBD / not clearly covered under business use</td>
                   <td className="p-2 text-red-300 font-medium">Very High</td>
                 </tr>
                 <tr className="border-b border-cream/5">
@@ -838,20 +817,12 @@ function buildSlideContentMap() {
               <Lock className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Two-Tier Data Rights</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• <span className="text-green-300 font-medium">Tier 1 — Audit trail data:</span> Apollo has business rights to use for products. Sufficient for current AI roadmap (site performance, risk reporting, study startup intelligence).</li>
-                <li>• <span className="text-yellow-300 font-medium">Tier 2 — Document content:</span> Apollo does NOT have rights to scrape/analyze without customer consent. Access obtained per-feature when customers opt in (e.g., Doc QC).</li>
-                <li>• Ryan Jones: &quot;I don&apos;t see any limits&quot; to what can be built from milestone-based data alone.</li>
+                <li>• <span className="text-green-300 font-medium">Tier 1 — Audit trail / milestone data:</span> AutoTrail milestone data appears confirmed for business use. High quality and key differentiator.</li>
+                <li>• <span className="text-yellow-300 font-medium">Tier 2 — Site performance data:</span> Rights TBD / not clearly covered under business use. This is the highest-value rights question.</li>
+                <li>• <span className="text-yellow-300 font-medium">Tier 3 — Document content:</span> Apollo does NOT have rights to scrape/analyze without customer consent. Access obtained per-feature when customers opt in (e.g., Doc QC).</li>
               </ul>
             </div>
           </div>
-          <GapCallout gapCount={4}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• How much of the 65K site data is active vs. historical? <GapTag /></li>
-              <li>• Data retention policy and its effect on longitudinal value? <GapTag /></li>
-              <li>• Exact contractual language around data rights — standard across all contracts or negotiated per deal? <GapTag /></li>
-              <li>• Tamer implementation status and data quality improvement trajectory? <GapTag /></li>
-            </ul>
-          </GapCallout>
         </div>
   )
 
@@ -894,9 +865,9 @@ function buildSlideContentMap() {
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <div className="space-y-3">
-                <div className="relative p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
-                  <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Concentration &amp; Fragility</div>
-                  <p className="text-xs text-cream/70"><GapTag /> With 400 total customers and named anchors (Merck, Pfizer, IQVIA), likely significant customer concentration in top 10. Revenue concentration not disclosed.</p>
+                <div className="relative p-3 rounded-xl bg-green-500/5 border border-green-500/20">
+                  <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Sponsor Concentration</div>
+                  <p className="text-xs text-cream/70">With 400 total customers and named anchors (Merck, Pfizer, IQVIA), sponsor concentration is a strength &mdash; deep embedding with top pharma creates durable revenue and co-development influence.</p>
                 </div>
                 <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
                   <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Replication Difficulty</div>
@@ -944,20 +915,20 @@ function buildSlideContentMap() {
             <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary</h2>
           </div>
-          <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl mb-4 mt-4">
+          <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl mb-4 mt-4">
             <div className="flex items-center gap-2 mb-2">
-              <StatusDot color={'green' as const} />
-              <span className="text-sm font-semibold text-cream">Rating: GREEN</span>
+              <StatusDot color={'yellow' as const} />
+              <span className="text-sm font-semibold text-cream">Rating: YELLOW (Medium)</span>
             </div>
-            <p className="text-xs text-cream/70">Well-structured engineering and product organization with clear role separation between innovation (CTO/OCTO) and execution (COO/VP Engineering). ~115 total headcount across engineering, product, and regulatory. Predominantly Serbia-based with US-based leadership and data functions.</p>
+            <p className="text-xs text-cream/70">Right team for network build + penetration. The next growth phase (services + monetization expansion) may require different leadership capabilities. Engineering scale appears high relative to &ldquo;document-management-like&rdquo; scope; execution efficiency is unclear.</p>
           </div>
           <div className="space-y-3">
             {[
-              { dim: 'Innovation vs. Execution Separation', rating: 'HIGH', why: 'CTO Andres Garcia leads OCTO (Office of the CTO) for bleeding-edge POCs. COO Shankar Jagannathan owns product + engineering execution. Clear handoff process when OCTO innovations are ready for productionization.' },
-              { dim: 'Engineering Leadership', rating: 'HIGH', why: 'VP Engineering Kapil Bage (~1.5 yrs) drove AIDLC adoption and significant operational improvements. Three VP-level eng leads with clear domain ownership: Sri (Platform + Sponsor), Jelena (Site + Serbia), Kapil (Eng ops).' },
-              { dim: 'Product Team', rating: 'HIGH', why: '18 PMs total. Deliberately diminishing UX role as AI tools (Vercel) used for rapid prototyping by PMs directly.' },
+              { dim: 'Execution', rating: 'MEDIUM-HIGH', why: 'CEO + CTO are co-founders with ~10 years building the network. CTO Andres Garcia leads OCTO for innovation POCs. COO Shankar Jagannathan owns product + engineering execution.' },
+              { dim: 'Engineering Leadership', rating: 'MEDIUM', why: 'COO Shankar + VP Engineering Kapil Bage (~1.5 yrs) + VP-level domain leads. Apparent over-investment in engineering and unclear efficiency relative to product scope.' },
+              { dim: 'Product Team', rating: 'MEDIUM-HIGH', why: '18 PMs total. Deliberately diminishing UX role as AI tools (Vercel) used for rapid prototyping by PMs directly.' },
               { dim: 'Regulatory & Compliance', rating: 'HIGH', why: '~6 person regulatory team works closely with QA for GxP compliance. Uses Ketrix for compliance management. Each feature/unit test tagged for 21 CFR compliance.' },
-              { dim: 'Overall Headcount', rating: 'HIGH', why: '~115 total: ~91 engineering (53 developers, 7 data, DevOps CoE, QA), ~18 product, ~6 regulatory. 85-90% employees, 10-15% contractors; deliberately expanding contractor capacity.' },
+              { dim: 'Overall Headcount', rating: 'LOW-MEDIUM', why: '~115 total: ~91 engineering (53 developers, 7 data, DevOps CoE, QA), ~18 product, ~6 regulatory. Engineering scale appears high relative to product scope — feels over-resourced for largely document-management-like functionality.' },
             ].map((row) => (
               <div key={row.dim} className="p-4 bg-white/5 border border-cream/10 rounded-xl flex items-start gap-4">
                 <RatingBadge rating={row.rating} size="lg" />
@@ -968,13 +939,6 @@ function buildSlideContentMap() {
               </div>
             ))}
           </div>
-          <GapCallout gapCount={3}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• Attrition rates — not discussed on the call <GapTag /></li>
-              <li>• Compensation benchmarks vs. market (Serbia-based team retention risk) <GapTag /></li>
-              <li>• Succession risk for key technical leaders (Andres, Sri, Philip) <GapTag /></li>
-            </ul>
-          </GapCallout>
         </div>
   )
 
@@ -1046,7 +1010,7 @@ function buildSlideContentMap() {
               </thead>
               <tbody className="text-cream/70">
                 {[
-                  ['Engineering (total)', '~91', 'Includes developers, data, DevOps, QA'],
+                  ['Engineering (total)', '~91 ⬤', 'Includes developers, data, DevOps, QA'],
                   ['— Developers', '~53', 'Core product engineering (hands-on-keyboard)'],
                   ['— Data team', '7', 'Under Philip; data mastering, stores, APIs'],
                   ['— DevOps', 'Centralized CoE', 'Under Nicola; not separately sized'],
@@ -1079,20 +1043,13 @@ function buildSlideContentMap() {
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-sm font-semibold text-cream mb-2">Balance Assessment</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• <span className="text-cream/90 font-medium">Eng-to-Product ratio:</span> ~5:1 (91 eng / 18 product) — healthy for product-led eng org</li>
+                <li>• <span className="text-yellow-300 font-medium">Engineering scale:</span> Engineering appears high relative to product scope; unclear if driven by custom deployments &mdash; feels over-resourced for largely document-management-like functionality</li>
                 <li>• <span className="text-cream/90 font-medium">Data as % of eng:</span> ~8% (7/91) — reasonable but may need to scale as AI products expand</li>
                 <li>• <span className="text-cream/90 font-medium">Regulatory:</span> 6 people for GxP platform serving 65K sites — lean but effective with Ketrix tooling</li>
-                <li>• <span className="text-yellow-300 font-medium">UX risk:</span> Deliberate reduction in favor of AI prototyping tools; usability errors have compliance implications</li>
+                <li>• <span className="text-red-300 font-medium">Missing function:</span> No real operations function today; if services model is the goal, this capability is non-existent</li>
               </ul>
             </div>
           </div>
-          <GapCallout gapCount={3}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>• Individual team sizes for DevOps and QA (grouped under engineering total) <GapTag /></li>
-              <li>• Attrition rates — not discussed on the call <GapTag /></li>
-              <li>• How many of the 53 developers work on AI-specific features vs. core platform? <GapTag /></li>
-            </ul>
-          </GapCallout>
         </div>
   )
 
@@ -1104,14 +1061,12 @@ function buildSlideContentMap() {
           </div>
           <div className="space-y-4 mt-6">
             {[
-              { dim: 'SDLC Process', score: 4, label: 'Strong', obs: 'Beta → GA lifecycle for established products; LA (Limited Availability) process with ~10 test customers for new products. Each feature/unit test tagged for 21 CFR compliance via Ketrix. Moving CI/CD to GitHub Actions.' },
-              { dim: 'AI-Augmented Development', score: 4, label: 'Strong', obs: '"AIDLC" concept — AI-augmented SDLC using Claude (primary IDE tool), Cursor (some devs), Vercel (PMs to prototype). Kapil drove adoption. Significantly accelerated development time.' },
-              { dim: 'Product Analytics', score: 3, label: 'Developing', obs: 'Pendo for feature usage tracking. Tableau exposed through services team. AG Grid for in-product charts/tables. Data team builds feeds for product consumption.' },
-              { dim: 'Engineering Metrics', score: 3, label: 'Developing', obs: 'Jellyfish for velocity and story point tracking. Used for engineering performance management.' },
+              { dim: 'SDLC Process + AI-Augmented Development', score: 3, label: 'Developing', obs: 'Beta → GA lifecycle for established products; LA process with ~10 test customers for new products. "AIDLC" concept using Claude, Cursor, Vercel. Kapil drove adoption. Moving CI/CD to GitHub Actions.' },
+              { dim: 'Product', score: 3, label: 'Developing', obs: 'Pendo for feature usage tracking. Tableau exposed through services team. AG Grid for in-product charts/tables. Data team builds feeds for product consumption.' },
+              { dim: 'Engineering', score: 3, label: 'Developing', obs: 'Jellyfish for velocity and story point tracking. Used for engineering performance management.' },
               { dim: 'DevOps / Infrastructure', score: 3, label: 'Developing', obs: 'Centralized DevOps CoE under Nicola. 100% AWS. Moving from Orchis to AWS Step Functions (completing this quarter). CloudWatch + New Relic for monitoring. RabbitMQ / Amazon MQ for messaging.' },
-              { dim: 'Data Infrastructure', score: 3, label: 'Developing', obs: 'MongoDB primary, SQL for SiteLink/Flow Records. Tamer for data mastering. Kafka underway for pipeline improvements. Three-region deployment. Data quality: 50-60% very clean (sponsor), 15-20% good (sites).' },
+              { dim: 'Data Infrastructure', score: 2, label: 'Early', obs: 'Vision exists but implementation not in place. MongoDB primary, SQL for SiteLink/Flow Records. Tamer for data mastering. Kafka underway. Data quality: 50-60% very clean (sponsor), 15-20% good (sites).' },
               { dim: 'Security & Compliance', score: 4, label: 'Strong', obs: 'SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. Dedicated regulatory team + QA partnership. Ketrix for compliance management.' },
-              { dim: 'Innovation Pipeline', score: 4, label: 'Strong', obs: 'OCTO (Office of CTO) under Andres explicitly manages POC-to-product pipeline. Separate from execution engine. Clear handoff process. Currently incubating Doc QC, Trial Flow, and other emerging tech.' },
             ].map((row) => (
               <div key={row.dim} className="flex items-center gap-4">
                 <div className="w-48 flex-shrink-0">
@@ -1128,9 +1083,6 @@ function buildSlideContentMap() {
                 </div>
               </div>
             ))}
-          </div>
-          <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
-            <p className="text-xs text-cream/70"><span className="text-sage-300 font-medium">Overall Rating: 3.5/5</span> — Mature for a company of this size, with particular strength in compliance process and innovation pipeline management. Primary gaps are in data infrastructure maturity (acknowledged and being addressed with Kafka) and observability/monitoring depth.</p>
           </div>
         </div>
   )
@@ -1150,39 +1102,34 @@ function buildSlideContentMap() {
               </div>
               <p className="text-[10px] text-cream/40 mb-2">Early but Well-Directed</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; <span className="text-cream/90 font-medium">Site Feasibility:</span> LA with ~10 test customers; knowledge library auto-completion [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Site Selection:</span> LA; API-first for enterprise integration [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Doc QC:</span> Active dev (OCTO); strong sponsor pull from Merck [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Risk-Based Reporting:</span> Active dev; structured + unstructured data overlay [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Trial Flow:</span> POC; workflow orchestration with task dependencies [TRANSCRIPT]</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Site Feasibility:</span> LA with ~10 test customers; knowledge library auto-completion</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Site Selection:</span> LA; API-first for enterprise integration</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Doc QC:</span> Active dev (OCTO); strong sponsor pull from Merck</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Risk-Based Reporting:</span> Active dev; structured + unstructured data overlay</li>
+                <li className="p-1.5 rounded-lg border-2 border-gold/40 bg-gold/5">&bull; <span className="text-gold font-medium">Trial Flow (Primary Growth Bet):</span> POC; workflow orchestration with task dependencies. Unclear they have data structure to support it.</li>
               </ul>
-              <p className="text-[10px] text-cream/50 mt-2">AI-specific revenue: $0 entering 2026. Target: $3M ARR from three new AI SKUs. [TRANSCRIPT]</p>
+              <p className="text-[10px] text-cream/50 mt-2">AI-specific revenue: $0 entering 2026. Target: $3M ARR from three new AI SKUs.</p>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <div className="flex items-center gap-2 mb-3">
                 <h3 className="text-sm font-semibold text-cream">Internal AI Value (Engineering Productivity)</h3>
-                <RatingBadge rating="GREEN" />
+                <RatingBadge rating="YELLOW" />
               </div>
-              <p className="text-[10px] text-cream/40 mb-2">Advanced Adoption</p>
+              <p className="text-[10px] text-cream/40 mb-2">Claimed AI development isn&apos;t reflected in productivity; team scale suggests limited leverage</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; <span className="text-cream/90 font-medium">AIDLC:</span> AI-augmented SDLC &mdash; Claude (primary) + Cursor across 53 developers [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Vercel for PMs:</span> PMs prototype directly, reducing UX dependency [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">AI for QA:</span> &ldquo;Functionalize on QA side&rdquo; &mdash; automating test generation/execution [TRANSCRIPT]</li>
+                <li>&bull; <span className="text-cream/90 font-medium">AIDLC:</span> AI-augmented SDLC &mdash; Claude (primary) + Cursor across 53 developers</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Vercel for PMs:</span> PMs prototype directly, reducing UX dependency</li>
+                <li>&bull; <span className="text-cream/90 font-medium">AI for QA:</span> &ldquo;Functionalize on QA side&rdquo; &mdash; automating test generation/execution</li>
               </ul>
-              <p className="text-[10px] text-cream/50 mt-2">VP Engineering Kapil Bage drove adoption with deep AI/data background. [TRANSCRIPT]</p>
+              <p className="text-[10px] text-cream/50 mt-2">VP Engineering Kapil Bage drove adoption with deep AI/data background.</p>
             </div>
           </div>
           <div className="p-3 rounded-xl bg-gold/10 border-l-4 border-gold/50">
-            <p className="text-xs text-cream/70"><span className="text-gold font-medium">Design Principle:</span> Human-in-the-loop (HITL) is a firm design principle for all GxP-regulated workflows. Deterministic processing first (Tesseract OCR), LLM only when semantic understanding required. All AI via AWS Bedrock. [TRANSCRIPT]</p>
+            <p className="text-xs text-cream/70"><span className="text-gold font-medium">Design Principle:</span> Human-in-the-loop (HITL) is a firm design principle for all GxP-regulated workflows. Deterministic processing first (Tesseract OCR), LLM only when semantic understanding required. All AI via AWS Bedrock.</p>
           </div>
-          <GapCallout gapCount={4}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>&bull; Specific LLM models used in Bedrock (Claude? Titan? Llama?) <GapTag /></li>
-              <li>&bull; LLM API cost structure and impact on AI product margins <GapTag /></li>
-              <li>&bull; Accuracy metrics and validation results for AI features <GapTag /></li>
-              <li>&bull; AI team dedicated headcount &mdash; how many of 53 devs are on AI features? <GapTag /></li>
-            </ul>
-          </GapCallout>
+          <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
+            <p className="text-xs text-cream/70"><span className="text-sage-300 font-medium">Chapter E Summary:</span> Apollo has automation-focused features within products and a longer-term TrialFlow ambition, but the enabling data system is not in place; internal AI leverage appears early-stage and not reflected organizationally.</p>
+          </div>
         </div>
   )
 
@@ -1205,14 +1152,13 @@ function buildSlideContentMap() {
               </thead>
               <tbody className="text-cream/70">
                 {[
-                  { cap: 'Site Feasibility', stage: 'Limited Availability', desc: 'Knowledge library auto-completion of feasibility questionnaires. 500–1,000 questionnaires/yr per site.', rev: '~$500/study site add-on', evidence: '~10 test customers in LA [TRANSCRIPT]' },
-                  { cap: 'Site Selection', stage: 'Limited Availability', desc: 'Sponsor-side search by TA, geography, performance. API-first for enterprise integration.', rev: 'Part of sponsor platform (TBD)', evidence: 'API-first design for large pharma scoring [TRANSCRIPT]' },
-                  { cap: 'Doc QC', stage: 'Active Dev (OCTO)', desc: 'Tesseract OCR (deterministic) + LLM (semantic). Blank pages, readability, ordering, title-content matching.', rev: 'Independent SKU, consumption-based pricing', evidence: 'Merck: 5K hrs/month manual QC [TRANSCRIPT]' },
-                  { cap: 'Risk-Based Reporting', stage: 'Active Dev', desc: 'Structured + unstructured data overlay. Heat maps, exec summaries, recommended actions.', rev: 'Independent SKU', evidence: 'Built on 7.2M monthly workflows [TRANSCRIPT]' },
-                  { cap: 'Trial Flow', stage: 'POC', desc: 'Workflow orchestration with task dependencies for study startup (like Monday.com/MS Project).', rev: 'TBD', evidence: 'Further out in pipeline [TRANSCRIPT]' },
-                  { cap: 'FlowBot', stage: 'Deployed', desc: 'AI assistant embedded in eBinders for role-based onboarding guidance.', rev: 'Bundled with eBinders', evidence: 'Operational AI, not a revenue product [TRANSCRIPT]' },
-                  { cap: 'Operational Audit Trails', stage: 'Deployed (Free)', desc: 'AI-enhanced consumption of audit trail data. Launched late 2025 as free feature.', rev: 'Free (adoption driver)', evidence: 'First AI feature shipped; $0 revenue by design [TRANSCRIPT]' },
-                  { cap: 'AIDLC (Internal)', stage: 'Deployed', desc: 'Claude + Cursor (53 devs), Vercel (PMs), AI for QA functionalization.', rev: 'N/A (internal productivity)', evidence: 'Organization-wide adoption [TRANSCRIPT]' },
+                  { cap: 'Trial Flow / Flowbot', stage: 'POC / Deployed', desc: 'Workflow orchestration with task dependencies for study startup (like Monday.com/MS Project). FlowBot AI assistant embedded in eBinders for role-based onboarding.', rev: 'TBD / Bundled with eBinders', evidence: 'Highest interest; primary growth bet' },
+                  { cap: 'Site Feasibility', stage: 'Limited Availability', desc: 'Knowledge library auto-completion of feasibility questionnaires. 500–1,000 questionnaires/yr per site.', rev: '~$500/study site add-on', evidence: '~10 test customers in LA' },
+                  { cap: 'Site Selection', stage: 'Limited Availability', desc: 'Sponsor-side search by TA, geography, performance. API-first for enterprise integration.', rev: 'Part of sponsor platform (TBD)', evidence: 'API-first design for large pharma scoring' },
+                  { cap: 'Doc QC', stage: 'Active Dev (OCTO)', desc: 'Tesseract OCR (deterministic) + LLM (semantic). Blank pages, readability, ordering, title-content matching.', rev: 'Independent SKU, consumption-based pricing', evidence: 'Merck: 5K hrs/month manual QC' },
+                  { cap: 'Risk-Based Reporting', stage: 'Active Dev', desc: 'Structured + unstructured data overlay. Heat maps, exec summaries, recommended actions.', rev: 'Independent SKU', evidence: 'Built on 7.2M monthly workflows' },
+                  { cap: 'Operational Audit Trails', stage: 'Deployed (Free)', desc: 'AI-enhanced consumption of audit trail data. Launched late 2025 as free feature.', rev: 'Free (adoption driver)', evidence: 'First AI feature shipped; $0 revenue by design' },
+                  { cap: 'AIDLC (Internal)', stage: 'Deployed', desc: 'Claude + Cursor (53 devs), Vercel (PMs), AI for QA functionalization.', rev: 'N/A (internal productivity)', evidence: 'Organization-wide adoption' },
                 ].map((c) => (
                   <tr key={c.cap} className="border-b border-cream/5">
                     <td className="p-2 font-medium text-cream/90">{c.cap}</td>
@@ -1225,17 +1171,12 @@ function buildSlideContentMap() {
               </tbody>
             </table>
           </div>
-          <div className="p-3 rounded-xl bg-cream/5 border border-cream/10 mb-2">
-            <p className="text-xs text-cream/70"><span className="text-gold font-medium">AI Architecture:</span> All AI via AWS Bedrock. HITL for GxP. Deterministic-first (Tesseract OCR), LLM only for semantic checks. No fine-tuned or custom models disclosed. [TRANSCRIPT]</p>
+          <div className="p-3 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50 mb-2">
+            <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">Overarching Assessment:</span> Many AI initiatives appear to lack a clear monetization/value path; tighten to a smaller set with explicit value capture logic.</p>
           </div>
-          <GapCallout gapCount={4}>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>&bull; Specific LLM models used in Bedrock <GapTag /></li>
-              <li>&bull; LLM API cost structure per AI feature <GapTag /></li>
-              <li>&bull; Accuracy metrics / pilot results for Doc QC and Feasibility <GapTag /></li>
-              <li>&bull; RAG architecture details for feasibility knowledge library <GapTag /></li>
-            </ul>
-          </GapCallout>
+          <div className="p-3 rounded-xl bg-cream/5 border border-cream/10 mb-2">
+            <p className="text-xs text-cream/70"><span className="text-gold font-medium">AI Architecture:</span> All AI via AWS Bedrock. HITL for GxP. Deterministic-first (Tesseract OCR), LLM only for semantic checks. No fine-tuned or custom models disclosed.</p>
+          </div>
         </div>
   )
 
@@ -1248,7 +1189,7 @@ function buildSlideContentMap() {
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Database className="w-5 h-5 text-gold mb-2" />
-              <h3 className="text-sm font-semibold text-cream mb-2">Application Architecture [TRANSCRIPT]</h3>
+              <h3 className="text-sm font-semibold text-cream mb-2">Application Architecture</h3>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[10px]">
                   <tbody className="text-cream/70">
@@ -1287,11 +1228,11 @@ function buildSlideContentMap() {
                 {[
                   { area: 'Cloud-native', status: 'ready' as const, note: '100% AWS with Bedrock access — no infra migration needed for AI' },
                   { area: 'Data Availability', status: 'ready' as const, note: '7.2M workflows/mo, 5.8M monitoring activities accessible for AI' },
-                  { area: 'Data Quality', status: 'developing' as const, note: 'Mixed: 50–60% very clean (sponsor), 15–20% good (site), ~25% lower. Tamer addressing. [TRANSCRIPT]' },
-                  { area: 'Data Pipeline', status: 'developing' as const, note: 'Adequate but Kafka migration needed for AI-scale real-time processing [TRANSCRIPT]' },
-                  { area: 'Observability', status: 'developing' as const, note: 'CloudWatch + New Relic functional but no AI-specific monitoring (model drift, inference latency) [TRANSCRIPT]' },
+                  { area: 'Data Quality', status: 'developing' as const, note: 'Mixed: 50–60% very clean (sponsor), 15–20% good (site), ~25% lower. Tamer addressing.' },
+                  { area: 'Data Pipeline', status: 'developing' as const, note: 'Adequate but Kafka migration needed for AI-scale real-time processing' },
+                  { area: 'Observability', status: 'developing' as const, note: 'CloudWatch + New Relic functional but no AI-specific monitoring (model drift, inference latency)' },
                   { area: 'Compliance Readiness', status: 'ready' as const, note: 'Strong GxP infra (Ketrix, regulatory team, tagged unit tests)' },
-                  { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway [TRANSCRIPT]' },
+                  { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway' },
                 ].map((r) => (
                   <div key={r.area} className="flex items-start gap-2 text-xs">
                     <ReadinessIcon status={r.status} />
@@ -1302,16 +1243,16 @@ function buildSlideContentMap() {
                   </div>
                 ))}
               </div>
+              <div className="mt-3 pt-3 border-t border-cream/10">
+                <div className="text-[10px] uppercase tracking-wider text-red-300 mb-1">Architecture Debt / Risk</div>
+                <ul className="text-[10px] text-cream/60 space-y-0.5">
+                  <li>&bull; Angular version fragmentation across products may slow unified AI feature deployment</li>
+                  <li>&bull; Orchestration migration (Orchis &rarr; Step Functions) in-flight</li>
+                  <li>&bull; No mention of feature flagging system for AI rollout management</li>
+                  <li>&bull; MongoDB may challenge relational queries needed by AI analytics</li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div className="p-3 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
-            <div className="text-xs uppercase tracking-wider text-red-300 mb-1">Architecture Debt / Risk</div>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>&bull; Angular version fragmentation across products may slow unified AI feature deployment</li>
-              <li>&bull; Orchestration migration (Orchis &rarr; Step Functions) in-flight &mdash; adds execution risk this quarter</li>
-              <li>&bull; No mention of feature flagging system for AI rollout management</li>
-              <li>&bull; MongoDB may challenge relational queries needed by AI analytics (Flow Records in SQL helps)</li>
-            </ul>
           </div>
         </div>
   )
@@ -1337,10 +1278,11 @@ function buildSlideContentMap() {
                   </thead>
                   <tbody className="text-cream/70">
                     {[
-                      { cap: 'Doc QC', bucket: 'Cost Reduction', proof: 'Merck: 5K hrs/month manual QC [TRANSCRIPT]' },
-                      { cap: 'Site Feasibility', bucket: 'Time Compression', proof: '500–1K questionnaires/yr per site [TRANSCRIPT]' },
-                      { cap: 'Site Selection', bucket: 'Time Compression', proof: 'API-first for enterprise scoring [TRANSCRIPT]' },
-                      { cap: 'Risk-Based Reporting', bucket: 'Risk Reduction + Operational Intelligence', proof: 'Built on 7.2M monthly workflows [TRANSCRIPT]' },
+                      { cap: 'TrialFlow', bucket: 'Time + Cost', proof: 'Intelligent orchestration of trial operations; value in both time and cost' },
+                      { cap: 'Doc QC', bucket: 'Cost Reduction', proof: 'Merck: 5K hrs/month manual QC' },
+                      { cap: 'Site Feasibility', bucket: 'Time Compression', proof: '500–1K questionnaires/yr per site' },
+                      { cap: 'Site Selection', bucket: 'Time Compression', proof: 'API-first for enterprise scoring' },
+                      { cap: 'Risk-Based Reporting', bucket: 'Risk Reduction + Operational Intelligence', proof: 'Built on 7.2M monthly workflows' },
                     ].map((r) => (
                       <tr key={r.cap} className="border-b border-cream/5">
                         <td className="p-1.5 font-medium text-cream/90">{r.cap}</td>
@@ -1352,7 +1294,7 @@ function buildSlideContentMap() {
                 </table>
               </div>
               <div className="p-2 mt-2 rounded-lg bg-purple-500/5 border border-purple-500/20">
-                <p className="text-[10px] text-cream/60"><span className="text-purple-300 font-medium">Strongest near-term:</span> Doc QC (quantified pain at named customer) and Site Feasibility (quantified workflow burden). <span className="text-purple-300 font-medium">Highest uncertainty:</span> Site Selection (&ldquo;part of the data sets they&apos;ll consider&rdquo;). [TRANSCRIPT]</p>
+                <p className="text-[10px] text-cream/60"><span className="text-purple-300 font-medium">Strongest near-term:</span> Doc QC (quantified pain at named customer) and Site Feasibility (quantified workflow burden). <span className="text-purple-300 font-medium">Highest uncertainty:</span> Site Selection (&ldquo;part of the data sets they&apos;ll consider&rdquo;).</p>
               </div>
             </div>
             <div>
@@ -1368,9 +1310,9 @@ function buildSlideContentMap() {
                   </thead>
                   <tbody className="text-cream/70">
                     {[
-                      { cap: 'AIDLC (Claude, Cursor)', bucket: 'Dev Velocity', proof: '53 developers, org-wide adoption [TRANSCRIPT]' },
-                      { cap: 'Vercel for PMs', bucket: 'Design Speed', proof: 'UX team deliberately reduced [TRANSCRIPT]' },
-                      { cap: 'AI for QA', bucket: 'QA Efficiency', proof: 'Early stage, directionally positive [TRANSCRIPT]' },
+                      { cap: 'AIDLC (Claude, Cursor)', bucket: 'Dev Velocity', proof: '53 developers, org-wide adoption' },
+                      { cap: 'Vercel for PMs', bucket: 'Design Speed', proof: 'UX team deliberately reduced' },
+                      { cap: 'AI for QA', bucket: 'QA Efficiency', proof: 'Early stage, directionally positive' },
                     ].map((r) => (
                       <tr key={r.cap} className="border-b border-cream/5">
                         <td className="p-1.5 font-medium text-cream/90">{r.cap}</td>
@@ -1382,7 +1324,7 @@ function buildSlideContentMap() {
                 </table>
               </div>
               <div className="p-2 mt-2 rounded-lg bg-sage-500/5 border border-sage-500/20">
-                <p className="text-[10px] text-cream/60">Internal AI value is real but difficult to quantify without before/after velocity metrics. &ldquo;Significant&rdquo; acceleration reported but not quantified on the call. [TRANSCRIPT]</p>
+                <p className="text-[10px] text-cream/60">Internal AI value is real but difficult to quantify without before/after velocity metrics. &ldquo;Significant&rdquo; acceleration reported but not quantified on the call.</p>
               </div>
             </div>
           </div>
@@ -1394,6 +1336,7 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value &amp; Proof — Examples</h2>
+            <p className="text-xs text-cream/40 italic">These are examples; not comprehensive.</p>
           </div>
           <div className="space-y-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1404,15 +1347,15 @@ function buildSlideContentMap() {
               <div className="grid md:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-cream/40 font-medium">What it does:</span>
-                  <p className="text-cream/70 mt-0.5">Deterministic pipeline (Tesseract OCR) + LLM for semantic checks. Blank pages, readability, page ordering, title-content matching. HITL for GxP. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Deterministic pipeline (Tesseract OCR) + LLM for semantic checks. Blank pages, readability, page ordering, title-content matching. HITL for GxP.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Value evidence:</span>
-                  <p className="text-cream/70 mt-0.5">Merck: 5,000 hrs/month on manual QC. Requesting site-level deployment to catch issues pre-submission. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Merck: 5,000 hrs/month on manual QC. Requesting site-level deployment to catch issues pre-submission.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Pricing:</span>
-                  <p className="text-cream/70 mt-0.5">Independent SKU. Consumption-based pricing under consideration given variable LLM costs per document. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Independent SKU. Consumption-based pricing under consideration given variable LLM costs per document.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Replicability:</span>
@@ -1428,15 +1371,15 @@ function buildSlideContentMap() {
               <div className="grid md:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-cream/40 font-medium">What it does:</span>
-                  <p className="text-cream/70 mt-0.5">Knowledge library auto-completion of feasibility questionnaires across formats (web forms, PDFs, uploads). Sites review and confirm. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Knowledge library auto-completion of feasibility questionnaires across formats (web forms, PDFs, uploads). Sites review and confirm.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Value evidence:</span>
-                  <p className="text-cream/70 mt-0.5">Sites receive 500&ndash;1,000 questionnaires/year. Auto-completion saves hundreds of hours annually. ~10 test customers in LA. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Sites receive 500&ndash;1,000 questionnaires/year. Auto-completion saves hundreds of hours annually. ~10 test customers in LA.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Pricing:</span>
-                  <p className="text-cream/70 mt-0.5">~$500/study site add-on to core eBinders product. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">~$500/study site add-on to core eBinders product.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Replicability:</span>
@@ -1452,15 +1395,15 @@ function buildSlideContentMap() {
               <div className="grid md:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-cream/40 font-medium">What it does:</span>
-                  <p className="text-cream/70 mt-0.5">Overlays structured workflow data with unstructured data (comments, notifications, emails). Produces risk heat maps, exec summaries, recommended actions. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Overlays structured workflow data with unstructured data (comments, notifications, emails). Produces risk heat maps, exec summaries, recommended actions.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Value evidence:</span>
-                  <p className="text-cream/70 mt-0.5">Built on 7.2M monthly workflows and 5.8M remote monitoring activities. Aggregatable by study, site, TA. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Built on 7.2M monthly workflows and 5.8M remote monitoring activities. Aggregatable by study, site, TA.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Pricing:</span>
-                  <p className="text-cream/70 mt-0.5">Independent SKU (pricing TBD). Both site-facing and sponsor-facing versions planned. [TRANSCRIPT]</p>
+                  <p className="text-cream/70 mt-0.5">Independent SKU (pricing TBD). Both site-facing and sponsor-facing versions planned.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Replicability:</span>
@@ -1480,18 +1423,20 @@ function buildSlideContentMap() {
             <p className="text-sm text-cream/50">WCG &harr; Apollo synergy thesis well-supported.</p>
           </div>
           <RatingBadge rating="GREEN" size="lg" />
-          <p className="text-xs text-cream/60 mt-1">Multiple validated integration points with quantifiable value potential. [TRANSCRIPT]</p>
+          <p className="text-xs text-cream/60 mt-1">Multiple validated integration points with quantifiable value potential.</p>
           <div className="grid md:grid-cols-3 gap-4 mt-4">
             <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
-              <h3 className="text-sm font-semibold text-green-300 mb-2">Tier 1: Validated</h3>
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Tier 1: Validated (Unvalidated)</h3>
+              <p className="text-[10px] text-cream/50 mb-2">Product can be dropped in</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; <span className="text-cream/90 font-medium">IRB &rarr; eConsent:</span> Integration already built. Consent forms flow from IRB to sites through Apollo. [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Document Flow:</span> eBinders &harr; ClinTech/ClinSphere active. 250K+ exchanges/yr target. [TRANSCRIPT]</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Doc QC via WCG sponsor network:</span> WCG&apos;s sponsor relationships as distribution channel. Merck proof point. [TRANSCRIPT]</li>
+                <li>&bull; <span className="text-cream/90 font-medium">IRB &rarr; eConsent:</span> Integration already built. Consent forms flow from IRB to sites through Apollo.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Document Flow:</span> eBinders &harr; ClinTech/ClinSphere active. 250K+ exchanges/yr target.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Doc QC via WCG sponsor network:</span> WCG&apos;s sponsor relationships as distribution channel.</li>
               </ul>
             </div>
             <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-yellow-300 mb-2">Tier 2: Logical</h3>
+              <p className="text-[10px] text-cream/50 mb-2">Combining the product suite yields synergy</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>&bull; <span className="text-cream/90 font-medium">Combined Data Asset:</span> WCG protocol/IRB data + Apollo site ops data = unique intelligence layer</li>
                 <li>&bull; <span className="text-cream/90 font-medium">Channel Expansion:</span> WCG&apos;s 3,500+ sponsor relationships accelerate Apollo site deployment</li>
@@ -1500,21 +1445,13 @@ function buildSlideContentMap() {
             </div>
             <div className="p-4 bg-purple-500/5 border border-purple-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-purple-300 mb-2">Tier 3: Speculative</h3>
+              <p className="text-[10px] text-cream/50 mb-2">Product + data informs operations synergistic with WCG operations</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">TrialFlow:</span> Blocked by missing data systems + missing operational talent; speculative value creation path</li>
                 <li>&bull; <span className="text-cream/90 font-medium">Unified Site Enablement Platform:</span> IRB + consent + regulatory docs + training + safety letters in single workflow</li>
-                <li>&bull; <span className="text-cream/90 font-medium">AI-Powered Protocol Optimization:</span> Apollo site performance data informing WCG&apos;s protocol design intelligence</li>
-                <li>&bull; <span className="text-cream/90 font-medium">EMR Recruitment Intelligence:</span> Apollo&apos;s &ldquo;print to file&rdquo; EMR data (~25% of customers) as foundation [TRANSCRIPT]</li>
+                <li>&bull; <span className="text-cream/90 font-medium">EMR Recruitment Intelligence:</span> Apollo&apos;s &ldquo;print to file&rdquo; EMR data (~25% of customers) as foundation</li>
               </ul>
             </div>
-          </div>
-          <div className="p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50 mb-2">
-            <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Key Constraints</div>
-            <ul className="text-xs text-cream/70 space-y-1">
-              <li>&bull; Apollo funded by Insight Partners ($116M); acquisition must satisfy return expectations</li>
-              <li>&bull; WCG is PE-owned (LGP, Arsenal, Novo) &mdash; math must align with capital structure</li>
-              <li>&bull; ClinSphere and Apollo built on different tech stacks; deep integration requires significant engineering</li>
-              <li>&bull; Data rights and privacy &mdash; combining datasets requires contractual assessment, HIPAA/GDPR compliance</li>
-            </ul>
           </div>
         </div>
   )
@@ -1575,25 +1512,25 @@ function buildSlideContentMap() {
             {[
               {
                 num: '1', title: 'eConsent ↔ WCG IRB',
-                value: 'eConsent growing 75% YoY. IRB integration complete — consent forms already flow from IRB through Apollo. Every WCG IRB approval could trigger site-level consent deployment. [TRANSCRIPT]',
+                value: 'eConsent growing 75% YoY. IRB integration complete — consent forms already flow from IRB through Apollo. Every WCG IRB approval could trigger site-level consent deployment.',
                 prereq: 'Low complexity — integration pathways already exist',
                 constraint: 'Accelerates eConsent adoption across WCG’s IRB customer base (~3,500+ sponsors)'
               },
               {
                 num: '2', title: 'Doc QC → WCG Sponsor Channel',
-                value: 'Merck validated pain point (5K hrs/month). WCG introduces Doc QC to sponsor relationships → sponsors deploy across Apollo-connected sites. Combined sales motion. [TRANSCRIPT]',
+                value: 'Merck validated pain point (5K hrs/month). WCG introduces Doc QC to sponsor relationships → sponsors deploy across Apollo-connected sites. Combined sales motion.',
                 prereq: 'Product not yet GA; pricing model TBD; consumption-based LLM costs need management',
                 constraint: 'Premium AI SKU sold through combined channel; potential to reach sponsors not yet using Apollo'
               },
               {
                 num: '3', title: 'Combined Data Asset (Protocol + Site Ops)',
-                value: 'Apollo’s site-level performance data (enrollment speed, startup efficiency) + WCG protocol data (complexity scores, amendment rates, IRB cycle times) = predictive study feasibility model. [TRANSCRIPT]',
+                value: 'Apollo’s site-level performance data (enrollment speed, startup efficiency) + WCG protocol data (complexity scores, amendment rates, IRB cycle times) = predictive study feasibility model.',
                 prereq: 'Data normalization; privacy/consent framework; new product development; 18+ month timeline',
                 constraint: 'Unique data asset no competitor can replicate — requires both site-originated operational data AND protocol/IRB intelligence'
               },
               {
                 num: '4', title: 'WCG Channel → Apollo Site Network',
-                value: 'WCG’s 3,500+ sponsor relationships could accelerate Apollo site deployment beyond current 500/week peaks. Joint sales enablement. [TRANSCRIPT]',
+                value: 'WCG’s 3,500+ sponsor relationships could accelerate Apollo site deployment beyond current 500/week peaks. Joint sales enablement.',
                 prereq: 'Coordinated sales motion; compensation alignment; SSO federation between platforms',
                 constraint: 'Apollo’s site-first brand identity must be maintained; sites may resist mandatory adoption'
               },
@@ -1623,9 +1560,9 @@ function buildSlideContentMap() {
           {/* Visual timeline bar */}
           <div className="flex items-center gap-0 mt-4 mb-2">
             {[
-              { label: 'Wave 1: Connect (0–6 mo)', color: 'bg-green-500', width: 'w-1/6' },
-              { label: 'Wave 2: Amplify (6–18 mo)', color: 'bg-yellow-500', width: 'w-2/6' },
-              { label: 'Wave 3: Transform (18–36 mo)', color: 'bg-purple-500', width: 'w-3/6' },
+              { label: 'Wave 1: Distribution (0–6 mo)', color: 'bg-green-500', width: 'w-1/6' },
+              { label: 'Wave 2: Rationalization + Data (6–18 mo)', color: 'bg-yellow-500', width: 'w-2/6' },
+              { label: 'Wave 3: Services / Ops Lift (18–36 mo)', color: 'bg-purple-500', width: 'w-3/6' },
             ].map((w) => (
               <div key={w.label} className={`${w.width} flex flex-col items-center`}>
                 <div className={`w-full h-3 ${w.color} first:rounded-l-full last:rounded-r-full`} />
@@ -1633,60 +1570,40 @@ function buildSlideContentMap() {
               </div>
             ))}
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[10px]">
-              <thead>
-                <tr className="border-b-2 border-blue-500/40">
-                  <th className="text-left p-2 text-cream/80 font-medium min-w-[110px]">Connection</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">
-                    <span className="text-green-300">Wave 1: &ldquo;Connect&rdquo;</span>
-                    <span className="block text-cream/40 font-normal">0&ndash;6 months</span>
-                  </th>
-                  <th className="text-left p-2 text-cream/80 font-medium">
-                    <span className="text-yellow-300">Wave 2: &ldquo;Amplify&rdquo;</span>
-                    <span className="block text-cream/40 font-normal">6&ndash;18 months</span>
-                  </th>
-                  <th className="text-left p-2 text-cream/80 font-medium">
-                    <span className="text-purple-300">Wave 3: &ldquo;Transform&rdquo;</span>
-                    <span className="block text-cream/40 font-normal">18&ndash;36 months</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-cream/70">
-                <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">1. Doc Integration</td>
-                  <td className="p-2">Deepen eBinders &harr; ClinTech/ClinSphere document integration (already live)</td>
-                  <td className="p-2">Launch Doc QC through WCG sponsor channel (product expected GA)</td>
-                  <td className="p-2">Unified site enablement: single workflow from protocol &rarr; IRB &rarr; consent &rarr; regulatory docs &rarr; monitoring</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">2. eConsent + IRB</td>
-                  <td className="p-2">Accelerate eConsent &harr; IRB integration deployment across WCG customer base</td>
-                  <td className="p-2">Risk-Based Reporting incorporating WCG IRB cycle time and safety letter data</td>
-                  <td className="p-2">AI-powered study design optimization using combined data assets</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">3. Channel + Data</td>
-                  <td className="p-2">Joint sales enablement; WCG teams selling Apollo products; deploy Apollo to WCG-connected sites</td>
-                  <td className="p-2">Combined data product: Apollo site performance + WCG protocol/IRB data; Site Selection enriched with WCG protocol complexity</td>
-                  <td className="p-2">Predictive enrollment models; EMR data utilization from Apollo &ldquo;print to file&rdquo; (~25% of customers) [TRANSCRIPT]</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">4. Platform</td>
-                  <td className="p-2">SSO and identity federation (Apollo has SSO with sponsors via SiteLink [TRANSCRIPT])</td>
-                  <td className="p-2">Middleware bus completion enables faster integration; unified customer success</td>
-                  <td className="p-2">Potential M&amp;A: Apollo seeking budgets/contracting tool [TRANSCRIPT] &mdash; WCG could facilitate</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-3 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50">
-            <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Prerequisites by Wave</div>
-            <ul className="text-[10px] text-cream/70 space-y-0.5">
-              <li><span className="text-green-300">W1:</span> Clear integration authority; combined product leadership; data rights assessment</li>
-              <li><span className="text-yellow-300">W2:</span> Engineering investment in platform integration; combined AI team; sales comp alignment</li>
-              <li><span className="text-purple-300">W3:</span> Full organizational alignment; unified technology platform; regulatory validation of combined AI</li>
-            </ul>
+          <div className="grid md:grid-cols-3 gap-4 mt-4">
+            <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Wave 1: Distribution</h3>
+              <p className="text-[10px] text-cream/40 mb-2">0&ndash;6 months</p>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; Push Apollo products through WCG channels to drive product revenue uplift</li>
+                <li>&bull; Joint sales enablement; WCG teams selling Apollo products</li>
+                <li>&bull; Deploy Apollo to WCG-connected sites</li>
+                <li>&bull; Accelerate eConsent &harr; IRB integration deployment</li>
+              </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Supporting connections: Doc integration (already live), eConsent + IRB, channel cross-sell, SSO federation</p>
+            </div>
+            <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-yellow-300 mb-2">Wave 2: Rationalization + Data Foundation</h3>
+              <p className="text-[10px] text-cream/40 mb-2">6&ndash;18 months</p>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; Rationalize Apollo + WCG product sets</li>
+                <li>&bull; Invest in an underlying combined data asset</li>
+                <li>&bull; Launch Doc QC through WCG sponsor channel</li>
+                <li>&bull; Combined data product: Apollo site performance + WCG protocol/IRB data</li>
+              </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Supporting connections: middleware bus, unified customer success, Site Selection enrichment</p>
+            </div>
+            <div className="p-4 bg-purple-500/5 border border-purple-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-purple-300 mb-2">Wave 3: Services / Operations Lift</h3>
+              <p className="text-[10px] text-cream/40 mb-2">18&ndash;36 months</p>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; Use combined data asset + WCG operational capabilities to deliver services/workflow improvements</li>
+                <li>&bull; Unlock additional value via service-enabled model</li>
+                <li>&bull; Unified site enablement: protocol &rarr; IRB &rarr; consent &rarr; regulatory docs &rarr; monitoring</li>
+                <li>&bull; Predictive enrollment models leveraging combined operational data</li>
+              </ul>
+              <p className="text-[10px] text-cream/50 mt-2 italic">Supporting connections: AI-powered study design, TrialFlow integration, full platform unification</p>
+            </div>
           </div>
         </div>
   )
@@ -1696,28 +1613,28 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-red-400 mb-2">Chapter G — Quantified Impact</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift</h2>
-            <p className="text-xs text-cream/50">Illustrative models using transcript data points. NOT projections &mdash; frameworks for discussion requiring validation with data room financials.</p>
+            <p className="text-xs text-cream/50">Illustrative models using diligence data points. NOT projections &mdash; frameworks for discussion requiring validation with data room financials.</p>
           </div>
           <div className="space-y-4 mt-4">
             {[
               {
                 num: '1', title: 'eConsent Acceleration via WCG IRB',
                 buckets: 'Growth, Channel Leverage',
-                assumptions: ['eConsent growing 75% YoY already [TRANSCRIPT]', 'WCG IRB serves 3,500+ sponsors', '10% conversion of WCG IRB users to Apollo eConsent within 18 months', 'eConsent current site count and pricing (not disclosed)'],
+                assumptions: ['eConsent growing 75% YoY already', 'WCG IRB serves 3,500+ sponsors', '10% conversion of WCG IRB users to Apollo eConsent within 18 months', 'eConsent current site count and pricing (not disclosed)'],
                 output: 'Incremental eConsent ARR via WCG channel',
                 confidence: 'Medium — growth rate validated, WCG channel unvalidated'
               },
               {
                 num: '2', title: 'Doc QC Launch via WCG Sponsor Channel',
                 buckets: 'Premium AI SKU Revenue',
-                assumptions: ['2026 target: $3M total AI ARR [TRANSCRIPT]', 'Merck validated 5K hrs/month pain point [TRANSCRIPT]', 'Consumption-based pricing under consideration', 'If 20 large sponsors adopt at $100K–$500K/yr each = $2M–$10M ARR range'],
+                assumptions: ['2026 target: $3M total AI ARR', 'Merck validated 5K hrs/month pain point', 'Consumption-based pricing under consideration', 'If 20 large sponsors adopt at $100K–$500K/yr each = $2M–$10M ARR range'],
                 output: 'AI-specific ARR from Doc QC through WCG channel',
                 confidence: 'Low — product not yet GA, pricing TBD'
               },
               {
                 num: '3', title: 'Site Network Expansion via WCG Channel',
                 buckets: 'Network Growth, Site Revenue',
-                assumptions: ['Current peak: 500 sites/week via sponsors [TRANSCRIPT]', 'WCG has 3,500+ sponsor relationships', '5% of non-Apollo WCG sponsors adopt in Year 1', 'Each sponsor averages 50 sites/study × 3 studies/yr at ~$1,500/site [TRANSCRIPT]'],
+                assumptions: ['Current peak: 500 sites/week via sponsors', 'WCG has 3,500+ sponsor relationships', '5% of non-Apollo WCG sponsors adopt in Year 1', 'Each sponsor averages 50 sites/study × 3 studies/yr at ~$1,500/site'],
                 output: 'Incremental site-level ARR from WCG-driven deployments',
                 confidence: 'Medium — channel mechanism validated, conversion rate speculative'
               },
@@ -1785,7 +1702,7 @@ function buildSlideContentMap() {
                 </tr>
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-purple-300">Integration Accelerant (WCG-Specific)</td>
-                  <td className="p-2">WCG acquisition closes; IRB&rarr;eBinders deepens (already underway [TRANSCRIPT]); combined data asset enables unique intelligence; WCG channel deploys Apollo to thousands more sites; Doc QC via WCG sponsors</td>
+                  <td className="p-2">WCG acquisition closes; IRB&rarr;eBinders deepens (already underway); combined data asset enables unique intelligence; WCG channel deploys Apollo to thousands more sites; Doc QC via WCG sponsors</td>
                   <td className="p-2">Combined entity becomes dominant in site enablement + trial operations. Post-close Wave 1 under 6 months; Merck QC expands to 5+ pharma via WCG.</td>
                 </tr>
                 <tr className="border-b border-cream/5">
@@ -1803,7 +1720,7 @@ function buildSlideContentMap() {
                 { num: '1', title: 'Apollo baseline growth rate (without WCG)', detail: 'Not yet available &mdash; required for all financial modeling' },
                 { num: '2', title: 'Integration execution speed', detail: 'Depends on technical and organizational readiness' },
                 { num: '3', title: 'Veeva competitive response', detail: 'Response to acquisition announcement could accelerate SiteVault investment' },
-                { num: '4', title: 'Key person retention', detail: 'Especially Andres, Shankar, Sri, Kapil, Philip through transition [TRANSCRIPT]' },
+                { num: '4', title: 'Key person retention', detail: 'Especially Andres, Shankar, Sri, Kapil, Philip through transition' },
                 { num: '5', title: 'LLM cost trajectory', detail: 'If costs decline rapidly, AI product margins improve and adoption barriers lower' },
                 { num: '6', title: 'WCG channel conversion rate', detail: 'Existing partnership is testable hypothesis; actual conversion data would validate cross-sell thesis' },
               ].map((a) => (
