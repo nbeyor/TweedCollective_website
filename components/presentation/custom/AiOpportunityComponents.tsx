@@ -132,42 +132,63 @@ const cardIconMap: Record<string, React.ReactNode> = {
   AlertCircle: <AlertCircle className="w-5 h-5 text-gold" />,
 }
 
-export function AssessmentTableSlide({ sectionLabel, heading, subtitle, table, cards }: {
+const valuePotentialColor: Record<string, string> = {
+  'High': 'bg-green-500/20 text-green-300',
+  'Moderate': 'bg-yellow-500/20 text-yellow-300',
+  'Low–Moderate': 'bg-taupe/30 text-taupe-light',
+  'Low': 'bg-cream/10 text-cream/50',
+}
+
+export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout, sections, cards }: {
   sectionLabel: string
   heading: string
   subtitle: string
-  table: { headers: string[]; rows: Array<{ name: string; stage: string; stageColor: string; kpi: string; value: string; measured: string }> }
+  callout?: string
+  sections: Array<{
+    title: string
+    rows: Array<{ name: string; description: string; valueSource: string; valuePotential: string }>
+  }>
   cards: Array<{ name: string; description: string; icon: string; highlight: boolean }>
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-cream/10">
-                {table.headers.map((h, i) => (
-                  <th key={i} className={`text-left py-2 pr-4 text-cream/50 font-medium ${i === 3 ? 'text-right' : ''}`}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row, i) => (
-                <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
-                  <td className="py-2.5 pr-4">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${stageColorMap[row.stageColor] || stageColorMap.neutral}`}>{row.stage}</span>
-                  </td>
-                  <td className="py-2.5 pr-4 text-cream/60">{row.kpi}</td>
-                  <td className="py-2.5 pr-4 text-right text-cream/80 font-mono">{row.value}</td>
-                  <td className="py-2.5 text-cream/60">{row.measured}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {callout && (
+        <div className="p-3 bg-sage/10 border border-sage/30 rounded-xl">
+          <p className="text-xs text-cream/90 italic leading-relaxed">{callout}</p>
         </div>
-      </div>
+      )}
+      {sections.map((section, si) => (
+        <div key={si} className="space-y-2">
+          <h3 className="text-sm font-semibold text-cream/90">{section.title}</h3>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-cream/10">
+                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Initiative</th>
+                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Description</th>
+                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Source</th>
+                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Potential</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.rows.map((row, i) => (
+                    <tr key={i} className="border-b border-cream/5">
+                      <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
+                      <td className="py-2.5 pr-4 text-cream/60">{row.description}</td>
+                      <td className="py-2.5 pr-4 text-cream/60">{row.valueSource}</td>
+                      <td className="py-2.5 pr-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${valuePotentialColor[row.valuePotential] || valuePotentialColor['Low']}`}>{row.valuePotential}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ))}
       <div className="grid md:grid-cols-4 gap-3">
         {cards.map(card => (
           <div key={card.name} className={`p-3 rounded-xl border ${card.highlight ? 'bg-sage/10 border-sage/30' : 'bg-white/5 border-cream/10'}`}>
