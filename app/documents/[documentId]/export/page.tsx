@@ -197,10 +197,8 @@ export default async function DocumentExportPage({
           }
 
           .export-slide.export-slide-auto {
-            height: auto;
-            min-height: auto;
-            overflow: visible;
-            page-break-inside: auto;
+            height: 7.5in;
+            overflow: hidden;
           }
         }
 
