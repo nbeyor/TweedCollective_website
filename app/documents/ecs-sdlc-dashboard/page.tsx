@@ -8,7 +8,7 @@ export default function DashboardPage() {
   return (
     <DocumentAccessWrapper
       documentId="ecs-sdlc-dashboard"
-      documentTitle="eCS SDLC Dashboard — AI Dev Pilot KPIs"
+      documentTitle="eCS SDLC Dashboard — Copilot Adoption & Team Productivity"
     >
       <CopilotKpiDashboard />
     </DocumentAccessWrapper>
