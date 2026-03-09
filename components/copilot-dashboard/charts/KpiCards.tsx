@@ -33,23 +33,23 @@ export function KpiCards({ data }: Props) {
 
   const cards: CardDef[] = [
     {
-      label: 'Team Productivity (vs baseline)',
+      label: 'Team Productivity (vs pre-AI)',
       value: summary.team_productivity.toFixed(3),
-      delta: `${productivityDelta >= 0 ? '+' : ''}${productivityDelta.toFixed(1)}% vs baseline`,
-      context: `tickets / FTE-day (baseline: ${baseline.productivity.toFixed(3)})`,
+      delta: `${productivityDelta >= 0 ? '+' : ''}${productivityDelta.toFixed(1)}% vs pre-AI baseline`,
+      context: `tickets / FTE-day (pre-AI: ${baseline.productivity.toFixed(3)})`,
       accent: TEAM_ACCENT,
       accentBg: TEAM_BG,
     },
     {
-      label: 'QA Churn (vs baseline)',
+      label: 'QA Churn (vs pre-AI)',
       value: `${(summary.team_qa_churn * 100).toFixed(1)}%`,
-      delta: `${churnDelta >= 0 ? '+' : ''}${churnDelta.toFixed(1)}% vs baseline (${(baseline.qa_churn_rate * 100).toFixed(1)}%)`,
+      delta: `${churnDelta >= 0 ? '+' : ''}${churnDelta.toFixed(1)}% vs pre-AI (${(baseline.qa_churn_rate * 100).toFixed(1)}%)`,
       context: `lower is better`,
       accent: churnBetter ? TEAM_ACCENT : '#d97706',
       accentBg: churnBetter ? TEAM_BG : '#fef3c7',
     },
     {
-      label: 'Total Output (post-pilot)',
+      label: 'Total Output (mature period)',
       value: `${summary.total_tickets}`,
       delta: `${summary.team_authors} developers`,
       context: `${summary.weeks_of_data} high-confidence weeks`,

@@ -1,7 +1,8 @@
 export interface CopilotDashboardData {
   generated: string
   dataRange: string
-  pilotStart: string
+  baselineEnd: string
+  matureStart: string
   rollingWindow: number
   minTicketsThreshold: number
   config: {
@@ -39,6 +40,7 @@ export interface CopilotDashboardData {
 
 export interface WeeklyEntry {
   week: string
+  phase: 'baseline' | 'transition' | 'mature'
   totalTickets: number
   teamAuthors: number
   teamProductivity: number

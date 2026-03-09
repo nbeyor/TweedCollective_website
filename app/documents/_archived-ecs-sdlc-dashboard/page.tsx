@@ -2,7 +2,7 @@
 
 import React from 'react'
 import DocumentAccessWrapper from '@/components/DocumentAccessWrapper'
-import { CopilotKpiDashboard } from '@/components/copilot-dashboard/CopilotKpiDashboard'
+import { KpiDashboard } from '@/components/dashboard/KpiDashboard'
 
 export default function DashboardPage() {
   return (
@@ -10,7 +10,7 @@ export default function DashboardPage() {
       documentId="ecs-sdlc-dashboard"
       documentTitle="eCS SDLC Dashboard — AI Dev Pilot KPIs"
     >
-      <CopilotKpiDashboard />
+      <KpiDashboard />
     </DocumentAccessWrapper>
   )
 }

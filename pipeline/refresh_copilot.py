@@ -28,7 +28,12 @@ except ImportError:
     HAS_PANDAS = False
 
 # ── CONFIG ──────────────────────────────────────────────────────────────────
-PILOT_START = '2025-12-01'
+# Three-phase model:
+#   Phase 1: Pre-Oct baseline — no AI tools (Jul 2 – Sep 30)
+#   Phase 2: Transition — AI rollout, uneven adoption (Oct 1 – Feb 6)
+#   Phase 3: Mature — 80%+ weekly Copilot adoption (Feb 7+)
+BASELINE_END = '2025-10-01'       # End of pre-AI baseline period
+MATURE_START = '2026-02-07'       # Start of 80%+ Copilot adoption
 WORKDAYS_PER_WEEK = 5
 ROLLING_WINDOW = 4
 MIN_TICKETS_THRESHOLD = 5
@@ -110,7 +115,6 @@ def aggregate_to_tickets(prs):
 
 def compute_weekly_team_metrics(tickets):
     """Compute team-wide productivity and QA churn per week."""
-    pilot_start_ts = pd.Timestamp(PILOT_START)
     all_weeks = tickets['WeekEnding'].dropna().unique()
     all_weeks = pd.DatetimeIndex(all_weeks).sort_values()
 
@@ -153,9 +157,9 @@ def compute_weekly_team_metrics(tickets):
 
 
 def compute_baseline(tickets):
-    """Compute pre-pilot baseline metrics for the whole team."""
-    pilot_start_ts = pd.Timestamp(PILOT_START)
-    baseline = tickets[tickets['PREndDate'] < pilot_start_ts]
+    """Compute pre-AI baseline metrics for the whole team (before Oct 2025)."""
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    baseline = tickets[tickets['PREndDate'] < baseline_end_ts]
     total = len(baseline)
     authors_set = set()
     for uuids_str in baseline['AuthorUUIDs']:
@@ -178,10 +182,10 @@ def compute_baseline(tickets):
 
 
 def compute_team_summary(tickets, weekly, baseline):
-    """Compute overall team summary for post-pilot period."""
-    pilot_start_ts = pd.Timestamp(PILOT_START)
-    post_tickets = tickets[tickets['PREndDate'] >= pilot_start_ts]
-    post_weekly = weekly[(weekly['WeekEnding'] >= pilot_start_ts) & ~weekly['LowConfidence']]
+    """Compute overall team summary for mature adoption period (Feb 7+)."""
+    mature_start_ts = pd.Timestamp(MATURE_START)
+    post_tickets = tickets[tickets['PREndDate'] >= mature_start_ts]
+    post_weekly = weekly[(weekly['WeekEnding'] >= mature_start_ts) & ~weekly['LowConfidence']]
 
     team_prod_avg = post_weekly['TeamProductivity'].mean() if len(post_weekly) > 0 else 0
     team_qa = post_tickets['HasQAChurn'].sum() / len(post_tickets) if len(post_tickets) > 0 else 0
@@ -206,9 +210,9 @@ def compute_team_summary(tickets, weekly, baseline):
 
 
 def compute_cumulative(tickets):
-    """Compute cumulative team ticket output post-pilot."""
-    pilot_start_ts = pd.Timestamp(PILOT_START)
-    post = tickets[tickets['PREndDate'] >= pilot_start_ts]
+    """Compute cumulative team ticket output from mature adoption period."""
+    mature_start_ts = pd.Timestamp(MATURE_START)
+    post = tickets[tickets['PREndDate'] >= mature_start_ts]
     weeks = sorted(post['WeekEnding'].unique())
     cum = []
     total = 0
@@ -223,10 +227,11 @@ def compute_cumulative(tickets):
 
 
 def compute_size_complexity(tickets):
-    """Compute size/complexity distribution for post-pilot vs baseline."""
-    pilot_start_ts = pd.Timestamp(PILOT_START)
-    post = tickets[tickets['PREndDate'] >= pilot_start_ts]
-    pre = tickets[tickets['PREndDate'] < pilot_start_ts]
+    """Compute size/complexity distribution for mature adoption vs pre-AI baseline."""
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    mature_start_ts = pd.Timestamp(MATURE_START)
+    post = tickets[tickets['PREndDate'] >= mature_start_ts]
+    pre = tickets[tickets['PREndDate'] < baseline_end_ts]
 
     post_weeks = len(post['WeekEnding'].unique())
     pre_weeks = len(pre['WeekEnding'].unique())
@@ -379,15 +384,25 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     for uuids_str in tickets['AuthorUUIDs']:
         all_authors.update(str(uuids_str).split(','))
 
-    pilot_start_ts = pd.Timestamp(PILOT_START)
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    mature_start_ts = pd.Timestamp(MATURE_START)
 
-    # Build weekly chart data (post-pilot)
-    post_weekly = weekly[weekly['WeekEnding'] >= pilot_start_ts]
+    def get_phase(week_ts):
+        if week_ts < baseline_end_ts:
+            return 'baseline'
+        elif week_ts < mature_start_ts:
+            return 'transition'
+        else:
+            return 'mature'
+
+    # Build weekly chart data (all weeks — phase-tagged)
     weekly_chart = []
-    for _, row in post_weekly.iterrows():
+    for _, row in weekly.iterrows():
         week_str = row['WeekEnding'].strftime('%Y-%m-%d')
+        phase = get_phase(row['WeekEnding'])
         entry = {
             'week': week_str,
+            'phase': phase,
             'totalTickets': int(row['TotalTickets']),
             'teamAuthors': int(row['TeamAuthors']),
             'teamProductivity': row['TeamProductivity'],
@@ -409,8 +424,8 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
                     break
         weekly_chart.append(entry)
 
-    # Baseline weekly data (pre-pilot)
-    pre_weekly = weekly[weekly['WeekEnding'] < pilot_start_ts]
+    # Baseline weekly data (pre-Oct only — for backward compat)
+    pre_weekly = weekly[weekly['WeekEnding'] < baseline_end_ts]
     baseline_weekly = []
     for _, row in pre_weekly.iterrows():
         baseline_weekly.append({
@@ -441,7 +456,8 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     return {
         'generated': datetime.now().strftime('%Y-%m-%d %H:%M'),
         'dataRange': data_range,
-        'pilotStart': PILOT_START,
+        'baselineEnd': BASELINE_END,
+        'matureStart': MATURE_START,
         'rollingWindow': ROLLING_WINDOW,
         'minTicketsThreshold': MIN_TICKETS_THRESHOLD,
         'config': {
@@ -510,10 +526,12 @@ def main():
     JSON_OUTPUT.write_text(json_str, encoding='utf-8')
     print(f"JSON written to: {JSON_OUTPUT}")
 
-    print(f"\nSummary:")
+    print(f"\nThree-phase model:")
+    print(f"  Baseline: pre-{BASELINE_END} | Transition: {BASELINE_END}–{MATURE_START} | Mature: {MATURE_START}+")
+    print(f"\nMature period summary:")
     print(f"  Team: {data['summary']['total_tickets']} tickets, "
           f"productivity {data['summary']['team_productivity']:.3f} tickets/FTE-day")
-    print(f"  vs Baseline: {data['summary']['productivity_vs_baseline']}")
+    print(f"  vs Pre-AI Baseline: {data['summary']['productivity_vs_baseline']}")
     print(f"  QA Churn: {data['summary']['team_qa_churn']:.1%} ({data['summary']['qa_vs_baseline']} vs baseline)")
     if data['copilotAdoption']:
         print(f"  Copilot Users: {data['copilotAdoption']['totalCopilotUsers']} "

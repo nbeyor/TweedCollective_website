@@ -14,16 +14,18 @@ export function MethodologyFooter({ data }: Props) {
         Methodology
       </h3>
       <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[11px] text-[#57534e] leading-relaxed" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        <div className="col-span-2">
+          <strong className="text-[#1c1917]">Three-phase model:</strong>{' '}
+          <strong>Pre-AI baseline</strong> (before {data.baselineEnd}) — no AI tools; {data.baseline.tickets} tickets, {data.baseline.authors} authors.{' '}
+          <strong>Transition</strong> ({data.baselineEnd} – {data.matureStart}) — AI rollout, uneven 26–74% weekly adoption; shown but excluded from KPI comparisons.{' '}
+          <strong>Mature adoption</strong> ({data.matureStart}+) — 80%+ weekly Copilot adoption; compared against pre-AI baseline.
+        </div>
         <div>
           <strong className="text-[#1c1917]">Productivity:</strong> Tickets completed ÷ (Active authors × {data.config.workdaysPerWeek} workdays).
           Active authors counted per week from PR data.
         </div>
         <div>
           <strong className="text-[#1c1917]">QA Churn Rate:</strong> Tickets with QAChurnLines &gt; 0 ÷ Total tickets.
-        </div>
-        <div>
-          <strong className="text-[#1c1917]">Baseline:</strong> Pre-pilot period ({data.baseline.date_range}).
-          {data.baseline.tickets} tickets, {data.baseline.authors} authors.
         </div>
         <div>
           <strong className="text-[#1c1917]">Copilot Adoption:</strong> Weekly active Copilot users from GitHub telemetry ÷ total users with Copilot access.
@@ -41,7 +43,7 @@ export function MethodologyFooter({ data }: Props) {
         </div>
         <div className="col-span-2">
           <strong className="text-[#1c1917]">Why team-wide (not pilot vs non-pilot):</strong> Copilot telemetry shows {data.config.copilotCoveragePct ?? '~96'}% of developers actively use AI tools.
-          The non-pilot group is not a true control. This dashboard compares the entire team against the pre-pilot baseline instead.
+          The non-pilot group is not a true control. This dashboard compares the entire team at mature adoption against the pre-AI baseline.
         </div>
       </div>
       <p className="mt-3 text-[10px] text-[#a8a29e]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>

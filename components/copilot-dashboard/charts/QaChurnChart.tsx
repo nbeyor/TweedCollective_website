@@ -12,6 +12,8 @@ interface Props {
 const TEAM_COLOR = chartTheme.dashboard.pilot
 const MUTED_COLOR = chartTheme.dashboard.muted
 const BASELINE_COLOR = chartTheme.dashboard.baseline
+const COPILOT_COLOR = '#2563eb'
+const TRANSITION_BG = 'rgba(148,163,184,0.08)'
 
 function formatWeekLabel(w: string) {
   const d = new Date(w + 'T00:00:00')
@@ -19,43 +21,33 @@ function formatWeekLabel(w: string) {
 }
 
 export function QaChurnChart({ data }: Props) {
-  const { baselineWeekly, weekly, baseline } = data
-  const pilotStartIdx = baselineWeekly.length
+  const { weekly, baseline } = data
 
-  const merged = useMemo(() => {
-    const baseEntries = baselineWeekly.map(b => ({
-      week: b.week,
-      teamRate: b.teamQARate,
-      lowConfidence: b.lowConfidence,
-      isPostPilot: false,
-      teamRolling: null as number | null,
-    }))
+  // Find phase boundary indices
+  const transitionStartIdx = useMemo(() => {
+    const idx = weekly.findIndex(w => w.phase === 'transition')
+    return idx >= 0 ? idx : 0
+  }, [weekly])
 
-    const postEntries = weekly.map(w => ({
-      week: w.week,
-      teamRate: w.teamQARate,
-      lowConfidence: w.lowConfidence,
-      isPostPilot: true,
-      teamRolling: w.teamQARateRolling,
-    }))
-
-    return [...baseEntries, ...postEntries]
-  }, [baselineWeekly, weekly])
+  const matureStartIdx = useMemo(() => {
+    const idx = weekly.findIndex(w => w.phase === 'mature')
+    return idx >= 0 ? idx : weekly.length
+  }, [weekly])
 
   // Team QA rolling across entire timeline
   const teamRolling = useMemo(() => {
     const window = data.rollingWindow
-    return merged.map((_, i) => {
-      const windowEntries = merged.slice(Math.max(0, i - window + 1), i + 1)
+    return weekly.map((_, i) => {
+      const windowEntries = weekly.slice(Math.max(0, i - window + 1), i + 1)
         .filter(e => !e.lowConfidence)
-        .filter(e => e.teamRate != null)
+        .filter(e => e.teamQARate != null)
       if (windowEntries.length < 2) return null
-      const avg = windowEntries.reduce((s, e) => s + (e.teamRate ?? 0), 0) / windowEntries.length
+      const avg = windowEntries.reduce((s, e) => s + (e.teamQARate ?? 0), 0) / windowEntries.length
       return avg * 100
     })
-  }, [merged, data.rollingWindow])
+  }, [weekly, data.rollingWindow])
 
-  const labels = merged.map(e => formatWeekLabel(e.week))
+  const labels = weekly.map(e => formatWeekLabel(e.week))
 
   const chartData = {
     labels,
@@ -74,11 +66,17 @@ export function QaChurnChart({ data }: Props) {
       },
       {
         label: 'Team (weekly)',
-        data: merged.map(e => e.teamRate != null ? e.teamRate * 100 : null),
-        borderColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : TEAM_COLOR),
-        backgroundColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : TEAM_COLOR),
-        pointRadius: merged.map(e => e.lowConfidence ? 2.5 : 4),
-        pointStyle: 'circle' as const,
+        data: weekly.map(e => e.teamQARate != null ? e.teamQARate * 100 : null),
+        borderColor: weekly.map(e =>
+          e.lowConfidence ? MUTED_COLOR :
+          e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+        ),
+        backgroundColor: weekly.map(e =>
+          e.lowConfidence ? MUTED_COLOR :
+          e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+        ),
+        pointRadius: weekly.map(e => e.lowConfidence ? 2.5 : 4),
+        pointStyle: weekly.map(e => e.phase === 'transition' ? 'rectRot' as const : 'circle' as const),
         showLine: false,
         order: 1,
       },
@@ -154,7 +152,7 @@ export function QaChurnChart({ data }: Props) {
             borderDash: [4, 4],
             label: {
               display: true,
-              content: `Baseline: ${(baseline.qa_churn_rate * 100).toFixed(1)}%`,
+              content: `Pre-AI baseline: ${(baseline.qa_churn_rate * 100).toFixed(1)}%`,
               position: 'start' as const,
               backgroundColor: 'rgba(148,163,184,0.1)',
               color: BASELINE_COLOR,
@@ -162,19 +160,43 @@ export function QaChurnChart({ data }: Props) {
               padding: 4,
             },
           },
-          pilotStart: {
+          transitionZone: {
+            type: 'box' as const,
+            xMin: transitionStartIdx - 0.5,
+            xMax: matureStartIdx - 0.5,
+            backgroundColor: TRANSITION_BG,
+            borderWidth: 0,
+          },
+          rolloutStart: {
             type: 'line' as const,
-            xMin: pilotStartIdx - 0.5,
-            xMax: pilotStartIdx - 0.5,
+            xMin: transitionStartIdx - 0.5,
+            xMax: transitionStartIdx - 0.5,
             borderColor: BASELINE_COLOR,
             borderWidth: 1.5,
             borderDash: [4, 4],
             label: {
               display: true,
-              content: 'Copilot rollout',
+              content: 'AI Rollout',
               position: 'start' as const,
               backgroundColor: 'rgba(148,163,184,0.1)',
               color: BASELINE_COLOR,
+              font: { family: 'DM Sans, sans-serif', size: 10 },
+              padding: 4,
+            },
+          },
+          matureStart: {
+            type: 'line' as const,
+            xMin: matureStartIdx - 0.5,
+            xMax: matureStartIdx - 0.5,
+            borderColor: COPILOT_COLOR,
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            label: {
+              display: true,
+              content: '80%+ Adoption',
+              position: 'start' as const,
+              backgroundColor: 'rgba(37,99,235,0.1)',
+              color: COPILOT_COLOR,
               font: { family: 'DM Sans, sans-serif', size: 10 },
               padding: 4,
             },
@@ -186,9 +208,12 @@ export function QaChurnChart({ data }: Props) {
 
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
-      <h2 className="text-base font-semibold text-[#1c1917] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Quality — Team QA Churn Rate vs Baseline
+      <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        Quality — Team QA Churn Rate vs Pre-AI Baseline
       </h2>
+      <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        % of tickets with QA rework — lower is better
+      </p>
       <div style={{ height: 300 }}>
         <Line data={chartData} options={options as never} />
       </div>

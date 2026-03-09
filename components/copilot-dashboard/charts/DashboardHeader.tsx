@@ -26,7 +26,9 @@ export function DashboardHeader({ data }: Props) {
           Data: {formatDate(rangeStart)} – {formatDate(rangeEnd)}
         </span>
         <span className="text-[#e7e5e4]">|</span>
-        <span>Pilot Start: {formatDate(data.pilotStart)}</span>
+        <span>Baseline: pre-{formatDate(data.baselineEnd)}</span>
+        <span className="text-[#e7e5e4]">|</span>
+        <span>Mature (80%+): {formatDate(data.matureStart)}+</span>
         <span className="text-[#e7e5e4]">|</span>
         <span>
           Team: <strong className="font-mono text-[#1c1917]">{data.config.teamSize}</strong> devs
