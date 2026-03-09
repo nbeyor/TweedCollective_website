@@ -70,6 +70,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'ecs-copilot-dashboard',
+    title: 'eCS SDLC Dashboard — Copilot Adoption & Team Productivity',
+    shortTitle: 'eCS Copilot Dashboard',
+    description: 'Team-wide productivity vs baseline with Copilot adoption metrics. Reframes pilot data using GitHub Copilot telemetry showing 96% developer adoption.',
+    category: 'Dashboard',
+    icon: 'BarChart3',
+    date: '2026-03',
+    readTime: '5 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'apollo-wcg-ai-diligence',
     title: 'Apollo: AI Diligence — Buyer Acquisition Analysis',
     shortTitle: 'Apollo AI Diligence',
