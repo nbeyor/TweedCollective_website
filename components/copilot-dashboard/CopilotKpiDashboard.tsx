@@ -82,7 +82,7 @@ export function CopilotKpiDashboard() {
         <DashboardHeader data={data} />
         <KpiCards data={data} />
         <ProductivityChart data={data} />
-        <QaChurnChart data={data} />
+        <QaChurnChart data={data} copilotAdoption={data.copilotAdoption} />
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <CopilotAdoptionChart data={data} />

@@ -2,11 +2,12 @@
 
 import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
-import type { CopilotDashboardData } from '../types'
+import type { CopilotDashboardData, CopilotAdoption } from '../types'
 import { chartTheme } from '@/lib/slideTemplates'
 
 interface Props {
   data: CopilotDashboardData
+  copilotAdoption?: CopilotAdoption | null
 }
 
 const TEAM_COLOR = chartTheme.dashboard.pilot
@@ -20,7 +21,7 @@ function formatWeekLabel(w: string) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function QaChurnChart({ data }: Props) {
+export function QaChurnChart({ data, copilotAdoption }: Props) {
   const { weekly, baseline } = data
 
   // Find phase boundary indices
@@ -47,41 +48,89 @@ export function QaChurnChart({ data }: Props) {
     })
   }, [weekly, data.rollingWindow])
 
+  // Acceptance rate 4-week rolling average (aligned to main weekly by week field)
+  const acceptanceRolling = useMemo(() => {
+    if (!copilotAdoption?.weekly?.length) return null
+    // Build week → acceptance rate map
+    const rateByWeek = new Map<string, number>()
+    for (const w of copilotAdoption.weekly) {
+      if (w.totalCodeGen > 0) {
+        rateByWeek.set(w.week, (w.totalCodeAccept / w.totalCodeGen) * 100)
+      }
+    }
+    // Skip incomplete last week
+    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
+    const lastCopilotWeek = copilotAdoption.weekly[copilotAdoption.weekly.length - 1]
+    if (lastCopilotWeek && lastCopilotWeek.week > dataRangeEnd) {
+      rateByWeek.delete(lastCopilotWeek.week)
+    }
+    // Map to main weekly timeline and compute rolling avg
+    const raw = weekly.map(e => rateByWeek.get(e.week) ?? null)
+    const window = data.rollingWindow
+    return raw.map((_, i) => {
+      const vals: number[] = []
+      for (let j = Math.max(0, i - window + 1); j <= i; j++) {
+        if (raw[j] != null) vals.push(raw[j]!)
+      }
+      if (vals.length < 2) return null
+      return vals.reduce((s, v) => s + v, 0) / vals.length
+    })
+  }, [weekly, copilotAdoption, data.rollingWindow, data.dataRange])
+
   const labels = weekly.map(e => formatWeekLabel(e.week))
 
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: 'Team (rolling avg)',
-        data: teamRolling,
-        borderColor: TEAM_COLOR,
-        backgroundColor: 'transparent',
-        borderWidth: 2.5,
-        tension: 0.3,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        spanGaps: false,
-        order: 2,
-      },
-      {
-        label: 'Team (weekly)',
-        data: weekly.map(e => e.teamQARate != null ? e.teamQARate * 100 : null),
-        borderColor: weekly.map(e =>
-          e.lowConfidence ? MUTED_COLOR :
-          e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
-        ),
-        backgroundColor: weekly.map(e =>
-          e.lowConfidence ? MUTED_COLOR :
-          e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
-        ),
-        pointRadius: weekly.map(e => e.lowConfidence ? 2.5 : 4),
-        pointStyle: weekly.map(e => e.phase === 'transition' ? 'rectRot' as const : 'circle' as const),
-        showLine: false,
-        order: 1,
-      },
-    ],
+  const datasets = [
+    {
+      label: 'QA Churn (rolling avg)',
+      data: teamRolling,
+      borderColor: TEAM_COLOR,
+      backgroundColor: 'transparent',
+      borderWidth: 2.5,
+      tension: 0.3,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      spanGaps: false,
+      yAxisID: 'y',
+      order: 2,
+    },
+    {
+      label: 'QA Churn (weekly)',
+      data: weekly.map(e => e.teamQARate != null ? e.teamQARate * 100 : null),
+      borderColor: weekly.map(e =>
+        e.lowConfidence ? MUTED_COLOR :
+        e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+      ),
+      backgroundColor: weekly.map(e =>
+        e.lowConfidence ? MUTED_COLOR :
+        e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+      ),
+      pointRadius: weekly.map(e => e.lowConfidence ? 2.5 : 4),
+      pointStyle: weekly.map(e => e.phase === 'transition' ? 'rectRot' as const : 'circle' as const),
+      showLine: false,
+      yAxisID: 'y',
+      order: 1,
+    },
+  ]
+
+  if (acceptanceRolling) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    datasets.push({
+      label: 'Acceptance Rate (rolling avg)',
+      data: acceptanceRolling,
+      borderColor: COPILOT_COLOR,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      spanGaps: false,
+      yAxisID: 'y1',
+      order: 3,
+      borderDash: [6, 3],
+    } as any)
   }
+
+  const chartData = { labels, datasets }
 
   const options = {
     responsive: true,
@@ -102,6 +151,7 @@ export function QaChurnChart({ data }: Props) {
       },
       y: {
         beginAtZero: true,
+        position: 'left' as const,
         title: {
           display: true,
           text: 'QA Churn Rate (%)',
@@ -115,6 +165,25 @@ export function QaChurnChart({ data }: Props) {
         },
         grid: { color: '#f5f5f4' },
       },
+      ...(acceptanceRolling ? {
+        y1: {
+          beginAtZero: true,
+          position: 'right' as const,
+          max: 50,
+          title: {
+            display: true,
+            text: 'Acceptance Rate (%)',
+            font: { family: 'DM Sans, sans-serif', size: 11 },
+            color: COPILOT_COLOR,
+          },
+          ticks: {
+            font: { family: 'JetBrains Mono, monospace', size: 10 },
+            color: COPILOT_COLOR,
+            callback: (v: number | string) => typeof v === 'number' ? `${v.toFixed(0)}%` : v,
+          },
+          grid: { display: false },
+        },
+      } : {}),
     },
     plugins: {
       legend: {
@@ -126,7 +195,7 @@ export function QaChurnChart({ data }: Props) {
           boxHeight: 6,
           font: { family: 'DM Sans, sans-serif', size: 11 },
           color: '#57534e',
-          filter: (item: { text: string }) => !item.text.includes('weekly'),
+          filter: (item: { text: string }) => !item.text.includes('(weekly)'),
         },
       },
       tooltip: {
@@ -209,10 +278,10 @@ export function QaChurnChart({ data }: Props) {
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Quality — Team QA Churn Rate vs Pre-AI Baseline
+        Quality — QA Churn Rate vs Copilot Acceptance Rate
       </h2>
       <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        % of tickets with QA rework — lower is better
+        QA churn (% tickets with rework, lower is better) vs acceptance rate (% AI suggestions kept, {data.rollingWindow}-week rolling avg)
       </p>
       <div style={{ height: 300 }}>
         <Line data={chartData} options={options as never} />
