@@ -13,6 +13,7 @@ const TEAM_COLOR = chartTheme.dashboard.pilot
 const MUTED_COLOR = chartTheme.dashboard.muted
 const BASELINE_COLOR = chartTheme.dashboard.baseline
 const COPILOT_COLOR = '#2563eb'
+const TRANSITION_BG = 'rgba(148,163,184,0.08)'
 
 function formatWeekLabel(w: string) {
   const d = new Date(w + 'T00:00:00')
@@ -20,44 +21,32 @@ function formatWeekLabel(w: string) {
 }
 
 export function ProductivityChart({ data }: Props) {
-  const { baselineWeekly, weekly, baseline } = data
-  const pilotStartIdx = baselineWeekly.length
+  const { weekly, baseline } = data
 
-  const merged = useMemo(() => {
-    const baseEntries = baselineWeekly.map(b => ({
-      week: b.week,
-      teamProductivity: b.teamProductivity,
-      lowConfidence: b.lowConfidence,
-      isPostPilot: false,
-      teamRolling: null as number | null,
-      copilotPct: null as number | null,
-    }))
+  // Find phase boundary indices
+  const transitionStartIdx = useMemo(() => {
+    const idx = weekly.findIndex(w => w.phase === 'transition')
+    return idx >= 0 ? idx : 0
+  }, [weekly])
 
-    const postEntries = weekly.map(w => ({
-      week: w.week,
-      teamProductivity: w.teamProductivity,
-      lowConfidence: w.lowConfidence,
-      isPostPilot: true,
-      teamRolling: w.teamProductivityRolling,
-      copilotPct: w.copilotPct,
-    }))
-
-    return [...baseEntries, ...postEntries]
-  }, [baselineWeekly, weekly])
+  const matureStartIdx = useMemo(() => {
+    const idx = weekly.findIndex(w => w.phase === 'mature')
+    return idx >= 0 ? idx : weekly.length
+  }, [weekly])
 
   // Team rolling average across entire timeline
   const teamRolling = useMemo(() => {
     const window = data.rollingWindow
-    return merged.map((_, i) => {
-      const windowEntries = merged.slice(Math.max(0, i - window + 1), i + 1)
+    return weekly.map((_, i) => {
+      const windowEntries = weekly.slice(Math.max(0, i - window + 1), i + 1)
         .filter(e => !e.lowConfidence)
       if (windowEntries.length < 2) return null
       return windowEntries.reduce((s, e) => s + e.teamProductivity, 0) / windowEntries.length
     })
-  }, [merged, data.rollingWindow])
+  }, [weekly, data.rollingWindow])
 
-  const labels = merged.map(e => formatWeekLabel(e.week))
-  const hasCopilot = merged.some(e => e.copilotPct != null)
+  const labels = weekly.map(e => formatWeekLabel(e.week))
+  const hasCopilot = weekly.some(e => e.copilotPct != null)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const datasets: any[] = [
@@ -76,15 +65,21 @@ export function ProductivityChart({ data }: Props) {
       yAxisID: 'y',
       order: 2,
     },
-    // 2. Team raw dots
+    // 2. Team raw dots — color by phase
     {
       type: 'line',
       label: 'Team (weekly)',
-      data: merged.map(e => e.teamProductivity),
-      borderColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : TEAM_COLOR),
-      backgroundColor: merged.map(e => e.lowConfidence ? MUTED_COLOR : TEAM_COLOR),
-      pointRadius: merged.map(e => e.lowConfidence ? 2.5 : 4),
-      pointStyle: 'circle',
+      data: weekly.map(e => e.teamProductivity),
+      borderColor: weekly.map(e =>
+        e.lowConfidence ? MUTED_COLOR :
+        e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+      ),
+      backgroundColor: weekly.map(e =>
+        e.lowConfidence ? MUTED_COLOR :
+        e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
+      ),
+      pointRadius: weekly.map(e => e.lowConfidence ? 2.5 : 4),
+      pointStyle: weekly.map(e => e.phase === 'transition' ? 'rectRot' : 'circle'),
       showLine: false,
       yAxisID: 'y',
       order: 1,
@@ -96,7 +91,7 @@ export function ProductivityChart({ data }: Props) {
     datasets.push({
       type: 'line',
       label: 'Copilot Adoption %',
-      data: merged.map(e => e.copilotPct),
+      data: weekly.map(e => e.copilotPct),
       borderColor: COPILOT_COLOR,
       backgroundColor: `${COPILOT_COLOR}15`,
       fill: true,
@@ -194,6 +189,7 @@ export function ProductivityChart({ data }: Props) {
       },
       annotation: {
         annotations: {
+          // Horizontal baseline avg line
           baselineAvg: {
             type: 'line' as const,
             yMin: baseline.productivity,
@@ -203,7 +199,7 @@ export function ProductivityChart({ data }: Props) {
             borderDash: [4, 4],
             label: {
               display: true,
-              content: `Baseline avg: ${baseline.productivity.toFixed(3)}`,
+              content: `Pre-AI baseline: ${baseline.productivity.toFixed(3)}`,
               position: 'start' as const,
               backgroundColor: 'rgba(148,163,184,0.1)',
               color: BASELINE_COLOR,
@@ -211,19 +207,54 @@ export function ProductivityChart({ data }: Props) {
               padding: 4,
             },
           },
-          pilotStart: {
+          // Transition zone shading
+          transitionZone: {
+            type: 'box' as const,
+            xMin: transitionStartIdx - 0.5,
+            xMax: matureStartIdx - 0.5,
+            backgroundColor: TRANSITION_BG,
+            borderWidth: 0,
+            label: {
+              display: true,
+              content: 'Transition',
+              position: { x: 'center' as const, y: 'start' as const },
+              color: '#a8a29e',
+              font: { family: 'DM Sans, sans-serif', size: 10, style: 'italic' as const },
+              padding: 4,
+            },
+          },
+          // Vertical line: AI Rollout Begins
+          rolloutStart: {
             type: 'line' as const,
-            xMin: pilotStartIdx - 0.5,
-            xMax: pilotStartIdx - 0.5,
+            xMin: transitionStartIdx - 0.5,
+            xMax: transitionStartIdx - 0.5,
             borderColor: BASELINE_COLOR,
             borderWidth: 1.5,
             borderDash: [4, 4],
             label: {
               display: true,
-              content: 'Copilot rollout',
+              content: 'AI Rollout',
               position: 'start' as const,
               backgroundColor: 'rgba(148,163,184,0.1)',
               color: BASELINE_COLOR,
+              font: { family: 'DM Sans, sans-serif', size: 10 },
+              padding: 4,
+            },
+          },
+          // Vertical line: 80%+ Adoption
+          matureStart: {
+            type: 'line' as const,
+            xMin: matureStartIdx - 0.5,
+            xMax: matureStartIdx - 0.5,
+            borderColor: COPILOT_COLOR,
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            label: {
+              display: true,
+              content: '80%+ Adoption',
+              position: 'start' as const,
+              backgroundColor: 'rgba(37,99,235,0.1)',
+              color: COPILOT_COLOR,
               font: { family: 'DM Sans, sans-serif', size: 10 },
               padding: 4,
             },
@@ -236,10 +267,10 @@ export function ProductivityChart({ data }: Props) {
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Team Productivity vs Baseline
+        Team Productivity vs Pre-AI Baseline
       </h2>
       <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Team-wide tickets/FTE-day with Copilot adoption % overlay (blue shaded area)
+        Tickets/FTE-day across three phases: pre-AI baseline, transition (Oct–Feb 6), and mature adoption (80%+, Feb 7+)
       </p>
       <div style={{ height: 320 }}>
         <Chart type="line" data={{ labels, datasets: datasets as never }} options={options as never} />
