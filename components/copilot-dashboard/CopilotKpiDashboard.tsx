@@ -75,7 +75,6 @@ export function CopilotKpiDashboard() {
     return {
       ...data,
       weekly: data.weekly.filter(w => w.week <= dataRangeEnd),
-      cumulative: data.cumulative.filter(w => w.week <= dataRangeEnd),
       availability: data.availability.filter(w => w.week <= dataRangeEnd),
       copilotAdoption: data.copilotAdoption ? {
         ...data.copilotAdoption,

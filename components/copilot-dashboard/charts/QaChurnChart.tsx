@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
 import type { CopilotDashboardData, CopilotAdoption } from '../types'
 import { chartTheme } from '@/lib/slideTemplates'
+import { formatWeekLabel } from '../utils'
 
 interface Props {
   data: CopilotDashboardData
@@ -15,11 +16,6 @@ const MUTED_COLOR = chartTheme.dashboard.muted
 const BASELINE_COLOR = chartTheme.dashboard.baseline
 const COPILOT_COLOR = '#2563eb'
 const TRANSITION_BG = 'rgba(148,163,184,0.08)'
-
-function formatWeekLabel(w: string) {
-  const d = new Date(w + 'T00:00:00')
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
 
 export function QaChurnChart({ data, copilotAdoption }: Props) {
   const { weekly, baseline } = data
@@ -58,12 +54,6 @@ export function QaChurnChart({ data, copilotAdoption }: Props) {
         rateByWeek.set(w.week, (w.totalCodeAccept / w.totalCodeGen) * 100)
       }
     }
-    // Skip incomplete last week
-    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
-    const lastCopilotWeek = copilotAdoption.weekly[copilotAdoption.weekly.length - 1]
-    if (lastCopilotWeek && lastCopilotWeek.week > dataRangeEnd) {
-      rateByWeek.delete(lastCopilotWeek.week)
-    }
     // Map to main weekly timeline and compute rolling avg
     const raw = weekly.map(e => rateByWeek.get(e.week) ?? null)
     const window = data.rollingWindow
@@ -75,7 +65,7 @@ export function QaChurnChart({ data, copilotAdoption }: Props) {
       if (vals.length < 2) return null
       return vals.reduce((s, v) => s + v, 0) / vals.length
     })
-  }, [weekly, copilotAdoption, data.rollingWindow, data.dataRange])
+  }, [weekly, copilotAdoption, data.rollingWindow])
 
   const labels = weekly.map(e => formatWeekLabel(e.week))
 
