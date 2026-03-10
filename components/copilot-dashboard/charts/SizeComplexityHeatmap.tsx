@@ -7,8 +7,8 @@ interface Props {
   data: CopilotDashboardData
 }
 
-const SIZES = ['0-300', '301-1000', '1001+']
-const COMPLEXITIES = ['1-3', '4-10', '11+']
+const SIZES = ['0-300', '301+']
+const COMPLEXITIES = ['1-10', '11+']
 
 function getDiffColor(diff: number): string {
   if (diff >= 1.0) return '#15803d'
@@ -50,7 +50,7 @@ export function SizeComplexityHeatmap({ data }: Props) {
           <thead>
             <tr>
               <th className="text-[10px] text-[#a8a29e] font-normal p-1 text-left" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                Lines \ PRs
+                Lines \ Files
               </th>
               {COMPLEXITIES.map(c => (
                 <th key={c} className="text-[10px] text-[#a8a29e] font-medium p-1 text-center">

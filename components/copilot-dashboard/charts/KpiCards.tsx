@@ -60,12 +60,7 @@ export function KpiCards({ data }: Props) {
 
   if (data.copilotAdoption) {
     const adoption = data.copilotAdoption
-    // Skip incomplete last week: if week date is past the data range end, use prior week
-    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
-    const rawLast = adoption.weekly[adoption.weekly.length - 1]
-    const lastWeek = (rawLast && rawLast.week > dataRangeEnd && adoption.weekly.length > 1)
-      ? adoption.weekly[adoption.weekly.length - 2]
-      : rawLast
+    const lastWeek = adoption.weekly[adoption.weekly.length - 1]
     cards.push({
       label: 'Copilot Adoption (current)',
       value: `${lastWeek?.copilotPct ?? 0}%`,

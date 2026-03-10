@@ -37,7 +37,6 @@ export interface CopilotDashboardData {
   weekly: WeeklyEntry[]
   baselineWeekly: BaselineWeeklyEntry[]
   sizeComplexity: SizeComplexityEntry[]
-  cumulative: CumulativeEntry[]
   availability: AvailabilityEntry[]
   copilotAdoption: CopilotAdoption | null
   survey?: SurveyData | null
@@ -49,9 +48,7 @@ export interface WeeklyEntry {
   totalTickets: number
   teamAuthors: number
   teamProductivity: number
-  teamProductivityRolling: number | null
   teamQARate: number | null
-  teamQARateRolling: number | null
   copilotPct: number | null
   copilotActiveUsers: number | null
   copilotCodeGen: number | null
@@ -76,11 +73,6 @@ export interface SizeComplexityEntry {
   baseline_productivity: number
   post_qa_churn?: number
   baseline_qa_churn?: number
-}
-
-export interface CumulativeEntry {
-  week: string
-  team_cumulative: number
 }
 
 export interface AvailabilityEntry {

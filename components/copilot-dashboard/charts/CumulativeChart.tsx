@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import type { CopilotDashboardData } from '../types'
 import { chartTheme } from '@/lib/slideTemplates'
+import { formatWeekLabel } from '../utils'
 
 interface Props {
   data: CopilotDashboardData
@@ -14,11 +15,6 @@ const BASELINE_COLOR = chartTheme.dashboard.baseline
 const COPILOT_COLOR = '#2563eb'
 const VELOCITY_COLOR = '#d97706'
 const TRANSITION_BG = 'rgba(148,163,184,0.08)'
-
-function formatWeekLabel(w: string) {
-  const d = new Date(w + 'T00:00:00')
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
 
 export function CumulativeChart({ data }: Props) {
   const { weekly, summary } = data

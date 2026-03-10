@@ -3,6 +3,7 @@
 import React from 'react'
 import { Chart } from 'react-chartjs-2'
 import type { CopilotDashboardData } from '../types'
+import { formatWeekLabel } from '../utils'
 
 interface Props {
   data: CopilotDashboardData
@@ -10,11 +11,6 @@ interface Props {
 
 const COPILOT_COLOR = '#2563eb'
 const CODE_GEN_COLOR = '#15803d'
-
-function formatWeekLabel(w: string) {
-  const d = new Date(w + 'T00:00:00')
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
 
 export function CopilotAdoptionChart({ data }: Props) {
   const { availability } = data

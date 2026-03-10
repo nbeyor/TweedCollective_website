@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-09 21:47",
+  "generated": "2026-03-10 03:20",
   "dataRange": "2025-07-02 to 2026-03-09",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
@@ -37,9 +37,7 @@
       "totalTickets": 2,
       "teamAuthors": 2,
       "teamProductivity": 0.2,
-      "teamProductivityRolling": null,
       "teamQARate": 0.0,
-      "teamQARateRolling": null,
       "lowConfidence": true,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -51,9 +49,7 @@
       "totalTickets": 23,
       "teamAuthors": 9,
       "teamProductivity": 0.511111,
-      "teamProductivityRolling": null,
       "teamQARate": 0.130435,
-      "teamQARateRolling": null,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -65,9 +61,7 @@
       "totalTickets": 29,
       "teamAuthors": 13,
       "teamProductivity": 0.446154,
-      "teamProductivityRolling": 0.478632,
       "teamQARate": 0.275862,
-      "teamQARateRolling": 0.203148,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -79,9 +73,7 @@
       "totalTickets": 14,
       "teamAuthors": 9,
       "teamProductivity": 0.311111,
-      "teamProductivityRolling": 0.422792,
       "teamQARate": 0.285714,
-      "teamQARateRolling": 0.23067,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -93,9 +85,7 @@
       "totalTickets": 11,
       "teamAuthors": 6,
       "teamProductivity": 0.366667,
-      "teamProductivityRolling": 0.408761,
       "teamQARate": 0.363636,
-      "teamQARateRolling": 0.263912,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -107,9 +97,7 @@
       "totalTickets": 19,
       "teamAuthors": 11,
       "teamProductivity": 0.345455,
-      "teamProductivityRolling": 0.367347,
       "teamQARate": 0.263158,
-      "teamQARateRolling": 0.297093,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -121,9 +109,7 @@
       "totalTickets": 20,
       "teamAuthors": 12,
       "teamProductivity": 0.333333,
-      "teamProductivityRolling": 0.339141,
       "teamQARate": 0.15,
-      "teamQARateRolling": 0.265627,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -135,9 +121,7 @@
       "totalTickets": 27,
       "teamAuthors": 13,
       "teamProductivity": 0.415385,
-      "teamProductivityRolling": 0.36521,
       "teamQARate": 0.259259,
-      "teamQARateRolling": 0.259013,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -149,9 +133,7 @@
       "totalTickets": 14,
       "teamAuthors": 8,
       "teamProductivity": 0.35,
-      "teamProductivityRolling": 0.361043,
       "teamQARate": 0.142857,
-      "teamQARateRolling": 0.203819,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -163,9 +145,7 @@
       "totalTickets": 15,
       "teamAuthors": 8,
       "teamProductivity": 0.375,
-      "teamProductivityRolling": 0.368429,
       "teamQARate": 0.2,
-      "teamQARateRolling": 0.188029,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -177,9 +157,7 @@
       "totalTickets": 20,
       "teamAuthors": 10,
       "teamProductivity": 0.4,
-      "teamProductivityRolling": 0.385096,
       "teamQARate": 0.15,
-      "teamQARateRolling": 0.188029,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -191,9 +169,7 @@
       "totalTickets": 20,
       "teamAuthors": 10,
       "teamProductivity": 0.4,
-      "teamProductivityRolling": 0.38125,
       "teamQARate": 0.4,
-      "teamQARateRolling": 0.223214,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -205,9 +181,7 @@
       "totalTickets": 23,
       "teamAuthors": 11,
       "teamProductivity": 0.418182,
-      "teamProductivityRolling": 0.398295,
       "teamQARate": 0.347826,
-      "teamQARateRolling": 0.274457,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -219,9 +193,7 @@
       "totalTickets": 19,
       "teamAuthors": 13,
       "teamProductivity": 0.292308,
-      "teamProductivityRolling": 0.377622,
       "teamQARate": 0.315789,
-      "teamQARateRolling": 0.303404,
       "lowConfidence": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
@@ -233,9 +205,7 @@
       "totalTickets": 20,
       "teamAuthors": 10,
       "teamProductivity": 0.4,
-      "teamProductivityRolling": 0.377622,
       "teamQARate": 0.35,
-      "teamQARateRolling": 0.353404,
       "lowConfidence": false,
       "copilotPct": 25.9,
       "copilotActiveUsers": 7,
@@ -247,9 +217,7 @@
       "totalTickets": 23,
       "teamAuthors": 12,
       "teamProductivity": 0.383333,
-      "teamProductivityRolling": 0.373456,
       "teamQARate": 0.130435,
-      "teamQARateRolling": 0.286013,
       "lowConfidence": false,
       "copilotPct": 40.7,
       "copilotActiveUsers": 11,
@@ -261,9 +229,7 @@
       "totalTickets": 22,
       "teamAuthors": 10,
       "teamProductivity": 0.44,
-      "teamProductivityRolling": 0.37891,
       "teamQARate": 0.045455,
-      "teamQARateRolling": 0.21042,
       "lowConfidence": false,
       "copilotPct": 37.0,
       "copilotActiveUsers": 10,
@@ -275,9 +241,7 @@
       "totalTickets": 24,
       "teamAuthors": 10,
       "teamProductivity": 0.48,
-      "teamProductivityRolling": 0.425833,
       "teamQARate": 0.125,
-      "teamQARateRolling": 0.162722,
       "lowConfidence": false,
       "copilotPct": 29.6,
       "copilotActiveUsers": 8,
@@ -289,9 +253,7 @@
       "totalTickets": 37,
       "teamAuthors": 15,
       "teamProductivity": 0.493333,
-      "teamProductivityRolling": 0.449167,
       "teamQARate": 0.378378,
-      "teamQARateRolling": 0.169817,
       "lowConfidence": false,
       "copilotPct": 48.1,
       "copilotActiveUsers": 13,
@@ -303,9 +265,7 @@
       "totalTickets": 30,
       "teamAuthors": 13,
       "teamProductivity": 0.461538,
-      "teamProductivityRolling": 0.468718,
       "teamQARate": 0.3,
-      "teamQARateRolling": 0.212208,
       "lowConfidence": false,
       "copilotPct": 59.3,
       "copilotActiveUsers": 16,
@@ -317,9 +277,7 @@
       "totalTickets": 26,
       "teamAuthors": 14,
       "teamProductivity": 0.371429,
-      "teamProductivityRolling": 0.451575,
       "teamQARate": 0.076923,
-      "teamQARateRolling": 0.220075,
       "lowConfidence": false,
       "copilotPct": 59.3,
       "copilotActiveUsers": 16,
@@ -331,9 +289,7 @@
       "totalTickets": 7,
       "teamAuthors": 5,
       "teamProductivity": 0.28,
-      "teamProductivityRolling": 0.401575,
       "teamQARate": 0.0,
-      "teamQARateRolling": 0.188825,
       "lowConfidence": false,
       "copilotPct": 40.7,
       "copilotActiveUsers": 11,
@@ -345,9 +301,7 @@
       "totalTickets": 30,
       "teamAuthors": 13,
       "teamProductivity": 0.461538,
-      "teamProductivityRolling": 0.393626,
       "teamQARate": 0.166667,
-      "teamQARateRolling": 0.135897,
       "lowConfidence": false,
       "copilotPct": 59.3,
       "copilotActiveUsers": 16,
@@ -359,9 +313,7 @@
       "totalTickets": 30,
       "teamAuthors": 12,
       "teamProductivity": 0.5,
-      "teamProductivityRolling": 0.403242,
       "teamQARate": 0.2,
-      "teamQARateRolling": 0.110897,
       "lowConfidence": false,
       "copilotPct": 48.1,
       "copilotActiveUsers": 13,
@@ -373,9 +325,7 @@
       "totalTickets": 37,
       "teamAuthors": 15,
       "teamProductivity": 0.493333,
-      "teamProductivityRolling": 0.433718,
       "teamQARate": 0.135135,
-      "teamQARateRolling": 0.12545,
       "lowConfidence": false,
       "copilotPct": 59.3,
       "copilotActiveUsers": 16,
@@ -387,9 +337,7 @@
       "totalTickets": 2,
       "teamAuthors": 2,
       "teamProductivity": 0.2,
-      "teamProductivityRolling": null,
       "teamQARate": 0.0,
-      "teamQARateRolling": null,
       "lowConfidence": true,
       "copilotPct": 40.7,
       "copilotActiveUsers": 11,
@@ -401,9 +349,7 @@
       "totalTickets": 2,
       "teamAuthors": 2,
       "teamProductivity": 0.2,
-      "teamProductivityRolling": null,
       "teamQARate": 0.0,
-      "teamQARateRolling": null,
       "lowConfidence": true,
       "copilotPct": 44.4,
       "copilotActiveUsers": 12,
@@ -415,9 +361,7 @@
       "totalTickets": 5,
       "teamAuthors": 4,
       "teamProductivity": 0.25,
-      "teamProductivityRolling": 0.426218,
       "teamQARate": 0.0,
-      "teamQARateRolling": 0.12545,
       "lowConfidence": false,
       "copilotPct": 74.1,
       "copilotActiveUsers": 20,
@@ -429,9 +373,7 @@
       "totalTickets": 33,
       "teamAuthors": 16,
       "teamProductivity": 0.4125,
-      "teamProductivityRolling": 0.413958,
       "teamQARate": 0.212121,
-      "teamQARateRolling": 0.136814,
       "lowConfidence": false,
       "copilotPct": 63.0,
       "copilotActiveUsers": 17,
@@ -443,9 +385,7 @@
       "totalTickets": 19,
       "teamAuthors": 9,
       "teamProductivity": 0.422222,
-      "teamProductivityRolling": 0.394514,
       "teamQARate": 0.052632,
-      "teamQARateRolling": 0.099972,
       "lowConfidence": false,
       "copilotPct": 63.0,
       "copilotActiveUsers": 17,
@@ -457,9 +397,7 @@
       "totalTickets": 20,
       "teamAuthors": 13,
       "teamProductivity": 0.307692,
-      "teamProductivityRolling": 0.348104,
       "teamQARate": 0.15,
-      "teamQARateRolling": 0.103688,
       "lowConfidence": false,
       "copilotPct": 70.4,
       "copilotActiveUsers": 19,
@@ -471,9 +409,7 @@
       "totalTickets": 32,
       "teamAuthors": 13,
       "teamProductivity": 0.492308,
-      "teamProductivityRolling": 0.408681,
       "teamQARate": 0.15625,
-      "teamQARateRolling": 0.142751,
       "lowConfidence": false,
       "copilotPct": 81.5,
       "copilotActiveUsers": 22,
@@ -485,9 +421,7 @@
       "totalTickets": 32,
       "teamAuthors": 15,
       "teamProductivity": 0.426667,
-      "teamProductivityRolling": 0.412222,
       "teamQARate": 0.25,
-      "teamQARateRolling": 0.15222,
       "lowConfidence": false,
       "copilotPct": 70.4,
       "copilotActiveUsers": 19,
@@ -499,9 +433,7 @@
       "totalTickets": 29,
       "teamAuthors": 17,
       "teamProductivity": 0.341176,
-      "teamProductivityRolling": 0.391961,
       "teamQARate": 0.37931,
-      "teamQARateRolling": 0.23389,
       "lowConfidence": false,
       "copilotPct": 74.1,
       "copilotActiveUsers": 20,
@@ -513,9 +445,7 @@
       "totalTickets": 30,
       "teamAuthors": 14,
       "teamProductivity": 0.428571,
-      "teamProductivityRolling": 0.422181,
       "teamQARate": 0.166667,
-      "teamQARateRolling": 0.238057,
       "lowConfidence": false,
       "copilotPct": 85.2,
       "copilotActiveUsers": 23,
@@ -527,13 +457,23 @@
       "totalTickets": 45,
       "teamAuthors": 14,
       "teamProductivity": 0.642857,
-      "teamProductivityRolling": 0.459818,
       "teamQARate": 0.133333,
-      "teamQARateRolling": 0.232328,
       "lowConfidence": false,
       "copilotPct": 85.2,
       "copilotActiveUsers": 23,
       "copilotCodeGen": 3464
+    },
+    {
+      "week": "2026-03-14",
+      "phase": "mature",
+      "totalTickets": 7,
+      "teamAuthors": 7,
+      "teamProductivity": 0.2,
+      "teamQARate": 0.285714,
+      "lowConfidence": false,
+      "copilotPct": 7.4,
+      "copilotActiveUsers": 2,
+      "copilotCodeGen": 52
     }
   ],
   "baselineWeekly": [
@@ -631,26 +571,15 @@
   ],
   "sizeComplexity": [
     {
-      "label": "0-300 / 1-3",
+      "label": "0-300 / 1-10",
       "size": "0-300",
-      "complexity": "1-3",
-      "post_tickets": 52,
-      "baseline_tickets": 134,
-      "post_productivity": 0.08254,
-      "baseline_productivity": 0.100752,
-      "post_qa_churn": 0.115385,
-      "baseline_qa_churn": 0.186567
-    },
-    {
-      "label": "0-300 / 4-10",
-      "size": "0-300",
-      "complexity": "4-10",
-      "post_tickets": 31,
-      "baseline_tickets": 44,
-      "post_productivity": 0.049206,
-      "baseline_productivity": 0.033083,
-      "post_qa_churn": 0.16129,
-      "baseline_qa_churn": 0.272727
+      "complexity": "1-10",
+      "post_tickets": 83,
+      "baseline_tickets": 178,
+      "post_productivity": 0.131746,
+      "baseline_productivity": 0.133835,
+      "post_qa_churn": 0.13253,
+      "baseline_qa_churn": 0.207865
     },
     {
       "label": "0-300 / 11+",
@@ -664,81 +593,26 @@
       "baseline_qa_churn": 0.272727
     },
     {
-      "label": "301-1000 / 1-3",
-      "size": "301-1000",
-      "complexity": "1-3",
-      "post_tickets": 0,
-      "baseline_tickets": 1,
-      "post_productivity": 0.0,
-      "baseline_productivity": 0.000752,
-      "post_qa_churn": 0,
-      "baseline_qa_churn": 0.0
+      "label": "301+ / 1-10",
+      "size": "301+",
+      "complexity": "1-10",
+      "post_tickets": 4,
+      "baseline_tickets": 9,
+      "post_productivity": 0.006349,
+      "baseline_productivity": 0.006767,
+      "post_qa_churn": 0.5,
+      "baseline_qa_churn": 0.222222
     },
     {
-      "label": "301-1000 / 4-10",
-      "size": "301-1000",
-      "complexity": "4-10",
-      "post_tickets": 3,
-      "baseline_tickets": 7,
-      "post_productivity": 0.004762,
-      "baseline_productivity": 0.005263,
-      "post_qa_churn": 0.666667,
-      "baseline_qa_churn": 0.285714
-    },
-    {
-      "label": "301-1000 / 11+",
-      "size": "301-1000",
+      "label": "301+ / 11+",
+      "size": "301+",
       "complexity": "11+",
-      "post_tickets": 21,
-      "baseline_tickets": 24,
-      "post_productivity": 0.033333,
-      "baseline_productivity": 0.018045,
-      "post_qa_churn": 0.142857,
-      "baseline_qa_churn": 0.208333
-    },
-    {
-      "label": "1001+ / 4-10",
-      "size": "1001+",
-      "complexity": "4-10",
-      "post_tickets": 1,
-      "baseline_tickets": 1,
-      "post_productivity": 0.001587,
-      "baseline_productivity": 0.000752,
-      "post_qa_churn": 0.0,
-      "baseline_qa_churn": 0.0
-    },
-    {
-      "label": "1001+ / 11+",
-      "size": "1001+",
-      "complexity": "11+",
-      "post_tickets": 31,
-      "baseline_tickets": 18,
-      "post_productivity": 0.049206,
-      "baseline_productivity": 0.013534,
-      "post_qa_churn": 0.451613,
-      "baseline_qa_churn": 0.611111
-    }
-  ],
-  "cumulative": [
-    {
-      "week": "2026-02-07",
-      "team_cumulative": 1
-    },
-    {
-      "week": "2026-02-14",
-      "team_cumulative": 33
-    },
-    {
-      "week": "2026-02-21",
-      "team_cumulative": 62
-    },
-    {
-      "week": "2026-02-28",
-      "team_cumulative": 92
-    },
-    {
-      "week": "2026-03-07",
-      "team_cumulative": 137
+      "post_tickets": 52,
+      "baseline_tickets": 42,
+      "post_productivity": 0.08254,
+      "baseline_productivity": 0.031579,
+      "post_qa_churn": 0.326923,
+      "baseline_qa_churn": 0.380952
     }
   ],
   "availability": [
@@ -917,6 +791,14 @@
       "copilot_pct": 85.2,
       "code_gen": 3464,
       "loc_added": 25779
+    },
+    {
+      "week": "2026-03-14",
+      "copilot_active_users": 2,
+      "copilot_total_users": 27,
+      "copilot_pct": 7.4,
+      "code_gen": 52,
+      "loc_added": 17
     }
   ],
   "copilotAdoption": {
@@ -1148,166 +1030,16 @@
         "agentUsers": 18,
         "chatUsers": 20,
         "locAdded": 25779
-      }
-    ]
-  },
-  "survey": {
-    "respondents": 7,
-    "total_pilot": 6,
-    "response_rate": 1.1667,
-    "productivity_perception": {
-      "positive": 4,
-      "neutral": 1,
-      "negative": 2,
-      "detail": {
-        "10% to 24% more productive": 3,
-        "10% to 24% less productive": 2,
-        "No noticeable change (0%)": 1,
-        "25% to 49% more productive": 1
-      }
-    },
-    "modification_frequency": {
-      "Often": 4,
-      "Sometimes": 2,
-      "Almost always": 1
-    },
-    "tasks_used": [
-      {
-        "label": "Understanding existing code",
-        "count": 7,
-        "pct": 1.0
       },
       {
-        "label": "Code generation",
-        "count": 7,
-        "pct": 1.0
-      },
-      {
-        "label": "Debugging",
-        "count": 5,
-        "pct": 0.7143
-      },
-      {
-        "label": "Writing tests",
-        "count": 5,
-        "pct": 0.7143
-      },
-      {
-        "label": "Refactoring",
-        "count": 5,
-        "pct": 0.7143
-      },
-      {
-        "label": "Learning new frameworks or languages",
-        "count": 4,
-        "pct": 0.5714
-      },
-      {
-        "label": "Documentation",
-        "count": 1,
-        "pct": 0.1429
-      }
-    ],
-    "scenarios_encouraged": [
-      {
-        "label": "Bug fixing",
-        "count": 7,
-        "pct": 1.0
-      },
-      {
-        "label": "Prototyping",
-        "count": 6,
-        "pct": 0.8571
-      },
-      {
-        "label": "Test generation",
-        "count": 6,
-        "pct": 0.8571
-      },
-      {
-        "label": "Legacy code work",
-        "count": 4,
-        "pct": 0.5714
-      },
-      {
-        "label": "Production feature development",
-        "count": 3,
-        "pct": 0.4286
-      },
-      {
-        "label": "Other",
-        "count": 2,
-        "pct": 0.2857
-      },
-      {
-        "label": "Documentation",
-        "count": 1,
-        "pct": 0.1429
-      }
-    ],
-    "risks_observed": [
-      {
-        "label": "Bugs or logical errors",
-        "count": 5,
-        "pct": 0.7143
-      },
-      {
-        "label": "Performance issues",
-        "count": 3,
-        "pct": 0.4286
-      },
-      {
-        "label": "Maintainability concerns",
-        "count": 3,
-        "pct": 0.4286
-      },
-      {
-        "label": "None observed",
-        "count": 2,
-        "pct": 0.2857
-      },
-      {
-        "label": "Security concerns",
-        "count": 1,
-        "pct": 0.1429
-      }
-    ],
-    "quotes": [
-      {
-        "benefit": "Parsing large amounts of text into a digestible form like logs or big c# objects that I was not already familiar with",
-        "drawback": "Hallucinations when working on anything sufficiently complex",
-        "recommendation": "Rather than having AI take the very first pass on tickets, first understand the requirements and underlying code, perhaps marking certain areas with comments where you would like to see changes, then have the AI generate the code.",
-        "name": "Kevin"
-      },
-      {
-        "benefit": "it help get to locate root cause faster , good for code analysis , problem analysis , speed up the development and unit testing.",
-        "drawback": "In order to get correct and appropriate answer from pilot, sometime lot of contexual information need to provide  about problem.",
-        "recommendation": "Define specific md files that would define or reference to coding standards , best practices , platform tech information. ",
-        "name": "Sumeet"
-      },
-      {
-        "benefit": "To be able to more efficiently identify the work area in the code base and get professional suggestion regarding to the solution",
-        "drawback": "This is specific to copilot: I get connection or authentication error while trying to use it to create new branch. Also for some complex items, it will keep loading and never comes back with solution",
-        "recommendation": "I would like to see it gets more streamlined and integrated with all the different services, e.g. jira, bitbucket so that those workflow errors don't occur",
-        "name": "Haifeng"
-      },
-      {
-        "benefit": "Multitasking while AI was working on changes for a ticket",
-        "drawback": "AI solutions that did too much, changed unnecessary code",
-        "recommendation": "A better code review process for AI generated code. As we use AI more, developers' primary role is reviewing code, and there should be a robust peer review process for all work. ",
-        "name": "Will"
-      },
-      {
-        "benefit": "The benefit is very task-dependent. It was a huge timesaver on generating powershell scripts to have teamcity call octopus and pull version numbers out of files. That's usually really google-intensive stuff and chatgpt will just spit out an answer. Same for troubleshooting UI problems with angular. ",
-        "drawback": "No secret that it can be confidently wrong. It only has to send you down one or two wrong paths to erase the benefit on a task.",
-        "recommendation": "Success is going to depend on people more than AI. If people don't take responsibility for understanding what it's generating and keeping it on the rails then tech debt is going to accumulate really fast.",
-        "name": "Josh"
-      },
-      {
-        "benefit": "Identifying bottlenecks like Inefficient DOM manipulation, Expensive grid operations, Unmanaged subscription and nested chains, Memory leaks, Redundant calls, Change detection issues, Large object manipulations, Inefficient Loops, Excessive API calls., Massive module and component Size and bundle sizing, Fixing route Issues and Identifying and fixing performance issues.",
-        "drawback": "Sometimes provides incomplete code suggestions, limited awareness of project context with state management and other libraries. framework, inaccurate recommendations for older versions of DevExtreme.",
-        "recommendation": "Support for legacy or version specific Libraries and frameworks, More debugging assistance.",
-        "name": "Bharath"
+        "week": "2026-03-14",
+        "activeUsers": 2,
+        "copilotPct": 7.4,
+        "totalCodeGen": 52,
+        "totalCodeAccept": 18,
+        "agentUsers": 0,
+        "chatUsers": 2,
+        "locAdded": 17
       }
     ]
   }

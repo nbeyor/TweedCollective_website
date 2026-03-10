@@ -108,8 +108,8 @@ def aggregate_to_tickets(prs):
     tickets['PREndDate'] = pd.to_datetime(tickets['PREnd']).dt.normalize()
     tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
     tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
-    tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, 1000, np.inf], labels=['0-300', '301-1000', '1001+'], right=True)
-    tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 3, 10, np.inf], labels=['1-3', '4-10', '11+'], right=True)
+    tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, np.inf], labels=['0-300', '301+'], right=True)
+    tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 10, np.inf], labels=['1-10', '11+'], right=True)
     return tickets
 
 
@@ -142,16 +142,6 @@ def compute_weekly_team_metrics(tickets):
         })
 
     weekly = pd.DataFrame(rows)
-
-    # Rolling averages on high-confidence weeks only
-    confident = weekly[~weekly['LowConfidence']].copy()
-    for col in ['TeamProductivity', 'TeamQAChurnRate']:
-        roll_col = f'{col}_Rolling'
-        weekly[roll_col] = None
-        if len(confident) >= 2:
-            rolled = confident[col].rolling(window=ROLLING_WINDOW, min_periods=2)
-            confident[roll_col] = rolled.mean()
-            weekly.loc[confident.index, roll_col] = confident[roll_col]
 
     return weekly
 
@@ -209,23 +199,6 @@ def compute_team_summary(tickets, weekly, baseline):
     }
 
 
-def compute_cumulative(tickets):
-    """Compute cumulative team ticket output from mature adoption period."""
-    mature_start_ts = pd.Timestamp(MATURE_START)
-    post = tickets[tickets['PREndDate'] >= mature_start_ts]
-    weeks = sorted(post['WeekEnding'].unique())
-    cum = []
-    total = 0
-    for w in weeks:
-        wk = post[post['WeekEnding'] == w]
-        total += len(wk)
-        cum.append({
-            'week': pd.Timestamp(w).strftime('%Y-%m-%d'),
-            'team_cumulative': total,
-        })
-    return cum
-
-
 def compute_size_complexity(tickets):
     """Compute size/complexity distribution for mature adoption vs pre-AI baseline."""
     baseline_end_ts = pd.Timestamp(BASELINE_END)
@@ -248,8 +221,8 @@ def compute_size_complexity(tickets):
     pre_fte_days = max(len(pre_authors), 1) * max(pre_weeks, 1) * WORKDAYS_PER_WEEK
 
     buckets = []
-    for size in ['0-300', '301-1000', '1001+']:
-        for complexity in ['1-3', '4-10', '11+']:
+    for size in ['0-300', '301+']:
+        for complexity in ['1-10', '11+']:
             p = post[(post['SizeBucket'] == size) & (post['ComplexityBucket'] == complexity)]
             b = pre[(pre['SizeBucket'] == size) & (pre['ComplexityBucket'] == complexity)]
             if len(p) > 0 or len(b) > 0:
@@ -368,7 +341,6 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     weekly = compute_weekly_team_metrics(tickets)
     baseline = compute_baseline(tickets)
     summary = compute_team_summary(tickets, weekly, baseline)
-    cumulative = compute_cumulative(tickets)
     size_complexity = compute_size_complexity(tickets)
 
     # Copilot adoption data
@@ -406,9 +378,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             'totalTickets': int(row['TotalTickets']),
             'teamAuthors': int(row['TeamAuthors']),
             'teamProductivity': row['TeamProductivity'],
-            'teamProductivityRolling': row.get('TeamProductivity_Rolling'),
             'teamQARate': row['TeamQAChurnRate'],
-            'teamQARateRolling': row.get('TeamQAChurnRate_Rolling'),
             'lowConfidence': bool(row['LowConfidence']),
             'copilotPct': None,
             'copilotActiveUsers': None,
@@ -471,7 +441,6 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'weekly': weekly_chart,
         'baselineWeekly': baseline_weekly,
         'sizeComplexity': size_complexity,
-        'cumulative': cumulative,
         'availability': availability,
         'copilotAdoption': copilot_data,
     }
