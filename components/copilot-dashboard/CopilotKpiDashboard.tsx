@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -37,7 +37,9 @@ import { ProductivityChart } from './charts/ProductivityChart'
 import { QaChurnChart } from './charts/QaChurnChart'
 import { CopilotAdoptionChart } from './charts/CopilotAdoptionChart'
 import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
+import { SizeComplexityQaHeatmap } from './charts/SizeComplexityQaHeatmap'
 import { CumulativeChart } from './charts/CumulativeChart'
+import { SurveySection } from '../dashboard/charts/SurveySection'
 import { MethodologyFooter } from './charts/MethodologyFooter'
 
 export function CopilotKpiDashboard() {
@@ -65,7 +67,24 @@ export function CopilotKpiDashboard() {
     )
   }
 
-  if (!data) {
+  // Filter out incomplete last week (week date > data range end)
+  const filtered = useMemo(() => {
+    if (!data) return null
+    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
+    if (!dataRangeEnd) return data
+    return {
+      ...data,
+      weekly: data.weekly.filter(w => w.week <= dataRangeEnd),
+      cumulative: data.cumulative.filter(w => w.week <= dataRangeEnd),
+      availability: data.availability.filter(w => w.week <= dataRangeEnd),
+      copilotAdoption: data.copilotAdoption ? {
+        ...data.copilotAdoption,
+        weekly: data.copilotAdoption.weekly.filter(w => w.week <= dataRangeEnd),
+      } : null,
+    }
+  }, [data])
+
+  if (!filtered) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#fafaf9]">
         <div className="text-center">
@@ -79,18 +98,21 @@ export function CopilotKpiDashboard() {
   return (
     <div className="min-h-screen bg-[#fafaf9]">
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
-        <DashboardHeader data={data} />
-        <KpiCards data={data} />
-        <ProductivityChart data={data} />
-        <QaChurnChart data={data} copilotAdoption={data.copilotAdoption} />
+        <DashboardHeader data={filtered} />
+        <KpiCards data={filtered} />
+        <ProductivityChart data={filtered} />
+        <QaChurnChart data={filtered} copilotAdoption={filtered.copilotAdoption} />
 
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <CopilotAdoptionChart data={data} />
-          <SizeComplexityHeatmap data={data} />
-          <CumulativeChart data={data} />
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <CopilotAdoptionChart data={filtered} />
+          <SizeComplexityHeatmap data={filtered} />
+          <SizeComplexityQaHeatmap data={filtered} />
+          <CumulativeChart data={filtered} />
         </div>
 
-        <MethodologyFooter data={data} />
+        {filtered.survey && <SurveySection survey={filtered.survey} />}
+
+        <MethodologyFooter data={filtered} />
       </div>
     </div>
   )

@@ -89,7 +89,7 @@ export function KpiCards({ data }: Props) {
       label: 'Copilot Acceptance Rate',
       value: `${acceptRate}%`,
       delta: `${lastWeek?.totalCodeGen?.toLocaleString() ?? 0} suggestions`,
-      context: `% of AI suggestions kept by developers`,
+      context: `overall weekly acceptance rate`,
       accent: COPILOT_ACCENT,
       accentBg: COPILOT_BG,
     })

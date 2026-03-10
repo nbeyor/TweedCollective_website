@@ -1,3 +1,7 @@
+import type { SurveyData } from '../dashboard/types'
+
+export type { SurveyData }
+
 export interface CopilotDashboardData {
   generated: string
   dataRange: string
@@ -36,6 +40,7 @@ export interface CopilotDashboardData {
   cumulative: CumulativeEntry[]
   availability: AvailabilityEntry[]
   copilotAdoption: CopilotAdoption | null
+  survey?: SurveyData | null
 }
 
 export interface WeeklyEntry {
