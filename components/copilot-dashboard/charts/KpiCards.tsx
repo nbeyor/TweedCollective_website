@@ -60,7 +60,12 @@ export function KpiCards({ data }: Props) {
 
   if (data.copilotAdoption) {
     const adoption = data.copilotAdoption
-    const lastWeek = adoption.weekly[adoption.weekly.length - 1]
+    // Skip incomplete last week: if week date is past the data range end, use prior week
+    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
+    const rawLast = adoption.weekly[adoption.weekly.length - 1]
+    const lastWeek = (rawLast && rawLast.week > dataRangeEnd && adoption.weekly.length > 1)
+      ? adoption.weekly[adoption.weekly.length - 2]
+      : rawLast
     cards.push({
       label: 'Copilot Adoption (current)',
       value: `${lastWeek?.copilotPct ?? 0}%`,
@@ -70,18 +75,21 @@ export function KpiCards({ data }: Props) {
       accentBg: COPILOT_BG,
     })
     cards.push({
-      label: 'Avg Daily Copilot Users',
-      value: `${adoption.avgDailyUsersRecent}`,
-      delta: `last 4 weeks`,
+      label: 'Weekly Active Users',
+      value: `${lastWeek?.activeUsers ?? 0}`,
+      delta: `of ${data.config.teamSize} developers`,
       context: `${adoption.userTiers.heavy} heavy / ${adoption.userTiers.medium} medium / ${adoption.userTiers.light} light`,
       accent: COPILOT_ACCENT,
       accentBg: COPILOT_BG,
     })
+    const acceptRate = lastWeek && lastWeek.totalCodeGen > 0
+      ? (lastWeek.totalCodeAccept / lastWeek.totalCodeGen * 100).toFixed(1)
+      : '—'
     cards.push({
-      label: 'Code Generations (latest week)',
-      value: lastWeek ? `${lastWeek.totalCodeGen.toLocaleString()}` : '—',
-      delta: `${lastWeek?.activeUsers ?? 0} active users`,
-      context: `${lastWeek?.locAdded?.toLocaleString() ?? 0} lines added`,
+      label: 'Copilot Acceptance Rate',
+      value: `${acceptRate}%`,
+      delta: `${lastWeek?.totalCodeGen?.toLocaleString() ?? 0} suggestions`,
+      context: `% of AI suggestions kept by developers`,
       accent: COPILOT_ACCENT,
       accentBg: COPILOT_BG,
     })
