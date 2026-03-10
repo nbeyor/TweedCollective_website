@@ -162,7 +162,12 @@ def compute_baseline(tickets, weekly):
     workdays = len(baseline['WeekEnding'].unique()) * WORKDAYS_PER_WEEK
 
     # Mean of per-week productivity (matching compute_team_summary methodology)
-    baseline_weekly = weekly[(weekly['WeekEnding'] < baseline_end_ts) & ~weekly['LowConfidence']]
+    data_range_end = tickets['PREndDate'].max()
+    baseline_weekly = weekly[
+        (weekly['WeekEnding'] < baseline_end_ts)
+        & (weekly['WeekEnding'] <= data_range_end)
+        & ~weekly['LowConfidence']
+    ]
     productivity = baseline_weekly['TeamProductivity'].mean() if len(baseline_weekly) > 0 else 0
 
     qa_churn_rate = baseline['HasQAChurn'].sum() / total if total > 0 else 0
@@ -182,8 +187,13 @@ def compute_baseline(tickets, weekly):
 def compute_team_summary(tickets, weekly, baseline):
     """Compute overall team summary for mature adoption period (Feb 7+)."""
     mature_start_ts = pd.Timestamp(MATURE_START)
+    data_range_end = tickets['PREndDate'].max()
     post_tickets = tickets[tickets['PREndDate'] >= mature_start_ts]
-    post_weekly = weekly[(weekly['WeekEnding'] >= mature_start_ts) & ~weekly['LowConfidence']]
+    post_weekly = weekly[
+        (weekly['WeekEnding'] >= mature_start_ts)
+        & (weekly['WeekEnding'] <= data_range_end)
+        & ~weekly['LowConfidence']
+    ]
 
     team_prod_avg = post_weekly['TeamProductivity'].mean() if len(post_weekly) > 0 else 0
     team_qa = post_tickets['HasQAChurn'].sum() / len(post_tickets) if len(post_tickets) > 0 else 0

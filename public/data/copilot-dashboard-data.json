@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-10 04:13",
+  "generated": "2026-03-10 04:25",
   "dataRange": "2025-07-02 to 2026-03-09",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
@@ -22,11 +22,11 @@
   "summary": {
     "total_tickets": 144,
     "team_authors": 21,
-    "team_productivity": 0.4219,
-    "productivity_vs_baseline": "+8.4%",
+    "team_productivity": 0.4663,
+    "productivity_vs_baseline": "+19.8%",
     "team_qa_churn": 0.2222,
     "qa_vs_baseline": "-8.1%",
-    "weeks_of_data": 6,
+    "weeks_of_data": 5,
     "copilot_users": 27,
     "copilot_adoption_current": 7.4
   },
