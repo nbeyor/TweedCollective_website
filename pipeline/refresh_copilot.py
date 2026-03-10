@@ -146,8 +146,12 @@ def compute_weekly_team_metrics(tickets):
     return weekly
 
 
-def compute_baseline(tickets):
-    """Compute pre-AI baseline metrics for the whole team (before Oct 2025)."""
+def compute_baseline(tickets, weekly):
+    """Compute pre-AI baseline metrics for the whole team (before Oct 2025).
+
+    Uses mean-of-weekly productivity (same method as compute_team_summary)
+    to ensure apples-to-apples comparison with the mature period.
+    """
     baseline_end_ts = pd.Timestamp(BASELINE_END)
     baseline = tickets[tickets['PREndDate'] < baseline_end_ts]
     total = len(baseline)
@@ -156,7 +160,11 @@ def compute_baseline(tickets):
         authors_set.update(str(uuids_str).split(','))
     authors = len(authors_set)
     workdays = len(baseline['WeekEnding'].unique()) * WORKDAYS_PER_WEEK
-    productivity = total / (authors * workdays) if authors * workdays > 0 else 0
+
+    # Mean of per-week productivity (matching compute_team_summary methodology)
+    baseline_weekly = weekly[(weekly['WeekEnding'] < baseline_end_ts) & ~weekly['LowConfidence']]
+    productivity = baseline_weekly['TeamProductivity'].mean() if len(baseline_weekly) > 0 else 0
+
     qa_churn_rate = baseline['HasQAChurn'].sum() / total if total > 0 else 0
     pre_min = baseline['PREndDate'].min()
     pre_max = baseline['PREndDate'].max()
@@ -339,7 +347,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     prs = load_prs(input_path, sheet_name)
     tickets = aggregate_to_tickets(prs)
     weekly = compute_weekly_team_metrics(tickets)
-    baseline = compute_baseline(tickets)
+    baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
     size_complexity = compute_size_complexity(tickets)
 
