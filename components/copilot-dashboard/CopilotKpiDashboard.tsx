@@ -106,8 +106,8 @@ export function CopilotKpiDashboard() {
         <div className="grid grid-cols-2 gap-4 mb-8">
           <CopilotAdoptionChart data={filtered} />
           <SizeComplexityHeatmap data={filtered} />
-          <SizeComplexityQaHeatmap data={filtered} />
           <CumulativeChart data={filtered} />
+          <SizeComplexityQaHeatmap data={filtered} />
         </div>
 
         {filtered.survey && <SurveySection survey={filtered.survey} />}
