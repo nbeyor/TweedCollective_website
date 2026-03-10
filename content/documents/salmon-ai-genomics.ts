@@ -51,7 +51,7 @@ export const slides: SlideData[] = [
         {
           title: 'AI strategy vs regulatory reality',
           icon: getIcon('shield'),
-          description: 'Decide where AI delivers the most profit by market: pursue a selection-only, AI-accelerated path globally, and consider a segregated gene-edited path only where rules and labeling allow—without risking broad market access.',
+          description: 'Default to a selection-only, AI-accelerated path globally (Path A) with a Northern Europe–first posture. Maintain a segregated gene-edited lane (Path B) only where rules and labeling allow—without risking broad market access or brand integrity.',
         },
         {
           title: 'AI capability investment appetite',
@@ -61,7 +61,7 @@ export const slides: SlideData[] = [
         {
           title: 'Trait prioritization',
           icon: getIcon('strategy'),
-          description: 'Force-rank traits by business value, data readiness, and AI fit: FCR as the long-run moat; sea-lice for near-term wins leveraging existing imaging/laser data; gill/robustness as additive lift.',
+          description: 'Force-rank traits by business value, data readiness, and AI fit: FCR as the long-run moat; disease-specific resistance (IPN proven, ISA next) for high single-gene selection response; sea-lice for near-term wins; gill/robustness as additive lift.',
         },
         {
           title: 'Partners',
@@ -97,7 +97,41 @@ export const slides: SlideData[] = [
       },
       insightBox: {
         label: 'Decision focus',
-        text: 'Define where each path operates, how supply chains remain segregated, and how AI effort is allocated across Path A and Path B.',
+        text: 'Given our Northern Europe–first posture, Path A is the recommended default. Define how AI effort is allocated: the bulk to Path A selection acceleration, with Path B maintained as a live option activated only when a specific market-regulatory trigger justifies segregation costs.',
+      },
+    },
+  },
+
+  // Slide 3b: What You Have To Believe
+  {
+    id: 'path-deep-dive',
+    title: 'Path A and Path B — What You Have To Believe',
+    type: 'comparison',
+    content: {
+      type: 'comparison',
+      sectionLabel: 'Slide 03b',
+      heading: 'Path A and Path B — What You Have To Believe',
+      left: {
+        title: 'Path A — Selection-only, AI-accelerated',
+        variant: 'neutral',
+        items: [
+          'What you have to believe: AI-accelerated phenotyping (PIT+camera fusion) and genomic selection can deliver sufficient genetic gain without direct genome modification; compounding selection gains across cohorts will close any gap with edited competitors over 5–10 years.',
+          'Northern Europe (EU/Norway) market access and brand integrity outweigh the speed advantage of gene editing. Triploid sterility (targeting 100% by 2027) addresses containment and ESG concerns without needing GE.',
+          'Concrete actions: Build PIT+camera phenotyping pipeline for individual-level trait measurement. Deploy genomic selection indices across cohorts and compound gains each generation. Maintain full EU/Northern Europe regulatory compliance. No segregated supply chain costs — single product line globally.',
+        ],
+      },
+      right: {
+        title: 'Path B — Selection plus AI-informed gene editing',
+        variant: 'neutral',
+        items: [
+          'What you have to believe: Permissive-market revenue (US, Japan, potentially UK) justifies the cost of a segregated edited product line; consumer acceptance of gene-edited salmon will grow faster than regulatory barriers fall.',
+          'Specific single-gene targets (ISA sialic acid receptor, disease resistance, FCR-related candidates) will deliver step-change trait gains that selection alone cannot match within the same timeframe. Segregation costs and brand risk can be managed without contaminating Path A market access.',
+          'Concrete actions: Identify and validate single-gene edit targets in silico. Build segregated supply chain with labeling and chain-of-custody for permissive markets. Maintain strict containment to protect Path A brand. Monitor regulatory shifts (UK precision breeding framework, EU review cycles).',
+        ],
+      },
+      insightBox: {
+        label: 'Recommendation',
+        text: 'The team\'s enthusiasm for Path B is noted, but the Northern Europe–first posture and current regulatory landscape make Path A the recommended default. Path B should be maintained as a live option with in-silico preparatory work, activated only when a specific market-regulatory trigger justifies segregation costs.',
       },
     },
   },
@@ -188,7 +222,7 @@ export const slides: SlideData[] = [
         {
           title: 'C2 — Genomic selection with AI phenotyping',
           icon: getIcon('chart'),
-          description: 'Create scalable labels at vaccination/handling (robustness/gill, sex/maturation) and continuous lice/biomass/feeding signals; stand up a custom selection index and quantify decision impact on our population. Output: selection decisions improve this season; visible operational gains.',
+          description: 'Create scalable labels using PIT+camera fusion — PIT tags provide reliable individual identity (camera-only solutions such as Tidal and Aquaticode are not yet sufficiently accurate for single-fish ID) while cameras deliver non-invasive trait measurement at vaccination/handling (robustness/gill, sex/maturation) and continuous lice/biomass/feeding signals. Stand up a custom selection index and quantify decision impact on our population. Output: selection decisions improve this season; visible operational gains.',
         },
         {
           title: 'C3 — Custom multi-modal model',
@@ -222,8 +256,8 @@ export const slides: SlideData[] = [
           title: 'C2 Genomic selection with AI phenotyping',
           icon: getIcon('chart'),
           items: [
-            'Common gaps: requires hands-on data science, experimental design, clean joins to environment, and bioeconomic framing.',
-            'Work required: label QA, genotyping strategy, benchmarking of prediction methods, governance for index refresh.',
+            'Common gaps: requires hands-on data science, experimental design, clean joins to environment, and bioeconomic framing. Camera-only individual fish ID remains insufficient under field conditions (phenotypic instability during smoltification, inconsistent lighting).',
+            'Work required: PIT+camera fusion pipeline (PIT as identity backbone, camera for non-invasive trait capture); label QA; genotyping strategy; benchmarking of prediction methods; governance for index refresh.',
           ],
         },
         {
@@ -251,21 +285,27 @@ export const slides: SlideData[] = [
       rows: [
         [
           'FCR (proxy)',
-          'Biggest COGS lever; widest global impact',
-          'Longitudinal ops data supports robust proxies; compounds across cohorts',
-          'CV biomass, sensor fusion, time-series optimization for feeding',
+          'Biggest COGS lever; widest global impact. Remote feeding centers already showing gains (industry bFCR records at 0.98).',
+          'Longitudinal ops data supports robust proxies; compounds across cohorts. PIT+camera fusion enables individual-level feed-efficiency tracking.',
+          'CV biomass, sensor fusion, time-series optimization for feeding; transformer-based appetite modeling demonstrating substantial feed savings.',
+        ],
+        [
+          'Disease-specific resistance (IPN / ISA)',
+          'Major mortality and cost driver in Northern Europe; single-gene targets offer high selection response per generation.',
+          'IPN QTL (chr 26) already exploited — accounts for >80% of genetic variation in IPN resistance. ISA sialic acid receptor biology suggests a similar single-gene opportunity worth pursuing.',
+          'In-silico target triage; genomic prediction from challenge-test data; marker-assisted selection at scale. AI accelerates candidate gene identification and validation.',
         ],
         [
           'Sea-lice burden/resistance',
-          'High cost; strong demo value',
-          'Existing imaging/laser data provides rich labels',
-          'Vision for counts/severity; modeling improves resistance selection',
+          'High cost; strong near-term demo value. Laser treatment data and imaging provide existing operational baseline.',
+          'Existing imaging/laser data provides rich labels; PIT-tagged fish enable individual lice-burden tracking across treatment events.',
+          'Vision models for counts/severity; holographic detection trialed (Mowi + Aberdeen); modeling improves resistance selection.',
         ],
         [
           'Gill health/robustness',
-          'Mortality and handling reduction',
-          'Existing datasets help; incremental to FCR and lice',
-          'Behavioural CV and event-linked models feed the index',
+          'Mortality and handling reduction; additive to FCR and lice gains.',
+          'Existing datasets help; incremental to FCR and lice. PIT+camera phenotyping at vaccination/handling events captures gill scores.',
+          'Behavioural CV and event-linked models feed the index; AI-driven non-invasive welfare monitoring advancing rapidly.',
         ],
       ],
       highlightFirstColumn: true,
@@ -292,12 +332,8 @@ export const slides: SlideData[] = [
           'Harder to measure consistently at scale; add once phenotypes stabilize',
         ],
         [
-          'Disease-specific resistances',
-          'May require wet-lab validation and regulatory gating; keep in the in-silico queue',
-        ],
-        [
           'Sterility and escapes',
-          'Strong ESG angle; better aligned to edited track and timing; scope with academic guidance',
+          'Actively being addressed via triploid induction (currently 70–80% effective; targeting 100% by end of 2027). Not gene-editing dependent. Full sterility may shift regulatory dynamics for GE over time but is unlikely to change near-term decisions. Welfare trade-offs at larger body sizes are a known concern.',
         ],
       ],
     },
@@ -317,8 +353,8 @@ export const slides: SlideData[] = [
         [
           'C2',
           'Aquaticode (SORTpro)',
-          'Production-scale AI phenotyping at vaccination/handling; standardized robustness/gill/sex/maturation labels',
-          'Generate scalable phenotypes to feed selection and operations',
+          'Production-scale AI phenotyping at vaccination/handling; standardized robustness/gill/sex/maturation labels. Note: camera-only individual fish ID is not yet sufficiently accurate — PIT+camera fusion is needed for reliable individual-level phenotyping.',
+          'Generate scalable phenotypes to feed selection and operations; integrate with PIT-tag identity backbone for individual-level trait linkage',
         ],
         [
           'C3',
@@ -333,10 +369,16 @@ export const slides: SlideData[] = [
           'Trait biology guidance; market-specific edit-or-select priorities',
         ],
         [
-          'Option',
-          'IMR (if sterility/escapes prioritized)',
-          'Deep sterility/escapes expertise and field context',
-          'Advisory and study design for sterility strategy',
+          'C2',
+          'Tidal (Alphabet X spinout)',
+          'AI-powered underwater cameras and sensors deployed in 230+ pens (Mowi); biomass estimation, feeding optimization, lice detection',
+          'Complement PIT-tag phenotyping with continuous in-pen monitoring; feed optimization and welfare signals',
+        ],
+        [
+          'Active',
+          'IMR (sterility/escapes — active program)',
+          'Deep sterility/escapes expertise and field context; supporting triploid induction program targeting 100% sterility by end of 2027',
+          'Advisory and study design for triploid optimization; welfare monitoring at larger body sizes',
         ],
       ],
       insightBox: {
@@ -357,15 +399,34 @@ export const slides: SlideData[] = [
       heading: 'Recent Announcements And Signals',
       groups: [
         {
-          title: '',
+          title: 'Industry and Partners',
           items: [
             { text: 'Aquaticode signs agreements to sort more than 60 million fish with Australis and AquaChile.' },
-            { text: 'Tidal, a spinout from Alphabet\'s X, launches as an independent aquaculture AI company and expands deployments in Chile.' },
+            { text: 'Tidal (Alphabet X spinout) expands to 230+ pens with Mowi; deploys AI-powered underwater cameras for biomass, feeding, and welfare monitoring.' },
             { text: 'Tidal announces an AI lice-control approach using targeted energy.' },
+            { text: 'Mowi rolls out "Mowi 4.0" across Norway; AI remote feeding centers achieve record biological FCR of 0.98 at Gorsten (Scotland).' },
+            { text: 'Mowi + Aberdeen University + SAMS trial holographic AI for automated sea lice detection using trained image recognition.' },
+            { text: 'Innovasea partners with Mila (Quebec AI Institute) to advance AI-powered fish tracking and production tools.' },
+          ],
+        },
+        {
+          title: 'AI and Technology',
+          items: [
+            { text: 'Camera-based individual fish ID confirmed still insufficient for field conditions (2026 Wageningen research: phenotypic instability during smoltification confounds algorithms). PIT tags remain the gold standard for individual identity.' },
+            { text: 'Generative AI publications in aquaculture tripled from 130 (2021) to 451+ (2024); transformer architectures proving effective for feed conversion and appetite modeling.' },
+            { text: 'EchoBERT transformer model demonstrates early pancreas disease detection in salmon more than one month before conventional methods.' },
+            { text: 'CNN-based salmon disease detection reaches 99.71% classification accuracy across seven disease categories.' },
+            { text: 'Industry investment in AI-related aquaculture initiatives exceeds $610 million globally.' },
+          ],
+        },
+        {
+          title: 'Regulatory and Genetics',
+          items: [
             { text: 'Japan approves and commercializes CRISPR-edited red sea bream and tiger puffer.' },
             { text: 'EU Court of Justice confirms gene-edited organisms are regulated as GMOs.' },
             { text: 'UK advances a precision breeding framework; animal pathway pending secondary rules.' },
             { text: 'US permits genetically engineered salmon with bioengineered labeling and strict containment requirements.' },
+            { text: 'Triploid sterility achieves near-100% rates with optimized hydrostatic pressure protocols, but welfare trade-offs at larger body sizes noted (2025 Scientific Reports).' },
           ],
         },
       ],
@@ -387,22 +448,22 @@ export const slides: SlideData[] = [
         {
           title: 'AI vs regulatory reality',
           icon: getIcon('shield'),
-          description: 'Default to selection-only, AI-accelerated globally; keep a small, segregated edited lane only in permissive markets with clear labeling and chain-of-custody.',
+          description: 'Default to selection-only, AI-accelerated globally with a Northern Europe–first posture (Path A). Maintain Path B as a live option with in-silico prep; activate only when a specific market-regulatory trigger justifies segregation costs.',
         },
         {
           title: 'AI capability investment appetite',
           icon: getIcon('database'),
-          description: 'Fund C1 and C2 now (AI-ready data product; high-throughput phenotyping; custom index). Scope C3 in parallel with a tech-native builder and a Scandinavian academic partner.',
+          description: 'Fund C1 and C2 now (AI-ready data product; PIT+camera fusion phenotyping; custom index). Scope C3 in parallel with a tech-native builder and a Scandinavian academic partner. Invest in PIT+camera pipeline as the phenotyping backbone — camera-only is not yet sufficient.',
         },
         {
           title: 'Trait prioritization',
           icon: getIcon('strategy'),
-          description: 'Anchor the long-run moat in FCR; use sea-lice for near-term wins leveraging existing imaging/laser data; add gill/robustness as incremental lift.',
+          description: 'Anchor the long-run moat in FCR; pursue single-gene disease resistances (IPN proven, ISA next via sialic acid receptor targets); use sea-lice for near-term wins; add gill/robustness as incremental lift. Deliver full triploid sterility by 2027.',
         },
         {
           title: 'Partners',
           icon: getIcon('briefcase'),
-          description: 'Confirm current relationships; formalize Aquaticode, deepen Nofima, and engage SINTEF to operationalize the model; bring IMR in if sterility becomes a priority.',
+          description: 'Confirm current relationships; formalize Aquaticode (with PIT+camera integration scope), deepen Nofima, engage SINTEF to operationalize the model, and leverage Tidal deployment data. IMR actively supporting triploid sterility program.',
         },
       ],
     },
