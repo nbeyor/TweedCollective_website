@@ -3,11 +3,13 @@
 **Prepared for:** Private Equity Due Diligence  
 **Target:** Apollo ([redacted])  
 **Buyer:** WCG Clinical (wcgclinical.com)  
-**Date:** February 23, 2026 (Updated March 3, 2026 with Technology DD Call inputs)  
-**Classification:** Confidential  
-**Version:** 2.0
+**Date:** February 23, 2026 (Updated March 10, 2026 with Infrastructure & Security DD Call inputs)
+**Classification:** Confidential
+**Version:** 3.0
 
-> **Version 2.0 Change Log:** Content updated with findings from the Project Apollo Technology Due Diligence session (Apollo ↔ WCG). Items sourced from this session are marked [TRANSCRIPT]. Original public-source findings retained where still valid. GAP list revised to reflect closed items and new open items.
+> **Version 3.0 Change Log:** Content updated with findings from the second Project Apollo Technology Due Diligence session — Infrastructure & Security deep-dive (Apollo ↔ WCG). Major additions to architecture snapshot (compute, networking, security, DR/BCP, CI/CD), AI model specifics, corporate IT overview, and operating model maturity ratings. Naming corrections applied (Orcus, Catrix, Tamr). Three gaps closed (G18 partial, G19, G28). New open gaps added.
+>
+> **Version 2.0 Change Log:** Content updated with findings from the first Project Apollo Technology Due Diligence session (Apollo ↔ WCG). Items sourced from these sessions are marked [TRANSCRIPT]. Original public-source findings retained where still valid. GAP list revised to reflect closed items and new open items.
 
 ---
 
@@ -317,7 +319,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 - Regulatory audit trails create strong lock-in for sites with multi-year document trails
 - 85% of eBinders code is content creation, signature circulation, audit management, and version control [TRANSCRIPT]
 - Full audit trail of every operational action (beyond just document creation) [TRANSCRIPT]
-- GxP compliance: 21 CFR Part 11, SOC 2 Type 2, GDPR, HIPAA, Annex 11, ICH E6 R3. Regulatory team of ~6 people works closely with QA to ensure compliance; uses Ketrix for compliance management. [TRANSCRIPT]
+- GxP compliance: 21 CFR Part 11, SOC 2 Type 2, GDPR, HIPAA, Annex 11, ICH E6 R3. Regulatory team of ~6 people works closely with QA to ensure compliance; uses Catrix for compliance management. [TRANSCRIPT]
 
 **Sources:**
 - https://www.[redacted]/
@@ -342,7 +344,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 - SQL stores for SiteLink and Flow Records (master metadata)
 - S3 for document storage
 - Data is replicated across three AWS regions (US, EU, Australia) with same code base
-- Tamer is the data mastering tool — critical for data completeness and quality across products (e.g., site profiles)
+- Tamr is the data mastering tool — critical for data completeness and quality across products (e.g., site profiles)
 - Kafka project underway for improved speed, resilience, and cost of data pipeline
 - Data team: 7 people under Philip, managing data mastering, data stores, and API exposure for product teams [TRANSCRIPT]
 
@@ -355,7 +357,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 - How much of the 65K site data is active vs. historical?
 - Data retention policy and its effect on longitudinal value?
 - Exact contractual language around data rights — is it standard across all customer contracts or negotiated per deal?
-- Tamer implementation status and data quality improvement trajectory?
+- Tamr implementation status and data quality improvement trajectory?
 
 **Sources:**
 - https://www.[redacted]/
@@ -458,7 +460,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 | VP Engineering | Kapil Bage | Engineering operations, AI-augmented SDLC, developer tooling | ~1.5 years. Deep data/AI background. Drove major operational improvements including AIDLC adoption. [TRANSCRIPT] |
 | VP Platform + Sponsor Products | Sri | Platform architecture, sponsor-side product engineering | Deep enterprise customer experience. Previously worked with Shankar. [TRANSCRIPT] |
 | VP Site Products + Serbia Ops | Jelena | Site-side product engineering, Serbia team management, process harmonization | Manages all Serbian engineering team. Strong process/operations focus. Harmonizes roadmaps across products. [TRANSCRIPT] |
-| Data Team Lead | Philip | Data mastering, data stores, API exposure | US-based. 7-person team managing Tamer, Flow Records, data pipeline. [TRANSCRIPT] |
+| Data Team Lead | Philip | Data mastering, data stores, API exposure | US-based. 7-person team managing Tamr, Flow Records, data pipeline. [TRANSCRIPT] |
 | DevOps Lead | Nicola | Centralized DevOps CoE | Runs DevOps as a center of excellence. [TRANSCRIPT] |
 | QA Lead | Mariana | Quality assurance, regulatory compliance testing | Works closely with regulatory team. Each feature/unit test tagged for 21 CFR compliance. [TRANSCRIPT] |
 
@@ -502,7 +504,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 **Functional Balance Assessment:**
 - **Engineering-to-Product ratio:** ~5:1 (91 eng / 18 product) — healthy for a product-led engineering org
 - **Data team as % of engineering:** ~8% (7/91) — reasonable given data is increasingly strategic, though may need to scale as AI products expand
-- **Regulatory team:** 6 people for a GxP-regulated platform serving 65K sites — lean but appears effective with tooling (Ketrix) and close QA partnership
+- **Regulatory team:** 6 people for a GxP-regulated platform serving 65K sites — lean but appears effective with tooling (Catrix) and close QA partnership
 - **UX gap emerging:** Deliberate decision to reduce UX in favor of AI prototyping tools. This is efficient but carries risk if AI-generated designs don't meet the bar for clinical research workflows where usability errors have compliance implications.
 
 **GAPS / QUESTIONS:**
@@ -523,16 +525,16 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 | Dimension | Maturity (1–5) | Evidence |
 |-----------|:--------------:|----------|
-| **SDLC Process** | 4 | Beta → GA lifecycle for established products; LA (Limited Availability) process with ~10 test customers for new products. Each feature/unit test tagged for 21 CFR compliance via Ketrix. Internal SOPs co-developed with regulatory team for audit readiness. Moving CI/CD to GitHub Actions. [TRANSCRIPT] |
+| **SDLC Process** | 4 | Beta → GA lifecycle for established products; LA (Limited Availability) process with ~10 test customers for new products. Each feature/unit test tagged for 21 CFR compliance via Catrix. Internal SOPs co-developed with regulatory team for audit readiness. Moving CI/CD to GitHub Actions. [TRANSCRIPT] |
 | **AI-Augmented Development** | 4 | "AIDLC" concept — AI-augmented SDLC using Claude (primary IDE tool), Cursor (some developers), Vercel (for PMs to prototype). "Functionalize on QA side" — applying AI to testing. Kapil drove this adoption. Significantly accelerated development time. [TRANSCRIPT] |
 | **Product Analytics** | 3 | Pendo for feature usage tracking. Tableau exposed through services team. AG Grid for in-product interactive charts/tables. Data team builds feeds for product consumption. [TRANSCRIPT] |
-| **Engineering Metrics** | 3 | Jellyfish for velocity and story point tracking. Used for engineering performance management. [TRANSCRIPT] |
-| **DevOps / Infrastructure** | 3 | Centralized DevOps CoE under Nicola. 100% AWS. Moving from Orchis to AWS Step Functions (completing this quarter). CloudWatch for basic monitoring, New Relic for APM. RabbitMQ / Amazon MQ for messaging. [TRANSCRIPT] |
-| **Data Infrastructure** | 3 | MongoDB primary, SQL for SiteLink/Flow Records. Tamer for data mastering. Kafka project underway for pipeline improvements. Three-region deployment (US, EU, Australia). Data quality varies: 50-60% very clean (sponsor), 15-20% good (sites), ~25% lower quality. [TRANSCRIPT] |
-| **Security & Compliance** | 4 | SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. Dedicated regulatory team + QA partnership. [TRANSCRIPT] |
+| **Engineering Metrics** | 3.5 | Jellyfish tracking full DORA metrics suite: deployment frequency, lead time to changes, PR review time, cycle time, error rates, and AI adoption rates. Used for engineering performance management. [TRANSCRIPT] |
+| **DevOps / Infrastructure** | 4 | Centralized DevOps CoE under Nicola. 100% AWS with 51 microservices on ECS Fargate across 3 AZs per region. Multi-AZ HA with 99.95% uptime target. Auto-scaling (eBinders: 10–40 instances). 4 environments (QA/FAT/UAT/Prod) with Performance and Pre-Prod being added Q2. Blue-green and canary deployments for high-risk changes. Schematic feature flags. PagerDuty + Slack alerting. Moving from Orcus to Step Functions. ~$1M annual AWS spend. [TRANSCRIPT] |
+| **Data Infrastructure** | 3 | MongoDB (legacy) + PostgreSQL/Aurora RDS (newer products) + Snowflake data warehouse. Tamr for data mastering. Kafka project underway for pipeline improvements. Three-region deployment (US East, EU Frankfurt, APAC Sydney). Data quality varies: 50-60% very clean (sponsor), 15-20% good (sites), ~25% lower quality. [TRANSCRIPT] |
+| **Security & Compliance** | 4.5 | SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. Double encryption (AWS KMS + customer keys). VPC with private subnets, NAT gateways, VPC peering. Wiz cloud security. Mindcast endpoint security. GitHub code security scanning. Separation of duties for AWS access. Dedicated regulatory team + QA partnership. [TRANSCRIPT] |
 | **Innovation Pipeline** | 4 | OCTO (Office of CTO) under Andres explicitly manages POC-to-product pipeline. Separate from execution engine. Clear handoff process to product teams. Currently incubating Doc QC, Trial Flow, and other emerging tech. [TRANSCRIPT] |
 
-**Overall Operating Model Rating:** 3.5 / 5 — Mature for a company of this size, with particular strength in compliance process and innovation pipeline management. Primary gaps are in data infrastructure maturity (acknowledged and being addressed with Kafka) and observability/monitoring depth.
+**Overall Operating Model Rating:** 3.75 / 5 — Mature for a company of this size, with particular strength in compliance process, security architecture, DevOps practices, and innovation pipeline management. Primary gap is data infrastructure maturity (acknowledged and being addressed with Kafka + Snowflake).
 
 **Sources:**
 - [TRANSCRIPT]
@@ -552,7 +554,8 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 **External AI (Customer-Facing):**
 - Rating: 🟡 Yellow (Early but Well-Directed)
 - Three AI-native products in various stages: Site Feasibility/Selection (LA), Doc QC (active development, strong sponsor pull from Merck), Risk-Based Reporting (active development). [TRANSCRIPT]
-- Architecture approach: Human-in-the-loop (HITL) for GxP compliance. Deterministic processing first (Tesseract OCR), LLM only when semantic understanding required. AWS Bedrock for all AI services. [TRANSCRIPT]
+- Architecture approach: Human-in-the-loop (HITL) for GxP compliance. Deterministic processing first (Tesseract OCR), LLM only when semantic understanding required. AWS Bedrock for all AI services — confirmed using Claude (Sonnet 3.5) and Google Gemini; no OpenAI integration. [TRANSCRIPT]
+- Doc Q product moving to production in Q2 2026. [TRANSCRIPT]
 - Pricing: Independent SKUs, consumption-based considerations for LLM-heavy features. [TRANSCRIPT]
 - Key strength: AI products are built on real operational data generated by the platform — not synthetic or purchased datasets.
 - Key risk: $0 to $3M is an unproven commercial leap. Product-market fit for AI features at premium pricing is not yet validated at scale.
@@ -587,13 +590,12 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 **AI Architecture Summary:** [TRANSCRIPT]
 - All AI services run through AWS Bedrock
+- Confirmed LLM models: Claude (Sonnet 3.5) and Google Gemini via Bedrock. No OpenAI integration. [TRANSCRIPT]
 - Human-in-the-loop (HITL) explicitly stated as design principle for GxP-regulated workflows
 - Cost optimization: deterministic processing (Tesseract OCR) used wherever possible before invoking LLM
-- No direct mention of specific LLM models used within Bedrock
 - No mention of fine-tuned or custom models — appears to use foundation models via Bedrock API
 
 **GAPS / QUESTIONS:**
-- Specific LLM models used in Bedrock (Claude? Titan? Llama?)
 - LLM API cost structure and how it impacts AI product margins
 - Accuracy metrics and validation results for any AI features (especially feasibility auto-completion and Doc QC)
 - Customer evidence / pilot results — quantified time savings, error reduction, adoption rates
@@ -615,49 +617,103 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 | Layer | Technology | Notes |
 |-------|-----------|-------|
-| Frontend | Angular (various versions) + TypeScript | Different product lineages may run different Angular versions |
-| Backend | Node.js | Primary server-side runtime |
-| Primary Database | MongoDB | Document store for core product data |
-| Relational Database | SQL | Used for SiteLink and Flow Records (master metadata store) |
-| Object Storage | Amazon S3 | 50M+ documents stored |
-| Cloud Provider | AWS (100% cloud) | AWS architecture-approved partner |
-| Regions | US, EU, Australia | Same codebase deployed across all three |
-| Orchestration | AWS Step Functions | Migrating from Orchis; completing this quarter |
-| Messaging | RabbitMQ / Amazon MQ | Event-driven messaging |
-| AI Services | AWS Bedrock | All AI capabilities via Bedrock |
+| Frontend | Angular (legacy v14, newer v21) + TypeScript | Version standardization effort underway [TRANSCRIPT] |
+| Static Hosting | S3 + CloudFront | Static frontend assets [TRANSCRIPT] |
+| Backend | Node.js (primary), Python (some services) | [TRANSCRIPT] |
+| Compute | ECS Fargate (containerized) | 51 microservices; no EC2 instances outside ECS [TRANSCRIPT] |
+| Container Registry | ECR | Per-region image storage [TRANSCRIPT] |
+| Container Orchestration | EKS (Orcus only) | Orcus workflow tool only; migrating all workflows to AWS Step Functions (Q1) [TRANSCRIPT] |
+| Orchestration (target) | AWS Step Functions | Replacing Orcus for cost savings and dependency reduction [TRANSCRIPT] |
+| Primary Database | MongoDB (NoSQL) | Document store for legacy products (eBinders, eConsent) [TRANSCRIPT] |
+| Relational Database | PostgreSQL / Aurora RDS | For newer products (SiteLink 2, Site Experience) [TRANSCRIPT] |
+| Data Warehouse | Snowflake | US East; consolidated analytics from all regions [TRANSCRIPT] |
+| Object Storage | Amazon S3 | 1.6B total objects (production + non-production + backups); 50M+ unique documents [TRANSCRIPT] |
+| Messaging | SQS, RabbitMQ, Amazon MQ, AMQP | Event-driven architecture with asynchronous communication [TRANSCRIPT] |
+| Data Pipeline (future) | Kafka | Designed Q4, implementing Q1+; replacing RabbitMQ as platform streaming layer [TRANSCRIPT] |
+| Authentication | OAuth 2.0 via Okta | [TRANSCRIPT] |
+| API Management | AWS API Gateway | All APIs routed through gateway; legacy public APIs moving behind gateway by Q3 [TRANSCRIPT] |
+| API Documentation | Swagger | All APIs documented [TRANSCRIPT] |
+| AI Services | AWS Bedrock | Claude (Sonnet 3.5) and Google Gemini; no OpenAI [TRANSCRIPT] |
 | OCR | Tesseract | Deterministic document processing before LLM |
-| CI/CD | GitHub Actions | Migration in progress |
-| Monitoring - Basic | CloudWatch | Infrastructure monitoring |
-| Monitoring - APM | New Relic | Application performance monitoring |
+| Document Viewer | Aura Price | Document viewing and annotation for eConsent and other products [TRANSCRIPT] |
+| Email Service | Mailgun | [TRANSCRIPT] |
+| CI/CD | GitHub Actions | eBinders recently migrated from Semaphore [TRANSCRIPT] |
+| Feature Flags | Schematic | Per-customer feature rollout and risk reduction [TRANSCRIPT] |
+| Monitoring - Infrastructure | CloudWatch | CPU, memory, disk, network metrics for ECS tasks [TRANSCRIPT] |
+| Monitoring - Audit | CloudTrail | API request/response logging [TRANSCRIPT] |
+| Monitoring - APM | New Relic | Transaction tracing, error tracking, end-to-end request flow [TRANSCRIPT] |
+| Incident Response | PagerDuty | Alerting and response; integrated with Slack for threshold breach alerts [TRANSCRIPT] |
 | Product Analytics | Pendo | Feature usage tracking |
-| Engineering Metrics | Jellyfish | Velocity, story points |
-| Compliance Management | Ketrix | Regulatory feature tagging, 21 CFR compliance |
-| Data Mastering | Tamer | Data quality and completeness tool |
-| Data Pipeline (future) | Kafka | In progress — speed, resilience, cost improvements |
+| Engineering Metrics | Jellyfish | DORA metrics: deployment frequency, lead time, PR review time, cycle time, error rates, AI adoption [TRANSCRIPT] |
+| Compliance Management | Catrix | Integrated into SDLC; linked with Jira before UAT for regulatory feature tagging [TRANSCRIPT] |
+| Data Mastering | Tamr | Master data management for study sites and patient data [TRANSCRIPT] |
+| BI/Analytics | Tableau | Frontend analytics for teams and customers [TRANSCRIPT] |
+| Advanced UI | ApexCharts, AG Grid | Reporting, interactive charts/tables [TRANSCRIPT] |
+| Cloud Provider | AWS (100% cloud) | AWS architecture-approved partner; ~$1M annual AWS spend [TRANSCRIPT] |
+| Regions | US East (N. Virginia), EU (Frankfurt), APAC (Sydney) | 80% load on US East; same codebase across all three [TRANSCRIPT] |
+
+**Security Architecture:** [TRANSCRIPT]
+- Double encryption: AWS KMS + customer encryption layer with customer-generated KMS keys. All data encrypted in transit and at rest. [TRANSCRIPT]
+- VPC architecture: all services isolated from Internet via private subnets. NAT gateways for outbound traffic. [TRANSCRIPT]
+- VPC peering for private connectivity to MongoDB and message queues. [TRANSCRIPT]
+- Private signed URLs for S3 access. Security groups and NACLs in place. [TRANSCRIPT]
+- Wiz as primary cloud security tool (covers AWS and GCP directory). [TRANSCRIPT]
+- Mindcast web security agent on all laptops (endpoint-based policies for remote users). [TRANSCRIPT]
+- GitHub code security scanning on pull requests. [TRANSCRIPT]
+- Separation of duties: separate grantor and approver for AWS infrastructure access requests. [TRANSCRIPT]
+
+**High Availability & Disaster Recovery:** [TRANSCRIPT]
+- Multi-AZ deployments across 3 availability zones per region. ECS Fargate tasks and Application Load Balancers distributed across all 3 AZs. [TRANSCRIPT]
+- Target uptime: 99.95% per region. [TRANSCRIPT]
+- Current DR: Availability Zone (AZ) level. Q1 target: multi-region DR implementation. [TRANSCRIPT]
+- US region DR: cold standby for application services, warm standby for databases. [TRANSCRIPT]
+- S3: 11 nines durability, full versioning, cross-region and cross-account replication (real-time for DR). Automated lifecycle management and version protection. [TRANSCRIPT]
+- MongoDB: active-active clusters with automatic failover. Continuous backup with cross-region nodes. [TRANSCRIPT]
+- RabbitMQ clusters with 3 nodes per region. [TRANSCRIPT]
+- Cross-account backup layer for additional protection. [TRANSCRIPT]
+- Auto-scaling example: eBinders scales 10–40 instances (20 minimum weekday/office hours, 10 minimum off-hours at 10 PM EST). Rolling update deployment strategy. [TRANSCRIPT]
+
+**CI/CD & Deployment:** [TRANSCRIPT]
+- 4 environments: QA, FAT, UAT, Production. Q2 additions: Performance and Pre-Production environments. [TRANSCRIPT]
+- Deployment strategy: deploy to US first, then roll out to other regions. [TRANSCRIPT]
+- Rolling updates standard; blue-green and canary deployments for high-risk changes. [TRANSCRIPT]
+- Feature flagging via Schematic for risk reduction and per-customer feature rollout. [TRANSCRIPT]
+- 90% test automation for APIs; 60–70% automation for applications. [TRANSCRIPT]
+- Load testing currently ad-hoc; goal to integrate into SDLC via dedicated performance environment (Q2). [TRANSCRIPT]
+- Catrix integrated into SDLC for compliance testing, linked with Jira before UAT. [TRANSCRIPT]
 
 **Architecture Readiness for AI:**
 - 🟢 **Cloud-native:** 100% AWS with Bedrock access — no infrastructure migration needed for AI
 - 🟢 **Data availability:** Rich operational data (7.2M workflows/month, 5.8M monitoring activities) accessible for AI features
-- 🟡 **Data quality:** Mixed — sponsor data very clean (50-60%), site data decent (15-20%), remainder lower quality. Tamer project addressing this. [TRANSCRIPT]
+- 🟡 **Data quality:** Mixed — sponsor data very clean (50-60%), site data decent (15-20%), remainder lower quality. Tamr project addressing this. [TRANSCRIPT]
 - 🟡 **Data pipeline maturity:** Current stack adequate but Kafka migration needed for AI-scale real-time processing. [TRANSCRIPT]
-- 🟡 **Observability:** CloudWatch + New Relic is functional but basic for an AI-heavy platform. No mention of AI-specific monitoring (model drift, inference latency, cost tracking per feature). [TRANSCRIPT]
-- 🟢 **Compliance readiness:** Strong GxP compliance infrastructure (Ketrix, regulatory team, tagged unit tests) provides foundation for AI feature compliance
-- 🟡 **Integration architecture:** Currently point-to-point integrations. Middleware bus project underway but not complete. AI features may need more robust event-driven architecture. [TRANSCRIPT]
+- 🟡 **Observability:** CloudWatch + New Relic + CloudTrail + PagerDuty provides solid foundation. Custom Slack alerts for threshold breaches. No mention of AI-specific monitoring (model drift, inference latency, cost tracking per feature). [TRANSCRIPT]
+- 🟢 **Compliance readiness:** Strong GxP compliance infrastructure (Catrix, regulatory team, tagged unit tests) provides foundation for AI feature compliance
+- 🟢 **Integration architecture (upgraded):** API Gateway routing all APIs with Swagger documentation. Middleware bus project underway. Schematic feature flags enable controlled AI feature rollout. [TRANSCRIPT]
 
 **Architecture Debt / Risk Callouts:**
-1. Angular version fragmentation across products — technical debt that may slow unified AI feature deployment
-2. MongoDB as primary store may create challenges for the relational queries needed by AI analytics (Flow Records in SQL helps)
-3. Orchestration migration (Orchis → Step Functions) is in-flight — adds execution risk this quarter
-4. No mention of feature flagging system for AI feature rollout management
+1. Angular version fragmentation (v14 to v21) across products — standardization effort underway but technical debt may slow unified AI feature deployment [TRANSCRIPT]
+2. MongoDB as primary store may create challenges for the relational queries needed by AI analytics (PostgreSQL/Aurora RDS for newer products and Flow Records helps) [TRANSCRIPT]
+3. Orchestration migration (Orcus → Step Functions) is in-flight — adds execution risk this quarter
+4. eBinders monolith-to-microservices decomposition in progress — timeline and scope unclear [TRANSCRIPT]
 5. Identity management for sites is through Apollo's own SiteLink platform (not federated) — may limit AI feature adoption for sites not using SiteLink [TRANSCRIPT]
 
 **GAPS / QUESTIONS:**
-- Application architecture diagram — requested for next session but not yet provided [TRANSCRIPT]
-- Detailed Bedrock configuration (models, token limits, cost allocation)
+- Application architecture diagram — substantial detail provided verbally but visual diagram not yet delivered [TRANSCRIPT]
+- Bedrock token limits and cost allocation per AI feature
 - AI inference infrastructure (batch vs. real-time, queueing, rate limiting)
-- Data lake / warehouse strategy beyond Tamer and Flow Records
-- DR/BCP specifics for AI services
-- API gateway and rate limiting approach for the API-first site selection product
+- RabbitMQ → Kafka migration timeline and completion criteria
+- eBinders monolith decomposition scope and timeline [TRANSCRIPT]
+- Angular version standardization plan and timeline [TRANSCRIPT]
+
+**Corporate IT Overview:** [TRANSCRIPT]
+- Google Workspace for corporate email and collaboration (Gmail, Drive, Docs, Sheets, Slides). [TRANSCRIPT]
+- Hexnode MDM for device management; Apple Business Manager for Mac provisioning (hands-free). [TRANSCRIPT]
+- Device mix: 70% Mac, 30% Windows. Shifting from device purchases to 3-year leasing model with automatic refresh cycle. One Windows 10 device identified; rest on Windows 11. [TRANSCRIPT]
+- Two physical offices: Atlanta and Belgrade. Designed as "Internet cafes" — no on-premise infrastructure. Ubiquity Wi-Fi and switches; IT closet with badge-restricted access. Rest of team is fully remote. [TRANSCRIPT]
+- Google SSO for common applications. [TRANSCRIPT]
+- JIRA Service Management for IT help desk, incident tracking, problem and change control. ~22 tickets/week (~100/month) internal IT support. [TRANSCRIPT]
+- License management: 3-year renewal cycles for established tools (Google, Slack, Atlassian); 1-year evaluation period for new technologies. No major renewal dates imminent. [TRANSCRIPT]
 
 **Sources:**
 - [TRANSCRIPT]
@@ -903,7 +959,7 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 ---
 
-# Appendix 1: Gap Tracker (Updated v2.0)
+# Appendix 1: Gap Tracker (Updated v3.0)
 
 ---
 
@@ -923,6 +979,9 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 | G10 | Engineering tools and process | Full stack documented: Angular/Node/MongoDB/AWS + Claude/Cursor/Vercel for AIDLC | [TRANSCRIPT] |
 | G11 | Contractor vs. employee mix | 85-90% employees, 10-15% contractors; deliberately expanding contractor capacity | [TRANSCRIPT] |
 | G12 | Innovation process | OCTO (Office of CTO) manages POC pipeline, hands off to product teams when ready | [TRANSCRIPT] |
+| G18 | Application architecture diagram | **Partially closed (v3.0):** No visual diagram provided, but detailed architecture described across compute (51 microservices on ECS Fargate), storage (MongoDB + PostgreSQL/Aurora RDS + Snowflake + S3), networking (VPC, API Gateway), security (double encryption, Wiz), DR (multi-AZ, cross-region replication), and CI/CD (4 environments, blue-green/canary). Visual diagram still desired. | [TRANSCRIPT] |
+| G19 | Specific LLM models used in Bedrock | **Closed (v3.0):** Claude (Sonnet 3.5) and Google Gemini via AWS Bedrock. No OpenAI integration. | [TRANSCRIPT] |
+| G28 | DR/BCP specifics for AI services | **Closed (v3.0):** Multi-AZ (3 AZs per region), 99.95% uptime target, cold standby apps / warm standby DBs, S3 cross-region replication, MongoDB active-active clusters, cross-account backup layer. Multi-region DR being implemented Q1. | [TRANSCRIPT] |
 
 ---
 
@@ -935,18 +994,20 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 | G15 | Revenue mix by customer type (site-direct vs. sponsor-deployed) | Critical | Data Room | Key to understanding unit economics |
 | G16 | Net revenue retention rate | High | Data Room | Expansion vs. churn dynamics |
 | G17 | Customer concentration (top 10 as % of revenue) | High | Data Room | Risk assessment |
-| G18 | Application architecture diagram | High | Next DD Session | Requested on call for infrastructure/security session [TRANSCRIPT] |
-| G19 | Specific LLM models used in Bedrock | Medium | Next DD Session | Cost and capability implications |
-| G20 | AI feature accuracy/validation metrics | Medium | Apollo team | Pilot results, time savings, error rates for feasibility and Doc QC |
-| G21 | LLM API cost structure per AI feature | Medium | Apollo team | Margin impact of consumption-based pricing |
+| G20 | AI feature accuracy/validation metrics | Medium | Apollo team | Pilot results, time savings, error rates for feasibility and Doc QC. Doc Q moving to production Q2. [TRANSCRIPT] |
+| G21 | LLM API cost structure per AI feature | Medium | Apollo team | Margin impact of consumption-based pricing; Bedrock token limits and cost allocation |
 | G22 | Attrition rates (engineering) | Medium | Data Room / HR | Retention risk assessment |
 | G23 | Data retention policy | Medium | Apollo team | Longitudinal data value |
 | G24 | Conversion rate: free StudyOrganizer → paid eBinders | Medium | Apollo team | Site acquisition funnel efficiency |
 | G25 | Veeva SiteVault competitive impact (quantified) | Medium | Apollo team / market data | Pricing pressure on site-side products |
 | G26 | Professional services revenue as % of total | Low | Data Room | Revenue quality assessment |
 | G27 | Budgets/contracting M&A pipeline details | Low | Apollo team | Potential additional acquisition layer |
-| G28 | DR/BCP specifics for AI services | Low | Next DD Session | Infrastructure resilience |
 | G29 | AI team dedicated headcount | Medium | Apollo team | Resource allocation for AI roadmap |
+| G30 | RabbitMQ → Kafka migration timeline and completion criteria | Medium | Apollo team | Designed Q4, implementing Q1+; need completion targets [TRANSCRIPT] |
+| G31 | eBinders monolith-to-microservices decomposition scope and timeline | Medium | Apollo team | In progress but scope/timeline unclear [TRANSCRIPT] |
+| G32 | Doc Q AI precision validation at scale | Medium | Apollo team | Moving to production Q2; need accuracy benchmarks [TRANSCRIPT] |
+| G33 | Angular version standardization plan and timeline | Low | Apollo team | Legacy v14 to v21; standardization effort underway [TRANSCRIPT] |
+| G34 | Visual architecture diagram | Low | Apollo team | Detailed architecture described verbally; visual still desired for stakeholder presentation |
 
 ---
 
@@ -954,15 +1015,16 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 ---
 
-| Chapter | Pre-Transcript Confidence | Post-Transcript Confidence | Key Upgrades |
-|---------|:------------------------:|:--------------------------:|-------------|
-| A — Growth Thesis | Medium | High | Pricing confirmed; network scale validated; AI roadmap detailed; dual GTM quantified |
-| B — Disruption Risk | Medium | Medium-High | Competitive awareness confirmed; moat articulated; but still requires market data |
-| C — Asset Value | Medium | High | All four asset categories upgraded with specific evidence; named customers confirmed |
-| D — Team + Operating Model | Low | High | Full org structure, headcount, roles, tools, and process maturity documented |
-| E — AI Assessment | Low | High | Complete AI inventory with stages, architecture, pricing approach, and customer evidence |
-| F — Synergies | Medium | High | Multiple validated integration points; eConsent-IRB confirmed; Doc QC channel path clear |
-| G — Quantified Impact | Low | Low-Medium | Framework populated but still missing actual ARR for calibration |
+| Chapter | Pre-Transcript Confidence | Post-Call 1 Confidence | Post-Call 2 (v3.0) Confidence | Key Upgrades (v3.0) |
+|---------|:------------------------:|:---------------------:|:----------------------------:|-------------|
+| A — Growth Thesis | Medium | High | High | No change from v2.0 |
+| B — Disruption Risk | Medium | Medium-High | Medium-High | No change from v2.0 |
+| C — Asset Value | Medium | High | High | No change from v2.0 |
+| D — Team + Operating Model | Low | High | Very High | Operating model maturity ratings upgraded with detailed DevOps, security, and DORA metrics evidence |
+| E — AI Assessment | Low | High | Very High | LLM models confirmed (Claude Sonnet 3.5, Gemini); Doc Q production timeline (Q2); architecture fully documented |
+| F — Synergies | Medium | High | High | No change from v2.0 |
+| G — Quantified Impact | Low | Low-Medium | Low-Medium | No change — still missing actual ARR for calibration |
+| **Architecture / Infrastructure** | Low | Medium | **Very High** | **New in v3.0:** 51 microservices on ECS Fargate, 3 AZs, security architecture (double encryption, VPC, Wiz), DR/BCP (99.95% uptime, cross-region replication), CI/CD (4 environments, blue-green/canary, Schematic), corporate IT fully documented |
 
 ---
 
@@ -997,5 +1059,5 @@ Apollo's AI roadmap directly targets the two largest time sinks in clinical tria
 
 ---
 
-*End of Document — Version 2.0*
-*Next update expected after: Infrastructure/Security DD Session + Data Room (Sections G/H) delivery*
+*End of Document — Version 3.0*
+*Next update expected after: Data Room (Sections G/H) delivery*
