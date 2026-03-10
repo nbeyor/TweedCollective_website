@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-10 03:20",
+  "generated": "2026-03-10 04:13",
   "dataRange": "2025-07-02 to 2026-03-09",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
@@ -15,7 +15,7 @@
     "tickets": 240,
     "authors": 19,
     "workdays": 70,
-    "productivity": 0.1805,
+    "productivity": 0.3894,
     "qa_churn_rate": 0.2417,
     "date_range": "2025-07-02 to 2025-09-30"
   },
@@ -23,7 +23,7 @@
     "total_tickets": 144,
     "team_authors": 21,
     "team_productivity": 0.4219,
-    "productivity_vs_baseline": "+133.8%",
+    "productivity_vs_baseline": "+8.4%",
     "team_qa_churn": 0.2222,
     "qa_vs_baseline": "-8.1%",
     "weeks_of_data": 6,
