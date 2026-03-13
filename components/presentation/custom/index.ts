@@ -19,6 +19,9 @@ import {
   DiffusionSlide, DifferentiatingAssetsSlide, GovernanceSlide,
   RouteReagentSlide, PantheonSlide, RoadmapSlide,
   ChangeManagementSlide, QuantifyingUpsideSlide, FinalRecommendationSlide,
+  ProductValueStorySlide, ProductValueStoryCompactSlide,
+  ValueFrameworkSlide, SuperProductSlide,
+  ValueQuantificationSlide, LeadingIndicatorsSlide, RoadmapPhasedSlide,
 } from './AiOpportunityComponents'
 import { DiligenceChartSlide, DiligenceAssessmentGrid, DiligenceSynergySlide } from './DiligenceComponents'
 import { ApolloDiligenceSlide } from './ApolloDiligenceSlides'
@@ -50,6 +53,13 @@ export const customComponentRegistry: CustomComponentRegistry = {
   'ChangeManagementSlide': ChangeManagementSlide as React.ComponentType<Record<string, unknown>>,
   'QuantifyingUpsideSlide': QuantifyingUpsideSlide as React.ComponentType<Record<string, unknown>>,
   'FinalRecommendationSlide': FinalRecommendationSlide as React.ComponentType<Record<string, unknown>>,
+  'ProductValueStorySlide': ProductValueStorySlide as React.ComponentType<Record<string, unknown>>,
+  'ProductValueStoryCompactSlide': ProductValueStoryCompactSlide as React.ComponentType<Record<string, unknown>>,
+  'ValueFrameworkSlide': ValueFrameworkSlide as React.ComponentType<Record<string, unknown>>,
+  'SuperProductSlide': SuperProductSlide as React.ComponentType<Record<string, unknown>>,
+  'ValueQuantificationSlide': ValueQuantificationSlide as React.ComponentType<Record<string, unknown>>,
+  'LeadingIndicatorsSlide': LeadingIndicatorsSlide as React.ComponentType<Record<string, unknown>>,
+  'RoadmapPhasedSlide': RoadmapPhasedSlide as React.ComponentType<Record<string, unknown>>,
 
   // Shared diligence components (used by apollo, mercury)
   'DiligenceChartSlide': DiligenceChartSlide as React.ComponentType<Record<string, unknown>>,

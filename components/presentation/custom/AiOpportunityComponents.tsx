@@ -9,6 +9,8 @@ import {
   Check, AlertTriangle, Rocket, TrendingUp, DollarSign, Zap,
   Brain, Database, Users, Target, BarChart3, ArrowRight, ArrowUpRight,
   Layers, AlertCircle, Minus, CheckCircle2,
+  Shield, FileText, Replace, Activity, Clock, ChevronDown,
+  Gauge, ListChecks, Calendar, Lightbulb, GitBranch,
 } from 'lucide-react'
 
 // ---- SLIDE 2: Executive Summary ----
@@ -749,6 +751,576 @@ export function FinalRecommendationSlide({ sectionLabel, heading, recommendation
             ))}
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- Product Value Story (Sections 7-15) ----
+export function ProductValueStorySlide({ sectionLabel, heading, description, users, replaces, defensibility, valueMapping, leadingIndicators, valueEstimate, assumptions }: {
+  sectionLabel: string
+  heading: string
+  description: string
+  users: string
+  replaces: string
+  defensibility: { rating: string; text: string }
+  valueMapping: string
+  leadingIndicators: string[]
+  valueEstimate: string
+  assumptions: string[]
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Left column */}
+        <div className="space-y-4">
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-sage-bright" /> What It Does
+            </h3>
+            <p className="text-xs text-cream/70 leading-relaxed">{description}</p>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <Users className="w-4 h-4 text-sage-bright" /> Who Uses It
+            </h3>
+            <p className="text-xs text-cream/70 leading-relaxed">{users}</p>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <Replace className="w-4 h-4 text-sage-bright" /> What It Replaces
+            </h3>
+            <p className="text-xs text-cream/70 leading-relaxed">{replaces}</p>
+          </div>
+        </div>
+        {/* Right column */}
+        <div className="space-y-4">
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-sage-bright" /> Defensibility
+            </h3>
+            <div className="flex items-center gap-3 mb-2">
+              <RatingBadge rating={defensibility.rating} />
+            </div>
+            <p className="text-xs text-cream/70 leading-relaxed">{defensibility.text}</p>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <Target className="w-4 h-4 text-sage-bright" /> Value Framework Mapping
+            </h3>
+            <p className="text-xs text-cream/70 leading-relaxed">{valueMapping}</p>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-sage-bright" /> Leading Indicators
+            </h3>
+            <ul className="space-y-1 text-xs text-cream/70">
+              {leadingIndicators.map((ind, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <ArrowRight className="w-3 h-3 mt-0.5 text-cream/30 flex-shrink-0" />{ind}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-2 flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-gold" /> Value Estimate
+            </h3>
+            <p className="text-xs text-cream/70 leading-relaxed">{valueEstimate}</p>
+          </div>
+        </div>
+      </div>
+      {/* Assumptions callout */}
+      <div className="p-4 bg-gold/5 border border-gold/20 rounded-xl">
+        <h3 className="text-sm font-semibold text-gold mb-3 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-gold" /> What Has to Be True
+        </h3>
+        <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
+          {assumptions.map((a, i) => <li key={i}>{a}</li>)}
+        </ol>
+      </div>
+    </div>
+  )
+}
+
+// ---- Compact Product Value Stories (multiple products per slide) ----
+export function ProductValueStoryCompactSlide({ sectionLabel, heading, products }: {
+  sectionLabel: string
+  heading: string
+  products: Array<{
+    name: string
+    subtitle: string
+    defensibility: string
+    description: string
+    valueEstimate: string
+    keyAssumption: string
+  }>
+}) {
+  return (
+    <div className="space-y-4 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      <div className="grid md:grid-cols-2 gap-3">
+        {products.map(product => (
+          <div key={product.name} className="p-3 bg-white/5 border border-cream/10 rounded-xl space-y-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-cream">{product.name}</h3>
+                <span className="text-[10px] text-cream/40">{product.subtitle}</span>
+              </div>
+              <RatingBadge rating={product.defensibility} />
+            </div>
+            <p className="text-xs text-cream/70 leading-relaxed">{product.description}</p>
+            <div className="p-2 bg-sage/5 border border-sage/15 rounded-lg">
+              <span className="text-[10px] text-sage-bright font-medium">Value: </span>
+              <span className="text-[10px] text-cream/70 font-mono">{product.valueEstimate}</span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <AlertTriangle className="w-3 h-3 mt-0.5 text-gold flex-shrink-0" />
+              <span className="text-[10px] text-cream/50 leading-relaxed">{product.keyAssumption}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ---- Section 5: AI Value Framework ----
+export function ValueFrameworkSlide({ sectionLabel, heading, description, internalBuckets, externalBuckets }: {
+  sectionLabel: string
+  heading: string
+  description: string
+  internalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
+  externalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+        <p className="text-sm text-cream/80 leading-relaxed">{description}</p>
+      </div>
+      <div className="space-y-4">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <Layers className="w-4 h-4 text-sage-bright" /> Internal Value Buckets
+        </h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          {internalBuckets.map((b, i) => (
+            <div key={i} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h4 className="text-xs font-semibold text-cream mb-2">{b.bucket}</h4>
+              <p className="text-[10px] text-cream/60 leading-relaxed mb-2">{b.definition}</p>
+              <div className="text-[10px] text-cream/50">
+                <span className="font-medium text-cream/70">KPIs:</span> {b.kpis}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-4">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-gold" /> External Value Buckets
+        </h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          {externalBuckets.map((b, i) => (
+            <div key={i} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h4 className="text-xs font-semibold text-cream mb-2">{b.bucket}</h4>
+              <p className="text-[10px] text-cream/60 leading-relaxed mb-2">{b.definition}</p>
+              <div className="text-[10px] text-cream/50">
+                <span className="font-medium text-cream/70">KPIs:</span> {b.kpis}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- Section 6: AI Editorial Platform (Super Product) ----
+export function SuperProductSlide({ sectionLabel, heading, problems, stages, features, efficiencies, valueTable, totalLow, totalHigh }: {
+  sectionLabel: string
+  heading: string
+  problems: string[]
+  stages: Array<{ name: string; component: string; description: string }>
+  features: Array<{ feature: string; source: string; description: string }>
+  efficiencies: Array<{ title: string; description: string }>
+  valueTable: Array<{ area: string; ftes: string; lowValue: string; highValue: string; target: string }>
+  totalLow: string
+  totalHigh: string
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      {/* The Problem */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-amber-400" /> The Problem
+        </h3>
+        <div className="grid md:grid-cols-2 gap-3">
+          {problems.map((p, i) => (
+            <div key={i} className="p-3 bg-red-500/5 border border-red-500/20 rounded-xl">
+              <p className="text-xs text-cream/70 leading-relaxed">{p}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Pipeline visualization */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <GitBranch className="w-4 h-4 text-sage-bright" /> Integrated Pipeline
+        </h3>
+        <div className="space-y-2">
+          {stages.map((stage, i) => (
+            <div key={i} className="flex items-stretch gap-3">
+              <div className="flex flex-col items-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-sage/20 border border-sage/40 flex items-center justify-center text-xs font-mono text-sage-bright font-bold">{i + 1}</div>
+                {i < stages.length - 1 && <div className="flex-1 w-px bg-sage/20 my-1" />}
+              </div>
+              <div className="flex-1 p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-semibold text-cream">{stage.name}</span>
+                  <span className="text-[10px] text-cream/40 font-mono">({stage.component})</span>
+                </div>
+                <p className="text-[10px] text-cream/60 leading-relaxed">{stage.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Value table */}
+      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+          <DollarSign className="w-4 h-4 text-gold" /> Value Summary
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-cream/10">
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Area</th>
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">FTEs</th>
+                <th className="text-right py-2 pr-4 text-cream/50 font-medium">Low Value</th>
+                <th className="text-right py-2 pr-4 text-cream/50 font-medium">High Value</th>
+                <th className="text-left py-2 text-cream/50 font-medium">Target</th>
+              </tr>
+            </thead>
+            <tbody className="font-mono">
+              {valueTable.map((row, i) => (
+                <tr key={i} className="border-b border-cream/5">
+                  <td className="py-2 pr-4 text-cream/80 font-sans">{row.area}</td>
+                  <td className="py-2 pr-4 text-cream/60">{row.ftes}</td>
+                  <td className="py-2 pr-4 text-right text-cream/60">{row.lowValue}</td>
+                  <td className="py-2 pr-4 text-right text-cream/60">{row.highValue}</td>
+                  <td className="py-2 text-cream/60 font-sans">{row.target}</td>
+                </tr>
+              ))}
+              <tr className="border-t-2 border-cream/20">
+                <td colSpan={2} className="py-2.5 pr-4 text-cream font-sans font-semibold">Total</td>
+                <td className="py-2.5 pr-4 text-right text-gold font-bold">{totalLow}</td>
+                <td className="py-2.5 pr-4 text-right text-gold font-bold">{totalHigh}</td>
+                <td />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {/* Tech efficiencies */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <Zap className="w-4 h-4 text-sage-bright" /> Technology Efficiencies
+        </h3>
+        <div className="grid md:grid-cols-2 gap-3">
+          {efficiencies.map((eff, i) => (
+            <div key={i} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h4 className="text-xs font-semibold text-cream mb-1">{eff.title}</h4>
+              <p className="text-[10px] text-cream/60 leading-relaxed">{eff.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- Section 16: Value Quantification ----
+export function ValueQuantificationSlide({ sectionLabel, heading, subtitle, internalTable, externalTable, combinedSummary, totalOpportunity }: {
+  sectionLabel: string
+  heading: string
+  subtitle: string
+  internalTable: {
+    headers: string[]
+    rows: Array<{ area: string; ftes: string; comp: string; target: string; lowUplift: string; lowValue: string; highUplift: string; highValue: string }>
+    totalLow: string
+    totalHigh: string
+  }
+  externalTable: {
+    headers: string[]
+    rows: Array<{ product: string; lowAssumptions: string; lowRevenue: string; highAssumptions: string; highRevenue: string }>
+    totalLow: string
+    totalHigh: string
+  }
+  combinedSummary: Array<{ category: string; low: string; high: string }>
+  totalOpportunity: { low: string; high: string; pctLow: string; pctHigh: string }
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Internal Productivity */}
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Gauge className="w-4 h-4 text-sage-bright" /> Internal Productivity
+          </h3>
+          <div className="overflow-x-auto max-h-64 overflow-y-auto">
+            <table className="w-full text-[10px]">
+              <thead className="sticky top-0 bg-void">
+                <tr className="border-b border-cream/10">
+                  {internalTable.headers.map((h, i) => (
+                    <th key={i} className="text-left py-1.5 pr-2 text-cream/50 font-medium whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="font-mono">
+                {internalTable.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-1.5 pr-2 text-cream/80 font-sans">{row.area}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.ftes}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.comp}</td>
+                    <td className="py-1.5 pr-2 text-cream/60 font-sans">{row.target}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.lowUplift}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.lowValue}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.highUplift}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.highValue}</td>
+                  </tr>
+                ))}
+                <tr className="border-t-2 border-cream/20">
+                  <td colSpan={5} className="py-2 pr-2 text-cream font-sans font-semibold">Total</td>
+                  <td className="py-2 pr-2 text-gold font-bold">{internalTable.totalLow}</td>
+                  <td className="py-2 pr-2" />
+                  <td className="py-2 pr-2 text-gold font-bold">{internalTable.totalHigh}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* External Revenue */}
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-gold" /> External Revenue
+          </h3>
+          <div className="overflow-x-auto max-h-64 overflow-y-auto">
+            <table className="w-full text-[10px]">
+              <thead className="sticky top-0 bg-void">
+                <tr className="border-b border-cream/10">
+                  {externalTable.headers.map((h, i) => (
+                    <th key={i} className="text-left py-1.5 pr-2 text-cream/50 font-medium whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="font-mono">
+                {externalTable.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-1.5 pr-2 text-cream/80 font-sans">{row.product}</td>
+                    <td className="py-1.5 pr-2 text-cream/60 font-sans">{row.lowAssumptions}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.lowRevenue}</td>
+                    <td className="py-1.5 pr-2 text-cream/60 font-sans">{row.highAssumptions}</td>
+                    <td className="py-1.5 pr-2 text-cream/60">{row.highRevenue}</td>
+                  </tr>
+                ))}
+                <tr className="border-t-2 border-cream/20">
+                  <td colSpan={2} className="py-2 pr-2 text-cream font-sans font-semibold">Total</td>
+                  <td className="py-2 pr-2 text-gold font-bold">{externalTable.totalLow}</td>
+                  <td className="py-2 pr-2" />
+                  <td className="py-2 pr-2 text-gold font-bold">{externalTable.totalHigh}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {/* Combined Summary */}
+      <div className="p-4 bg-gold/5 border border-gold/20 rounded-xl">
+        <h3 className="text-sm font-semibold text-gold mb-3 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-gold" /> Combined Value Summary
+        </h3>
+        <div className="space-y-2 font-mono text-sm">
+          {combinedSummary.map((row, i) => (
+            <div key={i} className="flex justify-between text-cream/70">
+              <span className="font-sans">{row.category}</span>
+              <span>{row.low} &ndash; {row.high}</span>
+            </div>
+          ))}
+          <div className="flex justify-between border-t-2 border-gold/30 pt-3 mt-3">
+            <span className="font-sans text-cream font-semibold">Total Opportunity</span>
+            <span className="text-gold font-bold">{totalOpportunity.low} &ndash; {totalOpportunity.high}</span>
+          </div>
+          <div className="flex justify-end">
+            <span className="text-xs text-cream/50 font-sans">({totalOpportunity.pctLow} &ndash; {totalOpportunity.pctHigh} of revenue)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- Section 17: Leading Indicators ----
+export function LeadingIndicatorsSlide({ sectionLabel, heading, coreArgument, leadingIndicators, laggingIndicators, recommendation }: {
+  sectionLabel: string
+  heading: string
+  coreArgument: string
+  leadingIndicators: Array<{ category: string; indicator: string; whyItMatters: string }>
+  laggingIndicators: Array<{ category: string; indicator: string; timeline: string }>
+  recommendation: string
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      {/* Core argument callout */}
+      <div className="p-4 bg-sage/10 border border-sage/30 rounded-xl">
+        <p className="text-sm text-cream/90 leading-relaxed flex items-start gap-2">
+          <Lightbulb className="w-4 h-4 text-sage-bright flex-shrink-0 mt-0.5" />
+          {coreArgument}
+        </p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Leading indicators */}
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-green-400" /> What to Measure Now (Leading)
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-cream/10">
+                  <th className="text-left py-2 pr-3 text-cream/50 font-medium">Category</th>
+                  <th className="text-left py-2 pr-3 text-cream/50 font-medium">Indicator</th>
+                  <th className="text-left py-2 text-cream/50 font-medium">Why It Matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leadingIndicators.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-2 pr-3 text-cream/80 font-medium">{row.category}</td>
+                    <td className="py-2 pr-3 text-cream/70">{row.indicator}</td>
+                    <td className="py-2 text-cream/60">{row.whyItMatters}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Lagging indicators */}
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-cream/50" /> What to Track But Not Steer By (Lagging)
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-cream/10">
+                  <th className="text-left py-2 pr-3 text-cream/50 font-medium">Category</th>
+                  <th className="text-left py-2 pr-3 text-cream/50 font-medium">Indicator</th>
+                  <th className="text-left py-2 text-cream/50 font-medium">Timeline</th>
+                </tr>
+              </thead>
+              <tbody>
+                {laggingIndicators.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-2 pr-3 text-cream/80 font-medium">{row.category}</td>
+                    <td className="py-2 pr-3 text-cream/70">{row.indicator}</td>
+                    <td className="py-2 text-cream/60">{row.timeline}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {/* Recommendation */}
+      <div className="p-4 bg-sage/5 border border-sage/20 rounded-xl">
+        <h3 className="text-xs uppercase tracking-wider text-sage-bright font-semibold mb-2 flex items-center gap-2">
+          <ListChecks className="w-4 h-4" /> Recommendation
+        </h3>
+        <p className="text-xs text-cream/70 leading-relaxed">{recommendation}</p>
+      </div>
+    </div>
+  )
+}
+
+// ---- Section 19: Phased Roadmap ----
+const phasedVariantStyles: Record<string, { border: string; badge: string; line: string }> = {
+  green: {
+    border: 'border-green-500/30 bg-green-500/5',
+    badge: 'bg-green-500/20 text-green-300 border-green-500/30',
+    line: 'bg-green-500/30',
+  },
+  sage: {
+    border: 'border-sage/30 bg-sage/5',
+    badge: 'bg-sage/20 text-sage-bright border-sage/30',
+    line: 'bg-sage/30',
+  },
+  gold: {
+    border: 'border-gold/30 bg-gold/5',
+    badge: 'bg-gold/20 text-gold border-gold/30',
+    line: 'bg-gold/30',
+  },
+}
+
+export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }: {
+  sectionLabel: string
+  heading: string
+  phases: Array<{
+    phase: string
+    title: string
+    items: string[]
+    variant: string
+  }>
+  fourCards: Array<{ num: string; title: string; description: string; variant: string }>
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      {/* Phased timeline */}
+      <div className="space-y-3">
+        {phases.map((phase, i) => {
+          const styles = phasedVariantStyles[phase.variant] || phasedVariantStyles.sage
+          return (
+            <div key={i} className="flex items-stretch gap-4">
+              <div className="flex flex-col items-center flex-shrink-0">
+                <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-mono font-bold ${styles.badge}`}>
+                  {i + 1}
+                </div>
+                {i < phases.length - 1 && <div className={`flex-1 w-px my-1 ${styles.line}`} />}
+              </div>
+              <div className={`flex-1 p-4 rounded-xl border ${styles.border}`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider ${styles.badge}`}>{phase.phase}</span>
+                  <span className="text-sm font-semibold text-cream">{phase.title}</span>
+                </div>
+                <ul className="space-y-1.5">
+                  {phase.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs text-cream/70">
+                      <ArrowRight className="w-3 h-3 mt-0.5 text-cream/30 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      {/* Four recommendation cards */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {fourCards.map(card => {
+          const styles = recommendationVariantStyles[card.variant] || recommendationVariantStyles.sage
+          return (
+            <div key={card.num} className={`p-5 rounded-xl border ${styles.border}`}>
+              <span className={`text-3xl font-mono font-bold ${styles.iconColor} opacity-50`}>{card.num}</span>
+              <h3 className="text-sm font-semibold text-cream mt-2 mb-1">{card.title}</h3>
+              <p className="text-xs text-cream/60 leading-relaxed">{card.description}</p>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
