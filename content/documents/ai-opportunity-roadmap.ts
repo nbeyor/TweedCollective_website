@@ -426,101 +426,241 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 11: PRODUCT STORIES — Practice Master, Sentiment Tracker, ChatMKG (Sections 9–11)
+  // SLIDE 11: PRACTICE MASTER (Section 9)
   // ================================================================
   {
-    id: 'supporting-products',
-    title: 'Supporting Products — Value Stories',
+    id: 'practice-master',
+    title: 'Practice Master — HCP Affiliation Intelligence',
     type: 'custom',
     content: {
       type: 'custom',
-      componentId: 'ProductValueStoryCompactSlide',
+      componentId: 'ProductValueStorySlide',
       props: {
-        sectionLabel: 'Sections 09–11',
-        heading: 'Supporting Product Value Stories',
-        products: [
-          {
-            name: 'Practice Master',
-            subtitle: 'HCP Affiliation Intelligence',
-            defensibility: 'MODERATE',
-            description: 'Harmonizes data sources to map HCP institutional relationships. Value is in the harmonization layer — underlying NPI data is commercially available.',
-            valueEstimate: 'Part of $263K–$656K profiling productivity value (with Pantheon)',
-            keyAssumption: 'Harmonization accurate enough that analysts trust without re-verifying',
-          },
-          {
-            name: 'Sentiment Tracker',
-            subtitle: 'HCP Sentiment Analysis',
-            defensibility: 'MODERATE',
-            description: 'NLP-based tracking of HCP sentiment shifts from MKG\'s own advisory boards, speaker bureaus, and MSL interactions. Defensibility depends entirely on proprietary data stream.',
-            valueEstimate: '0.5–1.5% lift on $50M relevant revenue base = $250K–$750K',
-            keyAssumption: 'Tool is fed by proprietary engagement data, not just public sources',
-          },
-          {
-            name: 'ChatMKG',
-            subtitle: 'Secure LLM Access',
-            defensibility: 'LOW',
-            description: 'Every feature available in off-the-shelf products. Only defensible if it provides access to MKG-proprietary data. Infrastructure, not a value driver on its own.',
-            valueEstimate: '200 FTEs × $95K × 3–8% uplift = $570K–$1.52M (depends on data integration)',
-            keyAssumption: 'Connects to ION Data Lake, making it more useful than external alternatives',
-          },
+        sectionLabel: 'Section 09',
+        heading: 'Practice Master — HCP Affiliation Intelligence',
+        description: 'An AI-enabled tool that harmonizes multiple data sources to map HCP institutional relationships — distinguishing primary from honorary affiliations, resolving conflicting records, and providing clean affiliation data for profiling and engagement planning.',
+        users: '81qd analysts and MedComm teams. Used as an input step for HCP profiling projects and engagement planning.',
+        replaces: 'Manual verification of HCP affiliations across NPI registries, institutional websites, and proprietary databases — a tedious process currently consuming several hours per profiling project.',
+        defensibility: { rating: 'MODERATE', text: 'The underlying data (NPI, institutional records) is commercially available. The value is in the harmonization and disambiguation layer — resolving conflicting affiliations across sources is genuinely useful but not unique. Competitors like Definitive Healthcare and Veeva offer similar affiliation intelligence.' },
+        valueMapping: 'Speed + Productivity (reduces manual research time for affiliation verification)',
+        leadingIndicators: [
+          'Hours saved per profiling project',
+          'Data accuracy improvement rate (measured by downstream corrections needed)',
+          'Number of projects using Practice Master vs. manual process',
+        ],
+        valueEstimate: 'Practice Master\'s value is captured in the internal productivity model under "HCP Profiling / Data Analysts" (25 FTEs, $105K comp, 10–25% uplift). The tool contributes to the $263K–$656K productivity value for that role group alongside Pantheon.',
+        assumptions: [
+          'The harmonization layer is accurate enough that analysts trust it without re-verifying manually',
+          'The tool is integrated into the standard profiling workflow, not a side step',
         ],
       },
     },
   },
 
   // ================================================================
-  // SLIDE 12: PRODUCT STORIES — Verba, PerspectivX, MagpAI, BloomLab (Sections 12–15)
+  // SLIDE 12: SENTIMENT TRACKER (Section 10)
   // ================================================================
   {
-    id: 'client-products',
-    title: 'Client-Facing Products — Value Stories',
+    id: 'sentiment-tracker',
+    title: 'Sentiment Tracker — HCP Sentiment Analysis',
     type: 'custom',
     content: {
       type: 'custom',
-      componentId: 'ProductValueStoryCompactSlide',
+      componentId: 'ProductValueStorySlide',
       props: {
-        sectionLabel: 'Sections 12–15',
-        heading: 'Client-Facing Product Value Stories',
-        products: [
-          {
-            name: 'Verba',
-            subtitle: 'Advisory Board Synthesis',
-            defensibility: 'LOW-MODERATE',
-            description: 'At its core, a transcription-to-structured-output pipeline. Path to defensibility: cross-reference against clinical evidence, compare sentiment across boards over time using longitudinal data. Without proprietary data layers, it\'s an LLM wrapper.',
-            valueEstimate: '15–35 boards × $10K–$20K premium = $150K–$700K external revenue',
-            keyAssumption: 'Connects to proprietary MKG data for analysis that standalone LLMs cannot replicate',
-          },
-          {
-            name: 'PerspectivX',
-            subtitle: 'Concept Scoring',
-            defensibility: 'MODERATE',
-            description: 'Simulates HCP feedback using data-based personas from ION Data Lake. Differentiator is whether personas are grounded in MKG\'s proprietary research data or generic LLM approximations.',
-            valueEstimate: '10–25 concept tests × $20K–$35K = $200K–$875K',
-            keyAssumption: 'Concept scores show validated correlation to real market outcomes',
-          },
-          {
-            name: 'MagpAI',
-            subtitle: 'Stakeholder Simulation',
-            defensibility: 'LOW-MODERATE',
-            description: 'Stakeholder simulation via LLM is increasingly easy to replicate. Shares significant overlap with PerspectivX — consolidation opportunity exists.',
-            valueEstimate: '8–18 engagements × $15K–$30K = $120K–$540K',
-            keyAssumption: 'Use case distinct enough from PerspectivX to justify two products — or consolidate',
-          },
-          {
-            name: 'BloomLab',
-            subtitle: 'Real-Time Market Research',
-            defensibility: 'MODERATE',
-            description: 'AI-driven real-time chat merging qualitative depth with quantitative rigor. Unlike Verba or MagpAI, this facilitates actual research sessions with real participants — a differentiated methodology.',
-            valueEstimate: '8–15 engagements × $25K–$45K = $200K–$675K',
-            keyAssumption: 'Methodology produces insight quality comparable to traditional qual research',
-          },
+        sectionLabel: 'Section 10',
+        heading: 'Sentiment Tracker — HCP Sentiment Analysis',
+        description: 'NLP-based tracking of HCP belief and sentiment shifts over time. Monitors evolution of HCP perceptions across therapeutic areas, treatment protocols, and brand messaging — drawing from MKG\'s own engagement activities (advisory boards, speaker bureaus, MSL interactions).',
+        users: '81qd analysts, brand strategy teams, market research leads. Used to monitor therapeutic area sentiment, identify emerging resistance or receptivity to messaging, and inform campaign design.',
+        replaces: 'Periodic qualitative research (typically quarterly or semi-annual) that provides point-in-time snapshots. Sentiment Tracker aims for continuous monitoring.',
+        defensibility: { rating: 'MODERATE', text: 'NLP-based sentiment analysis is increasingly commoditized — off-the-shelf tools can process text for sentiment at scale. MKG\'s advantage is the data source: longitudinal sentiment data from their own advisory boards, speaker bureaus, and MSL interactions is proprietary and cannot be purchased. The tool\'s defensibility is entirely dependent on this proprietary data stream.' },
+        valueMapping: 'Speed (faster detection of sentiment shifts enables faster campaign adjustments) + Pricing Power (better-targeted engagement strategies improve conversion on existing client relationships)',
+        leadingIndicators: [
+          'Sentiment shift detection lag vs. periodic research',
+          'Correlation between sentiment signals and downstream campaign adjustments',
+          'Usage frequency by brand strategy teams',
+          'Client upsell/renewal rate on accounts where sentiment data informed the strategy',
+        ],
+        valueEstimate: 'Approximately $50M of MKG\'s revenue comes from clients where HCP sentiment data is directly relevant. A 0.5–1.5% lift in expansion/renewal on that base yields $250K–$750K in incremental annual revenue.',
+        assumptions: [
+          'The tool is fed by MKG\'s proprietary engagement data, not just public sources',
+          'Brand strategy teams actively incorporate sentiment outputs into campaign planning and client proposals',
+          'The resulting campaigns demonstrably outperform campaigns designed without sentiment input, creating a visible link between the tool and client outcomes',
         ],
       },
     },
   },
 
   // ================================================================
-  // SLIDE 13: VALUE QUANTIFICATION (Section 16)
+  // SLIDE 13: CHATMKG (Section 11)
+  // ================================================================
+  {
+    id: 'chatmkg',
+    title: 'ChatMKG — Secure LLM Access',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Section 11',
+        heading: 'ChatMKG — Secure LLM Access',
+        description: 'Custom multimodal AI workspace with SSO, audio transcription, web search, model switching, conversation history, and keyword search for past work. Designed as MKG\'s internal AI portal for general-purpose tasks.',
+        users: 'All MKG employees. Intended as the default AI interface for day-to-day work.',
+        replaces: 'Consumer AI tools (ChatGPT, Claude, Copilot) that employees are already using on personal devices.',
+        defensibility: { rating: 'LOW', text: 'Every feature in ChatMKG — SSO, transcription, web search, model switching, conversation history — is available in off-the-shelf enterprise AI products (ChatGPT Enterprise, Claude for Work, Microsoft Copilot). The only defensible angle is if ChatMKG provides access to MKG-proprietary data: the ION Data Lake, brand knowledge bases, and internal tools that general-purpose AI cannot see. Without that data connection, there is no compelling reason for an employee to use ChatMKG over the AI tools they already have. This is infrastructure that enables other products to create value, not a value-creating product itself.' },
+        valueMapping: 'Productivity (generalist efficiency gains across the org — but only if adoption is high and the tool is genuinely more useful than alternatives)',
+        leadingIndicators: [
+          'Daily active users as a percentage of total employees',
+          'Tasks completed per session',
+          'User-reported preference over external tools',
+          'Percentage of usage that involves proprietary data access (the critical metric)',
+        ],
+        valueEstimate: '200 FTEs at $95K with 3–8% productivity uplift = $570K–$1.52M. The wide range reflects a genuine strategic question: the low end assumes ChatMKG is just another AI chat tool with modest adoption. The high end assumes it becomes the primary interface to MKG\'s proprietary data.',
+        assumptions: [
+          'ChatMKG connects to the ION Data Lake and brand knowledge bases, making it meaningfully more useful than external alternatives',
+          'Adoption is mandated or incentivized, not optional',
+          'User experience is competitive with consumer-grade AI tools',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 14: VERBA (Section 12)
+  // ================================================================
+  {
+    id: 'verba',
+    title: 'Verba — Advisory Board Synthesis',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Section 12',
+        heading: 'Verba — Advisory Board Synthesis',
+        description: 'Transforms transcripts from advisory boards, investigator meetings, and expert discussions into structured intelligence. Extracts key themes, unmet needs, objections, treatment patterns, and sentiment shifts. Provides thematic tagging, comparative analysis across boards over time, and executive summaries.',
+        users: 'Client-facing — brand teams, medical affairs teams, market access leaders, commercial strategy teams. Offered through MKG\'s MedComm business units.',
+        replaces: 'Manual synthesis of advisory board transcripts — currently a labor-intensive process requiring analysts to review hours of discussion and produce structured reports over days or weeks.',
+        defensibility: { rating: 'LOW-MODERATE', text: 'At its core, Verba is a transcription-to-structured-output pipeline. Current foundation models can process transcripts and produce structured summaries with high quality. The path to defensibility: cross-referencing what was said against known clinical evidence, comparing sentiment across multiple boards over time using MKG\'s longitudinal data, connecting advisory board insights to prescribing behavior data from the ION Data Lake. Without these proprietary data layers, it\'s an LLM wrapper with a brand name.' },
+        valueMapping: 'Speed (faster insight-to-action cycle) + Productivity (replaces weeks of manual synthesis)',
+        leadingIndicators: [
+          'Time from advisory board to client deliverable',
+          'Client satisfaction scores on Verba-produced outputs',
+          'Number of boards processed per quarter',
+          'Whether clients request Verba specifically vs. receiving it as part of standard engagement',
+        ],
+        valueEstimate: 'Internal: productivity impact captured under "Research Analysts / Strategists" (40 FTEs, $115K comp, 10–20% uplift). External: 15–35 advisory boards with $10K–$20K premium add-on = $150K–$700K in incremental revenue.',
+        assumptions: [
+          'Verba connects to proprietary MKG data to deliver analysis that a standalone LLM cannot replicate',
+          'Output quality is high enough that medical reviewers don\'t spend as much time correcting the AI as they saved',
+          'Clients perceive enough value to pay a premium, rather than viewing this as table-stakes service delivery',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 15: PERSPECTIVX (Section 13)
+  // ================================================================
+  {
+    id: 'perspectivx',
+    title: 'PerspectivX — Concept Scoring',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Section 13',
+        heading: 'PerspectivX — Concept Scoring',
+        description: 'Simulates real-world feedback from HCPs by analyzing campaign concepts through the lens of each treater\'s unique attitudes, beliefs, and cognitive filters. Uses data-based personas modeled from qualitative and behavioral data sourced from the ION Data Lake. Outputs concept strength scores, strategic fit analysis, and optimization guidance.',
+        users: 'Brand teams, creative agencies, commercial strategy teams at pharma companies. Used during campaign development to test concepts before committing to production.',
+        replaces: 'Traditional qualitative concept testing — typically involving recruitment of HCP panels, facilitated interviews or focus groups, and manual analysis. This process costs $75K–$150K and takes 6–8 weeks. PerspectivX aims to deliver directional feedback in days.',
+        defensibility: { rating: 'MODERATE', text: 'The persona models are the differentiator. If they\'re built on MKG\'s proprietary research data — real qualitative research from SOUND, behavioral data from 81qd, engagement data from advisory boards — then PerspectivX is providing something a generic LLM cannot. The risk: as LLMs improve, anyone can create "simulated HCP" personas by prompting a model with a therapeutic area description. The defense is data specificity and validated accuracy.' },
+        valueMapping: 'Speed-to-Close (faster concept validation compresses campaign timelines) + Pricing Power (premium methodology that adds incremental revenue per engagement)',
+        leadingIndicators: [
+          'Concept test turnaround time vs. traditional qual',
+          'Correlation between PerspectivX scores and actual market performance',
+          'Client adoption rate and repeat usage',
+        ],
+        valueEstimate: 'Low: 10 concept tests × $20K = $200K. High: 25 tests × $35K = $875K. These prices represent a fraction of traditional qual research cost ($75K–$150K per study), making adoption easier to justify.',
+        assumptions: [
+          'Personas are grounded in MKG\'s proprietary data, not generic LLM approximations',
+          'Concept scores show validated correlation to real market outcomes (even directional correlation is meaningful)',
+          'Clients view this as a complement to — not a replacement for — traditional qual, making it an incremental spend',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 16: MAGPAI (Section 14)
+  // ================================================================
+  {
+    id: 'magpai',
+    title: 'MagpAI — Stakeholder Simulation',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Section 14',
+        heading: 'MagpAI — Stakeholder Simulation',
+        description: 'An intelligence-driven platform that replicates authentic communication styles of HCPs, patients, and payers through AI simulation. Supports observational research to uncover unmet needs and alignment gaps, and provides interactive training avatars for sales reps and MSLs to practice messaging before field execution.',
+        users: 'Brand teams, commercial strategy teams, training departments. Used for stakeholder research, message testing, and sales force preparation.',
+        replaces: 'Traditional stakeholder research interviews ($50K–$100K per study, 4–6 weeks) and in-person sales training role-plays.',
+        defensibility: { rating: 'LOW-MODERATE', text: 'Stakeholder simulation via LLM is increasingly easy to replicate. Any team with access to a foundation model and a well-crafted system prompt can create simulated HCP or payer conversations. The differentiator is whether the personas are grounded in MKG\'s proprietary data or are generic LLM approximations. MagpAI and PerspectivX share significant overlap: both create AI-simulated HCP/stakeholder interactions grounded in persona data. There may be a consolidation opportunity.' },
+        valueMapping: 'Productivity (faster stakeholder research) + Speed (pre-field testing shortens preparation cycles)',
+        leadingIndicators: [
+          'Simulations run per quarter',
+          'User-reported realism scores',
+          'Training completion rates',
+          'Whether research teams use MagpAI outputs to inform actual strategy decisions',
+        ],
+        valueEstimate: 'Low: 8 engagements × $15K = $120K. High: 18 engagements × $30K = $540K. The lower volume and price versus PerspectivX reflects the earlier stage of this product and the need to validate user experience before scaling.',
+        assumptions: [
+          'Personas are data-grounded, not generic',
+          'Users (researchers, trainers, reps) find the simulations realistic enough to be useful',
+          'The use case is distinct enough from PerspectivX to justify two separate products — or the two are consolidated',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 17: BLOOMLAB (Section 15)
+  // ================================================================
+  {
+    id: 'bloomlab',
+    title: 'BloomLab — Real-Time Market Research',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Section 15',
+        heading: 'BloomLab — Real-Time Market Research',
+        description: 'An AI-driven, real-time chat session that merges qualitative depth with quantitative rigor. Facilitates adaptive, consensus-building research sessions that overcome common limitations of traditional market research — respondent fatigue, social desirability bias, and rigid discussion guides.',
+        users: 'Market research teams, brand strategy leads, insights groups. Used as a research methodology for concept exploration, message testing, and consumer insight generation.',
+        replaces: 'Traditional qualitative focus groups and online bulletin boards — typically costing $100K+ per study and taking 4–8 weeks including recruitment, facilitation, and analysis.',
+        defensibility: { rating: 'MODERATE', text: 'The real-time adaptive methodology is novel. Unlike Verba (which processes existing transcripts) or MagpAI (which simulates stakeholders), BloomLab facilitates actual research sessions with real participants using AI to adapt the discussion in real time. This is a differentiated methodology, not just an AI layer on an existing process. The question is whether the methodology produces equivalent-quality insights at a fraction of the cost and time.' },
+        valueMapping: 'Speed (compressed research timelines) + Pricing Power (premium methodology that commands higher-than-traditional pricing for comparable insight quality in less time)',
+        leadingIndicators: [
+          'Research cycle time vs. traditional qual',
+          'Insight quality scores (rated by clients or validated against traditional methods)',
+          'Client repeat usage rate',
+        ],
+        valueEstimate: 'Low: 8 engagements × $25K = $200K. High: 15 engagements × $45K = $675K. BloomLab\'s novel methodology requires a validation period — early engagements may need to run alongside traditional research to prove equivalence.',
+        assumptions: [
+          'The methodology demonstrably produces insight quality comparable to traditional qual research',
+          'Clients are willing to pay a premium for speed even if the methodology is unfamiliar',
+          'BloomLab is positioned as complementary to traditional research (used for early-stage exploration), not a full replacement',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 18: VALUE QUANTIFICATION (Section 16)
   // ================================================================
   {
     id: 'value-quantification',
@@ -571,7 +711,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 14: LEADING VS LAGGING INDICATORS (Section 17)
+  // SLIDE 19: LEADING VS LAGGING INDICATORS (Section 17)
   // ================================================================
   {
     id: 'leading-indicators',
@@ -605,7 +745,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 15: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
+  // SLIDE 20: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
   // ================================================================
   {
     id: 'governance',
@@ -641,7 +781,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 16: ROADMAP & FINAL RECOMMENDATIONS (Section 19)
+  // SLIDE 21: ROADMAP & FINAL RECOMMENDATIONS (Section 19)
   // ================================================================
   {
     id: 'roadmap',
