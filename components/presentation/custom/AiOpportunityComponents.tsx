@@ -11,6 +11,7 @@ import {
   Layers, AlertCircle, Minus, CheckCircle2,
   Shield, FileText, Replace, Activity, Clock, ChevronDown,
   Gauge, ListChecks, Calendar, Lightbulb, GitBranch,
+  Server, Lock, Plug, FolderSearch,
 } from 'lucide-react'
 
 // ---- SLIDE 2: Executive Summary ----
@@ -1321,6 +1322,182 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+// ---- ION Data Lake Deep Dive ----
+export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics, activation, requirements }: {
+  sectionLabel: string
+  heading: string
+  acquisition: { publicData: string[]; proprietaryData: string[] }
+  analytics: string[]
+  activation: string[]
+  requirements: Array<{ requirement: string; description: string }>
+}) {
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Database className="w-4 h-4 text-sage-bright" /> Acquisition
+          </h3>
+          <div className="space-y-3">
+            <div>
+              <h4 className="text-[10px] uppercase tracking-wider text-cream/40 mb-1.5">Public / Commercial Data</h4>
+              <ul className="space-y-1">
+                {acquisition.publicData.map((item, i) => (
+                  <li key={i} className="flex items-start gap-1.5 text-[10px] text-cream/60">
+                    <Minus className="w-2.5 h-2.5 mt-0.5 text-cream/30 flex-shrink-0" />{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[10px] uppercase tracking-wider text-sage-bright/80 mb-1.5">Proprietary Data</h4>
+              <ul className="space-y-1">
+                {acquisition.proprietaryData.map((item, i) => (
+                  <li key={i} className="flex items-start gap-1.5 text-[10px] text-cream/70">
+                    <Minus className="w-2.5 h-2.5 mt-0.5 text-sage-bright flex-shrink-0" />{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Brain className="w-4 h-4 text-helix-cyan" /> AI Analytics
+          </h3>
+          <ul className="space-y-1.5">
+            {analytics.map((item, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-[10px] text-cream/70">
+                <ArrowRight className="w-2.5 h-2.5 mt-0.5 text-helix-cyan flex-shrink-0" />{item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-gold" /> Activation
+          </h3>
+          <ul className="space-y-1.5">
+            {activation.map((item, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-[10px] text-cream/70">
+                <ArrowRight className="w-2.5 h-2.5 mt-0.5 text-gold flex-shrink-0" />{item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+          <Server className="w-4 h-4 text-sage-bright" /> Technical Requirements for AI Viability
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-cream/10">
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium w-32">Requirement</th>
+                <th className="text-left py-2 text-cream/50 font-medium">What It Means</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requirements.map((req, i) => (
+                <tr key={i} className="border-b border-cream/5">
+                  <td className="py-2.5 pr-4 text-cream/90 font-medium align-top">{req.requirement}</td>
+                  <td className="py-2.5 text-cream/60 leading-relaxed">{req.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- Combined Value Waterfall ----
+export function CombinedValueWaterfallSlide({ sectionLabel, heading, internalItems, externalItems, internalTotal, externalTotal, grandTotal, footnote }: {
+  sectionLabel: string
+  heading: string
+  internalItems: Array<{ label: string; low: string; high: string; midpoint: number }>
+  externalItems: Array<{ label: string; low: string; high: string; midpoint: number }>
+  internalTotal: { low: string; high: string }
+  externalTotal: { low: string; high: string }
+  grandTotal: { low: string; high: string; pctLow: string; pctHigh: string }
+  footnote: string
+}) {
+  const maxMid = Math.max(
+    ...internalItems.map(i => i.midpoint),
+    ...externalItems.map(i => i.midpoint),
+  )
+  const barScale = (mid: number) => `${Math.max(8, (mid / maxMid) * 100)}%`
+
+  return (
+    <div className="space-y-6 px-4">
+      <SectionHeader section={sectionLabel} title={heading} />
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-4 flex items-center gap-2">
+            <Gauge className="w-4 h-4 text-sage-bright" /> Internal Productivity
+          </h3>
+          <div className="space-y-2">
+            {internalItems.map((item, i) => (
+              <div key={i} className="space-y-0.5">
+                <div className="flex justify-between text-[10px]">
+                  <span className="text-cream/70">{item.label}</span>
+                  <span className="text-cream/50 font-mono">{item.low}–{item.high}</span>
+                </div>
+                <div className="h-3 bg-cream/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-sage/60 rounded-full" style={{ width: barScale(item.midpoint) }} />
+                </div>
+              </div>
+            ))}
+            <div className="flex justify-between pt-2 border-t border-cream/10 text-xs">
+              <span className="text-cream font-semibold">Internal Subtotal</span>
+              <span className="text-sage-bright font-mono font-bold">{internalTotal.low}–{internalTotal.high}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <h3 className="text-sm font-semibold text-cream mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-gold" /> External Revenue
+          </h3>
+          <div className="space-y-2">
+            {externalItems.map((item, i) => (
+              <div key={i} className="space-y-0.5">
+                <div className="flex justify-between text-[10px]">
+                  <span className="text-cream/70">{item.label}</span>
+                  <span className="text-cream/50 font-mono">{item.low}–{item.high}</span>
+                </div>
+                <div className="h-3 bg-cream/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-gold/60 rounded-full" style={{ width: barScale(item.midpoint) }} />
+                </div>
+              </div>
+            ))}
+            <div className="flex justify-between pt-2 border-t border-cream/10 text-xs">
+              <span className="text-cream font-semibold">External Subtotal</span>
+              <span className="text-gold font-mono font-bold">{externalTotal.low}–{externalTotal.high}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 bg-gold/5 border-2 border-gold/30 rounded-xl text-center">
+        <p className="text-xs uppercase tracking-wider text-cream/40 mb-2">Total Year 1 AI Impact</p>
+        <p className="text-3xl md:text-4xl font-mono font-bold text-gold">{grandTotal.low} – {grandTotal.high}</p>
+        <p className="text-sm text-cream/50 mt-1">{grandTotal.pctLow}–{grandTotal.pctHigh} of revenue</p>
+      </div>
+
+      <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
+        <p className="text-[10px] text-cream/50 leading-relaxed">{footnote}</p>
       </div>
     </div>
   )
