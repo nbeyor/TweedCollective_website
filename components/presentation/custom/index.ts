@@ -21,7 +21,8 @@ import {
   ChangeManagementSlide, QuantifyingUpsideSlide, FinalRecommendationSlide,
   ProductValueStorySlide, ProductValueStoryCompactSlide,
   ValueFrameworkSlide, SuperProductSlide,
-  ValueQuantificationSlide, LeadingIndicatorsSlide, RoadmapPhasedSlide,
+  ValueQuantificationSlide, InternalProductivityValueSlide, ExternalRevenueSlide,
+  LeadingIndicatorsSlide, RoadmapPhasedSlide,
   IonDataLakeSlide, CombinedValueWaterfallSlide,
 } from './AiOpportunityComponents'
 import { DiligenceChartSlide, DiligenceAssessmentGrid, DiligenceSynergySlide } from './DiligenceComponents'
@@ -59,6 +60,8 @@ export const customComponentRegistry: CustomComponentRegistry = {
   'ValueFrameworkSlide': ValueFrameworkSlide as React.ComponentType<Record<string, unknown>>,
   'SuperProductSlide': SuperProductSlide as React.ComponentType<Record<string, unknown>>,
   'ValueQuantificationSlide': ValueQuantificationSlide as React.ComponentType<Record<string, unknown>>,
+  'InternalProductivityValueSlide': InternalProductivityValueSlide as React.ComponentType<Record<string, unknown>>,
+  'ExternalRevenueSlide': ExternalRevenueSlide as React.ComponentType<Record<string, unknown>>,
   'LeadingIndicatorsSlide': LeadingIndicatorsSlide as React.ComponentType<Record<string, unknown>>,
   'RoadmapPhasedSlide': RoadmapPhasedSlide as React.ComponentType<Record<string, unknown>>,
   'IonDataLakeSlide': IonDataLakeSlide as React.ComponentType<Record<string, unknown>>,

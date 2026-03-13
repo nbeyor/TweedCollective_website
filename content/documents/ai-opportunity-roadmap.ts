@@ -5,7 +5,7 @@
  * This file contains NO React components or JSX.
  *
  * Updated: March 13, 2026 per MKG_AI_Assessment_EDIT_GUIDE
- * 28 slides total
+ * 29 slides total
  */
 
 import { SlideData } from '@/lib/types'
@@ -89,12 +89,12 @@ export const slides: SlideData[] = [
       columns: 4,
       items: [
         { icon: 'target', title: '1. Business-First Lens', description: 'Understand MKG\'s revenue model, cost structure, and competitive positioning before evaluating any AI initiative.' },
-        { icon: 'chart', title: '2. Value Pool ID', description: 'Map the internal (cost, speed, productivity) and external (pricing power, speed-to-close) value pools AI can address.' },
-        { icon: 'trending', title: '3. Business Drivers', description: 'Identify the economic sensitivities and workflow areas where AI creates the highest-leverage P&L impact.' },
-        { icon: 'database', title: '4. Initiative Review', description: 'Inventory all 15+ active AI initiatives across KINETICS (internal) and DIFFUSION (external) with current status.' },
-        { icon: 'search', title: '5. Initiative Deep Dive', description: 'Unpack each initiative: what it does, who uses it, defensibility assessment, and value potential scoring with rationale.' },
-        { icon: 'calculator', title: '6. Value Quantification', description: 'Characterize and quantify value drivers, separating internal productivity (labor cost equivalent) from external revenue upside.' },
-        { icon: 'rocket', title: '7. Prioritization & Roadmap', description: 'Focus the portfolio through consolidation, leading indicator measurement, and a phased execution plan.' },
+        { icon: 'chart', title: '2. Value Pool Identification', description: 'Map the internal (cost, speed, productivity) and external (pricing power, speed-to-close) value pools that AI can address.' },
+        { icon: 'trending', title: '3. Underlying Business Drivers', description: 'Identify the economic sensitivities and workflow areas where AI creates the highest-leverage impact on MKG\'s P&L.' },
+        { icon: 'database', title: '4. AI Initiative Review', description: 'Inventory all 15+ active AI initiatives across KINETICS (internal) and DIFFUSION (external) with current status and ownership.' },
+        { icon: 'search', title: '5. Initiative Deep Dive', description: 'Unpack each initiative individually: what it does, who uses it, what it replaces, defensibility assessment, and value potential scoring with rationale.' },
+        { icon: 'calculator', title: '6. Value Driver Quantification', description: 'Characterize and quantify the specific value drivers per initiative, separating internal productivity (labor cost equivalent) from external revenue upside.' },
+        { icon: 'rocket', title: '7. Prioritization & Roadmap', description: 'Focus the portfolio on practical value creation through consolidation, leading indicator measurement, and a phased execution plan.' },
       ],
       insightBox: {
         label: 'Framework',
@@ -157,6 +157,9 @@ export const slides: SlideData[] = [
             { area: 'Creative Automation', impact: 'Moderate', ebitda: 'Low' },
           ],
         },
+        revenueMixSource: 'Sources: MKG management presentations (Nov 2025, Feb 2026); revenue percentages are approximate and based on disclosed segment reporting.',
+        costStructureSource: 'Sources: MKG internal financials as provided to Novo Holdings; compensation benchmarks from Glassdoor, AMWA 2024 Compensation Report, and Salary.com, adjusted for MKG seniority mix and NYC metro location.',
+        economicSensitivityRationale: 'Sensitivity scoring reflects two dimensions: (1) AI Impact Potential measures how directly AI tools can change the workflow — "High" means the workflow is primarily information processing that AI excels at; "Moderate" means AI augments human judgment but cannot replace it. (2) EBITDA Sensitivity measures the P&L weight of the area — "High" means the workflow represents a large share of labor cost or revenue; "Low" means the area is a smaller contributor. For example, Editorial Workflow scores Moderate/High because AI augments (not replaces) the medical writing process but the labor pool is large (~130 FTEs across writers, editors, and compliance reviewers). Predictive Analytics scores High/High because the workflow is well-suited to AI automation and the 81qd unit\'s shift to subscription revenue would materially improve margins.',
       },
     },
   },
@@ -176,35 +179,36 @@ export const slides: SlideData[] = [
         heading: 'AI Initiative Inventory — KINETICS',
         subtitle: 'Internal tools organized by tier — editorial pipeline, insight & knowledge, and general productivity',
         callout: 'The four Tier 1 tools touch the same content creation and review pipeline. The Super Product Vision slide presents the case for unifying them into a single integrated platform.',
+        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 1: Editorial Pipeline (Core Value Drivers)',
             rows: [
-              { name: 'DynAImic Content', description: 'AI-assisted draft generation across marketing channels from content briefs.', valueSource: 'Cost + Speed', valuePotential: 'High' },
-              { name: 'Annotation Activation', description: 'Auto-links claims to supporting literature for MLR preparation.', valueSource: 'Speed + Productivity', valuePotential: 'High' },
-              { name: 'Compliance Core', description: 'Flags FDA compliance risks — off-label language, fair balance, guideline adherence.', valueSource: 'Cost + Speed', valuePotential: 'High' },
-              { name: 'Route Reagent', description: 'Validates content against brand style rules and routing comments during editorial review.', valueSource: 'Speed + Productivity', valuePotential: 'High' },
+              { name: 'DynAImic Content', description: 'AI-assisted draft generation across marketing channels from content briefs.', valueSource: 'Cost + Speed', valuePotential: 'High', rationale: 'Addresses ~80 medical writers ($120K avg comp). Content generation is the highest-volume step in the editorial pipeline and directly compresses cycle time from brief to first draft.' },
+              { name: 'Annotation Activation', description: 'Auto-links claims to supporting literature for MLR preparation.', valueSource: 'Speed + Productivity', valuePotential: 'High', rationale: 'Automates the most tedious step in MLR preparation. Directly reduces rounds of revision and time-to-submission for ~30 editorial/QA staff.' },
+              { name: 'Compliance Core', description: 'Flags FDA compliance risks — off-label language, fair balance, guideline adherence.', valueSource: 'Cost + Speed', valuePotential: 'High', rationale: 'Pre-screening for regulatory flags prevents costly late-stage MLR rejections. Addresses ~20 compliance reviewers and reduces the rework multiplier across the full pipeline.' },
+              { name: 'Route Reagent', description: 'Validates content against brand style rules and routing comments during editorial review.', valueSource: 'Speed + Productivity', valuePotential: 'High', rationale: 'Closest to production among the pipeline tools. Already embedded in real editorial workflows. Catches style and brand errors before human review, reducing per-project QA hours.' },
             ],
           },
           {
             title: 'Tier 2: Insight & Knowledge Tools',
             rows: [
-              { name: 'Practice Master', description: 'Harmonizes data sources to map HCP affiliations and resolve conflicting records.', valueSource: 'Speed + Productivity', valuePotential: 'Moderate' },
-              { name: 'Sentiment Tracker', description: 'NLP-based tracking of HCP belief and sentiment shifts from MKG engagement data.', valueSource: 'Pricing Power', valuePotential: 'Moderate' },
-              { name: 'Undermind', description: 'Deep scientific literature search and research surrogate.', valueSource: 'Productivity', valuePotential: 'Moderate' },
-              { name: 'Brand Bonds', description: 'Brand-trained AI assistant that synthesizes cross-functional team knowledge.', valueSource: 'Productivity', valuePotential: 'Moderate' },
-              { name: 'Conversation Centrifuge', description: 'Structures and summarizes expert interviews and advisory board discussions.', valueSource: 'Speed', valuePotential: 'Moderate' },
+              { name: 'Practice Master', description: 'Harmonizes data sources to map HCP affiliations and resolve conflicting records.', valueSource: 'Speed + Productivity', valuePotential: 'Moderate', rationale: 'Useful but addresses a narrower analyst pool (~25 FTEs). Underlying NPI/affiliation data is commercially available; value is in the harmonization layer, not the data itself.' },
+              { name: 'Sentiment Tracker', description: 'NLP-based tracking of HCP belief and sentiment shifts from MKG engagement data.', valueSource: 'Pricing Power', valuePotential: 'Moderate', rationale: 'High strategic value when applied to proprietary engagement data, but indirect revenue mechanism (share-of-wallet lift) is harder to measure in Year 1.' },
+              { name: 'Undermind', description: 'Deep scientific literature search and research surrogate.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Literature search is useful but increasingly commoditized by general AI tools. Value depends on integration with MKG\'s proprietary datasets.' },
+              { name: 'Brand Bonds', description: 'Brand-trained AI assistant that synthesizes cross-functional team knowledge.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Internal knowledge tool with productivity value but limited external revenue impact. Adoption depends on data quality of the underlying brand knowledge bases.' },
+              { name: 'Conversation Centrifuge', description: 'Structures and summarizes expert interviews and advisory board discussions.', valueSource: 'Speed', valuePotential: 'Moderate', rationale: 'Overlaps with Verba\'s advisory board synthesis. Value is real but may be consolidated into the Verba product over time.' },
             ],
           },
           {
             title: 'Tier 3: General Productivity & Workflow Tools',
             rows: [
-              { name: 'ION Portal', description: 'Central AI infrastructure and data access layer.', valueSource: 'Productivity', valuePotential: 'Moderate' },
-              { name: 'ChatMKG / Secure LLM', description: 'Enterprise AI interface with SSO, transcription, web search.', valueSource: 'Productivity', valuePotential: 'Moderate' },
-              { name: 'Case Catalyst', description: 'Searches and retrieves relevant past case studies.', valueSource: 'Productivity', valuePotential: 'Low–Moderate' },
-              { name: 'Meeting Nucleus', description: 'Meeting transcription and summarization.', valueSource: 'Productivity', valuePotential: 'Low' },
-              { name: 'Strategic Brief', description: 'AI-assisted strategic brief generation.', valueSource: 'Productivity', valuePotential: 'Low' },
-              { name: 'Strategic Synthesis', description: 'Cross-document strategic synthesis and analysis.', valueSource: 'Productivity', valuePotential: 'Low' },
+              { name: 'ION Portal', description: 'Central AI infrastructure and data access layer.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Infrastructure layer, not a value driver itself. Enables other tools but has no standalone business impact unless it becomes the gateway to proprietary data.' },
+              { name: 'ChatMKG / Secure LLM', description: 'Enterprise AI interface with SSO, transcription, web search.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Every feature is available in off-the-shelf enterprise AI. Defensibility requires connection to ION Data Lake and brand knowledge bases — without that, there is no reason to use it over consumer tools.' },
+              { name: 'Case Catalyst', description: 'Searches and retrieves relevant past case studies.', valueSource: 'Productivity', valuePotential: 'Low–Moderate', rationale: 'Narrow use case (past case studies). Value depends on quality and coverage of the knowledge base.' },
+              { name: 'Meeting Nucleus', description: 'Meeting transcription and summarization.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Transcription and summarization is fully commoditized. Zoom, Granola, and other tools do this natively.' },
+              { name: 'Strategic Brief', description: 'AI-assisted strategic brief generation.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Helpful but limited addressable impact. Unlikely to be measurable at the P&L level.' },
+              { name: 'Strategic Synthesis', description: 'Cross-document strategic synthesis and analysis.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Same as Strategic Brief — incremental productivity on a narrow workflow.' },
             ],
           },
         ],
@@ -244,24 +248,6 @@ export const slides: SlideData[] = [
             { name: 'Orion', positioning: 'Patient identification analytics', revenue: 'Analytics', risk: 'Moderate' },
             { name: 'InfluenceLink', positioning: 'Dissemination via Plexus-identified leaders', revenue: 'Platform', risk: 'Lower' },
           ],
-        },
-        quadrantChart: {
-          title: 'Portfolio Prioritization',
-          icon: 'Zap',
-          xLabel: 'Complexity -->',
-          yLabel: 'Strategic Value -->',
-          quadrants: ['Accelerate', 'Double Down', 'Reposition', 'Cut'],
-          points: [
-            { label: 'Plexus', x: 0.7, y: 0.9 },
-            { label: 'Pantheon', x: 0.6, y: 0.85 },
-            { label: 'BloomLab', x: 0.5, y: 0.8 },
-            { label: 'InfluenceLink', x: 0.45, y: 0.7 },
-            { label: 'Orion', x: 0.65, y: 0.45 },
-            { label: 'PerspectivX', x: 0.55, y: 0.4 },
-            { label: 'MagpAI', x: 0.4, y: 0.35 },
-            { label: 'Verba', x: 0.35, y: 0.25 },
-          ],
-          height: 290,
         },
       },
     },
@@ -808,13 +794,13 @@ export const slides: SlideData[] = [
       props: {
         sectionLabel: 'Product Consolidation',
         heading: 'Super Product Vision: The AI Editorial Platform',
-        problems: [
-          'End-to-end content lifecycle for customers — one onboarding, one integration, one training cycle. "Brief to MLR-ready" instead of four modular tools.',
-          'Faster cycle times through eliminated handoffs — content flows through all four stages without manual export/import. Target: reduce content-to-MLR from ~14 days to ~8 days.',
-          'Subscription pricing power — unified platform commands annual licensing versus per-tool add-ons. Higher switching costs.',
-          '30–40% engineering efficiency — eliminates duplicated infrastructure (document ingestion, LLM routing, brand context, auth) across four separate codebases.',
-          'Unified brand knowledge base — brand rules, style guides, and past MLR decisions loaded once and available to all stages.',
-          'Stronger competitive positioning — one AI-powered editorial backbone for pharma content is more compelling than a collection of helper tools.',
+        opportunities: [
+          { opportunity: 'End-to-end content lifecycle for customers', impact: 'One onboarding, one integration, one training cycle. Pharma brand teams get a platform that handles "brief to MLR-ready" instead of four modular tools. Fundamentally different sales conversation.' },
+          { opportunity: 'Faster cycle times through eliminated handoffs', impact: 'Content flows through all four stages without manual export/import. Target: reduce content-to-MLR from ~14 days to ~8 days on pilot projects.' },
+          { opportunity: 'Subscription pricing power', impact: 'A unified platform commands annual licensing versus per-tool add-ons. Creates recurring revenue and higher switching costs.' },
+          { opportunity: '30–40% engineering efficiency', impact: 'Eliminates duplicated infrastructure (document ingestion, LLM routing, brand context loading, authentication) across four separate codebases. Frees capacity for feature work.' },
+          { opportunity: 'Unified brand knowledge base', impact: 'Brand rules, style guides, and past MLR decisions loaded once and available to all stages — today each tool manages this independently.' },
+          { opportunity: 'Stronger competitive positioning', impact: 'One AI-powered editorial backbone for pharma content > a collection of helper tools. Platform becomes infrastructure, not an optional add-on.' },
         ],
         stages: [
           { name: 'Stage 1: Create', component: 'DynAImic Content', description: 'AI-assisted content drafting from briefs across channels' },
@@ -850,58 +836,63 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 24: VALUE QUANTIFICATION (Section 16)
+  // SLIDE 24: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
   // ================================================================
   {
-    id: 'value-quantification',
-    title: 'Value Quantification',
+    id: 'internal-productivity-value',
+    title: 'Internal Productivity Value Summary',
     type: 'custom',
     content: {
       type: 'custom',
-      componentId: 'ValueQuantificationSlide',
+      componentId: 'InternalProductivityValueSlide',
       props: {
         sectionLabel: 'Value Quantification',
-        heading: 'Value Quantification',
-        subtitle: 'Internal productivity + External revenue upside',
-        internalTable: {
-          headers: ['Workflow Area', 'FTEs', 'Comp', 'Primary Value Driver', 'Low Uplift', 'Low Value', 'High Uplift', 'High Value'],
-          rows: [
-            { area: 'Medical Writers', ftes: '80', comp: '$120K', target: 'Cycle time: brief to first draft', lowUplift: '8%', lowValue: '$768K', highUplift: '15%', highValue: '$1,440K' },
-            { area: 'Editorial / QA', ftes: '30', comp: '$110K', target: 'QA pre-check: errors before review', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K' },
-            { area: 'Regulatory / Compliance', ftes: '20', comp: '$140K', target: 'Risk prevention: MLR rejections', lowUplift: '5%', lowValue: '$140K', highUplift: '12%', highValue: '$336K' },
-            { area: 'HCP Profiling / Data', ftes: '25', comp: '$105K', target: 'Research speed: HCP profiling time', lowUplift: '10%', lowValue: '$263K', highUplift: '20%', highValue: '$525K' },
-            { area: 'Influence / Network', ftes: '15', comp: '$130K', target: 'Analysis depth: influence mapping', lowUplift: '5%', lowValue: '$98K', highUplift: '12%', highValue: '$234K' },
-            { area: 'Research / Strategy', ftes: '40', comp: '$115K', target: 'Synthesis speed: research to deliverable', lowUplift: '8%', lowValue: '$368K', highUplift: '15%', highValue: '$690K' },
-            { area: 'Other Knowledge Workers', ftes: '200', comp: '$95K', target: 'General productivity: knowledge work', lowUplift: '2%', lowValue: '$380K', highUplift: '5%', highValue: '$950K' },
-          ],
-          totalLow: '$2.5M',
-          totalHigh: '$5.0M',
-        },
-        externalTable: {
-          headers: ['Product', 'Low', 'High'],
-          rows: [
-            { product: 'Pantheon (subscription)', lowAssumptions: '8 × $80K', lowRevenue: '$640K', highAssumptions: '15 × $120K', highRevenue: '$1,800K' },
-            { product: 'Plexus (AI premium)', lowAssumptions: '8 × $20K', lowRevenue: '$160K', highAssumptions: '18 × $40K', highRevenue: '$720K' },
-            { product: 'PerspectivX (concept testing)', lowAssumptions: '8 × $15K', lowRevenue: '$120K', highAssumptions: '20 × $30K', highRevenue: '$600K' },
-            { product: 'Verba (advisory premium)', lowAssumptions: '$0 (sweetener)', lowRevenue: '$0', highAssumptions: '15 × $12K', highRevenue: '$180K' },
-            { product: 'MagpAI (simulation)', lowAssumptions: '$0 (sweetener)', lowRevenue: '$0', highAssumptions: '10 × $20K', highRevenue: '$200K' },
-            { product: 'BloomLab (AI research)', lowAssumptions: '8 × $25K', lowRevenue: '$200K', highAssumptions: '18 × $45K', highRevenue: '$810K' },
-            { product: 'Sentiment Tracker (lift)', lowAssumptions: '0.3% on $50M', lowRevenue: '$150K', highAssumptions: '0.8% on $50M', highRevenue: '$400K' },
-          ],
-          totalLow: '$1.3M',
-          totalHigh: '$4.7M',
-        },
-        combinedSummary: [
-          { category: 'Internal Productivity Value', low: '$2.5M', high: '$5.0M' },
-          { category: 'External Revenue Upside', low: '$1.3M', high: '$4.7M' },
+        heading: 'Internal Productivity Value Summary',
+        rows: [
+          { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '8%', lowValue: '$768K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
+          { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
+          { initiative: 'Compliance Core', primaryValueDriver: 'Risk prevention: MLR rejections avoided', ftes: '20', comp: '$140K', lowUplift: '5%', lowValue: '$140K', highUplift: '12%', highValue: '$336K', rationale: 'Each prevented rejection avoids 3–5 days of rework cascading across writers, editors, and compliance staff.' },
+          { initiative: 'Pantheon + Practice Master', primaryValueDriver: 'Research speed: HCP profiling time', ftes: '25', comp: '$105K', lowUplift: '10%', lowValue: '$263K', highUplift: '20%', highValue: '$525K', rationale: 'Automated search and affiliation harmonization replaces manual profiling that currently takes weeks per project.' },
+          { initiative: 'Plexus', primaryValueDriver: 'Analysis depth: influence mapping automation', ftes: '15', comp: '$130K', lowUplift: '5%', lowValue: '$98K', highUplift: '12%', highValue: '$234K', rationale: 'AI-enhanced network modeling produces richer outputs in less time than manual analysis.' },
+          { initiative: 'Verba + BloomLab + PerspectivX', primaryValueDriver: 'Synthesis speed: research to deliverable', ftes: '40', comp: '$115K', lowUplift: '8%', lowValue: '$368K', highUplift: '15%', highValue: '$690K', rationale: 'AI-assisted summarization and concept scoring compress the research-to-insight cycle.' },
+          { initiative: 'ChatMKG + ION portal', primaryValueDriver: 'General productivity: knowledge work efficiency', ftes: '200', comp: '$95K', lowUplift: '2%', lowValue: '$380K', highUplift: '5%', highValue: '$950K', rationale: 'Broad-based efficiency gains contingent on data integration with ION. Wide range reflects uncertainty.' },
         ],
-        totalOpportunity: { low: '$3.8M', high: '$9.7M', pctLow: '2.5%', pctHigh: '6.5%' },
+        totalLow: '$2.5M',
+        totalHigh: '$5.0M',
       },
     },
   },
 
   // ================================================================
-  // SLIDE 25: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
+  // SLIDE 25: EXTERNAL REVENUE UPSIDE (pAdd)
+  // ================================================================
+  {
+    id: 'external-revenue',
+    title: 'External Revenue Upside',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ExternalRevenueSlide',
+      props: {
+        sectionLabel: 'Value Quantification',
+        heading: 'External Revenue Upside',
+        rows: [
+          { product: 'Pantheon', primaryValueDriver: 'Subscription shift — recurring revenue', lowAssumptions: '8 customers × $80K', lowRevenue: '$640K', highAssumptions: '15 customers × $120K', highRevenue: '$1,800K', rationale: 'Converting <10% of eligible 81qd clients to subscription validates the model shift.' },
+          { product: 'Plexus', primaryValueDriver: 'Pricing premium — AI-enhanced analytics', lowAssumptions: '8 projects × $20K premium', lowRevenue: '$160K', highAssumptions: '18 projects × $40K premium', highRevenue: '$720K', rationale: 'AI enhancement justifies modest price premium on bundled analytics engagements. Nick noted AI efficiency is becoming "cost of entry."' },
+          { product: 'PerspectivX', primaryValueDriver: 'New revenue — concept testing add-on', lowAssumptions: '8 tests × $15K', lowRevenue: '$120K', highAssumptions: '20 tests × $30K', highRevenue: '$600K', rationale: 'Priced at a fraction of traditional qual ($75K–$150K), making adoption low-risk for clients.' },
+          { product: 'Verba', primaryValueDriver: 'Premium add-on — advisory board synthesis', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '15 boards × $12K', highRevenue: '$180K', rationale: 'Low case reflects that off-the-shelf LLMs can do structured synthesis — likely bundled, not charged separately.' },
+          { product: 'MagpAI', primaryValueDriver: 'New revenue — simulation engagements', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '10 engagements × $20K', highRevenue: '$200K', rationale: 'Earlier stage — low case reflects current use as demo/deal sweetener. High case requires standalone training simulation value.' },
+          { product: 'BloomLab', primaryValueDriver: 'New methodology — AI market research', lowAssumptions: '8 engagements × $25K', lowRevenue: '$200K', highAssumptions: '18 engagements × $45K', highRevenue: '$810K', rationale: 'Novel method requires parallel validation before clients trust it standalone.' },
+          { product: 'Sentiment Tracker', primaryValueDriver: 'Share-of-wallet lift on existing clients', lowAssumptions: '0.3% on $50M base', lowRevenue: '$150K', highAssumptions: '0.8% on $50M base', highRevenue: '$400K', rationale: 'Indirect mechanism — better-targeted campaigns → stronger outcomes → expanded scope.' },
+        ],
+        totalLow: '$1.3M',
+        totalHigh: '$4.7M',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 26: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
   // ================================================================
   {
     id: 'combined-value-waterfall',
@@ -954,23 +945,26 @@ export const slides: SlideData[] = [
         heading: 'Leading Indicators & Measurement',
         coreArgument: 'MKG\'s current measurement is almost entirely lagging — revenue, margin, EBITDA. For early-stage AI initiatives, these will show nothing for 6–12 months. AI initiatives need leading indicators that show whether adoption is working before it shows up in financials. Assign named owners, automate data pulls, keep it simple, and communicate steadily through existing meetings.',
         leadingIndicators: [
-          { category: 'Adoption', indicator: 'Daily/weekly active users per tool', whyItMatters: 'If people aren\'t using the tools, nothing else matters' },
-          { category: 'Adoption', indicator: '% of eligible projects using AI-assisted workflow', whyItMatters: 'Measures penetration into actual work, not just availability' },
-          { category: 'Cycle Time', indicator: 'Days from brief to MLR submission', whyItMatters: 'Editorial pipeline\'s north star metric' },
-          { category: 'Cycle Time', indicator: 'Rounds of revision before approval', whyItMatters: 'Directly tied to Route Reagent / Annotation value' },
-          { category: 'Quality', indicator: 'First-pass MLR acceptance rate', whyItMatters: 'If AI pre-checks work, fewer submissions get bounced' },
-          { category: 'Quality', indicator: 'Annotation error rate', whyItMatters: 'Sample-audit AI citations; measures output quality' },
-          { category: 'Client', indicator: 'Proposal win rate on AI-featured pitches', whyItMatters: 'Measures whether AI tools help close deals' },
-          { category: 'Client', indicator: 'Client NPS on AI-enhanced deliverables', whyItMatters: 'Post-engagement survey on AI-enhanced projects' },
-          { category: 'Revenue', indicator: 'Subscription attach rate (Pantheon)', whyItMatters: 'Leading indicator of transaction → subscription shift' },
+          { category: 'Adoption', indicator: 'Daily/weekly active users per tool', sourceSlides: 'All products', howToMeasure: 'Instrument usage logging in ION platform. Pull weekly automated reports — no manual data collection.' },
+          { category: 'Adoption', indicator: '% of eligible projects using AI-assisted workflow', sourceSlides: 'DynAImic, Route Reagent, Annotation', howToMeasure: 'Tag projects in the project management system as AI-assisted vs. manual. Compare volumes monthly.' },
+          { category: 'Cycle Time', indicator: 'Days from brief to MLR submission', sourceSlides: 'Editorial pipeline (p9–p12)', howToMeasure: 'Timestamp brief receipt and MLR submission in workflow system. Calculate elapsed days automatically.' },
+          { category: 'Cycle Time', indicator: 'Rounds of revision before approval', sourceSlides: 'Annotation, Route Reagent', howToMeasure: 'Count revision submissions per asset in the editorial tracking system.' },
+          { category: 'Quality', indicator: 'First-pass MLR acceptance rate', sourceSlides: 'Compliance Core', howToMeasure: 'Track accept/reject/revise decisions at MLR. Compare AI-screened vs. unscreened submissions.' },
+          { category: 'Quality', indicator: 'Annotation error rate', sourceSlides: 'Annotation Activation', howToMeasure: 'Sample-audit AI-generated citations quarterly. Measure % incorrect or missing references.' },
+          { category: 'Client Signal', indicator: 'Proposal win rate on AI-featured pitches', sourceSlides: 'Pantheon, Plexus, PerspectivX', howToMeasure: 'Flag proposals that feature AI capabilities in CRM. Compare win rates vs. non-AI proposals.' },
+          { category: 'Client Signal', indicator: 'Client NPS on AI-enhanced deliverables', sourceSlides: 'Verba, BloomLab', howToMeasure: 'Add a 1-question NPS survey to post-engagement follow-up on AI-enhanced projects.' },
+          { category: 'Revenue Signal', indicator: 'Subscription attach rate (Pantheon)', sourceSlides: 'Pantheon', howToMeasure: 'Track Pantheon subscription conversions as a % of eligible 81qd client base quarterly.' },
         ],
-        laggingIndicators: [
-          { category: 'Financial', indicator: 'Revenue from AI-enhanced engagements', timeline: '6–12 months' },
-          { category: 'Financial', indicator: 'Gross margin improvement from productivity', timeline: '6–12 months' },
-          { category: 'Financial', indicator: 'EBITDA uplift attributable to AI', timeline: '12+ months' },
-          { category: 'Strategic', indicator: 'Revenue mix shift (transaction → subscription)', timeline: '12–24 months' },
+        makingMeasurementWork: [
+          'Assign a named owner for each indicator. If no one is accountable for pulling the data and reporting it, the dashboard will die within 60 days.',
+          'Automate data pulls wherever possible. Passive measurement always wins — if a metric requires someone to manually compile a spreadsheet, it won\'t survive. Instrument it in the platform or don\'t track it.',
+          'Keep it simple to understand. Every metric should be explainable in one sentence to a non-technical leader. If it takes a paragraph to explain what a KPI means, pick a different one.',
+          'Make it relatable for operational change. Metrics need to connect to how people actually work. "First-pass MLR acceptance rate" means something to an editorial team lead. "AI-augmented throughput coefficient" does not.',
+          'Communicate steadily. Measurement without communication is invisible. Share results in existing meetings — don\'t create new ones. Use the Monthly Senior Leadership review that already exists.',
+          'Create venues at all levels for reflection. Front-line teams need space to talk about how AI is changing their work, what\'s working, what\'s frustrating, and what they\'d change. This isn\'t just a leadership exercise — the people using the tools daily have the most important feedback.',
+          'Expect people to need time to choose how work will change. AI adoption is a change management challenge, not a technology deployment. People need to see, try, reflect, and decide — not be told their workflow changed overnight.',
         ],
-        recommendation: 'Build an enterprise AI KPI dashboard tracking leading indicators weekly. Review in existing Monthly Senior Leadership meeting. Create venues at all levels for reflection — front-line teams need space to discuss what\'s working, what\'s frustrating, and what they\'d change. Expect people to need time to choose how work will change; AI adoption is a change management challenge, not a technology deployment.',
+        recommendation: 'Build an enterprise AI KPI dashboard tracking leading indicators weekly. Review in existing Monthly Senior Leadership meeting.',
       },
     },
   },
@@ -991,21 +985,19 @@ export const slides: SlideData[] = [
         readiness: {
           title: 'Organizational Readiness',
           items: [
-            { dimension: 'Leadership Alignment (8/10): CEO, CSO, CCDO actively engaged. Weekly AI committee, biweekly advocates, monthly senior review. Could reach 9/10 with a dedicated AI PM.', score: 8, color: 'green' },
-            { dimension: 'AI Fluency (5/10): Strong pockets in 81qd, digital, and medical teams. Uneven across 13 sub-brands. Risk: tools built by enthusiasts, adopted by no one else.', score: 5, color: 'yellow' },
-            { dimension: 'Product Focus (4/10): Too many branded products without a single strategy owner. Super product consolidation + AI PM hire would directly address this.', score: 4, color: 'red' },
-            { dimension: 'KPI Discipline (2/10): Single biggest gap. No enterprise AI dashboard. No standardized leading indicators. Without measurement, prioritization is based on enthusiasm, not evidence.', score: 2, color: 'red' },
+            { dimension: 'Leadership Alignment (8/10): CEO, CSO, and CCDO are actively engaged and Novo board is involved. Weekly AI committee, biweekly advocates, monthly senior leadership review — the cadence is genuinely strong. Score could reach 9/10 with a dedicated AI Product Manager providing single-point accountability.', score: 8, color: 'green' },
+            { dimension: 'AI Fluency (5/10): Strong pockets in 81qd, Andrew\'s digital team, and Nick\'s medical team. Uneven across 13 sub-brands. Monthly lunch-and-learns are a good start but haven\'t translated to org-wide fluency. Risk: tools get built by enthusiasts, adopted by no one else.', score: 5, color: 'yellow' },
+            { dimension: 'KPI Discipline (2/10): Single biggest gap. No enterprise AI dashboard. No standardized leading indicators. 81qd does not measure ROI on analytics engagements. Without measurement, prioritization is based on enthusiasm, not evidence.', score: 2, color: 'red' },
+            { dimension: 'Product Focus (4/10): Too many branded products without a single strategy owner. Decentralized build teams with competing roadmaps. The super product consolidation and a Senior AI PM hire would directly address this.', score: 4, color: 'red' },
           ],
         },
-        requiredActions: {
-          title: 'Required Actions & Meeting Cadence',
-          items: [
-            { action: 'Hire Senior AI Product Manager', urgency: 'Immediate', description: 'Single point of accountability for requirements, roadmap prioritization, portfolio consolidation, and the enterprise KPI dashboard.' },
-            { action: 'Weekly AI Product Standup', urgency: 'Month 1', description: 'Backlog prioritization, blockers, adoption metrics. Attendees: AI PM, engineering leads, medical SME representative.' },
-            { action: 'Monthly Senior Leadership AI Review', urgency: 'Month 2', description: 'KPI dashboard review, investment decisions, portfolio prioritization. Attendees: CEO, CSO, CCDO, CFO, AI PM.' },
-            { action: 'Enterprise AI KPI Dashboard', urgency: 'Month 3', description: 'Built on leading indicators. Updated weekly. Visible to senior leadership. 3–5 indicators tracked automatically.' },
-          ],
-        },
+        meetingStructure: [
+          { cadence: 'Weekly', forum: 'AI Product Standup', purpose: 'Backlog prioritization, blockers, adoption metrics', attendees: 'AI PM, engineering leads, medical SME representative' },
+          { cadence: 'Biweekly', forum: 'AI Advocates Sync', purpose: 'Cross-brand adoption updates, user feedback, training needs', attendees: 'Sub-brand AI champions (existing advocates network)' },
+          { cadence: 'Monthly', forum: 'Senior Leadership AI Review', purpose: 'KPI dashboard review, investment decisions, portfolio prioritization', attendees: 'CEO, CSO, CCDO, CFO, AI PM' },
+          { cadence: 'Quarterly', forum: 'Board AI Update', purpose: 'Strategic progress, EBITDA bridge, roadmap adjustments', attendees: 'Novo board, MKG executive team' },
+        ],
+        optionalAITalentCallout: 'Optional: Consolidate AI Build Talent. Currently, AI engineering and product talent is distributed across multiple business units building overlapping tools with competing roadmaps. Consolidating into a centralized AI team (reporting to the AI PM or CSO) would focus investment, eliminate duplicated infrastructure, and accelerate the super product vision. This is an organizational change that requires careful sequencing — it should follow, not precede, the product consolidation and roadmap prioritization decisions. Flagged as optional because it\'s high-impact but also high-disruption and should only proceed with strong executive alignment.',
       },
     },
   },
