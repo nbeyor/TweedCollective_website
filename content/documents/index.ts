@@ -110,7 +110,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     category: 'Strategic Assessment',
     icon: 'Compass',
     date: '2026-03',
-    readTime: '25 min',
+    readTime: '45 min',
     visibility: 'unlisted',
   },
   {
