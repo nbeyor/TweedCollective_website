@@ -305,8 +305,8 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
   sectionLabel: string
   heading: string
   subtitle: string
-  moatChart: { title: string; items: Array<{ label: string; value: number; rationale?: string }>; suffix: string; maxValue: number; height: number }
-  dataFlow: { title: string; sources: string[]; nonProprietarySources?: string[]; outputs: string[] }
+  moatChart: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
+  dataFlow: { title: string; sources: string[]; outputs: string[] }
   insightText: string
 }) {
   return (
@@ -318,35 +318,14 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
             <Brain className="w-4 h-4 text-sage-bright" />
             {moatChart.title}
           </h3>
-          <div className="space-y-3">
-            {moatChart.items.map((item) => (
-              <div key={item.label}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] text-cream/70">{item.label}</span>
-                  <span className="text-[11px] text-cream/50 font-mono">{item.value}{moatChart.suffix}</span>
-                </div>
-                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${(item.value / moatChart.maxValue) * 100}%`,
-                      backgroundColor: item.value >= 9 ? '#8fbc8f' : item.value >= 6 ? '#8fbc8faa' : item.value >= 3 ? '#8fbc8f66' : '#8fbc8f44',
-                    }}
-                  />
-                </div>
-                {item.rationale && (
-                  <p className="text-[9px] text-cream/40 mt-1 leading-snug italic">{item.rationale}</p>
-                )}
-              </div>
-            ))}
-          </div>
+          <HorizontalBarChart items={moatChart.items} suffix={moatChart.suffix} maxValue={moatChart.maxValue} height={moatChart.height} />
         </div>
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-4 flex items-center gap-2">
             <Database className="w-4 h-4 text-helix-cyan" />
             {dataFlow.title}
           </h3>
-          <DataFlowDiagram sources={dataFlow.sources} nonProprietarySources={dataFlow.nonProprietarySources} outputs={dataFlow.outputs} />
+          <DataFlowDiagram sources={dataFlow.sources} outputs={dataFlow.outputs} />
           <div className="mt-4 p-3 bg-sage/5 border border-sage/15 rounded-lg">
             <p className="text-[10px] text-cream/60 leading-relaxed">{insightText}</p>
           </div>
@@ -357,17 +336,12 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
 }
 
 // Data flow diagram sub-component
-export function DataFlowDiagram({ sources, nonProprietarySources, outputs }: { sources: string[]; nonProprietarySources?: string[]; outputs: string[] }) {
+export function DataFlowDiagram({ sources, outputs }: { sources: string[]; outputs: string[] }) {
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
       <div className="space-y-1.5 flex-shrink-0">
         {sources.map(s => (
           <div key={s} className="px-2.5 py-1.5 bg-taupe/15 border border-taupe/25 rounded text-[10px] md:text-xs text-cream/70 text-right whitespace-nowrap">{s}</div>
-        ))}
-        {nonProprietarySources?.map(s => (
-          <div key={s} className="px-2.5 py-1.5 bg-gray-500/20 border border-gray-500/30 rounded text-[10px] md:text-xs text-cream/40 text-right whitespace-nowrap">
-            {s} <span className="text-[8px] text-cream/30 italic ml-1">not proprietary</span>
-          </div>
         ))}
       </div>
       <div className="flex flex-col items-center gap-1 flex-shrink-0">
