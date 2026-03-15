@@ -82,18 +82,20 @@ export const slides: SlideData[] = [
   {
     id: 'evaluation-framework',
     title: 'Evaluation Framework',
-    type: 'grid',
+    type: 'custom',
     content: {
-      type: 'grid',
-      sectionLabel: 'Section 01b',
-      heading: 'How We Evaluated MKG\'s AI Portfolio',
-      columns: 2,
-      items: [
-        { icon: 'target', title: '1. Business Value Lens', description: 'Understand MKG\'s revenue model, cost structure, and competitive positioning. Map internal (cost, speed, productivity) and external (pricing power, speed-to-close) value pools, and identify the economic sensitivities where AI creates the highest-leverage P&L impact.' },
-        { icon: 'database', title: '2. Initiative Review', description: 'Inventory all 15+ active AI initiatives across KINETICS (internal) and DIFFUSION (external). Unpack each individually\u2009—\u2009what it does, who uses it, defensibility assessment, and value potential\u2009—\u2009including displacement risk from foundation model companies.' },
-        { icon: 'calculator', title: '3. Value Driver Quantification', description: 'Characterize and quantify the specific value drivers per initiative, separating internal productivity (labor cost equivalent) from external revenue upside.' },
-        { icon: 'rocket', title: '4. Prioritization & Roadmap', description: 'Focus the portfolio on practical value creation through consolidation, leading indicator measurement, and a phased execution plan.' },
-      ],
+      type: 'custom',
+      componentId: 'EvaluationFrameworkSlide',
+      props: {
+        sectionLabel: 'Section 01b',
+        heading: 'How We Evaluated MKG\'s AI Portfolio',
+        cards: [
+          { num: '01', title: 'Business Value', description: 'Understand MKG\'s revenue model, cost structure, and competitive positioning. Map internal (cost, speed, productivity) and external (pricing power, speed-to-close) value pools, and identify the economic sensitivities where AI creates the highest-leverage P&L impact.', variant: 'green' },
+          { num: '02', title: 'Initiatives', description: 'Inventory all 15+ active AI initiatives across KINETICS (internal) and DIFFUSION (external). Unpack each individually\u2009—\u2009what it does, who uses it, defensibility assessment, and value potential\u2009—\u2009including displacement risk from foundation model companies.', variant: 'sage' },
+          { num: '03', title: 'ROI Quantification', description: 'Characterize and quantify the specific value drivers per initiative, separating internal productivity (labor cost equivalent) from external revenue upside.', variant: 'gold' },
+          { num: '04', title: 'Roadmap', description: 'Focus the portfolio on practical value creation through consolidation, leading indicator measurement, and a phased execution plan.', variant: 'cyan' },
+        ],
+      },
     },
   },
 
@@ -642,10 +644,10 @@ export const slides: SlideData[] = [
           },
         ],
         fourCards: [
-          { num: '01', title: 'Rationalize the Portfolio', description: 'Consolidate adjacent products. Stop building net-new until overlap is addressed. One strong platform beats nine mediocre tools.', variant: 'green' },
-          { num: '02', title: 'Differentiate Through Data + Expertise', description: 'The moat is proprietary engagement data, two decades of medical judgment, and integrated commercialization services — not AI capability.', variant: 'sage' },
-          { num: '03', title: 'Instrument ROI with Leading Indicators', description: 'Close the loop between product usage → outcomes → willingness to pay. Sunset tools that haven\'t hit 20% adoption by Month 6.', variant: 'gold' },
-          { num: '04', title: 'Operationalize with Product-Led Ownership', description: 'Product-led prioritization with clear ownership, a single intake process, and 90-day milestones. Scale Pantheon to 15–25 customers. Roll out editorial platform speed improvements.', variant: 'cyan' },
+          { num: '01', title: 'Differentiate Through Data + Expertise', description: 'Business Value — The moat is proprietary engagement data, two decades of medical judgment, and integrated commercialization services — not AI capability.', variant: 'green' },
+          { num: '02', title: 'Rationalize the Portfolio', description: 'Initiatives — Consolidate adjacent products. Stop building net-new until overlap is addressed. One strong platform beats nine mediocre tools.', variant: 'sage' },
+          { num: '03', title: 'Instrument ROI with Leading Indicators', description: 'ROI Quantification — Close the loop between product usage → outcomes → willingness to pay. Sunset tools that haven\'t hit 20% adoption by Month 6.', variant: 'gold' },
+          { num: '04', title: 'Operationalize with Product-Led Ownership', description: 'Roadmap — Product-led prioritization with clear ownership, a single intake process, and 90-day milestones. Scale Pantheon to 15–25 customers. Roll out editorial platform speed improvements.', variant: 'cyan' },
         ],
       },
     },

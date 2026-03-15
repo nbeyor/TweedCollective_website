@@ -14,6 +14,41 @@ import {
   Server, Lock, Plug, FolderSearch,
 } from 'lucide-react'
 
+// ---- SLIDE 3: Evaluation Framework ----
+const evaluationVariantStyles: Record<string, { border: string; iconColor: string }> = {
+  green: { border: 'border-green-500/30 bg-green-500/5', iconColor: 'text-green-400' },
+  sage: { border: 'border-sage/30 bg-sage/5', iconColor: 'text-sage-bright' },
+  gold: { border: 'border-gold/30 bg-gold/5', iconColor: 'text-gold' },
+  cyan: { border: 'border-helix-cyan/30 bg-helix-cyan/5', iconColor: 'text-helix-cyan' },
+}
+
+export function EvaluationFrameworkSlide({ sectionLabel, heading, cards }: {
+  sectionLabel: string
+  heading: string
+  cards: Array<{ num: string; title: string; description: string; variant: string }>
+}) {
+  return (
+    <div className="min-h-[50vh] flex flex-col justify-center px-4">
+      {sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-6">{heading}</h2>
+      <div className="grid md:grid-cols-2 gap-4">
+        {cards.map(card => {
+          const styles = evaluationVariantStyles[card.variant] || evaluationVariantStyles.sage
+          return (
+            <div key={card.num} className={`p-5 rounded-xl border ${styles.border}`}>
+              <span className={`text-3xl font-mono font-bold ${styles.iconColor} opacity-50`}>{card.num}</span>
+              <h3 className="text-sm font-semibold text-cream mt-2 mb-1">{card.title}</h3>
+              <p className="text-xs text-cream/60 leading-relaxed">{card.description}</p>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // ---- SLIDE 2: Executive Summary ----
 export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, radarChart, strengths, risks, immediateFocus }: {
   sectionLabel: string
@@ -1485,6 +1520,19 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
+      {/* Four recommendation cards */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {fourCards.map(card => {
+          const styles = recommendationVariantStyles[card.variant] || recommendationVariantStyles.sage
+          return (
+            <div key={card.num} className={`p-5 rounded-xl border ${styles.border}`}>
+              <span className={`text-3xl font-mono font-bold ${styles.iconColor} opacity-50`}>{card.num}</span>
+              <h3 className="text-sm font-semibold text-cream mt-2 mb-1">{card.title}</h3>
+              <p className="text-xs text-cream/60 leading-relaxed">{card.description}</p>
+            </div>
+          )
+        })}
+      </div>
       {/* Phased timeline */}
       <div className="space-y-3">
         {phases.map((phase, i) => {
@@ -1511,19 +1559,6 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
                   ))}
                 </ul>
               </div>
-            </div>
-          )
-        })}
-      </div>
-      {/* Four recommendation cards */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {fourCards.map(card => {
-          const styles = recommendationVariantStyles[card.variant] || recommendationVariantStyles.sage
-          return (
-            <div key={card.num} className={`p-5 rounded-xl border ${styles.border}`}>
-              <span className={`text-3xl font-mono font-bold ${styles.iconColor} opacity-50`}>{card.num}</span>
-              <h3 className="text-sm font-semibold text-cream mt-2 mb-1">{card.title}</h3>
-              <p className="text-xs text-cream/60 leading-relaxed">{card.description}</p>
             </div>
           )
         })}
