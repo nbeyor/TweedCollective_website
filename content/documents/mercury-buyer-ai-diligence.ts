@@ -68,6 +68,11 @@ export const slides: SlideData[] = [
   { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
   { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity' } } },
   { id: 'consolidated-gaps', title: 'Open Questions & Gaps', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'consolidated-gaps' } } },
+  { id: 'appendix-ctms-synergy', title: 'A-1: CTMS Synergy — Mercury as the Missing ClinSphere Module', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'appendix-ctms-synergy' } } },
+  { id: 'appendix-budget-deep-dive', title: 'A-2: Budget Product Deep Dive', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'appendix-budget-deep-dive' } } },
+  { id: 'appendix-internal-transformation', title: 'A-3: Internal WCG Transformation', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'appendix-internal-transformation' } } },
+  { id: 'appendix-build-vs-buy', title: 'A-4: Build vs. Buy — Cost to Replicate', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'appendix-build-vs-buy' } } },
+  { id: 'appendix-data-flywheel', title: 'A-5: WCG Data Flywheel', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'appendix-data-flywheel' } } },
 ]
 
 export default slides

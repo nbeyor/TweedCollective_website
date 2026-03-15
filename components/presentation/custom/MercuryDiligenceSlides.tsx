@@ -1814,6 +1814,443 @@ function buildSlideContentMap() {
           </div>
         </div>
   )
+
+  /* ───────────────────────────────────────────────────────────────────
+     APPENDIX — Follow-Up Deep Dive (A-1 through A-5)
+     ─────────────────────────────────────────────────────────────────── */
+
+  slideContentMap['appendix-ctms-synergy'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-1: CTMS Synergy — Mercury as the Missing ClinSphere Module</h2>
+            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Would Mercury help the WCG CTMS offering?</p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+            <p className="text-xs text-cream/70">ClinSphere is architected as an end-to-end clinical trial platform but has a conspicuous functional gap: <span className="text-cream font-medium">no native contract negotiation or AI-powered budget development capability</span>. Mercury fills exactly this gap with an AI-powered automation layer.</p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">ClinSphere Module Map — Where Mercury Fits</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Module</th>
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Function</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-2 pr-3">eReview Manager</td><td className="py-2 pr-3">IRB submission, review, approval workflow</td><td className="py-2"><span className="text-green-400">Live</span></td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-2 pr-3">Total Feasibility</td><td className="py-2 pr-3">Site identification, feasibility assessment, enrollment modeling</td><td className="py-2"><span className="text-green-400">Live</span></td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-2 pr-3">eResearch Enterprise CTMS</td><td className="py-2 pr-3">Study management, calendar builds, milestone tracking, invoicing</td><td className="py-2"><span className="text-green-400">Live</span></td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-2 pr-3">Study Start-Up Services</td><td className="py-2 pr-3">Coverage analysis, budget development, contract review, CTMS builds</td><td className="py-2"><span className="text-yellow-400">Manual — 5-day TAT</span></td></tr>
+                  <tr><td className="py-2 pr-3 text-amber-300 font-medium">Contract &amp; Budget AI (Mercury)</td><td className="py-2 pr-3 text-amber-300">AI-powered contract markup, budget reconciliation, market insights</td><td className="py-2"><span className="text-red-400 font-medium">GAP — not in ClinSphere today</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-2">Facts</h3>
+              <ul className="space-y-1.5 text-[11px] text-cream/70">
+                <li>&bull; ClinSphere is positioned as a unified cloud platform — but contract negotiation is absent from its feature set</li>
+                <li>&bull; eResearch Enterprise CTMS automates post-contract financial management, not pre-execution negotiation</li>
+                <li>&bull; WCG&apos;s Site Enablement delivers contract review and budget development as manual consulting with a 5-day turnaround</li>
+                <li>&bull; Over 70% of clinical trial sites report contract negotiations as a top cause of study start-up delays (per WCG data)</li>
+                <li>&bull; WCG claims 40–60% faster timelines from best practices — but these are manual, not software automation</li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+                <h3 className="text-sm font-semibold text-cream mb-2">Inferences</h3>
+                <ul className="space-y-1.5 text-[11px] text-cream/70">
+                  <li>&bull; Mercury would serve as the &quot;missing module&quot; converting manual workflows into AI-powered software within ClinSphere</li>
+                  <li>&bull; Creates closed-loop startup: IRB (eReview) → site selection (Total Feasibility) → contract/budget (Mercury) → activation (CTMS)</li>
+                  <li>&bull; Mercury&apos;s AI turnaround could substantially outperform the current 5-day manual SLA</li>
+                  <li>&bull; Cross-sell to ~3,400 institutional partners as a platform upgrade rather than a separate product</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <GapTag />
+                <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
+                  <li>&bull; No public documentation on ClinSphere&apos;s API/integration layer — technical assessment required</li>
+                  <li>&bull; Unknown whether competing CTMS platforms are developing native contract AI</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['appendix-budget-deep-dive'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-2: Budget Product Deep Dive</h2>
+            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Deeper dive on the new budget product from Mercury.</p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+            <p className="text-xs text-cream/70">Mercury is extending its proven contract AI capabilities into budgets, coverage analysis, and protocol extraction. This phased roadmap through 2027 significantly expands Mercury&apos;s TAM by addressing adjacent study startup workflows with the <span className="text-cream font-medium">same buyer persona</span> and the <span className="text-cream font-medium">same underlying AI engine</span>.</p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Product Roadmap: Budgets &amp; Coverage Analysis</h3>
+            <div className="grid md:grid-cols-3 gap-3">
+              <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
+                <div className="text-[10px] font-mono text-green-400 mb-2">H1 2026 — In Staging</div>
+                <ul className="space-y-1.5 text-[11px] text-cream/70">
+                  <li>&bull; <span className="text-cream/90 font-medium">Protocol-Budget Reconciliation:</span> Automated mapping and gap analysis between protocol and proposed budget</li>
+                  <li>&bull; <span className="text-cream/90 font-medium">Variance Highlighting:</span> Identifies missing, mispriced, or misaligned line items vs. rate cards and market norms</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                <div className="text-[10px] font-mono text-yellow-400 mb-2">H2 2026</div>
+                <ul className="space-y-1.5 text-[11px] text-cream/70">
+                  <li>&bull; <span className="text-cream/90 font-medium">Internal Site Budget Builder:</span> Sites build their own budgets — moves Mercury from review-only to authoring</li>
+                  <li>&bull; <span className="text-cream/90 font-medium">Rate Card Comparison:</span> Sponsor rates vs. institutional benchmarks</li>
+                  <li>&bull; <span className="text-cream/90 font-medium">Medicare Coverage Analysis:</span> Automated analysis per NCD 310.1 — compliance-critical</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                <div className="text-[10px] font-mono text-blue-400 mb-2">2027</div>
+                <ul className="space-y-1.5 text-[11px] text-cream/70">
+                  <li>&bull; <span className="text-cream/90 font-medium">Margin Calculation:</span> Automated margin analysis — first direct financial optimization tool for sites</li>
+                  <li>&bull; <span className="text-cream/90 font-medium">Amendment Handling:</span> Budget impact analysis when protocols are amended mid-study ($7–8B annual spend per Tufts CSDD)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Contracts Roadmap (Maturity Reference)</h3>
+            <div className="grid md:grid-cols-3 gap-3 text-[11px] text-cream/70">
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="text-[10px] font-mono text-cream/40 mb-1">H1 2026</div>
+                <p>Skills for Single Agreement Chat — enhanced AI for plain-language questions grounded in the CTA</p>
+              </div>
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="text-[10px] font-mono text-cream/40 mb-1">H2 2026</div>
+                <p>Amendment Workflow; Multi-Round Negotiation; Profile &amp; Template Management</p>
+              </div>
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="text-[10px] font-mono text-cream/40 mb-1">2027</div>
+                <p>Self-Learning Site Playbooks; Advanced Analytics &amp; Insights</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
+              <ul className="space-y-1 text-[10px] text-cream/60">
+                <li>&bull; Budget product at maturity could roughly double Mercury&apos;s addressable surface per site customer</li>
+                <li>&bull; Same-buyer-persona advantage enables land-and-expand from contracts → budgets → coverage analysis</li>
+                <li>&bull; Medicare Coverage Analysis (H2 2026) is a natural integration point with WCG&apos;s coverage consulting</li>
+                <li>&bull; 2027 Margin Calculation shifts Mercury from compliance/efficiency to financial optimization — commands higher willingness to pay</li>
+              </ul>
+            </div>
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <GapTag />
+              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
+                <li>&bull; Unknown whether budget features will be bundled or sold as a separate SKU</li>
+                <li>&bull; Competitive landscape for budget-specific tools (Greenphire, Medidata Rave) is unassessed</li>
+                <li>&bull; Budget product needs its own data corpus — unclear how quickly this can be bootstrapped vs. contracts&apos; ~4,000 issue point foundation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['appendix-internal-transformation'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-3: Internal WCG Transformation</h2>
+            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How could Mercury&apos;s technology help transform WCG&apos;s internal operations?</p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+            <p className="text-xs text-cream/70">Mercury&apos;s technology represents a potential <span className="text-cream font-medium">internal transformation engine</span> for WCG&apos;s own manual contract, budget, and protocol abstraction operations across ~3,400 institutional partners — reducing cost-to-serve, improving turnaround, and repositioning services as AI-augmented.</p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">WCG&apos;s Current Manual Operations</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Service</th>
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Current Delivery</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">SLA</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Contract Review &amp; Redline</td><td className="py-1.5 pr-3">Manual — expert negotiators</td><td className="py-1.5">5-day</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Budget Development</td><td className="py-1.5 pr-3">Manual — analysts build and negotiate</td><td className="py-1.5">5-day</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Coverage Analysis</td><td className="py-1.5 pr-3">Manual — compliance experts</td><td className="py-1.5">5-day</td></tr>
+                  <tr><td className="py-1.5 pr-3">CTMS Calendar/Study Build</td><td className="py-1.5 pr-3">Manual — specialists configure CTMS</td><td className="py-1.5">5-day</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[10px] text-cream/40 mt-2 italic">Per management: WCG has &quot;an entire business dedicated to negotiating contracts and budgets and abstracting protocols — all manual.&quot; The CEO characterized this business as one that &quot;will be disrupted massively.&quot;</p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Three Transformation Lanes</h3>
+            <div className="grid md:grid-cols-3 gap-3">
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded">Lane 1</span>
+                  <h4 className="text-xs font-semibold text-cream">Contract &amp; Budget Automation</h4>
+                </div>
+                <ul className="space-y-1 text-[10px] text-cream/60">
+                  <li>&bull; Mercury&apos;s congruency engine automates the core work Site Enablement performs manually</li>
+                  <li>&bull; Budget capabilities (H1 2026 roadmap) map directly to manual budget development</li>
+                  <li>&bull; <span className="text-green-300/80">Impact:</span> Compress 5-day turnaround to hours; redeploy experts to complex/exception cases</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded">Lane 2</span>
+                  <h4 className="text-xs font-semibold text-cream">Protocol &amp; Coverage Analysis</h4>
+                </div>
+                <ul className="space-y-1 text-[10px] text-cream/60">
+                  <li>&bull; Protocol extraction features support WCG&apos;s 360 Protocol Assessment service</li>
+                  <li>&bull; Medicare Coverage Analysis (H2 2026) directly automates WCG&apos;s compliance consulting</li>
+                  <li>&bull; <span className="text-green-300/80">Impact:</span> Automate routine determinations; flag edge cases for human review</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded">Lane 3</span>
+                  <h4 className="text-xs font-semibold text-cream">Market Intelligence</h4>
+                </div>
+                <ul className="space-y-1 text-[10px] text-cream/60">
+                  <li>&bull; Mercury&apos;s benchmarking data — expanded by WCG&apos;s network volume — becomes the data backbone for consulting</li>
+                  <li>&bull; WCG already performs benchmarking in other areas; Mercury extends to contract/budget intelligence</li>
+                  <li>&bull; <span className="text-green-300/80">Impact:</span> Transform periodic reports to real-time, data-driven recommendations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
+              <ul className="space-y-1 text-[10px] text-cream/60">
+                <li>&bull; Internal transformation may be as compelling as external product synergy — Mercury automates WCG&apos;s own operations</li>
+                <li>&bull; Phased approach: copilot (0–6 mo) → autonomous routine handling (6–18 mo) → strategic relationship focus (18+ mo)</li>
+                <li>&bull; WCG currently only uses Microsoft Copilot internally — CEO views this as insufficient</li>
+              </ul>
+            </div>
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <GapTag />
+              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
+                <li>&bull; WCG Site Enablement headcount and cost structure unknown — quantifying cost-to-serve reduction requires data room access</li>
+                <li>&bull; Unknown whether automating services would reduce revenue (effort-priced) or increase margins (value-priced)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['appendix-build-vs-buy'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-4: Build vs. Buy — Cost to Replicate Mercury&apos;s Team</h2>
+            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How long would it take to hire the Mercury team, and what would it cost?</p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+            <p className="text-xs text-cream/70">Replicating Mercury&apos;s specialized team would cost an estimated <span className="text-cream font-medium">$2.6M–$4.0M in Year 1</span> and take <span className="text-cream font-medium">12–18+ months</span> of recruiting. The build option also forfeits the existing data asset, customer relationships, and 2.5+ years of team cohesion.</p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Leadership Tier — Irreplaceable Domain Founders</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-2 text-cream/60 font-medium">Role</th>
+                    <th className="text-left py-2 pr-2 text-cream/60 font-medium">Profile</th>
+                    <th className="text-left py-2 pr-2 text-cream/60 font-medium">Est. Comp</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">Timeline</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2 font-medium text-cream/90">CEO</td><td className="py-1.5 pr-2">Serial contract-AI entrepreneur; DocuSign + Seal Software; MAGI thought leader</td><td className="py-1.5 pr-2">$400K–$550K</td><td className="py-1.5 text-red-300">Not replaceable</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2 font-medium text-cream/90">CTO</td><td className="py-1.5 pr-2">MIT-trained; manages all engineering; key-person risk flagged</td><td className="py-1.5 pr-2">$300K–$450K</td><td className="py-1.5">6–12 months</td></tr>
+                  <tr><td className="py-1.5 pr-2 font-medium text-cream/90">CPO</td><td className="py-1.5 pr-2">Ex-Blackstone Innovations; owns product vision and GTM</td><td className="py-1.5 pr-2">$250K–$375K</td><td className="py-1.5">6–9 months</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Engineering &amp; Operations Tier</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-2 text-cream/60 font-medium">Role</th>
+                    <th className="text-left py-2 pr-2 text-cream/60 font-medium">Est. Comp</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">Timeline</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2">Principal Engineer ×2</td><td className="py-1.5 pr-2">$250K–$325K each</td><td className="py-1.5">4–8 months</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2">Mid-Senior Engineer ×2</td><td className="py-1.5 pr-2">$175K–$250K each</td><td className="py-1.5">3–6 months</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2">Product Team (~2)</td><td className="py-1.5 pr-2">$150K–$225K each</td><td className="py-1.5">3–6 months</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-2">Support Team (~1–2)</td><td className="py-1.5 pr-2">$100K–$150K each</td><td className="py-1.5">2–4 months</td></tr>
+                  <tr><td className="py-1.5 pr-2">Analytics (~1)</td><td className="py-1.5 pr-2">$150K–$200K</td><td className="py-1.5">3–6 months</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-3">Cost Framework Summary</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[11px] border-collapse">
+                  <thead>
+                    <tr className="border-b border-cream/20">
+                      <th className="text-left py-1.5 pr-3 text-cream/60 font-medium">Component</th>
+                      <th className="text-left py-1.5 pr-3 text-cream/60 font-medium">Low</th>
+                      <th className="text-left py-1.5 text-cream/60 font-medium">High</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-cream/70">
+                    <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Annual compensation (all ~10–11 roles)</td><td className="py-1.5 pr-3">$2.2M</td><td className="py-1.5">$3.3M</td></tr>
+                    <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Recruiting fees (20%)</td><td className="py-1.5 pr-3">$440K</td><td className="py-1.5">$660K</td></tr>
+                    <tr className="border-b border-cream/5"><td className="py-1.5 pr-3 font-medium text-cream">Total Year-1 build cost</td><td className="py-1.5 pr-3 font-medium text-cream">~$2.6M</td><td className="py-1.5 font-medium text-cream">~$4.0M</td></tr>
+                    <tr><td className="py-1.5 pr-3">Time to assemble</td><td className="py-1.5 pr-3">12 months</td><td className="py-1.5">18+ months</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">What Build Does NOT Get You</h3>
+              <ul className="space-y-1.5 text-[10px] text-cream/60">
+                <li>&bull; <span className="text-cream/80 font-medium">Data asset:</span> ~4,000 analyzed issue points + ~2,000× growth; took years to accumulate with institutional data-sharing agreements</li>
+                <li>&bull; <span className="text-cream/80 font-medium">100% data rights:</span> Every customer signed market insights provisions — rebuilding from scratch would take years</li>
+                <li>&bull; <span className="text-cream/80 font-medium">Customer relationships:</span> 22+ sites including Mayo, Cleveland Clinic, Duke, Mount Sinai, City of Hope, Boston Children&apos;s</li>
+                <li>&bull; <span className="text-cream/80 font-medium">Team cohesion:</span> Zero attrition in 2.5+ years — you cannot recruit team chemistry</li>
+                <li>&bull; <span className="text-cream/80 font-medium">Florence pipeline:</span> ~50% of pipeline through Florence Healthcare partnership — does not transfer with hires</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['appendix-data-flywheel'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-5: WCG Data Flywheel</h2>
+            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How will WCG&apos;s data assets create more differentiation for Mercury when combined?</p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+            <p className="text-xs text-cream/70">Mercury&apos;s ~4,000 analyzed issue points are the <span className="text-cream font-medium">seed corpus</span> for an AI-driven benchmarking engine. WCG&apos;s network would dramatically expand this — potentially by an order of magnitude within 12–18 months — creating a <span className="text-cream font-medium">self-reinforcing data flywheel</span> that becomes the industry standard for clinical trial contract and budget benchmarking.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">Mercury Standalone (Today)</h3>
+              <ul className="space-y-1 text-[10px] text-cream/60">
+                <li>&bull; ~4,000 analyzed issue points (seed from Mayo, Duke, UHN)</li>
+                <li>&bull; ~2,000× more contract data flowing through platform</li>
+                <li>&bull; 100% customer data rights — no opt-outs</li>
+                <li>&bull; 22+ active sites; targeting 50+ standalone this year</li>
+              </ul>
+            </div>
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">WCG Volume Multiplier</h3>
+              <ul className="space-y-1 text-[10px] text-cream/60">
+                <li>&bull; 3,400+ institutional partners; 140,000+ PIs globally</li>
+                <li>&bull; 3,000+ new protocols reviewed annually</li>
+                <li>&bull; 58,000+ ethical reviews performed (cumulative)</li>
+                <li>&bull; ~2,000–5,000 estimated negotiation events per year</li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Flywheel Mechanics</h3>
+            <div className="grid md:grid-cols-4 gap-2">
+              {[
+                { stage: '1', timeline: '0–6 mo', title: 'Data Ingestion', desc: 'WCG routes negotiation volume through Mercury. Capturing a fraction of ~2,000–5,000 annual events would multiply data asset 5–10× in year one.' },
+                { stage: '2', timeline: '6–12 mo', title: 'Insights Enrichment', desc: 'Statistically robust insights across agreement types, sponsor-site pairings, therapeutic areas, and geographies. Novel benchmarking products become viable.' },
+                { stage: '3', timeline: '12–24 mo', title: 'Industry Benchmark', desc: 'Mercury\'s data becomes the de facto industry reference. WCG extends existing benchmarking brand to contract/budget intelligence. Competitors cannot replicate without equivalent scale.' },
+                { stage: '4', timeline: '24+ mo', title: 'Network Lock-In', desc: 'Sites relying on benchmarking data are unlikely to switch. Sponsors engage because Mercury-equipped sites close faster. Classic two-sided network effect.' },
+              ].map((s) => (
+                <div key={s.stage} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">{s.stage}</span>
+                    <span className="text-[10px] text-cream/40 font-mono">{s.timeline}</span>
+                  </div>
+                  <h4 className="text-xs font-semibold text-cream mb-1">{s.title}</h4>
+                  <p className="text-[10px] text-cream/60">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Data Before &amp; After WCG</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Dimension</th>
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Mercury Standalone</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">Mercury + WCG (18 mo)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Contract data points</td><td className="py-1.5 pr-3">~4,000 issue points + 2,000× growth</td><td className="py-1.5 text-green-300">50,000–100,000+ issue points</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Agreement types</td><td className="py-1.5 pr-3">Primarily CTAs</td><td className="py-1.5 text-green-300">CTAs + budgets + consent + amendments</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Site coverage</td><td className="py-1.5 pr-3">22 sites (mostly AMCs)</td><td className="py-1.5 text-green-300">100+ sites; access to 3,400+ institutions</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Sponsor visibility</td><td className="py-1.5 pr-3">Major sponsors via site contracts</td><td className="py-1.5 text-green-300">Comprehensive via 5,000+ relationships</td></tr>
+                  <tr><td className="py-1.5 pr-3">Benchmarking credibility</td><td className="py-1.5 pr-3">Emerging — strong early data</td><td className="py-1.5 text-green-300">Industry standard — statistically robust</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
+              <ul className="space-y-1 text-[10px] text-cream/60">
+                <li>&bull; At scale, the data asset could become <span className="text-cream/80 font-medium">as or more valuable than the software platform itself</span></li>
+                <li>&bull; WCG&apos;s benchmarking brand and industry relationships provide credibility and distribution</li>
+                <li>&bull; More data → better congruency scores → better outcomes → more adoption → more data</li>
+                <li>&bull; Competitors would need equivalent network coverage — a multi-year, capital-intensive effort</li>
+              </ul>
+            </div>
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <GapTag />
+              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
+                <li>&bull; Unknown whether WCG&apos;s manual operations generate structured data ingestible by Mercury, or unstructured formats requiring extraction</li>
+                <li>&bull; Data quality across 3,400+ institutions with varying processes is unverified</li>
+                <li>&bull; Volume threshold for &quot;industry benchmark&quot; status has not been defined</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  )
 }
 
 function getSlideContent(slideId: string): React.ReactNode {
