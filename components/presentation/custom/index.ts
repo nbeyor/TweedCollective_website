@@ -15,7 +15,7 @@ import { TimelineSlide, AdoptionStancesDetailedSlide } from './VibeCodingCompone
 import { StageSlide, SegmentSlide } from './HealthTechComponents'
 import { RegulatoryMapSlide } from './SalmonComponents'
 import {
-  ExecutiveSummarySlide, BusinessDriversSlide, AssessmentTableSlide,
+  EvaluationFrameworkSlide, ExecutiveSummarySlide, BusinessDriversSlide, AssessmentTableSlide,
   DiffusionSlide, DifferentiatingAssetsSlide, GovernanceSlide,
   RouteReagentSlide, PantheonSlide, RoadmapSlide,
   ChangeManagementSlide, QuantifyingUpsideSlide, FinalRecommendationSlide,
@@ -43,6 +43,7 @@ export const customComponentRegistry: CustomComponentRegistry = {
   'regulatory-map': RegulatoryMapSlide as React.ComponentType<Record<string, unknown>>,
 
   // AI Opportunity Roadmap document (MKG)
+  'EvaluationFrameworkSlide': EvaluationFrameworkSlide as React.ComponentType<Record<string, unknown>>,
   'ExecutiveSummarySlide': ExecutiveSummarySlide as React.ComponentType<Record<string, unknown>>,
   'BusinessDriversSlide': BusinessDriversSlide as React.ComponentType<Record<string, unknown>>,
   'AssessmentTableSlide': AssessmentTableSlide as React.ComponentType<Record<string, unknown>>,
