@@ -5,7 +5,7 @@
  * This file contains NO React components or JSX.
  *
  * Updated: March 13, 2026 per MKG_AI_Assessment_EDIT_GUIDE
- * 29 slides total
+ * 30 slides total
  */
 
 import { SlideData } from '@/lib/types'
@@ -372,7 +372,21 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 10: DYNAIMIC CONTENT (NEW — Product Deep Dive)
+  // SLIDE 10: INITIATIVE DEEP DIVES (Section Divider)
+  // ================================================================
+  {
+    id: 'initiative-deep-dives',
+    title: 'Initiative Deep Dives',
+    type: 'title',
+    content: {
+      type: 'title',
+      headline: 'Initiative Deep Dives',
+      subtitle: '',
+    },
+  },
+
+  // ================================================================
+  // SLIDE 11: DYNAIMIC CONTENT (NEW — Product Deep Dive)
   // ================================================================
   {
     id: 'dynaimic-content',
@@ -403,7 +417,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 11: ANNOTATION ACTIVATION (NEW — Product Deep Dive)
+  // SLIDE 12: ANNOTATION ACTIVATION (NEW — Product Deep Dive)
   // ================================================================
   {
     id: 'annotation-activation',
@@ -434,7 +448,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 12: COMPLIANCE CORE (NEW — Product Deep Dive)
+  // SLIDE 13: COMPLIANCE CORE (NEW — Product Deep Dive)
   // ================================================================
   {
     id: 'compliance-core',
@@ -465,7 +479,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 13: ROUTE REAGENT (NEW — Product Deep Dive)
+  // SLIDE 14: ROUTE REAGENT (NEW — Product Deep Dive)
   // ================================================================
   {
     id: 'route-reagent',
@@ -496,7 +510,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 14: PANTHEON
+  // SLIDE 15: PANTHEON
   // ================================================================
   {
     id: 'pantheon',
@@ -528,7 +542,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 15: PLEXUS
+  // SLIDE 16: PLEXUS
   // ================================================================
   {
     id: 'plexus',
@@ -560,7 +574,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 16: PRACTICE MASTER
+  // SLIDE 17: PRACTICE MASTER
   // ================================================================
   {
     id: 'practice-master',
@@ -591,7 +605,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 17: SENTIMENT TRACKER
+  // SLIDE 18: SENTIMENT TRACKER
   // ================================================================
   {
     id: 'sentiment-tracker',
@@ -622,7 +636,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 18: CHATMKG
+  // SLIDE 19: CHATMKG
   // ================================================================
   {
     id: 'chatmkg',
@@ -653,7 +667,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 19: VERBA
+  // SLIDE 20: VERBA
   // ================================================================
   {
     id: 'verba',
@@ -684,7 +698,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 20: PERSPECTIVX
+  // SLIDE 21: PERSPECTIVX
   // ================================================================
   {
     id: 'perspectivx',
@@ -715,7 +729,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 21: MAGPAI
+  // SLIDE 22: MAGPAI
   // ================================================================
   {
     id: 'magpai',
@@ -747,7 +761,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 22: BLOOMLAB
+  // SLIDE 23: BLOOMLAB
   // ================================================================
   {
     id: 'bloomlab',
@@ -778,7 +792,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 23: SUPER PRODUCT VISION (moved after product deep dives)
+  // SLIDE 24: SUPER PRODUCT VISION (moved after product deep dives)
   // ================================================================
   {
     id: 'super-product',
@@ -832,7 +846,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 24: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
+  // SLIDE 25: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
   // ================================================================
   {
     id: 'internal-productivity-value',
@@ -860,7 +874,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 25: EXTERNAL REVENUE UPSIDE (pAdd)
+  // SLIDE 26: EXTERNAL REVENUE UPSIDE (pAdd)
   // ================================================================
   {
     id: 'external-revenue',
@@ -888,7 +902,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 26: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
+  // SLIDE 27: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
   // ================================================================
   {
     id: 'combined-value-waterfall',
@@ -927,7 +941,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 27: LEADING INDICATORS & MEASUREMENT (Section 17)
+  // SLIDE 28: LEADING INDICATORS & MEASUREMENT (Section 17)
   // ================================================================
   {
     id: 'leading-indicators',
@@ -966,7 +980,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 28: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
+  // SLIDE 29: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
   // ================================================================
   {
     id: 'governance',
@@ -999,7 +1013,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 29: EXECUTION ROADMAP (Section 19)
+  // SLIDE 30: EXECUTION ROADMAP (Section 19)
   // ================================================================
   {
     id: 'roadmap',
