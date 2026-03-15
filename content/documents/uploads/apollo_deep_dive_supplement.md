@@ -86,12 +86,6 @@ Veeva now offers 30+ distinct software and data products for life sciences. The 
 
 - **INFERENCE:** Veeva's 20,000+ site footprint already exceeds Apollo's 65K claim in terms of growth velocity. Apollo's number includes all sites ever connected (including inactive); Veeva's 8,000+ SiteVault sites (as of 2025) grew from near-zero in 2020, representing a much steeper adoption curve. *Inference because: the base numbers are not directly comparable without knowing active vs. total, but the trajectory favors Veeva.*
 
-### GAPS / QUESTIONS
-
-- What % of Apollo's revenue is US vs. international, and how does Veeva's site-level penetration vary by geography?
-- How many Apollo sites are also on SiteVault (dual-use)?
-- Have any Apollo sponsor accounts already standardized on Veeva's clinical suite and raised the question of consolidating site tools?
-- What is Apollo's contractual structure — multi-year vs. annual — and when do the largest sponsor contracts come up for renewal?
 
 **Sources:**
 - Veeva Systems FY2026 earnings (SEC filing, March 2026)
@@ -142,12 +136,6 @@ Apollo's eConsent product is approximately 2 years old (per Shankar Jagannathan 
 
 - **INFERENCE:** The eConsent market is consolidating around two models: (1) sponsor-deployed enterprise platforms (Signant, Medidata, Medable) and (2) site-native free/bundled solutions (Veeva, Apollo). Apollo competes in category 2, where its main rival is Veeva's free tier. *Inference because: the market structure maps to the broader clinical trial technology split between sponsor-centric and site-centric tools.*
 
-### GAPS / QUESTIONS
-
-- What is Apollo eConsent's current adoption? (number of sites, studies, consent events processed)
-- Does Apollo eConsent support multimedia content (video, interactive elements, knowledge checks), or is it limited to form-based consent?
-- How does Apollo's eConsent pricing compare to Veeva's free tier and Signant's enterprise pricing?
-- Are any of Apollo's existing sponsor customers using a different eConsent vendor alongside Apollo eBinders?
 
 **Sources:**
 - Grand View Research — eConsent in Healthcare Market Report (2023 data)
@@ -200,12 +188,6 @@ However, there is a meaningful question about whether Apollo has the contractual
 
 - **INFERENCE:** Securing metadata rights retroactively is achievable but non-trivial. Most SaaS companies doing this successfully embed data use provisions in contract renewals rather than requesting standalone consent. Given Apollo's annual or multi-year contract cycle, a systematic approach could secure rights across the majority of the customer base within 12–18 months. *Inference because: this is a common pattern in SaaS M&A — the acquirer builds the data rights into the renewal cycle rather than disrupting existing relationships.*
 
-### GAPS / QUESTIONS
-
-- Does Apollo's standard customer agreement currently permit aggregated, de-identified metadata use for benchmarking or commercial data products?
-- Are there material differences in data rights between site-facing and sponsor-facing contracts?
-- Has Apollo received any customer pushback or legal challenges related to data use?
-- What is the contract renewal cadence — annual, multi-year, or evergreen?
 
 **Sources:**
 - Apollo diligence call transcript — data architecture discussion (Shankar Jagannathan, Andres Garcia)
@@ -299,12 +281,6 @@ Apollo's current technology infrastructure is built to manage *documents* — st
 
 - **INFERENCE:** These investment ranges are consistent with what comparable SaaS platforms spend on analytics modernization. A $4–7.5M total investment over 18–24 months is modest relative to Apollo's likely enterprise value and the revenue upside from productized data intelligence. *Inference because: comparable mid-market SaaS companies investing in analytics-as-a-product typically allocate 5–10% of ARR to data platform build-out over a 2-year period.*
 
-### GAPS / QUESTIONS
-
-- What is the current data engineering team size and composition?
-- What is Apollo's current Snowflake spend, and how does the Kafka migration change the cost profile?
-- Has Apollo scoped or budgeted a Tier 2–equivalent project internally?
-- What event instrumentation currently exists — are user interactions logged at the action level, or only at the document level?
 
 **Sources:**
 - Apollo diligence call transcript — Shankar Jagannathan and Andres Garcia on data architecture
