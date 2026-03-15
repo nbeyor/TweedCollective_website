@@ -1736,6 +1736,391 @@ function buildSlideContentMap() {
           </div>
         </div>
   )
+
+  /* ============================================================
+   * DEEP DIVE SUPPLEMENT — DD-1 through DD-4
+   * Follow-up deep dive slides addressing questions from diligence review
+   * ============================================================ */
+
+  slideContentMap['dd-veeva-consolidation'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-1</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat</h2>
+            <p className="text-cream/50 text-sm">As Veeva expands into a full-stack clinical platform, could sponsors consolidate spend onto Veeva and displace Apollo&apos;s US market share over a 3&ndash;5 year horizon?</p>
+          </div>
+
+          {/* Veeva Product Suite Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-orange-500/40">
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Product</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Function</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Free for Sites?</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                {[
+                  { product: 'SiteVault eISF', fn: 'Electronic investigator site file (direct eBinders competitor)', free: 'Yes — unlimited users and studies' },
+                  { product: 'SiteVault eConsent', fn: 'Electronic informed consent', free: 'Yes — up to 20 active studies' },
+                  { product: 'SiteVault CTMS', fn: 'Site-level trial management (launched Aug 2025)', free: 'Yes — up to 20 active studies' },
+                  { product: 'eSource', fn: 'Direct data capture at sites, EHR/EDC integration (announced Jan 2026)', free: 'Early adopter — H2 2026' },
+                  { product: 'Vault eTMF', fn: 'Sponsor-side trial master file', free: 'Paid — sponsor license' },
+                  { product: 'Vault CTMS', fn: 'Sponsor-side clinical trial management', free: 'Paid — sponsor license' },
+                  { product: 'Vault EDC', fn: 'Electronic data capture', free: 'Paid — sponsor license' },
+                  { product: 'Study Startup', fn: 'Site feasibility, qualification, activation', free: 'Paid — sponsor license' },
+                  { product: 'Payments', fn: 'Site payment tracking and budget management', free: 'Paid — sponsor license' },
+                  { product: 'Site Connect', fn: 'Sponsor↔site document exchange', free: 'Paid — add-on' },
+                ].map((r) => (
+                  <tr key={r.product} className="border-b border-cream/5">
+                    <td className="p-1.5 font-medium text-cream/90">{r.product}</td>
+                    <td className="p-1.5">{r.fn}</td>
+                    <td className="p-1.5">{r.free.startsWith('Yes') ? <span className="text-red-300">{r.free}</span> : <span className="text-cream/50">{r.free}</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Key Facts */}
+          <div className="p-4 rounded-xl bg-orange-500/10 border-l-4 border-orange-500/50">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-2">Key Facts</div>
+            <ul className="space-y-1.5 text-xs text-cream/70">
+              <li>&bull; <span className="text-cream/90 font-medium">FY2026 revenue: $3.2B</span> (up 16% YoY); R&amp;D Solutions subscription ($1.4B) now exceeds Commercial ($1.3B)</li>
+              <li>&bull; <span className="text-cream/90 font-medium">20,000+ active sites</span> on Veeva products; 450+ sponsors connecting with 10,000+ study sites</li>
+              <li>&bull; <span className="text-cream/90 font-medium">Veeva AI Agents</span> available Dec 2025 for commercial; rolling out across Clinical Ops / Regulatory / Medical by Aug 2026. Powered by Anthropic + Amazon Bedrock. AI for Vault CRM free through 2030.</li>
+              <li>&bull; <span className="text-cream/90 font-medium">Merck signed 10-year &ldquo;Veeva-first&rdquo;</span> strategic partnership; Roche, Novo Nordisk, GSK committed to global Vault CRM deployments</li>
+            </ul>
+          </div>
+
+          {/* Consolidation Arguments */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-red-300 mb-2">Why Sponsors Would Consolidate</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Unified data model</span> &mdash; single source of truth across clinical ops; Apollo sits outside this ecosystem</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Vendor simplification</span> &mdash; each additional vendor creates contracting, compliance, and integration overhead</li>
+                <li>&bull; <span className="text-cream/90 font-medium">AI as accelerant</span> &mdash; Veeva AI Agents operate on data already within Vault; cross-system insights Apollo cannot replicate</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Site-level lock-in</span> &mdash; free eISF + eConsent + CTMS covering 90%+ of research sites creates zero-friction sponsor integration</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Why Sponsors Might Not Consolidate</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Site preference matters</span> &mdash; site-facing tools depend on site adoption; Apollo has genuine site-level brand affinity</li>
+                <li>&bull; <span className="text-cream/90 font-medium">SiteLink has no Veeva equivalent</span> &mdash; vendor-neutral bidirectional sponsor&harr;site exchange across multiple eTMF systems</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Document trail switching cost</span> &mdash; years of regulatory history in Apollo creates migration effort and compliance risk</li>
+                <li>&bull; <span className="text-cream/90 font-medium">WCG integration</span> &mdash; combined channel access (94% of FDA-approved therapeutics) creates distribution advantage</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Inferences */}
+          <div className="space-y-2">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-1">Inferences</div>
+            {[
+              'The 3–5 year consolidation threat is real and accelerating. By 2028 Veeva will likely offer a complete site-to-sponsor clinical operations stack — the exact space Apollo occupies.',
+              'Threat is strongest for Apollo\'s US sponsor-deployed business (sponsor selects tool) and weakest for direct-to-site relationships (site chooses platform).',
+              'Veeva\'s 20,000+ site footprint already exceeds Apollo\'s growth velocity — 8,000+ SiteVault sites grew from near-zero in 2020, a much steeper adoption curve.',
+            ].map((inf, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                <AlertTriangle className="w-3 h-3 text-orange-300 mt-0.5 flex-shrink-0" />
+                <span>{inf}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Gaps */}
+          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
+            <ul className="space-y-1 text-xs text-cream/50">
+              <li>&bull; What % of Apollo revenue is US vs. international? How does Veeva&apos;s site penetration vary by geography?</li>
+              <li>&bull; How many Apollo sites are also on SiteVault (dual-use)?</li>
+              <li>&bull; Have any Apollo sponsor accounts standardized on Veeva&apos;s clinical suite and raised the consolidation question?</li>
+              <li>&bull; Apollo contractual structure &mdash; multi-year vs. annual; when do largest sponsor contracts renew?</li>
+            </ul>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-econsent-landscape'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-2</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">eICF &amp; eConsent — Competitive Landscape</h2>
+            <p className="text-cream/50 text-sm">Market ~$430M (2023), ~11% CAGR. 100% of top 10 pharma have implemented eConsent. Apollo&apos;s product is ~2 years old — &ldquo;like a DocuSign&rdquo; for clinical consent.</p>
+          </div>
+
+          {/* Competitive Matrix */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-orange-500/40">
+                  <th className="text-left p-1.5 text-cream/80 font-medium min-w-[90px]">Competitor</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Go-to-Market</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Pricing</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Key Differentiator</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                {[
+                  { name: 'Apollo (eConsent)', gtm: 'Site-facing (bundled w/ eBinders)', pricing: 'Paid — upsell from eBinders', diff: 'Site-first design; WCG IRB integration; part of site enablement ecosystem' },
+                  { name: 'Veeva eConsent', gtm: 'Site-facing (free) + sponsor pull-through', pricing: 'Free ≤20 active studies', diff: 'Free pricing; part of full Vault clinical platform' },
+                  { name: 'Signant Health', gtm: 'Sponsor-deployed', pricing: 'Per-study or enterprise', diff: 'Market leader in rich media eConsent; global multilingual support' },
+                  { name: 'Medable', gtm: 'Sponsor-deployed (DCT-focused)', pricing: 'Platform license', diff: 'DCT-native; designed for remote/hybrid trials; Google Cloud partnership' },
+                  { name: 'YPrime', gtm: 'Sponsor-deployed', pricing: 'Per-study', diff: 'Unified patient experience: consent + outcomes + randomization' },
+                  { name: 'Medidata (Dassault)', gtm: 'Sponsor-deployed', pricing: 'Enterprise/platform', diff: 'Part of largest EDC platform; strong in complex global trials' },
+                  { name: 'Advarra', gtm: 'IRB-adjacent', pricing: 'Bundled w/ IRB services', diff: 'Regulatory/IRB expertise; eConsent as compliance extension' },
+                  { name: 'Castor', gtm: 'Direct-to-researcher', pricing: 'Freemium / per-study', diff: 'Academic/mid-market positioning; ease of use' },
+                ].map((c) => (
+                  <tr key={c.name} className="border-b border-cream/5">
+                    <td className="p-1.5 font-medium text-cream/90">{c.name}</td>
+                    <td className="p-1.5">{c.gtm}</td>
+                    <td className="p-1.5">{c.pricing}</td>
+                    <td className="p-1.5">{c.diff}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Positioning Assessment */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Where Apollo Is Well-Positioned</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">eBinders integration</span> &mdash; eConsent as natural extension; reduces vendor friction for existing sites</li>
+                <li>&bull; <span className="text-cream/90 font-medium">WCG IRB integration</span> &mdash; consent forms flow from IRB approvals; no other vendor has this direct data flow with WCG</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Site-first go-to-market</span> &mdash; sites choose to use it, creating stickier adoption vs. sponsor-imposed tools</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-red-300 mb-2">Where Apollo Is Vulnerable</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Product maturity gap</span> &mdash; Signant, Medidata, Medable offer rich media eConsent (video, interactive, multilingual). Apollo is a simpler form-based approach.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Sponsor relationship scale</span> &mdash; Signant and Medidata are enterprise standards for the largest sponsors; Apollo eConsent is newer and not yet sponsor-preferred.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Veeva&apos;s free tier</span> &mdash; for 20,000+ SiteVault sites, eConsent is included at no cost for up to 20 studies.</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Inferences */}
+          <div className="space-y-2">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-1">Inferences</div>
+            {[
+              'Apollo eConsent is a retention and expansion play within the existing site ecosystem — "you already use eBinders, add eConsent without switching." Defensible for existing customers but unlikely to win new logos on eConsent alone.',
+              'Market consolidating around two models: (1) sponsor-deployed enterprise platforms (Signant, Medidata, Medable) and (2) site-native free/bundled solutions (Veeva, Apollo). Apollo competes in category 2, where its main rival is Veeva\'s free tier.',
+            ].map((inf, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                <AlertTriangle className="w-3 h-3 text-orange-300 mt-0.5 flex-shrink-0" />
+                <span>{inf}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Gaps */}
+          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
+            <ul className="space-y-1 text-xs text-cream/50">
+              <li>&bull; Apollo eConsent current adoption? (sites, studies, consent events processed)</li>
+              <li>&bull; Does Apollo eConsent support multimedia (video, interactive elements, knowledge checks)?</li>
+              <li>&bull; How does Apollo&apos;s pricing compare to Veeva&apos;s free tier and Signant&apos;s enterprise pricing?</li>
+              <li>&bull; Are any Apollo sponsor customers using a different eConsent vendor alongside eBinders?</li>
+            </ul>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-data-rights'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-3</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Rights — Content vs. Metadata</h2>
+            <p className="text-cream/50 text-sm">The data <em>in</em> documents vs. the data <em>about</em> documents carry very different rights profiles and commercial potential.</p>
+          </div>
+
+          {/* Two-Column Framework */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <Lock className="w-5 h-5 text-red-400 mb-2" />
+              <h3 className="text-sm font-semibold text-red-300 mb-2">Content Data (Documents)</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Includes:</span> Consent forms, regulatory submissions, investigator CVs, protocols, safety letters, training records</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Owned by:</span> Originating party &mdash; sponsors, sites, IRBs, participants respectively</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Commercial use:</span> <span className="text-red-300">No</span> &mdash; Apollo is custodian, not owner. Subject to HIPAA, GDPR, ICH GCP, 21 CFR Part 11</li>
+                <li>&bull; <span className="text-cream/90 font-medium">AI training:</span> Requires explicit consent from each data owner &mdash; practically difficult</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Value:</span> Not directly monetizable, but essential for platform retention</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <Database className="w-5 h-5 text-green-400 mb-2" />
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Metadata (Platform Engagement)</h3>
+              <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Includes:</span> View timestamps, signature completion times, workflow durations, page engagement, upload/download patterns, query response times</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Generated by:</span> Apollo through platform operation &mdash; byproduct of software, not a customer deliverable</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Commercial use:</span> <span className="text-green-300">Likely with conditions</span> &mdash; de-identified, aggregated data typically covered under SaaS ToS</li>
+                <li>&bull; <span className="text-cream/90 font-medium">AI training:</span> More feasible &mdash; can be de-identified and aggregated for workflow optimization, risk prediction, site scoring</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Value:</span> <span className="text-green-300">Highly valuable</span> &mdash; unique benchmarking intelligence across 65K+ sites</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Metadata Rights Tiers */}
+          <div className="p-4 rounded-xl bg-orange-500/10 border-l-4 border-orange-500/50">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-2">Metadata Rights — Three Tiers</div>
+            <div className="space-y-2">
+              {[
+                { tier: 'Likely Already Permitted', desc: 'Basic product analytics, anonymized aggregate benchmarking, platform improvement', color: 'text-green-300' },
+                { tier: 'Requires Explicit Consent', desc: 'Commercial data products (e.g., selling site benchmarks to sponsors), training AI on customer-specific patterns, sharing metrics with WCG post-acquisition', color: 'text-yellow-300' },
+                { tier: 'Requires Going Back to Customers', desc: 'Any use that could identify specific sites, sponsors, or studies — even indirectly via re-identification of aggregated data', color: 'text-red-300' },
+              ].map((t) => (
+                <div key={t.tier} className="flex items-start gap-2 text-xs text-cream/70">
+                  <span className={`${t.color} font-medium flex-shrink-0`}>{t.tier}:</span>
+                  <span>{t.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* WCG Implications */}
+          <div className="p-4 rounded-xl bg-purple-500/10 border-l-4 border-purple-500/50">
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">WCG Acquisition Implications</div>
+            <p className="text-xs text-cream/70 mb-2">The highest-value synergy (combined WCG protocol data &times; Apollo site operational data) <span className="text-cream/90 font-medium">depends on metadata rights being secured</span>. If Apollo&apos;s existing contracts do not permit data sharing with a parent company, WCG would need customer consent &mdash; creating timeline risk and potential churn.</p>
+            <p className="text-xs text-cream/60"><span className="text-cream/90 font-medium">Recommendation:</span> Data room request should include Apollo&apos;s standard customer agreement (site-facing and sponsor-facing), specifically the data use, privacy, and aggregation clauses.</p>
+          </div>
+
+          {/* Inferences */}
+          <div className="space-y-2">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-1">Inferences</div>
+            {[
+              'Apollo has likely not yet fully commercialized its metadata asset. Diligence call focused on reporting and ETL (Snowflake + dbt + Fivetran), not productized data intelligence. The Kafka upgrade is about real-time reporting, not analytics-as-a-product.',
+              'Securing metadata rights retroactively is achievable but non-trivial. Most SaaS companies embed data use provisions in contract renewals — systematic approach could secure rights across the majority of the base within 12–18 months.',
+            ].map((inf, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                <AlertTriangle className="w-3 h-3 text-orange-300 mt-0.5 flex-shrink-0" />
+                <span>{inf}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Gaps */}
+          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
+            <ul className="space-y-1 text-xs text-cream/50">
+              <li>&bull; Does Apollo&apos;s standard customer agreement permit aggregated, de-identified metadata use for benchmarking or commercial data products?</li>
+              <li>&bull; Material differences in data rights between site-facing and sponsor-facing contracts?</li>
+              <li>&bull; Any customer pushback or legal challenges related to data use?</li>
+              <li>&bull; Contract renewal cadence &mdash; annual, multi-year, or evergreen?</li>
+            </ul>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-data-architecture'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-4</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost</h2>
+            <p className="text-cream/50 text-sm">Apollo&apos;s infrastructure manages <em>documents</em> but lacks a <em>data architecture</em> for operational metrics needed to support AI products and premium analytics.</p>
+          </div>
+
+          {/* Current State */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <Layers className="w-5 h-5 text-sage-300 mb-2" />
+              <h3 className="text-sm font-semibold text-cream mb-2">Current Architecture</h3>
+              <ul className="space-y-1 text-xs text-cream/70">
+                <li>&bull; <span className="text-cream/90 font-medium">Databases:</span> MongoDB + PostgreSQL</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Data lake:</span> Snowflake</li>
+                <li>&bull; <span className="text-cream/90 font-medium">ETL:</span> Fivetran (ingestion) + dbt (transformation)</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Reporting latency:</span> 15-min intervals (constrained by Snowflake compute)</li>
+                <li>&bull; <span className="text-cream/90 font-medium">In-progress:</span> Kafka migration for real-time streaming (4&ndash;5 month project)</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Neo4j:</span> POC/testing only, not in production</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <AlertCircle className="w-5 h-5 text-yellow-400 mb-2" />
+              <h3 className="text-sm font-semibold text-cream mb-2">What&apos;s Missing</h3>
+              <ul className="space-y-1 text-xs text-cream/70">
+                <li>&bull; Granular user behavior events (page-level engagement, session duration, click paths)</li>
+                <li>&bull; Dimensional data model for operational KPIs (startup time, consent cycle time, query speed)</li>
+                <li>&bull; Real-time analytics or streaming dashboards</li>
+                <li>&bull; Feature store or ML pipeline for AI model training</li>
+                <li>&bull; Self-service analytics layer for customers or internal teams</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Investment Tiers */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-orange-500/40">
+                  <th className="text-left p-2 text-cream/80 font-medium">Tier</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Investment</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Timeline</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">What It Enables</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-green-300">Tier 1: Real-Time Streaming</td>
+                  <td className="p-2">$500K&ndash;$1M</td>
+                  <td className="p-2">4&ndash;5 months</td>
+                  <td className="p-2">Eliminates 15-min lag; real-time notifications and live dashboards. <span className="text-green-300 font-medium">In progress (Kafka)</span></td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-yellow-300">Tier 2: Operational Metrics</td>
+                  <td className="p-2">$1.5&ndash;$2.5M</td>
+                  <td className="p-2">6&ndash;9 months</td>
+                  <td className="p-2">Site benchmarking, study startup analysis, consent tracking, sponsor dashboards. <span className="text-red-300 font-medium">Does not exist</span></td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-purple-300">Tier 3: AI-Ready Platform</td>
+                  <td className="p-2">$2&ndash;$4M</td>
+                  <td className="p-2">12&ndash;18 months</td>
+                  <td className="p-2">Feature store, ML pipeline, model serving, AI-powered risk scoring and prediction. <span className="text-red-300 font-medium">Does not exist</span></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-orange-500/40">
+                  <td className="p-2 font-medium text-cream/90">Total (all tiers)</td>
+                  <td className="p-2 font-medium text-cream/90">$4&ndash;$7.5M</td>
+                  <td className="p-2 font-medium text-cream/90">18&ndash;24 months</td>
+                  <td className="p-2 text-cream/60">Sequential with partial overlap; Tier 3 requires Tier 2</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          {/* Inferences */}
+          <div className="space-y-2">
+            <div className="text-xs uppercase tracking-wider text-orange-300 mb-1">Inferences</div>
+            {[
+              'Tier 2 (operational metrics data model) is the most critical gap — without it Apollo cannot offer operational intelligence products and WCG cannot combine protocol data with site data for predictive analytics.',
+              'Current data team appears sized for operational support, not platform-building. WCG should expect to invest in 3–5 additional data engineering FTEs to execute Tiers 2 and 3.',
+              '$4–7.5M total over 18–24 months is modest relative to Apollo\'s enterprise value and the revenue upside from productized data intelligence.',
+            ].map((inf, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                <AlertTriangle className="w-3 h-3 text-orange-300 mt-0.5 flex-shrink-0" />
+                <span>{inf}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Gaps */}
+          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
+            <ul className="space-y-1 text-xs text-cream/50">
+              <li>&bull; Current data engineering team size and composition?</li>
+              <li>&bull; Current Snowflake spend and how Kafka migration changes cost profile?</li>
+              <li>&bull; Has Apollo scoped or budgeted a Tier 2&ndash;equivalent project internally?</li>
+              <li>&bull; What event instrumentation exists &mdash; user interactions logged at action level or only document level?</li>
+            </ul>
+          </div>
+        </div>
+  )
 }
 
 function getSlideContent(slideId: string): React.ReactNode {
