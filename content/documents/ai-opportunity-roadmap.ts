@@ -371,428 +371,9 @@ export const slides: SlideData[] = [
     },
   },
 
-  // ================================================================
-  // SLIDE 10: INITIATIVE DEEP DIVES (Section Divider)
-  // ================================================================
-  {
-    id: 'initiative-deep-dives',
-    title: 'Initiative Deep Dives',
-    type: 'title',
-    content: {
-      type: 'title',
-      headline: 'Initiative Deep Dives',
-      subtitle: '',
-    },
-  },
 
   // ================================================================
-  // SLIDE 11: DYNAIMIC CONTENT (NEW — Product Deep Dive)
-  // ================================================================
-  {
-    id: 'dynaimic-content',
-    title: 'DynAImic Content — AI-Assisted Content Generation',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'DynAImic Content — AI-Assisted Content Generation',
-        description: 'Generates draft marketing content across channels (emails, banners, social media, leave-behinds, microsites) from content briefs. Combines LLM-assisted generation with MKG\'s brand knowledge bases to produce MLR-ready first drafts that reduce time from brief to reviewable content.',
-        users: 'Medical writers and content creators across MKG\'s MedComm business units.',
-        replaces: 'Manual first-draft creation, which currently takes 2–5 days per asset depending on complexity and channel.',
-        defensibility: { rating: 'HIGH', text: 'Addresses the largest labor pool in the editorial pipeline (~80 medical writers at $120K avg comp). Content generation is the highest-volume step and the primary bottleneck in cycle time. Near production-ready as part of the KINETICS toolset.' },
-        valueMapping: 'Internal: 80 FTEs × $120K × 8–15% uplift = $768K–$1,440K. This is the single largest internal value line item.',
-        leadingIndicators: [
-          'Average days from brief to first reviewable draft drops below 2 days (from current 3–5 day baseline) on projects using DynAImic Content',
-          '30%+ of eligible MedComm projects are using AI-assisted drafting within 6 months',
-        ],
-        valueEstimate: 'Internal: 80 FTEs × $120K × 8–15% uplift = $768K–$1,440K in productivity freed.',
-        assumptions: [
-          'Medical writers spend 60%+ of project time on first drafts — AI-assisted generation compresses the highest-volume step',
-          'Output quality is sufficient to serve as a working first draft, reducing (not eliminating) writer effort',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 12: ANNOTATION ACTIVATION (NEW — Product Deep Dive)
-  // ================================================================
-  {
-    id: 'annotation-activation',
-    title: 'Annotation Activation — Auto-Citation Linking',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Annotation Activation — Auto-Citation Linking',
-        description: 'Auto-links claims in marketing content to supporting literature references. Identifies assertions in draft content and matches them to citations from the scientific literature, preparing content for editorial fact-checking and MLR submission.',
-        users: 'Editorial and QA review teams preparing content for MLR submission.',
-        replaces: 'Manual annotation — currently one of the most time-consuming steps in MLR preparation, requiring analysts to match each claim to a supporting reference by hand.',
-        defensibility: { rating: 'HIGH', text: 'Automates the most tedious step in MLR prep. Directly reduces rounds of revision and submission time for ~30 editorial/QA reviewers at $110K avg comp. Production-ready or near-ready as part of the KINETICS editorial pipeline.' },
-        valueMapping: 'Internal: Captured under Editorial/QA Reviewers — 30 FTEs × $110K × 15–25% uplift = $495K–$825K (shared with Route Reagent).',
-        leadingIndicators: [
-          'Annotation error rate (incorrect or missing citations) falls below 5% on AI-assisted projects, demonstrating output quality sufficient for editorial trust',
-          'Rounds of revision before MLR approval decrease by at least 1 round on annotated projects versus manual baseline',
-        ],
-        valueEstimate: 'Internal: 30 FTEs × $110K × 15–25% uplift = $495K–$825K (shared with Route Reagent).',
-        assumptions: [
-          'Citation matching accuracy is high enough that editorial reviewers trust the output without re-verifying every reference',
-          'The tool integrates directly into the editorial workflow system, not as a standalone side step',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 13: COMPLIANCE CORE (NEW — Product Deep Dive)
-  // ================================================================
-  {
-    id: 'compliance-core',
-    title: 'Compliance Core — Regulatory Flag Detection',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Compliance Core — Regulatory Flag Detection',
-        description: 'Scans marketing content for FDA compliance risks before MLR submission — detecting off-label language, fair balance issues, and guideline adherence violations. Pre-scores content against common MLR rejection criteria.',
-        users: 'Regulatory and compliance review teams across MKG.',
-        replaces: 'Manual compliance pre-screening, which currently requires specialized reviewers to read every asset line-by-line against regulatory standards.',
-        defensibility: { rating: 'HIGH', text: 'Pre-screening catches costly errors before they reach MLR, preventing late-stage rejections that create rework cascades across the full pipeline. Addresses ~20 compliance reviewers at $140K avg comp. The risk-reduction mechanism amplifies value beyond the direct labor savings.' },
-        valueMapping: 'Internal: 20 FTEs × $140K × 5–12% uplift = $140K–$336K. Indirect: each prevented MLR rejection avoids 3–5 days of rework.',
-        leadingIndicators: [
-          'First-pass acceptance rate at MLR improves by 10+ percentage points on projects that use Compliance Core pre-screening',
-          'Compliance review hours per asset decrease measurably versus unassisted baseline',
-        ],
-        valueEstimate: 'Internal: 20 FTEs × $140K × 5–12% uplift = $140K–$336K. Indirect value: each prevented rejection avoids 3–5 days of rework across writers, editors, and compliance staff.',
-        assumptions: [
-          'The tool catches a meaningful percentage of the compliance issues that currently cause MLR rejections',
-          'False positive rate is low enough that reviewers don\'t ignore the tool\'s flags',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 14: ROUTE REAGENT (NEW — Product Deep Dive)
-  // ================================================================
-  {
-    id: 'route-reagent',
-    title: 'Route Reagent — Style & Brand Validation',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Route Reagent — Style & Brand Validation',
-        description: 'Validates content against AMA style guides, brand-specific editorial standards, and MKG internal guidelines. Performs preliminary quality checks during the editorial review cycle — verifying routing comments have been addressed, checking style consistency, and flagging discrepancies before human review.',
-        users: 'Editorial and QA reviewers, medical writers during revision cycles.',
-        replaces: 'Manual style and brand compliance checking — a repetitive, error-prone step in every editorial review cycle.',
-        defensibility: { rating: 'HIGH', text: 'Closest to production among the editorial pipeline tools. Already embedded in real editorial workflows. Catches low-value errors before they consume human reviewer time. Value is shared with Annotation Activation across the ~30 editorial/QA FTE pool.' },
-        valueMapping: 'Internal: Shared with Annotation Activation under Editorial/QA Reviewers — 30 FTEs × $110K × 15–25% uplift = $495K–$825K combined.',
-        leadingIndicators: [
-          'Style and brand error rates in submitted content drop measurably on Route Reagent-assisted projects',
-          'Editorial reviewer hours per asset decrease as QA pre-checks catch issues that previously required manual identification',
-        ],
-        valueEstimate: 'Internal: Shared with Annotation Activation — 30 FTEs × $110K × 15–25% uplift = $495K–$825K combined.',
-        assumptions: [
-          'The tool\'s style and brand rule library is comprehensive enough to catch the majority of common errors',
-          'Editorial teams integrate it into their review workflow rather than treating it as optional',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 15: PANTHEON
-  // ================================================================
-  {
-    id: 'pantheon',
-    title: 'Pantheon — HCP Search & Profiling',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Pantheon — HCP Search & Profiling',
-        description: 'Conversational AI interface for querying HCP datasets in natural language. Provides instant synthesis across publication, clinical trial, and payment data to surface relevant experts in seconds. Designed to transition 81qd from transaction-based analytics to a recurring subscription model, layering proprietary engagement data on top of commercial claims and NPI data.',
-        users: 'Commercial and medical affairs teams at pharma companies — brand leaders, TLL team leadership, MSL teams, insights/analytics groups, and 81qd analytics clients.',
-        replaces: 'Manual HCP profiling (4–6 weeks, $50K–$75K per project). Also competes with IQVIA, H1 Insights, Definitive Healthcare, and Veeva Compass.',
-        defensibility: { rating: 'HIGH', text: 'Subscription model shifts 81qd from transaction-based to recurring revenue — the single most important structural change for the analytics unit. Defensible when the proprietary engagement data layer (advisory board history, speaker bureau records, sentiment signals) is richer than what customers get from IQVIA or H1 alone.' },
-        valueMapping: 'External: 8–15 customers × $80K–$120K = $640K–$1.8M. Internal: 25 FTEs × $105K × 10–20% uplift = $263K–$525K (shared with Practice Master).',
-        leadingIndicators: [
-          'Subscription attach rate exceeds 10% of eligible 81qd clients within 12 months, validating the transaction-to-subscription shift',
-          'Renewal rate at 12 months exceeds 75%, demonstrating ongoing usage value beyond initial novelty',
-        ],
-        valueEstimate: 'External: Low — 8 customers × $80K = $640K | High — 15 customers × $120K = $1.8M. Internal: 25 FTEs × $105K × 10–20% uplift = $263K–$525K (shared with Practice Master).',
-        assumptions: [
-          'Proprietary engagement data layer is meaningfully richer than IQVIA or H1 alone',
-          'Subscription price point ($80K–$120K) validated with at least 5 pilot customers',
-          'Retention exceeds 75% at renewal — requires demonstrating ongoing usage, not just initial novelty',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 16: PLEXUS
-  // ================================================================
-  {
-    id: 'plexus',
-    title: 'Plexus — Influence Mapping',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Plexus — Influence Mapping & Network Analytics',
-        description: 'Maps clinical influence networks — identifying not just who the key opinion leaders are, but how they\'re connected, who influences whom, and where the leverage points are. Combines clinical, academic, digital, and institutional data to model influence flow across therapeutic areas.',
-        users: '81qd analysts, engagement planning teams, commercial strategy leads at pharma companies.',
-        replaces: 'Manual network analysis relying on subjective assessments, conference attendance lists, and publication counts.',
-        defensibility: { rating: 'HIGH', text: 'Most defensible analytics asset MKG has. Influence network modeling on proprietary engagement data (who attended advisory boards, who spoke at events, who influenced prescribing changes) cannot be purchased externally. This is the product most anchored in MKG\'s structural advantage.' },
-        valueMapping: 'Internal: 15 FTEs × $130K × 5–12% uplift = $98K–$234K. External: 8–18 projects × $20K–$40K premium = $160K–$720K.',
-        leadingIndicators: [
-          'Competitive win rate on proposals featuring influence mapping increases measurably, indicating AI-enhanced Plexus is a differentiator in the sales process',
-          'Client-reported time savings on engagement planning projects exceed 25% versus manual network analysis baseline',
-        ],
-        valueEstimate: 'Internal: 15 FTEs × $130K × 5–12% uplift = $98K–$234K. External: 8–18 projects × $20K–$40K premium = $160K–$720K.',
-        assumptions: [
-          'AI-enhanced Plexus delivers measurably faster or deeper results than current workflow',
-          'Clients perceive AI enhancement as valuable enough for price premium',
-          'Sales teams trained to articulate the AI-enhanced value proposition in proposals',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 17: PRACTICE MASTER
-  // ================================================================
-  {
-    id: 'practice-master',
-    title: 'Practice Master — HCP Affiliation Intelligence',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Practice Master — HCP Affiliation Intelligence',
-        description: 'Harmonizes multiple data sources to map HCP affiliations and resolve conflicting institutional records. Disambiguates which practice, hospital, or academic institution an HCP is actually associated with across NPI, claims, and engagement data.',
-        users: '81qd analysts and MedComm teams. Used as an input step for HCP profiling projects and engagement planning.',
-        replaces: 'Manual verification of HCP affiliations across NPI registries, institutional websites, and proprietary databases — consuming several hours per profiling project.',
-        defensibility: { rating: 'MODERATE', text: 'Addresses a narrower analyst pool (~25 FTEs). Underlying NPI and institutional data is commercially available from competitors. Value comes from the harmonization and disambiguation layer — resolving conflicting affiliations across sources — not from the data itself.' },
-        valueMapping: 'Internal: Contributes to HCP Profiling/Data Analysts — $263K–$525K productivity value (shared with Pantheon). Standalone contribution is modest.',
-        leadingIndicators: [
-          'Hours saved per profiling project are measurable and consistent (target: 2+ hours per project versus manual verification baseline)',
-          'Downstream correction rate on affiliation data drops below 5%, indicating analysts trust the tool\'s output without re-verifying manually',
-        ],
-        valueEstimate: 'Captured under HCP Profiling/Data Analysts (25 FTEs, $105K comp, 10–20% uplift = $263K–$525K). Shared with Pantheon. Standalone contribution is modest.',
-        assumptions: [
-          'The harmonization layer is accurate enough that analysts trust it without re-verifying manually',
-          'The tool is integrated into the standard profiling workflow, not a side step',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 18: SENTIMENT TRACKER
-  // ================================================================
-  {
-    id: 'sentiment-tracker',
-    title: 'Sentiment Tracker — HCP Sentiment Analysis',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Sentiment Tracker — HCP Sentiment Analysis',
-        description: 'NLP-based tracking of HCP belief and sentiment shifts over time. Monitors evolution of HCP perceptions across therapeutic areas, treatment protocols, and brand messaging — drawing from MKG\'s own engagement activities (advisory boards, speaker bureaus, MSL interactions).',
-        users: '81qd analysts, brand strategy teams, market research leads.',
-        replaces: 'Periodic qualitative research (typically quarterly or semi-annual) that provides point-in-time snapshots. Sentiment Tracker aims for continuous monitoring.',
-        defensibility: { rating: 'MODERATE', text: 'High strategic value when applied to proprietary engagement data. Revenue mechanism is indirect — share-of-wallet lift on existing client relationships — which makes Year 1 measurement harder. Defensibility depends entirely on using MKG\'s internal data, not publicly available text.' },
-        valueMapping: 'External: 0.3–0.8% lift on ~$50M relevant revenue base = $150K–$400K.',
-        leadingIndicators: [
-          'Brand strategy teams actively incorporate sentiment outputs into campaign planning and client proposals on at least 5 accounts within 6 months',
-          'Upsell or renewal rates on sentiment-informed accounts show measurable positive variance versus non-informed accounts',
-        ],
-        valueEstimate: 'Approximately $50M of MKG\'s revenue comes from clients where HCP sentiment data is directly relevant. A 0.3–0.8% lift on that base yields $150K–$400K.',
-        assumptions: [
-          'The tool is fed by MKG\'s proprietary engagement data, not just public sources',
-          'Brand strategy teams actively incorporate sentiment outputs into campaign planning and client proposals',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 19: CHATMKG
-  // ================================================================
-  {
-    id: 'chatmkg',
-    title: 'ChatMKG — Secure LLM Access',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'ChatMKG — Secure LLM Access',
-        description: 'Custom multimodal AI workspace with SSO, audio transcription, web search, model switching, conversation history, and keyword search for past work. Designed as MKG\'s internal AI portal for general-purpose tasks.',
-        users: 'All MKG employees (~200 FTEs). Intended as the default AI interface for day-to-day work.',
-        replaces: 'Consumer AI tools (ChatGPT, Claude, Copilot) that employees are already using on personal devices.',
-        defensibility: { rating: 'MODERATE', text: 'Every feature (SSO, transcription, web search, model switching) is available in off-the-shelf enterprise AI. Defensibility is zero unless ChatMKG connects to the ION Data Lake and brand knowledge bases — making it the only AI interface that can access MKG\'s proprietary data. Without that integration, there is no reason for employees to use it over consumer tools.' },
-        valueMapping: 'Internal: 200 FTEs × $95K × 2–5% uplift = $380K–$950K. Wide range reflects the data integration question.',
-        leadingIndicators: [
-          'Daily active users as a % of total employees exceeds 40%, indicating ChatMKG is genuinely preferred over external alternatives',
-          'Percentage of ChatMKG sessions that access proprietary data (ION, brand knowledge bases) exceeds 25%, validating the data integration thesis',
-        ],
-        valueEstimate: '200 FTEs × $95K × 2–5% uplift = $380K–$950K. Wide range reflects the data integration question.',
-        assumptions: [
-          'ChatMKG connects to the ION Data Lake and brand knowledge bases, making it meaningfully more useful than external alternatives',
-          'User experience is competitive with consumer-grade AI tools',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 20: VERBA
-  // ================================================================
-  {
-    id: 'verba',
-    title: 'Verba — Advisory Board Synthesis',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'Verba — Advisory Board Synthesis',
-        description: 'Transforms transcripts from advisory boards, investigator meetings, and expert discussions into structured intelligence. Extracts key themes, unmet needs, objections, treatment patterns, and sentiment shifts.',
-        users: 'Client-facing — brand teams, medical affairs teams, market access leaders, commercial strategy teams.',
-        replaces: 'Manual synthesis of advisory board transcripts — labor-intensive process requiring analysts to review hours of discussion and produce structured reports over 1–2 weeks.',
-        defensibility: { rating: 'MODERATE', text: 'Core functionality (transcript to structured summary) is increasingly commoditized — Claude, GPT-4o can do this well. Defensibility requires integration with MKG\'s proprietary longitudinal data: cross-referencing statements against clinical evidence, comparing sentiment across boards over time. Without those layers, Verba is an LLM wrapper.' },
-        valueMapping: 'Internal: 40 FTEs × $115K × 8–15% uplift = $368K–$690K (shared with BloomLab, PerspectivX). External: $0 (deal sweetener) → 15 boards × $12K = $0–$180K.',
-        leadingIndicators: [
-          'Time from advisory board to client deliverable drops below 3 business days on Verba-assisted projects (from current 1–2 week baseline)',
-          'Clients specifically request Verba as part of engagement scope, rather than receiving it as a default — indicating perceived differentiation',
-        ],
-        valueEstimate: 'Internal: 40 FTEs × $115K × 8–15% uplift = $368K–$690K (shared). External: Low — $0 (deal sweetener) | High — 15 boards × $12K = $180K.',
-        assumptions: [
-          'Verba connects to proprietary MKG data to deliver analysis that a standalone LLM cannot replicate',
-          'Output quality is high enough that medical reviewers don\'t spend as much time correcting as they saved',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 21: PERSPECTIVX
-  // ================================================================
-  {
-    id: 'perspectivx',
-    title: 'PerspectivX — Concept Scoring',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'PerspectivX — Concept Scoring',
-        description: 'Simulates real-world feedback from HCPs by analyzing campaign concepts through the lens of each treater\'s unique attitudes, beliefs, and cognitive filters. Uses data-based personas modeled from the ION Data Lake.',
-        users: 'Brand teams, creative agencies, commercial strategy teams at pharma companies.',
-        replaces: 'Traditional qualitative concept testing ($75K–$150K, 6–8 weeks). PerspectivX pricing ($15K–$30K per test) is a fraction, making adoption easier to justify.',
-        defensibility: { rating: 'MODERATE-HIGH', text: 'Differentiated if personas are built on real MKG research data from SOUND, 81qd behavioral data, and advisory board engagement data. The key validation question: do PerspectivX scores correlate with actual market research outcomes? If yes, this is a powerful and defensible sales tool.' },
-        valueMapping: 'External: 8–20 tests × $15K–$30K = $120K–$600K.',
-        leadingIndicators: [
-          'PerspectivX concept scores show validated directional correlation with actual market performance on at least 3 retrospective case studies',
-          'Client repeat usage rate exceeds 50% — indicating teams that try it find it useful enough to come back',
-        ],
-        valueEstimate: 'Low: 8 tests × $15K = $120K. High: 20 tests × $30K = $600K.',
-        assumptions: [
-          'Personas are grounded in MKG\'s proprietary data, not generic LLM approximations',
-          'Concept scores show validated correlation to real market outcomes (even directional correlation is meaningful)',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 22: MAGPAI
-  // ================================================================
-  {
-    id: 'magpai',
-    title: 'MagpAI — Stakeholder Simulation',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'MagpAI — Stakeholder Simulation',
-        description: 'Replicates authentic communication styles of HCPs, patients, and payers through AI simulation. Supports observational research and provides interactive training avatars for sales reps and MSLs.',
-        users: 'Brand teams, commercial strategy teams, training departments.',
-        replaces: 'Traditional stakeholder research interviews ($50K–$100K per study, 4–6 weeks) and in-person sales training role-plays. Competes with ZS/Symmetry, Rehearsal, Second Nature on training.',
-        defensibility: { rating: 'MODERATE', text: 'Significant overlap with PerspectivX — both create AI-simulated HCP/stakeholder interactions from persona data. Differentiated by output format (conversational simulation vs. concept scores) but the underlying data and model are shared. Consolidation opportunity with PerspectivX should be evaluated.' },
-        valueMapping: 'External: $0 (deal sweetener) → 10 engagements × $20K = $0–$200K.',
-        leadingIndicators: [
-          'Research and training teams report MagpAI simulations are realistic enough to inform actual strategy decisions (measured through structured user feedback surveys)',
-          'Engagement volume grows quarter-over-quarter, indicating organic demand rather than one-time experimentation',
-        ],
-        valueEstimate: 'Low: $0 (currently more of a deal sweetener / demo tool). High: 10 engagements × $20K = $200K.',
-        assumptions: [
-          'Personas are data-grounded, not generic',
-          'Users find the simulations realistic enough to be useful',
-          'The use case is distinct enough from PerspectivX to justify two separate products — or the two are consolidated',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 23: BLOOMLAB
-  // ================================================================
-  {
-    id: 'bloomlab',
-    title: 'BloomLab — Real-Time Market Research',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ProductValueStorySlide',
-      props: {
-        sectionLabel: 'Product Deep Dive',
-        heading: 'BloomLab — Real-Time Market Research',
-        description: 'AI-driven, real-time chat sessions with actual participants that merge qualitative depth with quantitative rigor. A new approach to market research, not an automation of an old one.',
-        users: 'Market research teams, brand strategy leads, insights groups.',
-        replaces: 'Traditional qualitative focus groups and online bulletin boards ($100K+ per study, 4–8 weeks).',
-        defensibility: { rating: 'MODERATE', text: 'Novel methodology — AI-driven real-time research with actual participants — is genuinely differentiated from Verba (existing transcripts) and MagpAI (simulated stakeholders). Value depends on proving insight quality parity with traditional qual.' },
-        valueMapping: 'External: 8–18 engagements × $25K–$45K = $200K–$810K.',
-        leadingIndicators: [
-          'Insight quality scores (rated by clients or validated against traditional methods running in parallel) meet or exceed traditional qual benchmarks',
-          'Client repeat usage rate exceeds 40%, indicating BloomLab is trusted as a standalone methodology',
-        ],
-        valueEstimate: 'Low: 8 engagements × $25K = $200K. High: 18 engagements × $45K = $810K.',
-        assumptions: [
-          'The methodology demonstrably produces insight quality comparable to traditional qual research',
-          'Clients are willing to pay a premium for speed even if the methodology is unfamiliar',
-        ],
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 24: SUPER PRODUCT VISION (moved after product deep dives)
+  // SLIDE 10: SUPER PRODUCT VISION (moved after product deep dives)
   // ================================================================
   {
     id: 'super-product',
@@ -846,7 +427,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 25: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
+  // SLIDE 11: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
   // ================================================================
   {
     id: 'internal-productivity-value',
@@ -874,7 +455,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 26: EXTERNAL REVENUE UPSIDE (pAdd)
+  // SLIDE 12: EXTERNAL REVENUE UPSIDE (pAdd)
   // ================================================================
   {
     id: 'external-revenue',
@@ -902,7 +483,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 27: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
+  // SLIDE 13: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
   // ================================================================
   {
     id: 'combined-value-waterfall',
@@ -941,7 +522,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 28: LEADING INDICATORS & MEASUREMENT (Section 17)
+  // SLIDE 14: LEADING INDICATORS & MEASUREMENT (Section 17)
   // ================================================================
   {
     id: 'leading-indicators',
@@ -980,7 +561,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 29: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
+  // SLIDE 15: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
   // ================================================================
   {
     id: 'governance',
@@ -1013,7 +594,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 30: EXECUTION ROADMAP (Section 19)
+  // SLIDE 16: EXECUTION ROADMAP (Section 19)
   // ================================================================
   {
     id: 'roadmap',
@@ -1062,6 +643,425 @@ export const slides: SlideData[] = [
           { num: '02', title: 'Differentiate Through Data + Expertise', description: 'The moat is proprietary engagement data, two decades of medical judgment, and integrated commercialization services — not AI capability.', variant: 'sage' },
           { num: '03', title: 'Instrument ROI with Leading Indicators', description: 'Close the loop between product usage → outcomes → willingness to pay. Sunset tools that haven\'t hit 20% adoption by Month 6.', variant: 'gold' },
           { num: '04', title: 'Operationalize with Product-Led Ownership', description: 'Product-led prioritization with clear ownership, a single intake process, and 90-day milestones. Scale Pantheon to 15–25 customers. Roll out editorial platform speed improvements.', variant: 'cyan' },
+        ],
+      },
+    },
+  },
+  // ================================================================
+  // SLIDE 17: INITIATIVE DEEP DIVES (Section Divider)
+  // ================================================================
+  {
+    id: 'initiative-deep-dives',
+    title: 'Initiative Deep Dives',
+    type: 'title',
+    content: {
+      type: 'title',
+      headline: 'Initiative Deep Dives',
+      subtitle: '',
+    },
+  },
+
+  // ================================================================
+  // SLIDE 18: DYNAIMIC CONTENT (NEW — Product Deep Dive)
+  // ================================================================
+  {
+    id: 'dynaimic-content',
+    title: 'DynAImic Content — AI-Assisted Content Generation',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'DynAImic Content — AI-Assisted Content Generation',
+        description: 'Generates draft marketing content across channels (emails, banners, social media, leave-behinds, microsites) from content briefs. Combines LLM-assisted generation with MKG\'s brand knowledge bases to produce MLR-ready first drafts that reduce time from brief to reviewable content.',
+        users: 'Medical writers and content creators across MKG\'s MedComm business units.',
+        replaces: 'Manual first-draft creation, which currently takes 2–5 days per asset depending on complexity and channel.',
+        defensibility: { rating: 'HIGH', text: 'Addresses the largest labor pool in the editorial pipeline (~80 medical writers at $120K avg comp). Content generation is the highest-volume step and the primary bottleneck in cycle time. Near production-ready as part of the KINETICS toolset.' },
+        valueMapping: 'Internal: 80 FTEs × $120K × 8–15% uplift = $768K–$1,440K. This is the single largest internal value line item.',
+        leadingIndicators: [
+          'Average days from brief to first reviewable draft drops below 2 days (from current 3–5 day baseline) on projects using DynAImic Content',
+          '30%+ of eligible MedComm projects are using AI-assisted drafting within 6 months',
+        ],
+        valueEstimate: 'Internal: 80 FTEs × $120K × 8–15% uplift = $768K–$1,440K in productivity freed.',
+        assumptions: [
+          'Medical writers spend 60%+ of project time on first drafts — AI-assisted generation compresses the highest-volume step',
+          'Output quality is sufficient to serve as a working first draft, reducing (not eliminating) writer effort',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 19: ANNOTATION ACTIVATION (NEW — Product Deep Dive)
+  // ================================================================
+  {
+    id: 'annotation-activation',
+    title: 'Annotation Activation — Auto-Citation Linking',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Annotation Activation — Auto-Citation Linking',
+        description: 'Auto-links claims in marketing content to supporting literature references. Identifies assertions in draft content and matches them to citations from the scientific literature, preparing content for editorial fact-checking and MLR submission.',
+        users: 'Editorial and QA review teams preparing content for MLR submission.',
+        replaces: 'Manual annotation — currently one of the most time-consuming steps in MLR preparation, requiring analysts to match each claim to a supporting reference by hand.',
+        defensibility: { rating: 'HIGH', text: 'Automates the most tedious step in MLR prep. Directly reduces rounds of revision and submission time for ~30 editorial/QA reviewers at $110K avg comp. Production-ready or near-ready as part of the KINETICS editorial pipeline.' },
+        valueMapping: 'Internal: Captured under Editorial/QA Reviewers — 30 FTEs × $110K × 15–25% uplift = $495K–$825K (shared with Route Reagent).',
+        leadingIndicators: [
+          'Annotation error rate (incorrect or missing citations) falls below 5% on AI-assisted projects, demonstrating output quality sufficient for editorial trust',
+          'Rounds of revision before MLR approval decrease by at least 1 round on annotated projects versus manual baseline',
+        ],
+        valueEstimate: 'Internal: 30 FTEs × $110K × 15–25% uplift = $495K–$825K (shared with Route Reagent).',
+        assumptions: [
+          'Citation matching accuracy is high enough that editorial reviewers trust the output without re-verifying every reference',
+          'The tool integrates directly into the editorial workflow system, not as a standalone side step',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 20: COMPLIANCE CORE (NEW — Product Deep Dive)
+  // ================================================================
+  {
+    id: 'compliance-core',
+    title: 'Compliance Core — Regulatory Flag Detection',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Compliance Core — Regulatory Flag Detection',
+        description: 'Scans marketing content for FDA compliance risks before MLR submission — detecting off-label language, fair balance issues, and guideline adherence violations. Pre-scores content against common MLR rejection criteria.',
+        users: 'Regulatory and compliance review teams across MKG.',
+        replaces: 'Manual compliance pre-screening, which currently requires specialized reviewers to read every asset line-by-line against regulatory standards.',
+        defensibility: { rating: 'HIGH', text: 'Pre-screening catches costly errors before they reach MLR, preventing late-stage rejections that create rework cascades across the full pipeline. Addresses ~20 compliance reviewers at $140K avg comp. The risk-reduction mechanism amplifies value beyond the direct labor savings.' },
+        valueMapping: 'Internal: 20 FTEs × $140K × 5–12% uplift = $140K–$336K. Indirect: each prevented MLR rejection avoids 3–5 days of rework.',
+        leadingIndicators: [
+          'First-pass acceptance rate at MLR improves by 10+ percentage points on projects that use Compliance Core pre-screening',
+          'Compliance review hours per asset decrease measurably versus unassisted baseline',
+        ],
+        valueEstimate: 'Internal: 20 FTEs × $140K × 5–12% uplift = $140K–$336K. Indirect value: each prevented rejection avoids 3–5 days of rework across writers, editors, and compliance staff.',
+        assumptions: [
+          'The tool catches a meaningful percentage of the compliance issues that currently cause MLR rejections',
+          'False positive rate is low enough that reviewers don\'t ignore the tool\'s flags',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 21: ROUTE REAGENT (NEW — Product Deep Dive)
+  // ================================================================
+  {
+    id: 'route-reagent',
+    title: 'Route Reagent — Style & Brand Validation',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Route Reagent — Style & Brand Validation',
+        description: 'Validates content against AMA style guides, brand-specific editorial standards, and MKG internal guidelines. Performs preliminary quality checks during the editorial review cycle — verifying routing comments have been addressed, checking style consistency, and flagging discrepancies before human review.',
+        users: 'Editorial and QA reviewers, medical writers during revision cycles.',
+        replaces: 'Manual style and brand compliance checking — a repetitive, error-prone step in every editorial review cycle.',
+        defensibility: { rating: 'HIGH', text: 'Closest to production among the editorial pipeline tools. Already embedded in real editorial workflows. Catches low-value errors before they consume human reviewer time. Value is shared with Annotation Activation across the ~30 editorial/QA FTE pool.' },
+        valueMapping: 'Internal: Shared with Annotation Activation under Editorial/QA Reviewers — 30 FTEs × $110K × 15–25% uplift = $495K–$825K combined.',
+        leadingIndicators: [
+          'Style and brand error rates in submitted content drop measurably on Route Reagent-assisted projects',
+          'Editorial reviewer hours per asset decrease as QA pre-checks catch issues that previously required manual identification',
+        ],
+        valueEstimate: 'Internal: Shared with Annotation Activation — 30 FTEs × $110K × 15–25% uplift = $495K–$825K combined.',
+        assumptions: [
+          'The tool\'s style and brand rule library is comprehensive enough to catch the majority of common errors',
+          'Editorial teams integrate it into their review workflow rather than treating it as optional',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 22: PANTHEON
+  // ================================================================
+  {
+    id: 'pantheon',
+    title: 'Pantheon — HCP Search & Profiling',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Pantheon — HCP Search & Profiling',
+        description: 'Conversational AI interface for querying HCP datasets in natural language. Provides instant synthesis across publication, clinical trial, and payment data to surface relevant experts in seconds. Designed to transition 81qd from transaction-based analytics to a recurring subscription model, layering proprietary engagement data on top of commercial claims and NPI data.',
+        users: 'Commercial and medical affairs teams at pharma companies — brand leaders, TLL team leadership, MSL teams, insights/analytics groups, and 81qd analytics clients.',
+        replaces: 'Manual HCP profiling (4–6 weeks, $50K–$75K per project). Also competes with IQVIA, H1 Insights, Definitive Healthcare, and Veeva Compass.',
+        defensibility: { rating: 'HIGH', text: 'Subscription model shifts 81qd from transaction-based to recurring revenue — the single most important structural change for the analytics unit. Defensible when the proprietary engagement data layer (advisory board history, speaker bureau records, sentiment signals) is richer than what customers get from IQVIA or H1 alone.' },
+        valueMapping: 'External: 8–15 customers × $80K–$120K = $640K–$1.8M. Internal: 25 FTEs × $105K × 10–20% uplift = $263K–$525K (shared with Practice Master).',
+        leadingIndicators: [
+          'Subscription attach rate exceeds 10% of eligible 81qd clients within 12 months, validating the transaction-to-subscription shift',
+          'Renewal rate at 12 months exceeds 75%, demonstrating ongoing usage value beyond initial novelty',
+        ],
+        valueEstimate: 'External: Low — 8 customers × $80K = $640K | High — 15 customers × $120K = $1.8M. Internal: 25 FTEs × $105K × 10–20% uplift = $263K–$525K (shared with Practice Master).',
+        assumptions: [
+          'Proprietary engagement data layer is meaningfully richer than IQVIA or H1 alone',
+          'Subscription price point ($80K–$120K) validated with at least 5 pilot customers',
+          'Retention exceeds 75% at renewal — requires demonstrating ongoing usage, not just initial novelty',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 23: PLEXUS
+  // ================================================================
+  {
+    id: 'plexus',
+    title: 'Plexus — Influence Mapping',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Plexus — Influence Mapping & Network Analytics',
+        description: 'Maps clinical influence networks — identifying not just who the key opinion leaders are, but how they\'re connected, who influences whom, and where the leverage points are. Combines clinical, academic, digital, and institutional data to model influence flow across therapeutic areas.',
+        users: '81qd analysts, engagement planning teams, commercial strategy leads at pharma companies.',
+        replaces: 'Manual network analysis relying on subjective assessments, conference attendance lists, and publication counts.',
+        defensibility: { rating: 'HIGH', text: 'Most defensible analytics asset MKG has. Influence network modeling on proprietary engagement data (who attended advisory boards, who spoke at events, who influenced prescribing changes) cannot be purchased externally. This is the product most anchored in MKG\'s structural advantage.' },
+        valueMapping: 'Internal: 15 FTEs × $130K × 5–12% uplift = $98K–$234K. External: 8–18 projects × $20K–$40K premium = $160K–$720K.',
+        leadingIndicators: [
+          'Competitive win rate on proposals featuring influence mapping increases measurably, indicating AI-enhanced Plexus is a differentiator in the sales process',
+          'Client-reported time savings on engagement planning projects exceed 25% versus manual network analysis baseline',
+        ],
+        valueEstimate: 'Internal: 15 FTEs × $130K × 5–12% uplift = $98K–$234K. External: 8–18 projects × $20K–$40K premium = $160K–$720K.',
+        assumptions: [
+          'AI-enhanced Plexus delivers measurably faster or deeper results than current workflow',
+          'Clients perceive AI enhancement as valuable enough for price premium',
+          'Sales teams trained to articulate the AI-enhanced value proposition in proposals',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 24: PRACTICE MASTER
+  // ================================================================
+  {
+    id: 'practice-master',
+    title: 'Practice Master — HCP Affiliation Intelligence',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Practice Master — HCP Affiliation Intelligence',
+        description: 'Harmonizes multiple data sources to map HCP affiliations and resolve conflicting institutional records. Disambiguates which practice, hospital, or academic institution an HCP is actually associated with across NPI, claims, and engagement data.',
+        users: '81qd analysts and MedComm teams. Used as an input step for HCP profiling projects and engagement planning.',
+        replaces: 'Manual verification of HCP affiliations across NPI registries, institutional websites, and proprietary databases — consuming several hours per profiling project.',
+        defensibility: { rating: 'MODERATE', text: 'Addresses a narrower analyst pool (~25 FTEs). Underlying NPI and institutional data is commercially available from competitors. Value comes from the harmonization and disambiguation layer — resolving conflicting affiliations across sources — not from the data itself.' },
+        valueMapping: 'Internal: Contributes to HCP Profiling/Data Analysts — $263K–$525K productivity value (shared with Pantheon). Standalone contribution is modest.',
+        leadingIndicators: [
+          'Hours saved per profiling project are measurable and consistent (target: 2+ hours per project versus manual verification baseline)',
+          'Downstream correction rate on affiliation data drops below 5%, indicating analysts trust the tool\'s output without re-verifying manually',
+        ],
+        valueEstimate: 'Captured under HCP Profiling/Data Analysts (25 FTEs, $105K comp, 10–20% uplift = $263K–$525K). Shared with Pantheon. Standalone contribution is modest.',
+        assumptions: [
+          'The harmonization layer is accurate enough that analysts trust it without re-verifying manually',
+          'The tool is integrated into the standard profiling workflow, not a side step',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 25: SENTIMENT TRACKER
+  // ================================================================
+  {
+    id: 'sentiment-tracker',
+    title: 'Sentiment Tracker — HCP Sentiment Analysis',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Sentiment Tracker — HCP Sentiment Analysis',
+        description: 'NLP-based tracking of HCP belief and sentiment shifts over time. Monitors evolution of HCP perceptions across therapeutic areas, treatment protocols, and brand messaging — drawing from MKG\'s own engagement activities (advisory boards, speaker bureaus, MSL interactions).',
+        users: '81qd analysts, brand strategy teams, market research leads.',
+        replaces: 'Periodic qualitative research (typically quarterly or semi-annual) that provides point-in-time snapshots. Sentiment Tracker aims for continuous monitoring.',
+        defensibility: { rating: 'MODERATE', text: 'High strategic value when applied to proprietary engagement data. Revenue mechanism is indirect — share-of-wallet lift on existing client relationships — which makes Year 1 measurement harder. Defensibility depends entirely on using MKG\'s internal data, not publicly available text.' },
+        valueMapping: 'External: 0.3–0.8% lift on ~$50M relevant revenue base = $150K–$400K.',
+        leadingIndicators: [
+          'Brand strategy teams actively incorporate sentiment outputs into campaign planning and client proposals on at least 5 accounts within 6 months',
+          'Upsell or renewal rates on sentiment-informed accounts show measurable positive variance versus non-informed accounts',
+        ],
+        valueEstimate: 'Approximately $50M of MKG\'s revenue comes from clients where HCP sentiment data is directly relevant. A 0.3–0.8% lift on that base yields $150K–$400K.',
+        assumptions: [
+          'The tool is fed by MKG\'s proprietary engagement data, not just public sources',
+          'Brand strategy teams actively incorporate sentiment outputs into campaign planning and client proposals',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 26: CHATMKG
+  // ================================================================
+  {
+    id: 'chatmkg',
+    title: 'ChatMKG — Secure LLM Access',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'ChatMKG — Secure LLM Access',
+        description: 'Custom multimodal AI workspace with SSO, audio transcription, web search, model switching, conversation history, and keyword search for past work. Designed as MKG\'s internal AI portal for general-purpose tasks.',
+        users: 'All MKG employees (~200 FTEs). Intended as the default AI interface for day-to-day work.',
+        replaces: 'Consumer AI tools (ChatGPT, Claude, Copilot) that employees are already using on personal devices.',
+        defensibility: { rating: 'MODERATE', text: 'Every feature (SSO, transcription, web search, model switching) is available in off-the-shelf enterprise AI. Defensibility is zero unless ChatMKG connects to the ION Data Lake and brand knowledge bases — making it the only AI interface that can access MKG\'s proprietary data. Without that integration, there is no reason for employees to use it over consumer tools.' },
+        valueMapping: 'Internal: 200 FTEs × $95K × 2–5% uplift = $380K–$950K. Wide range reflects the data integration question.',
+        leadingIndicators: [
+          'Daily active users as a % of total employees exceeds 40%, indicating ChatMKG is genuinely preferred over external alternatives',
+          'Percentage of ChatMKG sessions that access proprietary data (ION, brand knowledge bases) exceeds 25%, validating the data integration thesis',
+        ],
+        valueEstimate: '200 FTEs × $95K × 2–5% uplift = $380K–$950K. Wide range reflects the data integration question.',
+        assumptions: [
+          'ChatMKG connects to the ION Data Lake and brand knowledge bases, making it meaningfully more useful than external alternatives',
+          'User experience is competitive with consumer-grade AI tools',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 27: VERBA
+  // ================================================================
+  {
+    id: 'verba',
+    title: 'Verba — Advisory Board Synthesis',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'Verba — Advisory Board Synthesis',
+        description: 'Transforms transcripts from advisory boards, investigator meetings, and expert discussions into structured intelligence. Extracts key themes, unmet needs, objections, treatment patterns, and sentiment shifts.',
+        users: 'Client-facing — brand teams, medical affairs teams, market access leaders, commercial strategy teams.',
+        replaces: 'Manual synthesis of advisory board transcripts — labor-intensive process requiring analysts to review hours of discussion and produce structured reports over 1–2 weeks.',
+        defensibility: { rating: 'MODERATE', text: 'Core functionality (transcript to structured summary) is increasingly commoditized — Claude, GPT-4o can do this well. Defensibility requires integration with MKG\'s proprietary longitudinal data: cross-referencing statements against clinical evidence, comparing sentiment across boards over time. Without those layers, Verba is an LLM wrapper.' },
+        valueMapping: 'Internal: 40 FTEs × $115K × 8–15% uplift = $368K–$690K (shared with BloomLab, PerspectivX). External: $0 (deal sweetener) → 15 boards × $12K = $0–$180K.',
+        leadingIndicators: [
+          'Time from advisory board to client deliverable drops below 3 business days on Verba-assisted projects (from current 1–2 week baseline)',
+          'Clients specifically request Verba as part of engagement scope, rather than receiving it as a default — indicating perceived differentiation',
+        ],
+        valueEstimate: 'Internal: 40 FTEs × $115K × 8–15% uplift = $368K–$690K (shared). External: Low — $0 (deal sweetener) | High — 15 boards × $12K = $180K.',
+        assumptions: [
+          'Verba connects to proprietary MKG data to deliver analysis that a standalone LLM cannot replicate',
+          'Output quality is high enough that medical reviewers don\'t spend as much time correcting as they saved',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 28: PERSPECTIVX
+  // ================================================================
+  {
+    id: 'perspectivx',
+    title: 'PerspectivX — Concept Scoring',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'PerspectivX — Concept Scoring',
+        description: 'Simulates real-world feedback from HCPs by analyzing campaign concepts through the lens of each treater\'s unique attitudes, beliefs, and cognitive filters. Uses data-based personas modeled from the ION Data Lake.',
+        users: 'Brand teams, creative agencies, commercial strategy teams at pharma companies.',
+        replaces: 'Traditional qualitative concept testing ($75K–$150K, 6–8 weeks). PerspectivX pricing ($15K–$30K per test) is a fraction, making adoption easier to justify.',
+        defensibility: { rating: 'MODERATE-HIGH', text: 'Differentiated if personas are built on real MKG research data from SOUND, 81qd behavioral data, and advisory board engagement data. The key validation question: do PerspectivX scores correlate with actual market research outcomes? If yes, this is a powerful and defensible sales tool.' },
+        valueMapping: 'External: 8–20 tests × $15K–$30K = $120K–$600K.',
+        leadingIndicators: [
+          'PerspectivX concept scores show validated directional correlation with actual market performance on at least 3 retrospective case studies',
+          'Client repeat usage rate exceeds 50% — indicating teams that try it find it useful enough to come back',
+        ],
+        valueEstimate: 'Low: 8 tests × $15K = $120K. High: 20 tests × $30K = $600K.',
+        assumptions: [
+          'Personas are grounded in MKG\'s proprietary data, not generic LLM approximations',
+          'Concept scores show validated correlation to real market outcomes (even directional correlation is meaningful)',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 29: MAGPAI
+  // ================================================================
+  {
+    id: 'magpai',
+    title: 'MagpAI — Stakeholder Simulation',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'MagpAI — Stakeholder Simulation',
+        description: 'Replicates authentic communication styles of HCPs, patients, and payers through AI simulation. Supports observational research and provides interactive training avatars for sales reps and MSLs.',
+        users: 'Brand teams, commercial strategy teams, training departments.',
+        replaces: 'Traditional stakeholder research interviews ($50K–$100K per study, 4–6 weeks) and in-person sales training role-plays. Competes with ZS/Symmetry, Rehearsal, Second Nature on training.',
+        defensibility: { rating: 'MODERATE', text: 'Significant overlap with PerspectivX — both create AI-simulated HCP/stakeholder interactions from persona data. Differentiated by output format (conversational simulation vs. concept scores) but the underlying data and model are shared. Consolidation opportunity with PerspectivX should be evaluated.' },
+        valueMapping: 'External: $0 (deal sweetener) → 10 engagements × $20K = $0–$200K.',
+        leadingIndicators: [
+          'Research and training teams report MagpAI simulations are realistic enough to inform actual strategy decisions (measured through structured user feedback surveys)',
+          'Engagement volume grows quarter-over-quarter, indicating organic demand rather than one-time experimentation',
+        ],
+        valueEstimate: 'Low: $0 (currently more of a deal sweetener / demo tool). High: 10 engagements × $20K = $200K.',
+        assumptions: [
+          'Personas are data-grounded, not generic',
+          'Users find the simulations realistic enough to be useful',
+          'The use case is distinct enough from PerspectivX to justify two separate products — or the two are consolidated',
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 30: BLOOMLAB
+  // ================================================================
+  {
+    id: 'bloomlab',
+    title: 'BloomLab — Real-Time Market Research',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ProductValueStorySlide',
+      props: {
+        sectionLabel: 'Product Deep Dive',
+        heading: 'BloomLab — Real-Time Market Research',
+        description: 'AI-driven, real-time chat sessions with actual participants that merge qualitative depth with quantitative rigor. A new approach to market research, not an automation of an old one.',
+        users: 'Market research teams, brand strategy leads, insights groups.',
+        replaces: 'Traditional qualitative focus groups and online bulletin boards ($100K+ per study, 4–8 weeks).',
+        defensibility: { rating: 'MODERATE', text: 'Novel methodology — AI-driven real-time research with actual participants — is genuinely differentiated from Verba (existing transcripts) and MagpAI (simulated stakeholders). Value depends on proving insight quality parity with traditional qual.' },
+        valueMapping: 'External: 8–18 engagements × $25K–$45K = $200K–$810K.',
+        leadingIndicators: [
+          'Insight quality scores (rated by clients or validated against traditional methods running in parallel) meet or exceed traditional qual benchmarks',
+          'Client repeat usage rate exceeds 40%, indicating BloomLab is trusted as a standalone methodology',
+        ],
+        valueEstimate: 'Low: 8 engagements × $25K = $200K. High: 18 engagements × $45K = $810K.',
+        assumptions: [
+          'The methodology demonstrably produces insight quality comparable to traditional qual research',
+          'Clients are willing to pay a premium for speed even if the methodology is unfamiliar',
         ],
       },
     },
