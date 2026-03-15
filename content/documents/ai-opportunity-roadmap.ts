@@ -50,7 +50,7 @@ export const slides: SlideData[] = [
       props: {
         sectionLabel: 'Section 01',
         heading: 'Executive Summary',
-        summaryText: 'Strategy (6) — No single AI product strategy owner. Data Assets (7) — Engagement data is genuinely proprietary; claims data is not a moat. Workflow Integration (6) — Route Reagent and Annotation Activation are embedded; most others standalone. External Differentiation (6) — Pantheon and Plexus defensible; Verba, MagpAI, PerspectivX carry displacement risk. Governance (8) — Multi-layered governance impressive for ~$150M company. Measurement (4) — No closed-loop ROI measurement or enterprise AI KPI dashboard.',
+        summaryText: 'Strategy (6) — No single AI product strategy owner.\nData Assets (7) — Engagement data is genuinely proprietary; claims data is not a moat.\nWorkflow Integration (6) — Route Reagent and Annotation Activation are embedded; most others standalone.\nExternal Differentiation (6) — Pantheon and Plexus defensible; Verba, MagpAI, PerspectivX carry displacement risk.\nGovernance (8) — Multi-layered governance impressive for ~$150M company.\nMeasurement (4) — No closed-loop ROI measurement or enterprise AI KPI dashboard.',
         radarChart: {
           labels: ['Strategy', 'Data Assets', 'Workflow Integration', 'External Differentiation', 'Governance', 'Measurement'],
           values: [6, 7, 6, 6, 8, 4],
@@ -94,10 +94,6 @@ export const slides: SlideData[] = [
         { icon: 'calculator', title: '3. Value Driver Quantification', description: 'Characterize and quantify the specific value drivers per initiative, separating internal productivity (labor cost equivalent) from external revenue upside.' },
         { icon: 'rocket', title: '4. Prioritization & Roadmap', description: 'Focus the portfolio on practical value creation through consolidation, leading indicator measurement, and a phased execution plan.' },
       ],
-      insightBox: {
-        label: 'Framework',
-        text: 'Business context first, then initiative-level review with defensibility analysis, value quantification, and a focused execution roadmap.',
-      },
     },
   },
 
