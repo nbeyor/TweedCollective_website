@@ -588,7 +588,10 @@ export const slides: SlideData[] = [
           { cadence: 'Monthly', forum: 'Senior Leadership AI Review', purpose: 'KPI dashboard review, investment decisions, portfolio prioritization', attendees: 'CEO, CSO, CCDO, CFO, AI PM' },
           { cadence: 'Quarterly', forum: 'Board AI Update', purpose: 'Strategic progress, EBITDA bridge, roadmap adjustments', attendees: 'Novo board, MKG executive team' },
         ],
-        optionalAITalentCallout: 'Optional: Consolidate AI Build Talent. Currently, AI engineering and product talent is distributed across multiple business units building overlapping tools with competing roadmaps. Consolidating into a centralized AI team (reporting to the AI PM or CSO) would focus investment, eliminate duplicated infrastructure, and accelerate the super product vision. This is an organizational change that requires careful sequencing — it should follow, not precede, the product consolidation and roadmap prioritization decisions. Flagged as optional because it\'s high-impact but also high-disruption and should only proceed with strong executive alignment.',
+        discussionBullets: [
+          'Will the addition of an AI Product Manager accelerate and focus our efforts?',
+          'Should AI build talent be consolidated into a single team?',
+        ],
       },
     },
   },
