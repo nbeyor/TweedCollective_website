@@ -1831,16 +1831,6 @@ function buildSlideContentMap() {
             ))}
           </div>
 
-          {/* Gaps */}
-          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
-            <ul className="space-y-1 text-xs text-cream/50">
-              <li>&bull; What % of Apollo revenue is US vs. international? How does Veeva&apos;s site penetration vary by geography?</li>
-              <li>&bull; How many Apollo sites are also on SiteVault (dual-use)?</li>
-              <li>&bull; Have any Apollo sponsor accounts standardized on Veeva&apos;s clinical suite and raised the consolidation question?</li>
-              <li>&bull; Apollo contractual structure &mdash; multi-year vs. annual; when do largest sponsor contracts renew?</li>
-            </ul>
-          </div>
         </div>
   )
 
@@ -1919,16 +1909,6 @@ function buildSlideContentMap() {
             ))}
           </div>
 
-          {/* Gaps */}
-          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
-            <ul className="space-y-1 text-xs text-cream/50">
-              <li>&bull; Apollo eConsent current adoption? (sites, studies, consent events processed)</li>
-              <li>&bull; Does Apollo eConsent support multimedia (video, interactive elements, knowledge checks)?</li>
-              <li>&bull; How does Apollo&apos;s pricing compare to Veeva&apos;s free tier and Signant&apos;s enterprise pricing?</li>
-              <li>&bull; Are any Apollo sponsor customers using a different eConsent vendor alongside eBinders?</li>
-            </ul>
-          </div>
         </div>
   )
 
@@ -2004,16 +1984,6 @@ function buildSlideContentMap() {
             ))}
           </div>
 
-          {/* Gaps */}
-          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
-            <ul className="space-y-1 text-xs text-cream/50">
-              <li>&bull; Does Apollo&apos;s standard customer agreement permit aggregated, de-identified metadata use for benchmarking or commercial data products?</li>
-              <li>&bull; Material differences in data rights between site-facing and sponsor-facing contracts?</li>
-              <li>&bull; Any customer pushback or legal challenges related to data use?</li>
-              <li>&bull; Contract renewal cadence &mdash; annual, multi-year, or evergreen?</li>
-            </ul>
-          </div>
         </div>
   )
 
@@ -2109,16 +2079,6 @@ function buildSlideContentMap() {
             ))}
           </div>
 
-          {/* Gaps */}
-          <div className="p-3 rounded-xl bg-cream/5 border-l-4 border-cream/20">
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Open Questions</div>
-            <ul className="space-y-1 text-xs text-cream/50">
-              <li>&bull; Current data engineering team size and composition?</li>
-              <li>&bull; Current Snowflake spend and how Kafka migration changes cost profile?</li>
-              <li>&bull; Has Apollo scoped or budgeted a Tier 2&ndash;equivalent project internally?</li>
-              <li>&bull; What event instrumentation exists &mdash; user interactions logged at action level or only document level?</li>
-            </ul>
-          </div>
         </div>
   )
 }
