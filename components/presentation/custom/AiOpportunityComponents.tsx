@@ -162,11 +162,12 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
   valuePotentialFootnote?: string
   sections: Array<{
     title: string
-    rows: Array<{ name: string; description: string; valueSource: string; valuePotential: string; rationale?: string }>
+    rows: Array<{ name: string; description: string; valueSource: string; valuePotential: string; rationale?: string; displacementRisk?: string }>
   }>
-  cards: Array<{ name: string; description: string; icon: string; highlight: boolean }>
+  cards?: Array<{ name: string; description: string; icon: string; highlight: boolean }>
 }) {
   const hasRationale = sections.some(s => s.rows.some(r => r.rationale))
+  const hasDisplacementRisk = sections.some(s => s.rows.some(r => r.displacementRisk))
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
@@ -187,6 +188,7 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
                     <th className="text-left py-2 pr-4 text-cream/50 font-medium">Description</th>
                     <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Source</th>
                     <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Potential</th>
+                    {hasDisplacementRisk && <th className="text-left py-2 pr-4 text-cream/50 font-medium">Displacement Risk</th>}
                     {hasRationale && <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>}
                   </tr>
                 </thead>
@@ -199,6 +201,7 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
                       <td className="py-2.5 pr-4">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${valuePotentialColor[row.valuePotential] || valuePotentialColor['Low']}`}>{row.valuePotential}</span>
                       </td>
+                      {hasDisplacementRisk && <td className="py-2.5 pr-4 text-cream/60">{row.displacementRisk ?? '—'}</td>}
                       {hasRationale && <td className="py-2.5 text-cream/60 leading-relaxed">{row.rationale ?? '—'}</td>}
                     </tr>
                   ))}
@@ -213,15 +216,17 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
         </div>
       )}
-      <div className="grid md:grid-cols-4 gap-3">
-        {cards.map(card => (
-          <div key={card.name} className={`p-3 rounded-xl border ${card.highlight ? 'bg-sage/10 border-sage/30' : 'bg-white/5 border-cream/10'}`}>
-            <div className="mb-2">{cardIconMap[card.icon] || <Brain className="w-5 h-5 text-cream/40" />}</div>
-            <h4 className="text-xs font-semibold text-cream mb-1">{card.name}</h4>
-            <p className="text-[10px] text-cream/50 leading-relaxed">{card.description}</p>
-          </div>
-        ))}
-      </div>
+      {cards && cards.length > 0 && (
+        <div className="grid md:grid-cols-4 gap-3">
+          {cards.map(card => (
+            <div key={card.name} className={`p-3 rounded-xl border ${card.highlight ? 'bg-sage/10 border-sage/30' : 'bg-white/5 border-cream/10'}`}>
+              <div className="mb-2">{cardIconMap[card.icon] || <Brain className="w-5 h-5 text-cream/40" />}</div>
+              <h4 className="text-xs font-semibold text-cream mb-1">{card.name}</h4>
+              <p className="text-[10px] text-cream/50 leading-relaxed">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
