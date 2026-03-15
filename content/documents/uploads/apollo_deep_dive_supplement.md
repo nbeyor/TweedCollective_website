@@ -26,20 +26,28 @@ The existing diligence document treats Veeva SiteVault as a near-term competitiv
 
 Veeva now offers 30+ distinct software and data products for life sciences. The clinical operations suite alone covers:
 
-| Product | Function | Free for Sites? |
-|---------|----------|----------------|
-| **SiteVault eISF** | Electronic investigator site file (direct eBinders competitor) | Yes — unlimited users and studies |
-| **SiteVault eConsent** | Electronic informed consent | Yes — up to 20 active studies |
-| **SiteVault CTMS** | Site-level trial management (launched Aug 2025) | Yes — up to 20 active studies |
+#### Site-Facing Products (Veeva SiteVault)
+
+| Product | Function | Cost to Sites |
+|---------|----------|--------------|
+| **SiteVault eISF** | Electronic investigator site file (direct eBinders competitor) | Free — unlimited users and studies |
+| **SiteVault eConsent** | Electronic informed consent | Free — up to 20 active studies |
+| **SiteVault CTMS** | Site-level trial management (launched Aug 2025) | Free — up to 20 active studies |
 | **eSource** | Direct data capture at sites, EHR/EDC integration (announced Jan 2026) | Early adopter — H2 2026 |
-| **Vault eTMF** | Sponsor-side trial master file | Paid — sponsor license |
-| **Vault CTMS** | Sponsor-side clinical trial management | Paid — sponsor license |
-| **Vault EDC** | Electronic data capture | Paid — sponsor license |
-| **Study Startup** | Site feasibility, qualification, activation | Paid — sponsor license |
-| **Payments** | Site payment tracking and budget management | Paid — sponsor license |
-| **Study Training** | GCP and study-specific training management | Paid — sponsor license |
-| **Site Connect** | Sponsor↔site document exchange | Paid — add-on |
-| **OpenData Clinical** | Curated site and investigator reference data | Paid — add-on |
+
+#### Sponsor-Facing Products (Veeva Vault Clinical Suite)
+
+| Product | Function | Buyer |
+|---------|----------|-------|
+| **Vault eTMF** | Sponsor-side trial master file | Sponsor / CRO |
+| **Vault CTMS** | Sponsor-side clinical trial management | Sponsor / CRO |
+| **Vault EDC** | Electronic data capture | Sponsor / CRO |
+| **Study Startup** | Site feasibility, qualification, activation | Sponsor / CRO |
+| **Payments** | Site payment tracking and budget management | Sponsor / CRO |
+| **Site Connect** | Sponsor↔site document exchange | Sponsor / CRO |
+| **OpenData Clinical** | Curated site and investigator reference data | Sponsor / CRO |
+
+> **The strategic risk is the connection between these two tables: sponsors standardizing on the Vault Clinical Suite get a zero-friction path to deploying free SiteVault at their sites, displacing Apollo without a separate procurement decision.**
 
 **Key facts:**
 - **FACT:** Veeva's FY2026 total revenues were $3.2B (up 16% YoY), with subscription revenue of $2.7B (up 17% YoY). R&D Solutions subscription revenue ($1.4B) now exceeds Commercial Solutions subscription revenue ($1.3B) — a milestone demonstrating successful diversification beyond CRM. [SOURCE: Veeva FY2026 earnings, SEC filing March 2026]
