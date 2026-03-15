@@ -934,7 +934,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 26: LEADING INDICATORS & MEASUREMENT (Section 17)
+  // SLIDE 27: LEADING INDICATORS & MEASUREMENT (Section 17)
   // ================================================================
   {
     id: 'leading-indicators',
@@ -950,7 +950,7 @@ export const slides: SlideData[] = [
         leadingIndicators: [
           { category: 'Adoption', indicator: 'Daily/weekly active users per tool', sourceSlides: 'All products', howToMeasure: 'Instrument usage logging in ION platform. Pull weekly automated reports — no manual data collection.' },
           { category: 'Adoption', indicator: '% of eligible projects using AI-assisted workflow', sourceSlides: 'DynAImic, Route Reagent, Annotation', howToMeasure: 'Tag projects in the project management system as AI-assisted vs. manual. Compare volumes monthly.' },
-          { category: 'Cycle Time', indicator: 'Days from brief to MLR submission', sourceSlides: 'Editorial pipeline (p9–p12)', howToMeasure: 'Timestamp brief receipt and MLR submission in workflow system. Calculate elapsed days automatically.' },
+          { category: 'Cycle Time', indicator: 'Days from brief to MLR submission', sourceSlides: 'DynAImic Content, Annotation Activation, Compliance Core, Route Reagent', howToMeasure: 'Timestamp brief receipt and MLR submission in workflow system. Calculate elapsed days automatically.' },
           { category: 'Cycle Time', indicator: 'Rounds of revision before approval', sourceSlides: 'Annotation, Route Reagent', howToMeasure: 'Count revision submissions per asset in the editorial tracking system.' },
           { category: 'Quality', indicator: 'First-pass MLR acceptance rate', sourceSlides: 'Compliance Core', howToMeasure: 'Track accept/reject/revise decisions at MLR. Compare AI-screened vs. unscreened submissions.' },
           { category: 'Quality', indicator: 'Annotation error rate', sourceSlides: 'Annotation Activation', howToMeasure: 'Sample-audit AI-generated citations quarterly. Measure % incorrect or missing references.' },
@@ -973,7 +973,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 27: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
+  // SLIDE 28: GOVERNANCE & CHANGE MANAGEMENT (Section 18)
   // ================================================================
   {
     id: 'governance',
@@ -1006,7 +1006,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 28: EXECUTION ROADMAP (Section 19)
+  // SLIDE 29: EXECUTION ROADMAP (Section 19)
   // ================================================================
   {
     id: 'roadmap',
