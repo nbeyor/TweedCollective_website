@@ -176,41 +176,48 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           <p className="text-xs text-cream/90 italic leading-relaxed">{callout}</p>
         </div>
       )}
-      {sections.map((section, si) => (
-        <div key={si} className="space-y-2">
-          <h3 className="text-sm font-semibold text-cream/90">{section.title}</h3>
-          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-cream/10">
-                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Initiative</th>
-                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Description</th>
-                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Source</th>
-                    <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Potential</th>
-                    {hasDisplacementRisk && <th className="text-left py-2 pr-4 text-cream/50 font-medium">Displacement Risk</th>}
-                    {hasRationale && <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.rows.map((row, i) => (
-                    <tr key={i} className="border-b border-cream/5">
-                      <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
-                      <td className="py-2.5 pr-4 text-cream/60">{row.description}</td>
-                      <td className="py-2.5 pr-4 text-cream/60">{row.valueSource}</td>
-                      <td className="py-2.5 pr-4">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${valuePotentialColor[row.valuePotential] || valuePotentialColor['Low']}`}>{row.valuePotential}</span>
-                      </td>
-                      {hasDisplacementRisk && <td className="py-2.5 pr-4 text-cream/60">{row.displacementRisk ?? '—'}</td>}
-                      {hasRationale && <td className="py-2.5 text-cream/60 leading-relaxed">{row.rationale ?? '—'}</td>}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-cream/10">
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Initiative</th>
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Description</th>
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Source</th>
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Potential</th>
+                {hasDisplacementRisk && <th className="text-left py-2 pr-4 text-cream/50 font-medium">Displacement Risk</th>}
+                {hasRationale && <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {sections.map((section, si) => {
+                const colCount = 4 + (hasDisplacementRisk ? 1 : 0) + (hasRationale ? 1 : 0)
+                return (
+                  <React.Fragment key={si}>
+                    {sections.length > 1 && (
+                      <tr className="border-b border-cream/10">
+                        <td colSpan={colCount} className="py-3 text-sm font-semibold text-cream/90">{section.title}</td>
+                      </tr>
+                    )}
+                    {section.rows.map((row, i) => (
+                      <tr key={i} className="border-b border-cream/5">
+                        <td className="py-2.5 pr-4 text-cream/90 font-medium">{row.name}</td>
+                        <td className="py-2.5 pr-4 text-cream/60">{row.description}</td>
+                        <td className="py-2.5 pr-4 text-cream/60">{row.valueSource}</td>
+                        <td className="py-2.5 pr-4">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${valuePotentialColor[row.valuePotential] || valuePotentialColor['Low']}`}>{row.valuePotential}</span>
+                        </td>
+                        {hasDisplacementRisk && <td className="py-2.5 pr-4 text-cream/60">{row.displacementRisk ?? '—'}</td>}
+                        {hasRationale && <td className="py-2.5 text-cream/60 leading-relaxed">{row.rationale ?? '—'}</td>}
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
-      ))}
+      </div>
       {valuePotentialFootnote && (
         <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
           <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
