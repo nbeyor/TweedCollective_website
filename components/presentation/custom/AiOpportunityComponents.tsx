@@ -638,14 +638,24 @@ const barColorMap: Record<string, string> = {
   red: 'bg-red-500',
 }
 
-export function ChangeManagementSlide({ sectionLabel, heading, readiness, requiredActions, meetingStructure, optionalAITalentCallout }: {
+export function ChangeManagementSlide({ sectionLabel, heading, readiness, requiredActions, meetingStructure, optionalAITalentCallout, discussionBullets }: {
   sectionLabel: string
   heading: string
   readiness: { title: string; items: Array<{ dimension: string; score: number; color: string }> }
   requiredActions?: { title: string; items: Array<{ action: string; urgency: string; description: string }> }
   meetingStructure?: Array<{ cadence: string; forum: string; purpose: string; attendees: string }>
   optionalAITalentCallout?: string
+  discussionBullets?: string[]
 }) {
+  // Bold the first two words of a dimension string
+  const boldFirstTwoWords = (text: string) => {
+    const words = text.split(' ')
+    if (words.length <= 2) return <span className="font-bold text-cream">{text}</span>
+    const firstTwo = words.slice(0, 2).join(' ')
+    const rest = words.slice(2).join(' ')
+    return <><span className="font-bold text-cream">{firstTwo}</span> {rest}</>
+  }
+
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
@@ -656,7 +666,7 @@ export function ChangeManagementSlide({ sectionLabel, heading, readiness, requir
             {readiness.items.map(item => (
               <div key={item.dimension} className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-cream/70">{item.dimension}</span>
+                  <span className="text-cream/70">{boldFirstTwoWords(item.dimension)}</span>
                   <span className="text-cream/90 font-mono">{item.score}/10</span>
                 </div>
                 <div className="h-2 bg-cream/5 rounded-full overflow-hidden">
@@ -667,6 +677,19 @@ export function ChangeManagementSlide({ sectionLabel, heading, readiness, requir
           </div>
         </div>
         <div className="space-y-4">
+          {(discussionBullets && discussionBullets.length > 0) && (
+            <div className="p-4 bg-amber-500/5 border border-dashed border-amber-500/30 rounded-xl">
+              <span className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold">For Discussion</span>
+              <ul className="mt-2 space-y-2 text-xs text-cream/70 leading-relaxed">
+                {discussionBullets.map((bullet, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">•</span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {meetingStructure && meetingStructure.length > 0 ? (
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
@@ -712,12 +735,6 @@ export function ChangeManagementSlide({ sectionLabel, heading, readiness, requir
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-          {optionalAITalentCallout && (
-            <div className="p-4 bg-amber-500/5 border border-dashed border-amber-500/30 rounded-xl">
-              <span className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold">For Discussion</span>
-              <p className="mt-2 text-xs text-cream/70 leading-relaxed">{optionalAITalentCallout}</p>
             </div>
           )}
         </div>
@@ -1395,52 +1412,32 @@ export function LeadingIndicatorsSlide({ sectionLabel, heading, coreArgument, le
           {coreArgument}
         </p>
       </div>
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Leading indicators table */}
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-green-400" /> Leading Indicators
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[10px]">
-              <thead>
-                <tr className="border-b border-cream/10">
-                  <th className="text-left py-2 pr-2 text-cream/50 font-medium">Category</th>
-                  <th className="text-left py-2 pr-2 text-cream/50 font-medium">Indicator</th>
-                  <th className="text-left py-2 pr-2 text-cream/50 font-medium">Source Slide(s)</th>
-                  <th className="text-left py-2 text-cream/50 font-medium">How to Measure</th>
+      {/* Leading indicators table — full width */}
+      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+          <Activity className="w-4 h-4 text-green-400" /> Leading Indicators
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[10px]">
+            <thead>
+              <tr className="border-b border-cream/10">
+                <th className="text-left py-2 pr-2 text-cream/50 font-medium">Category</th>
+                <th className="text-left py-2 pr-2 text-cream/50 font-medium">Indicator</th>
+                <th className="text-left py-2 pr-2 text-cream/50 font-medium">Source Slide(s)</th>
+                <th className="text-left py-2 text-cream/50 font-medium">How to Measure</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leadingIndicators.map((row, i) => (
+                <tr key={i} className="border-b border-cream/5">
+                  <td className="py-2 pr-2 text-cream/80 font-medium">{row.category}</td>
+                  <td className="py-2 pr-2 text-cream/70">{row.indicator}</td>
+                  <td className="py-2 pr-2 text-cream/60">{row.sourceSlides}</td>
+                  <td className="py-2 text-cream/60 leading-relaxed">{row.howToMeasure}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {leadingIndicators.map((row, i) => (
-                  <tr key={i} className="border-b border-cream/5">
-                    <td className="py-2 pr-2 text-cream/80 font-medium">{row.category}</td>
-                    <td className="py-2 pr-2 text-cream/70">{row.indicator}</td>
-                    <td className="py-2 pr-2 text-cream/60">{row.sourceSlides}</td>
-                    <td className="py-2 text-cream/60 leading-relaxed">{row.howToMeasure}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        {/* Making Measurement Work */}
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <ListChecks className="w-4 h-4 text-sage-bright" /> Making Measurement Work
-          </h3>
-          {makingMeasurementWork && makingMeasurementWork.length > 0 ? (
-            <ul className="space-y-2 text-xs text-cream/70">
-              {makingMeasurementWork.map((item, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <Check className="w-3.5 h-3.5 text-sage-bright flex-shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
               ))}
-            </ul>
-          ) : (
-            <p className="text-xs text-cream/50">See recommendation below.</p>
-          )}
+            </tbody>
+          </table>
         </div>
       </div>
       {recommendation && (
