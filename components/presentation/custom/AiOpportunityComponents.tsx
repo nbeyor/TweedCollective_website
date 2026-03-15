@@ -27,13 +27,13 @@ export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, rada
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <p className="text-sm text-cream/80 leading-relaxed">{summaryText}</p>
-      </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3">AI Maturity Radar</h3>
           <RadarChart labels={radarChart.labels} values={radarChart.values} height={radarChart.height} />
+          {summaryText && (
+            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{summaryText}</p>
+          )}
         </div>
         <div className="space-y-4">
           <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
