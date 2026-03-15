@@ -111,10 +111,10 @@ export function GapTag({ children }: { children?: React.ReactNode }) {
 }
 
 // Section header used in assessment slides
-export function SectionHeader({ section, title, subtitle }: { section: string; title: string; subtitle?: string }) {
+export function SectionHeader({ section, title, subtitle }: { section?: string; title: string; subtitle?: string }) {
   return (
     <div>
-      <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{section}</div>
+      {section && <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{section}</div>}
       <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">{title}</h2>
       {subtitle && <p className="text-cream/50 text-sm">{subtitle}</p>}
     </div>

@@ -23,7 +23,7 @@ const evaluationVariantStyles: Record<string, { border: string; iconColor: strin
 }
 
 export function EvaluationFrameworkSlide({ sectionLabel, heading, cards }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   cards: Array<{ num: string; title: string; description: string; variant: string }>
 }) {
@@ -51,7 +51,7 @@ export function EvaluationFrameworkSlide({ sectionLabel, heading, cards }: {
 
 // ---- SLIDE 2: Executive Summary ----
 export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, radarChart, strengths, risks, immediateFocus }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   summaryText: string
   radarChart: { labels: string[]; values: number[]; height: number }
@@ -103,7 +103,7 @@ export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, rada
 
 // ---- SLIDE 3: Business Drivers ----
 export function BusinessDriversSlide({ sectionLabel, heading, revenueMix, costStructure, economicSensitivities, revenueMixSource, costStructureSource, economicSensitivityRationale }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   revenueMix: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
   costStructure: { title: string; segments: Array<{ label: string; value: number; color: string }>; height: number }
@@ -190,7 +190,7 @@ const valuePotentialColor: Record<string, string> = {
 }
 
 export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout, valuePotentialFootnote, sections, cards }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   callout?: string
@@ -275,7 +275,7 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
 
 // ---- SLIDE 5: DIFFUSION ----
 export function DiffusionSlide({ sectionLabel, heading, subtitle, table, quadrantChart }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   table: { headers: string[]; rows: Array<{ name: string; positioning: string; revenue: string; risk: string }> }
@@ -337,7 +337,7 @@ export function DiffusionSlide({ sectionLabel, heading, subtitle, table, quadran
 
 // ---- SLIDE 6: Differentiating Assets ----
 export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, moatChart, dataFlow, insightText }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   moatChart: { title: string; items: Array<{ label: string; value: number; rationale?: string }>; suffix: string; maxValue: number; height: number }
@@ -428,7 +428,7 @@ export function DataFlowDiagram({ sources, nonProprietarySources, outputs }: { s
 
 // ---- SLIDE 7: Governance ----
 export function GovernanceSlide({ sectionLabel, heading, governanceStructure, scorecard, observedGaps }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   governanceStructure: { title: string; items: Array<{ frequency: string; body: string; description: string }> }
   scorecard: { title: string; items: Array<{ item: string; status: boolean }> }
@@ -488,7 +488,7 @@ export function GovernanceSlide({ sectionLabel, heading, governanceStructure, sc
 
 // ---- SLIDE 8: Route Reagent ----
 export function RouteReagentSlide({ sectionLabel, heading, subtitle, metrics, financialImpact }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   metrics: Array<{ metric: string; before: string; target: string; delta: string }>
@@ -549,7 +549,7 @@ export function RouteReagentSlide({ sectionLabel, heading, subtitle, metrics, fi
 
 // ---- SLIDE 9: Pantheon ----
 export function PantheonSlide({ sectionLabel, heading, subtitle, metrics, evolutionThesis }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   metrics: Array<{ metric: string; current: string; future: string; delta: string }>
@@ -609,7 +609,7 @@ const roadmapVariantStyles: Record<string, { border: string; badge: string }> = 
 }
 
 export function RoadmapSlide({ sectionLabel, heading, categories, foundation, workflowIntegration }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   categories: Array<{ action: string; variant: string; items: string[] }>
   foundation: { action: string; title: string; description: string }
@@ -674,7 +674,7 @@ const barColorMap: Record<string, string> = {
 }
 
 export function ChangeManagementSlide({ sectionLabel, heading, readiness, requiredActions, meetingStructure, optionalAITalentCallout, discussionBullets }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   readiness: { title: string; items: Array<{ dimension: string; score: number; color: string }> }
   requiredActions?: { title: string; items: Array<{ action: string; urgency: string; description: string }> }
@@ -780,7 +780,7 @@ export function ChangeManagementSlide({ sectionLabel, heading, readiness, requir
 
 // ---- SLIDE 12: Quantifying Upside ----
 export function QuantifyingUpsideSlide({ sectionLabel, heading, subtitle, ebitdaModel, enterpriseValue }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   ebitdaModel: {
@@ -864,7 +864,7 @@ const recommendationVariantStyles: Record<string, { border: string; iconColor: s
 }
 
 export function FinalRecommendationSlide({ sectionLabel, heading, recommendations, operatingPrinciples, strategicShifts }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   recommendations: Array<{ num: string; title: string; subtitle: string; description: string; variant: string }>
   operatingPrinciples: string[]
@@ -913,7 +913,7 @@ export function FinalRecommendationSlide({ sectionLabel, heading, recommendation
 // ---- Product Value Story (Sections 7-15) ----
 // Edit guide: single Value Potential badge (replaces Defensibility + Value Framework); max 2 leading indicators; no "What Has to Be True"
 export function ProductValueStorySlide({ sectionLabel, heading, description, users, replaces, valuePotential, leadingIndicators, valueEstimate, defensibility, valueMapping, assumptions }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   description: string
   users: string
@@ -1002,7 +1002,7 @@ export function ProductValueStorySlide({ sectionLabel, heading, description, use
 
 // ---- Compact Product Value Stories (multiple products per slide) ----
 export function ProductValueStoryCompactSlide({ sectionLabel, heading, products }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   products: Array<{
     name: string
@@ -1044,7 +1044,7 @@ export function ProductValueStoryCompactSlide({ sectionLabel, heading, products 
 
 // ---- Section 5: AI Value Framework ----
 export function ValueFrameworkSlide({ sectionLabel, heading, description, internalBuckets, externalBuckets }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   description: string
   internalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
@@ -1095,7 +1095,7 @@ export function ValueFrameworkSlide({ sectionLabel, heading, description, intern
 // ---- Section 6: AI Editorial Platform (Super Product) ----
 // Edit guide: reframe as Opportunities (not problems), table format Opportunity | Impact
 export function SuperProductSlide({ sectionLabel, heading, opportunities, problems, stages, features, efficiencies, valueTable, totalLow, totalHigh }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   opportunities?: Array<{ opportunity: string; impact: string }>
   problems?: string[]
@@ -1166,7 +1166,7 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
 
 // ---- Section 16a: Internal Productivity Value Summary (p22) ----
 export function InternalProductivityValueSlide({ sectionLabel, heading, rows, totalLow, totalHigh }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   rows: Array<{
     initiative: string
@@ -1248,7 +1248,7 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
 
 // ---- Section 16b: External Revenue Upside (pAdd) ----
 export function ExternalRevenueSlide({ sectionLabel, heading, rows, totalLow, totalHigh }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   rows: Array<{
     product: string
@@ -1309,7 +1309,7 @@ export function ExternalRevenueSlide({ sectionLabel, heading, rows, totalLow, to
 
 // ---- Section 16: Value Quantification (combined — kept for reference; prefer Internal + External separate) ----
 export function ValueQuantificationSlide({ sectionLabel, heading, subtitle, internalTable, externalTable, combinedSummary, totalOpportunity }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   subtitle: string
   internalTable: {
@@ -1430,7 +1430,7 @@ export function ValueQuantificationSlide({ sectionLabel, heading, subtitle, inte
 
 // ---- Section 17: Leading Indicators ----
 export function LeadingIndicatorsSlide({ sectionLabel, heading, coreArgument, leadingIndicators, makingMeasurementWork, recommendation }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   coreArgument: string
   leadingIndicators: Array<{ category: string; indicator: string; sourceSlides: string; howToMeasure: string }>
@@ -1507,7 +1507,7 @@ const phasedVariantStyles: Record<string, { border: string; badge: string; line:
 }
 
 export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   phases: Array<{
     phase: string
@@ -1569,7 +1569,7 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
 
 // ---- ION Data Lake Deep Dive ----
 export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics, activation, requirements }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   acquisition: { publicData: string[]; proprietaryData: string[] }
   analytics: string[]
@@ -1664,7 +1664,7 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
 
 // ---- Combined Value Waterfall ----
 export function CombinedValueWaterfallSlide({ sectionLabel, heading, internalItems, externalItems, internalTotal, externalTotal, grandTotal, footnote }: {
-  sectionLabel: string
+  sectionLabel?: string
   heading: string
   internalItems: Array<{ label: string; low: string; high: string; midpoint: number }>
   externalItems: Array<{ label: string; low: string; high: string; midpoint: number }>
