@@ -28,7 +28,7 @@ export const slides: SlideData[] = [
       metrics: [
         { value: 'MKG Leadership', label: 'Prepared for' },
         { value: 'Tweed Collective', label: 'Prepared by' },
-        { value: 'March 13, 2026', label: 'Last updated' },
+        { value: 'March 15, 2026', label: 'Last updated' },
       ],
       insightBox: {
         label: 'Confidential',
