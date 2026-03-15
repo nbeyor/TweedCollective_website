@@ -50,15 +50,16 @@ export const slides: SlideData[] = [
       props: {
         sectionLabel: 'Section 01',
         heading: 'Executive Summary',
-        summaryText: 'MKG has done more AI work than most companies its size. Across the ION platform, the organization has stood up 15+ internal tools under KINETICS and 7+ client-facing products under DIFFUSION, all connected to a proprietary data backbone. The problem isn\'t ideas — it\'s prioritization, measurement, and speed to value.\n\nRadar Score Rationale: Strategy (6/10) — Strong ideation and leadership engagement, but no single AI product strategy owner and no centralized prioritization. Data Assets (7/10) — Engagement data is genuinely proprietary; claims data is commercially available and should not be positioned as a moat. Workflow Integration (6/10) — Route Reagent and Annotation Activation are embedded in real workflows, but most other tools remain standalone. External Differentiation (6/10) — Pantheon and Plexus are defensible; Verba, MagpAI, and PerspectivX carry displacement risk. Governance (8/10) — Multi-layered governance is impressive for a ~$150M company. Measurement (4/10) — 81qd does not measure ROI on analytics engagements; no enterprise AI KPI dashboard exists.',
+        summaryText: 'Strategy (6) — No single AI product strategy owner. Data Assets (7) — Engagement data is genuinely proprietary; claims data is not a moat. Workflow Integration (6) — Route Reagent and Annotation Activation are embedded; most others standalone. External Differentiation (6) — Pantheon and Plexus defensible; Verba, MagpAI, PerspectivX carry displacement risk. Governance (8) — Multi-layered governance impressive for ~$150M company. Measurement (4) — No closed-loop ROI measurement or enterprise AI KPI dashboard.',
         radarChart: {
           labels: ['Strategy', 'Data Assets', 'Workflow Integration', 'External Differentiation', 'Governance', 'Measurement'],
           values: [6, 7, 6, 6, 8, 4],
           height: 250,
         },
         strengths: [
-          'Proprietary HCP engagement data (advisory boards, speaker bureaus, MSL interactions) — genuinely hard to replicate',
+          'Proprietary HCP engagement data (advisory boards, speaker bureaus, MSL interactions) — genuinely hard to replicate; feeds the ION data lake',
           'Deep medical & compliance expertise embedded across teams; two decades of medical affairs experience',
+          'Strong governance — multi-layered AI governance framework impressive for a company of MKG\'s size',
         ],
         risks: [
           'Portfolio sprawl across 15+ branded AI tools — too much surface area for ~$150M revenue',
