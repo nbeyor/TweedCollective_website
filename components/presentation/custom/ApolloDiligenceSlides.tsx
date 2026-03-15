@@ -1750,37 +1750,70 @@ function buildSlideContentMap() {
             <p className="text-cream/50 text-sm">As Veeva expands into a full-stack clinical platform, could sponsors consolidate spend onto Veeva and displace Apollo&apos;s US market share over a 3&ndash;5 year horizon?</p>
           </div>
 
-          {/* Veeva Product Suite Table */}
+          {/* Table 1: Site-Facing Products */}
           <div className="overflow-x-auto">
+            <div className="text-xs font-semibold text-red-300 mb-1.5">Site-Facing Products (Veeva SiteVault)</div>
             <table className="w-full border-collapse text-[10px]">
               <thead>
                 <tr className="border-b-2 border-orange-500/40">
                   <th className="text-left p-1.5 text-cream/80 font-medium">Product</th>
                   <th className="text-left p-1.5 text-cream/80 font-medium">Function</th>
-                  <th className="text-left p-1.5 text-cream/80 font-medium">Free for Sites?</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Cost to Sites</th>
                 </tr>
               </thead>
               <tbody className="text-cream/70">
                 {[
-                  { product: 'SiteVault eISF', fn: 'Electronic investigator site file (direct eBinders competitor)', free: 'Yes — unlimited users and studies' },
-                  { product: 'SiteVault eConsent', fn: 'Electronic informed consent', free: 'Yes — up to 20 active studies' },
-                  { product: 'SiteVault CTMS', fn: 'Site-level trial management (launched Aug 2025)', free: 'Yes — up to 20 active studies' },
-                  { product: 'eSource', fn: 'Direct data capture at sites, EHR/EDC integration (announced Jan 2026)', free: 'Early adopter — H2 2026' },
-                  { product: 'Vault eTMF', fn: 'Sponsor-side trial master file', free: 'Paid — sponsor license' },
-                  { product: 'Vault CTMS', fn: 'Sponsor-side clinical trial management', free: 'Paid — sponsor license' },
-                  { product: 'Vault EDC', fn: 'Electronic data capture', free: 'Paid — sponsor license' },
-                  { product: 'Study Startup', fn: 'Site feasibility, qualification, activation', free: 'Paid — sponsor license' },
-                  { product: 'Payments', fn: 'Site payment tracking and budget management', free: 'Paid — sponsor license' },
-                  { product: 'Site Connect', fn: 'Sponsor↔site document exchange', free: 'Paid — add-on' },
+                  { product: 'SiteVault eISF', fn: 'Electronic investigator site file (direct eBinders competitor)', cost: 'Free — unlimited users and studies' },
+                  { product: 'SiteVault eConsent', fn: 'Electronic informed consent', cost: 'Free — up to 20 active studies' },
+                  { product: 'SiteVault CTMS', fn: 'Site-level trial management (launched Aug 2025)', cost: 'Free — up to 20 active studies' },
+                  { product: 'eSource', fn: 'Direct data capture at sites, EHR/EDC integration (announced Jan 2026)', cost: 'Early adopter — H2 2026' },
                 ].map((r) => (
                   <tr key={r.product} className="border-b border-cream/5">
                     <td className="p-1.5 font-medium text-cream/90">{r.product}</td>
                     <td className="p-1.5">{r.fn}</td>
-                    <td className="p-1.5">{r.free.startsWith('Yes') ? <span className="text-red-300">{r.free}</span> : <span className="text-cream/50">{r.free}</span>}</td>
+                    <td className="p-1.5"><span className="text-red-300">{r.cost}</span></td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Table 2: Sponsor-Facing Products */}
+          <div className="overflow-x-auto">
+            <div className="text-xs font-semibold text-orange-300 mb-1.5">Sponsor-Facing Products (Veeva Vault Clinical Suite)</div>
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-orange-500/40">
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Product</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Function</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Buyer</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                {[
+                  { product: 'Vault eTMF', fn: 'Sponsor-side trial master file' },
+                  { product: 'Vault CTMS', fn: 'Sponsor-side clinical trial management' },
+                  { product: 'Vault EDC', fn: 'Electronic data capture' },
+                  { product: 'Study Startup', fn: 'Site feasibility, qualification, activation' },
+                  { product: 'Payments', fn: 'Site payment tracking and budget management' },
+                  { product: 'Site Connect', fn: 'Sponsor↔site document exchange' },
+                  { product: 'OpenData Clinical', fn: 'Curated site and investigator reference data' },
+                ].map((r) => (
+                  <tr key={r.product} className="border-b border-cream/5">
+                    <td className="p-1.5 font-medium text-cream/90">{r.product}</td>
+                    <td className="p-1.5">{r.fn}</td>
+                    <td className="p-1.5 text-cream/50">Sponsor / CRO</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Strategic Risk Callout */}
+          <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
+            <p className="text-xs text-cream/90 font-semibold leading-relaxed">
+              The strategic risk is the connection between these two tables: sponsors standardizing on the Vault Clinical Suite get a zero-friction path to deploying free SiteVault at their sites, displacing Apollo without a separate procurement decision.
+            </p>
           </div>
 
           {/* Key Facts */}
