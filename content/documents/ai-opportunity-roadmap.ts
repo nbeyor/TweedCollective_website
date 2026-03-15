@@ -231,24 +231,27 @@ export const slides: SlideData[] = [
     type: 'custom',
     content: {
       type: 'custom',
-      componentId: 'DiffusionSlide',
+      componentId: 'AssessmentTableSlide',
       props: {
         sectionLabel: 'Section 03 — External',
         heading: 'DIFFUSION — Client-Facing AI Products',
         subtitle: 'Tier 4: Revenue-generating and differentiating AI offerings',
-        table: {
-          headers: ['Initiative', 'Positioning', 'Revenue Model', 'Displacement Risk'],
-          rows: [
-            { name: 'Pantheon', positioning: 'HCP search / profiling (subscription)', revenue: 'Subscription + Project', risk: 'Lower' },
-            { name: 'Plexus', positioning: 'Influence mapping and network analytics', revenue: 'Core analytics (bundled)', risk: 'Lower' },
-            { name: 'PerspectivX', positioning: 'Concept scoring via HCP persona simulation', revenue: 'Add-on', risk: 'Moderate' },
-            { name: 'Verba', positioning: 'Advisory board synthesis', revenue: 'Embedded', risk: 'Higher' },
-            { name: 'MagpAI', positioning: 'Stakeholder simulation / conversational intel', revenue: 'Project-based', risk: 'Moderate' },
-            { name: 'BloomLab', positioning: 'Real-time qual/quant hybrid research', revenue: 'Project-based', risk: 'Lower' },
-            { name: 'Orion', positioning: 'Patient identification analytics', revenue: 'Analytics', risk: 'Moderate' },
-            { name: 'InfluenceLink', positioning: 'Dissemination via Plexus-identified leaders', revenue: 'Platform', risk: 'Lower' },
-          ],
-        },
+        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
+        sections: [
+          {
+            title: 'Tier 4: Client-Facing / DIFFUSION Products',
+            rows: [
+              { name: 'Pantheon', description: 'HCP search / profiling (subscription).', valueSource: 'Pricing Power + Speed-to-Close', valuePotential: 'High', displacementRisk: 'Lower', rationale: 'Subscription model shifts 81qd to recurring revenue. Defensible when anchored in proprietary engagement data, not just commercial claims.' },
+              { name: 'Plexus', description: 'Influence mapping and network analytics.', valueSource: 'Pricing Power', valuePotential: 'High', displacementRisk: 'Lower', rationale: 'Most defensible analytics asset. Influence network modeling on proprietary engagement data cannot be purchased externally.' },
+              { name: 'PerspectivX', description: 'Concept scoring via HCP persona simulation.', valueSource: 'Pricing Power + Speed-to-Close', valuePotential: 'Moderate–High', displacementRisk: 'Moderate', rationale: 'Differentiated if personas are built on real MKG research data. Displacement risk rises if personas are generic LLM approximations.' },
+              { name: 'Verba', description: 'Advisory board synthesis.', valueSource: 'Speed + Productivity', valuePotential: 'Moderate', displacementRisk: 'Higher', rationale: 'Core functionality (transcript-to-summary) is increasingly commoditized. Defensibility requires integration with proprietary longitudinal data.' },
+              { name: 'MagpAI', description: 'Stakeholder simulation / conversational intel.', valueSource: 'Pricing Power', valuePotential: 'Moderate', displacementRisk: 'Moderate–Higher', rationale: 'Overlaps with PerspectivX on persona simulation. Earlier stage. Consolidation opportunity with PerspectivX.' },
+              { name: 'BloomLab', description: 'Real-time qual/quant hybrid research.', valueSource: 'Pricing Power + Speed-to-Close', valuePotential: 'Moderate', displacementRisk: 'Lower–Moderate', rationale: 'Novel real-time research methodology is genuinely differentiated. Value depends on proving insight quality parity with traditional qual.' },
+              { name: 'Orion', description: 'Patient identification analytics.', valueSource: 'Pricing Power', valuePotential: 'Moderate', displacementRisk: 'Moderate', rationale: 'Patient identification analytics is a real use case but faces competition from IQVIA, Komodo.' },
+              { name: 'InfluenceLink', description: 'Dissemination via Plexus-identified leaders.', valueSource: 'Speed-to-Close', valuePotential: 'Moderate', displacementRisk: 'Lower', rationale: 'Dissemination through Plexus-identified leaders. Value is bundled with Plexus, not standalone.' },
+            ],
+          },
+        ],
       },
     },
   },
