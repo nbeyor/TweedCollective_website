@@ -32,7 +32,7 @@ export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, rada
           <h3 className="text-sm font-semibold text-cream mb-3">AI Maturity Radar</h3>
           <RadarChart labels={radarChart.labels} values={radarChart.values} height={radarChart.height} />
           {summaryText && (
-            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{summaryText}</p>
+            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed whitespace-pre-line">{summaryText}</p>
           )}
         </div>
         <div className="space-y-4">
