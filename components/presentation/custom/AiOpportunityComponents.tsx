@@ -1035,30 +1035,6 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      {/* Opportunities (reframed from problems per edit guide) */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
-          <Lightbulb className="w-4 h-4 text-sage-bright" /> Opportunities
-        </h3>
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-cream/10">
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Opportunity</th>
-                <th className="text-left py-2 text-cream/50 font-medium">Impact</th>
-              </tr>
-            </thead>
-            <tbody>
-              {opps.map((o, i) => (
-                <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2 pr-4 text-cream/90 font-medium">{o.opportunity}</td>
-                  <td className="py-2 text-cream/70 leading-relaxed">{o.impact}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
       {/* Pipeline visualization */}
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
@@ -1082,54 +1058,28 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
           ))}
         </div>
       </div>
-      {/* Value table */}
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-gold" /> Value Summary
+      {/* Opportunities (reframed from problems per edit guide) */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
+          <Lightbulb className="w-4 h-4 text-sage-bright" /> Opportunities
         </h3>
-        <div className="overflow-x-auto">
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-cream/10">
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Area</th>
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">FTEs</th>
-                <th className="text-right py-2 pr-4 text-cream/50 font-medium">Low Value</th>
-                <th className="text-right py-2 pr-4 text-cream/50 font-medium">High Value</th>
-                <th className="text-left py-2 text-cream/50 font-medium">Target</th>
+                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Opportunity</th>
+                <th className="text-left py-2 text-cream/50 font-medium">Impact</th>
               </tr>
             </thead>
-            <tbody className="font-mono">
-              {valueTable.map((row, i) => (
+            <tbody>
+              {opps.map((o, i) => (
                 <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2 pr-4 text-cream/80 font-sans">{row.area}</td>
-                  <td className="py-2 pr-4 text-cream/60">{row.ftes}</td>
-                  <td className="py-2 pr-4 text-right text-cream/60">{row.lowValue}</td>
-                  <td className="py-2 pr-4 text-right text-cream/60">{row.highValue}</td>
-                  <td className="py-2 text-cream/60 font-sans">{row.target}</td>
+                  <td className="py-2 pr-4 text-cream/90 font-medium">{o.opportunity}</td>
+                  <td className="py-2 text-cream/70 leading-relaxed">{o.impact}</td>
                 </tr>
               ))}
-              <tr className="border-t-2 border-cream/20">
-                <td colSpan={2} className="py-2.5 pr-4 text-cream font-sans font-semibold">Total</td>
-                <td className="py-2.5 pr-4 text-right text-gold font-bold">{totalLow}</td>
-                <td className="py-2.5 pr-4 text-right text-gold font-bold">{totalHigh}</td>
-                <td />
-              </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-      {/* Tech efficiencies */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
-          <Zap className="w-4 h-4 text-sage-bright" /> Technology Efficiencies
-        </h3>
-        <div className="grid md:grid-cols-2 gap-3">
-          {efficiencies.map((eff, i) => (
-            <div key={i} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-              <h4 className="text-xs font-semibold text-cream mb-1">{eff.title}</h4>
-              <p className="text-[10px] text-cream/60 leading-relaxed">{eff.description}</p>
-            </div>
-          ))}
         </div>
       </div>
     </div>
@@ -1157,6 +1107,7 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
+      <p className="text-xs text-cream/60 italic">Outside in estimates to indicate directional value potential based on simple assumptions</p>
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-[10px]">
@@ -1171,6 +1122,7 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                 <th className="text-right py-2 pr-2 text-cream/50 font-medium">High Uplift</th>
                 <th className="text-right py-2 pr-2 text-cream/50 font-medium">High Value</th>
                 <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>
+                <th className="w-8" />
               </tr>
             </thead>
             <tbody className="font-mono">
@@ -1185,6 +1137,19 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                   <td className="py-2 pr-2 text-right text-cream/60">{row.highUplift}</td>
                   <td className="py-2 pr-2 text-right text-cream/60">{row.highValue}</td>
                   <td className="py-2 text-cream/60 font-sans leading-relaxed">{row.rationale}</td>
+                  {i === 0 && (
+                    <td rowSpan={3} className="relative align-middle">
+                      <div className="absolute inset-y-0 left-0 flex items-center">
+                        <svg width="20" height="100%" viewBox="0 0 20 100" preserveAspectRatio="none" className="h-full">
+                          <path d="M2,2 C10,2 10,48 18,50 C10,52 10,98 2,98" fill="none" stroke="rgba(200,180,130,0.6)" strokeWidth="2" />
+                        </svg>
+                      </div>
+                      <div className="pl-6 text-[9px] text-gold font-sans font-semibold whitespace-nowrap leading-tight">
+                        AI Editorial<br />Platform<br />$1.4–2.6M<br />in value
+                      </div>
+                    </td>
+                  )}
+                  {i >= 1 && i <= 2 && <td />}
                 </tr>
               ))}
               <tr className="border-t-2 border-cream/20">
@@ -1192,6 +1157,7 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                 <td className="py-2.5 pr-2 text-right text-gold font-bold">{totalLow}</td>
                 <td className="py-2.5 pr-2" />
                 <td className="py-2.5 pr-2 text-right text-gold font-bold">{totalHigh}</td>
+                <td />
                 <td />
               </tr>
             </tbody>
@@ -1221,6 +1187,7 @@ export function ExternalRevenueSlide({ sectionLabel, heading, rows, totalLow, to
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
+      <p className="text-xs text-cream/60 italic">Outside in estimates to indicate directional value potential based on simple assumptions</p>
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-[10px]">
