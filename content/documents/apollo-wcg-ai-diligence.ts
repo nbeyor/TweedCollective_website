@@ -66,6 +66,10 @@ export const slides: SlideData[] = [
   { id: 'synergy-waves', title: 'Synergy Pathways (3 Waves)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'synergy-waves' } } },
   { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
   { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'sensitivity' } } },
+  { id: 'dd-veeva-consolidation', title: 'Deep Dive: Veeva — Long-Term Platform Consolidation Threat', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation' } } },
+  { id: 'dd-econsent-landscape', title: 'Deep Dive: eICF & eConsent — Competitive Landscape', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-econsent-landscape' } } },
+  { id: 'dd-data-rights', title: 'Deep Dive: Data Rights — Content vs. Metadata', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-rights' } } },
+  { id: 'dd-data-architecture', title: 'Deep Dive: Data Architecture Gap Assessment & Modernization Cost', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture' } } },
 ]
 
 export default slides
