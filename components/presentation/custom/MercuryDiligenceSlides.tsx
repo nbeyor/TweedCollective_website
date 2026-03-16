@@ -138,6 +138,30 @@ const slideContentMap: Record<string, React.ReactNode> = {}
 
 function buildSlideContentMap() {
 
+  slideContentMap['framework-overview'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 02</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">How We Evaluated Mercury&apos;s AI Portfolio</h2>
+            <p className="text-cream/50 text-sm">4-phase AI due diligence framework</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            {[
+              { phase: '01', title: 'Business Value & Growth Thesis', desc: 'Revenue model, cost structure, competitive positioning. Map internal/external value pools and identify where AI creates highest-leverage P&L impact.', color: 'border-sage', textColor: 'text-sage-300' },
+              { phase: '02', title: 'AI Initiatives & Disruption Risk', desc: 'Inventory all active AI initiatives. Evaluate each individually — what it does, who uses it, defensibility, and displacement risk from foundation models and incumbents.', color: 'border-purple-500', textColor: 'text-purple-300' },
+              { phase: '03', title: 'Team, Assets & Defensibility', desc: 'Assess whether the team can execute the AI roadmap. Score product, data, channel, and relationship assets for durability.', color: 'border-green-500', textColor: 'text-green-400' },
+              { phase: '04', title: 'ROI Quantification & Synergy Roadmap', desc: 'Quantify value creation through synergies, leading indicator measurement, and a phased execution plan.', color: 'border-blue-500', textColor: 'text-blue-400' },
+            ].map((p) => (
+              <div key={p.phase} className={`p-4 bg-white/5 border-l-4 ${p.color} rounded-r-lg`}>
+                <div className={`text-xs font-mono ${p.textColor} mb-1`}>{p.phase}</div>
+                <h3 className="text-sm font-semibold text-cream mb-2">{p.title}</h3>
+                <p className="text-xs text-cream/60">{p.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
   slideContentMap['executive-summary'] = (
         <div className="space-y-6 px-4">
           <div>
@@ -1742,61 +1766,6 @@ function buildSlideContentMap() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['consolidated-gaps'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Closing</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Consolidated Gaps &amp; Open Questions</h2>
-            <p className="text-xs text-cream/50">All outstanding questions organized by phase</p>
-          </div>
-          <div className="space-y-4 mt-4">
-            <div className="p-4 bg-white/5 border-l-4 border-sage rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">Phase 1 — Business Value & Growth Thesis</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
-                <li>&bull; What is Mercury&apos;s current ARR, customer count, and contract volume throughput?</li>
-                <li>&bull; What is the revenue model (per-seat SaaS, per-agreement transaction, institutional license)?</li>
-                <li>&bull; How deep is the Mayo Clinic deployment — fully production or piloting?</li>
-                <li>&bull; What is the retention rate among early customers?</li>
-                <li>&bull; Is Mercury generating revenue from both sides of the negotiation (sponsor + site)?</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-white/5 border-l-4 border-purple-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">Phase 2 — AI Initiatives & Disruption Risk</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
-                <li>&bull; Is Veeva actively developing CTA negotiation capabilities in SiteVault?</li>
-                <li>&bull; Are any large CROs building internal AI-powered CTA tools?</li>
-                <li>&bull; What is Mercury&apos;s patent portfolio status?</li>
-                <li>&bull; What is the installed base and competitive trajectory of Huron&apos;s ResearchSuite?</li>
-                <li>&bull; How dependent is the competitive moat on continued model improvement from Anthropic/OpenAI?</li>
-                <li>&bull; What is uptime/reliability track record? SLA commitments?</li>
-                <li>&bull; What is the plan and timeline for SOC2 certification?</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-white/5 border-l-4 border-green-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">Phase 3 — Team, Assets & Defensibility</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
-                <li>&bull; What are customer contract terms (multi-year? annual? at-will)?</li>
-                <li>&bull; What is the churn/retention rate among early customers?</li>
-                <li>&bull; Volume constraint on data asset — value proportional to adoption</li>
-                <li>&bull; Rights to aggregate and benchmark customer data must be clearly established</li>
-                <li>&bull; What is the contractor vs. FTE split? How dependent is engineering on the two principal engineers?</li>
-                <li>&bull; What is attrition risk for key technical staff? Any retention agreements in place?</li>
-                <li>&bull; What is the analyst team&apos;s capacity — how many concurrent customer onboardings can they support?</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-white/5 border-l-4 border-blue-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
-                <li>&bull; Would WCG-owned Mercury maintain neutrality? How would sites perceive this?</li>
-                <li>&bull; Technical integration path between ClinSphere and Mercury?</li>
-                <li>&bull; How would combined data asset be governed and monetized?</li>
-                <li>&bull; Would Mercury operate independently or fold into ClinSphere?</li>
-              </ul>
             </div>
           </div>
         </div>

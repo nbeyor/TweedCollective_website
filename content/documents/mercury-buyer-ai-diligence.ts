@@ -9,7 +9,7 @@
  * component for now due to the complexity of the 40-slide document.
  * Future refactor: progressively extract text/data into this file's props.
  *
- * Structure: Front Matter → Phase 1–4 → Closing (40 slides)
+ * Structure: Front Matter → Phase 1–4 (39 slides)
  */
 
 import { SlideData } from '@/lib/types'
@@ -93,9 +93,6 @@ export const slides: SlideData[] = [
   { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
   { id: 'quantification-placeholder', title: 'Quantification Placeholder', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'quantification-placeholder' } } },
   { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity' } } },
-
-  // ── Closing (slide 40) ─────────────────────────────────────────────
-  { id: 'consolidated-gaps', title: 'Open Questions & Gaps', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'consolidated-gaps' } } },
 ]
 
 export default slides
