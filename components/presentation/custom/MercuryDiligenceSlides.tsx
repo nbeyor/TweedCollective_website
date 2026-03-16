@@ -2138,7 +2138,7 @@ function buildSlideContentMap() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-xs">
               <thead>
-                <tr className="border-b-2 border-red-500/40">
+                <tr className="border-b-2 border-cream/20">
                   <th className="text-left p-2 text-cream/80 font-medium">Sensitivity Axis</th>
                   <th className="text-left p-2 text-green-300 font-medium">Optimistic</th>
                   <th className="text-left p-2 text-yellow-300 font-medium">Base</th>
