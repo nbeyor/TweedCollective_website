@@ -147,15 +147,16 @@ function buildSlideContentMap() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {[
-              { phase: '01', title: 'Business Value & Growth Thesis', desc: 'Revenue model, cost structure, competitive positioning. Map internal/external value pools and identify where AI creates highest-leverage P&L impact.', color: 'border-sage', textColor: 'text-sage-300' },
-              { phase: '02', title: 'AI Initiatives & Disruption Risk', desc: 'Inventory all active AI initiatives. Evaluate each individually — what it does, who uses it, defensibility, and displacement risk from foundation models and incumbents.', color: 'border-purple-500', textColor: 'text-purple-300' },
-              { phase: '03', title: 'Team, Assets & Defensibility', desc: 'Assess whether the team can execute the AI roadmap. Score product, data, channel, and relationship assets for durability.', color: 'border-green-500', textColor: 'text-green-400' },
-              { phase: '04', title: 'ROI Quantification & Synergy Roadmap', desc: 'Quantify value creation through synergies, leading indicator measurement, and a phased execution plan.', color: 'border-blue-500', textColor: 'text-blue-400' },
+              { phase: '01', title: 'Business Value & Growth Thesis', desc: 'Revenue model, cost structure, competitive positioning. Map internal/external value pools and identify where AI creates highest-leverage P&L impact.', verdict: 'Strong alignment — Mercury targets CTA negotiation bottleneck with genuine AI differentiation, but growth projections require WCG synergy to reach scale.', color: 'border-sage', textColor: 'text-sage-300' },
+              { phase: '02', title: 'AI Initiatives & Disruption Risk', desc: 'Inventory all active AI initiatives. Evaluate each individually — what it does, who uses it, defensibility, and displacement risk from foundation models and incumbents.', verdict: 'Moderate — domain moats are real but narrower than management believes. Pipeline complexity is genuine; basic AI markup is increasingly commoditized.', color: 'border-purple-500', textColor: 'text-purple-300' },
+              { phase: '03', title: 'Team, Assets & Defensibility', desc: 'Assess whether the team can execute the AI roadmap. Score product, data, channel, and relationship assets for durability.', verdict: 'High on product and team; early-stage on data and channel. Unusually mature for stage, but key-person concentration risk requires retention planning.', color: 'border-green-500', textColor: 'text-green-400' },
+              { phase: '04', title: 'ROI Quantification & Synergy Roadmap', desc: 'Quantify value creation through synergies, leading indicator measurement, and a phased execution plan.', verdict: 'Conditional — high synergy potential (WCG data + channel × Mercury product), but quantification pending internal data. Data rights are the critical gating factor.', color: 'border-blue-500', textColor: 'text-blue-400' },
             ].map((p) => (
               <div key={p.phase} className={`p-4 bg-white/5 border-l-4 ${p.color} rounded-r-lg`}>
                 <div className={`text-xs font-mono ${p.textColor} mb-1`}>{p.phase}</div>
                 <h3 className="text-sm font-semibold text-cream mb-2">{p.title}</h3>
-                <p className="text-xs text-cream/60">{p.desc}</p>
+                <p className="text-xs text-cream/60 mb-2">{p.desc}</p>
+                <p className={`text-[10px] ${p.textColor} italic border-t border-cream/10 pt-1.5`}>{p.verdict}</p>
               </div>
             ))}
           </div>
@@ -169,12 +170,24 @@ function buildSlideContentMap() {
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
             <p className="text-cream/50 text-sm">Key findings by phase</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <div className="grid grid-cols-3 gap-3 mt-4 mb-2">
+            {[
+              { q: 'Is the AI real?', answer: 'Yes — production AI pipeline with multi-model orchestration, 500+ sub-issue processing, and institutional playbook integration. Not vaporware, not a chatbot, not rebranded rules. Customers who tried generic tools returned.', color: 'text-green-300' },
+              { q: 'Does it compound under WCG ownership?', answer: 'Conditionally — WCG\u2019s data (80K+ protocols, 31TB Knowledge Base) and channel (3,400+ institutions) would materially strengthen Mercury\u2019s AI. But data rights must be validated and neutrality preserved.', color: 'text-yellow-300' },
+              { q: 'Risk-adjusted value range?', answer: 'Directional: low single-digit $M in Year 1 cost synergies (WCG productivity gains), scaling to mid-single-digit $M by Year 3 with revenue synergies. Quantification model pending — see Phase 4 detail for assumptions.', color: 'text-yellow-300' },
+            ].map((item) => (
+              <div key={item.q} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+                <h3 className="text-xs font-semibold text-cream mb-1">{item.q}</h3>
+                <p className={`text-[10px] ${item.color}`}>{item.answer}</p>
+              </div>
+            ))}
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
             {[
               { chapter: 'Phase 1 — Business Value & Growth Thesis', bullets: ['Mercury targets the CTA negotiation bottleneck with AI-powered markup. Client support suggests 15\u201318% negotiation time reduction.', 'Rise of agentic AI creates macro tailwind.'], color: 'border-sage' },
               { chapter: 'Phase 2 — AI Initiatives & Disruption Risk', bullets: ['Two key threats: frontier models (good enough for most?), and competitors with existing site relationships.', 'Mercury\u2019s pipeline complexity and domain expertise create genuine barriers.', 'Mercury is committed to AI both in product and internal processes, continuing to double down on differentiation vs foundation models.'], color: 'border-purple-500' },
               { chapter: 'Phase 3 — Team, Assets & Defensibility', bullets: ['Strong product and relationship assets (Mayo, Duke, Cleveland Clinic).', 'Data and channel assets are early-stage but growing with each customer.', 'Unusually mature for stage \u2014 4-person dev team with high process maturity.', 'Strong vision/product/tech focus; under-resourced on commercial.'], color: 'border-green-500' },
-              { chapter: 'Phase 4 — ROI Quantification & Synergy Roadmap', bullets: ['High synergy potential \u2014 WCG brings data + channel; Mercury brings differentiated product.', 'Data rights and neutrality are key constraints.', 'Significant potential but quantification requires internal data not yet available.'], color: 'border-blue-500' },
+              { chapter: 'Phase 4 — ROI Quantification & Synergy Roadmap', bullets: ['High synergy potential \u2014 WCG brings data + channel; Mercury brings differentiated product.', 'Data rights and neutrality are key constraints.', 'Quantification model under construction \u2014 Phase 4 detail identifies assumptions and ranges; final numbers require WCG internal data inputs.'], color: 'border-blue-500' },
             ].map((ch) => (
               <div key={ch.chapter} className={`p-4 bg-white/5 border-l-4 ${ch.color} rounded-r-lg`}>
                 <h3 className="text-sm font-semibold text-cream mb-2">{ch.chapter}</h3>
@@ -262,7 +275,8 @@ function buildSlideContentMap() {
                   { label: 'Lead Investor', val: 'Tusk Ventures', sub: 'Regulated industries' },
                   { label: 'Founded', val: '2021', sub: 'Stealth; public May 2023' },
                   { label: 'Key Client', val: 'Mayo Clinic', sub: 'Co-development partner' },
-                  { label: 'Time Reduction', val: '50–80%', sub: 'Client-reported' },
+                  { label: 'Time Reduction (Mgmt)', val: '50–80%', sub: 'Mercury claim' },
+                  { label: 'Time Reduction (Tweed Adj.)', val: '15–18%', sub: 'Client support data' },
                   { label: 'ARR (est.)', val: '~$700K', sub: 'Per transcripts' },
                 ].map((m) => (
                   <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
@@ -273,6 +287,9 @@ function buildSlideContentMap() {
               </div>
             </div>
             <div>
+              <div className="p-2 bg-sage-500/10 border border-sage-500/20 rounded-lg mb-3">
+                <p className="text-[10px] text-cream/60"><span className="text-sage-300 font-medium">Projection Sources:</span> All metrics labeled <span className="text-cream/80">(Mgmt)</span> = Mercury management claims. <span className="text-cream/80">(Tweed Adj.)</span> = Tweed-adjusted based on client support data. <span className="text-cream/80">(+ WCG Synergy)</span> projections in Phase 4 reflect buyer-enhanced scenarios.</p>
+              </div>
               <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
               <div className="space-y-3">
                 {[
@@ -357,7 +374,13 @@ function buildSlideContentMap() {
             </table>
           </div>
           <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
-            <p className="text-xs text-cream/70">The Metagreement™ data asset and domain-specific playbooks are the most defensible growth enablers. New logos and expansion drive top-line growth; retention/stickiness protects base; pricing power supports margin expansion.</p>
+            <p className="text-xs text-cream/70 mb-2"><span className="text-sage-300 font-semibold">Primary value concentrations (highlighted in table):</span></p>
+            <ul className="text-xs text-cream/70 space-y-1">
+              <li>&bull; <span className="text-cream/90 font-medium">Metagreement™ Data × Retention/Expansion:</span> Most defensible growth enabler — proprietary data asset that compounds with volume and locks in customers</li>
+              <li>&bull; <span className="text-cream/90 font-medium">CTA AI Markup × New Logo (Sponsors):</span> Highest near-term revenue driver — scales 100s of negotiations per sponsor, strongest WCG cross-sell vector</li>
+              <li>&bull; <span className="text-cream/90 font-medium">Playbook Compliance × Pricing Power:</span> Domain-specific playbooks are hardest to replicate — primary margin protection mechanism</li>
+            </ul>
+            <p className="text-[10px] text-cream/50 mt-2 italic">The remaining cells drive incremental value but are not where the deal thesis concentrates.</p>
           </div>
         </div>
   )
@@ -434,29 +457,38 @@ function buildSlideContentMap() {
           <div className="grid md:grid-cols-3 gap-4 mt-6">
             <div className="p-5 bg-green-500/5 border border-green-500/20 rounded-xl">
               <Rocket className="w-6 h-6 text-green-400 mb-2" />
-              <h3 className="text-sm font-semibold text-green-300 mb-2">Network Flywheel Ignites</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-green-300">Network Flywheel Ignites</h3>
+                <span className="text-[10px] font-mono bg-green-500/20 text-green-300 px-2 py-0.5 rounded">~25% probability</span>
+              </div>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> Mayo Clinic at scale; 5+ AMCs and 2+ top-20 pharma sponsors adopt within 12 months; cross-side network effects kick in; Metagreement™ becomes definitive benchmarking source</div>
+                <div><span className="text-cream/50 font-medium">Specific conditions:</span> WCG deploys Mercury to 100+ sites in 12 months via site enablement channel; 2+ top-20 pharma sponsors (beyond Lilly) adopt within 12 months; ClinSphere integration completes in 6 months; FDA finalizes clinical trial modernization guidance in 2026, accelerating CTMS adoption by 18\u201324 months</div>
                 <div><span className="text-cream/50 font-medium">Leading indicators:</span> Customer count &gt;3x YoY; sponsor-side revenue emerging; multi-party negotiations increasing; NPS &gt;60</div>
-                <div><span className="text-cream/50 font-medium">Implications:</span> Mercury becomes system-of-record for CTA negotiation; commands premium pricing; strong exit or integration position</div>
+                <div><span className="text-cream/50 font-medium">Implications:</span> Mercury becomes system-of-record for CTA negotiation; commands premium pricing; strong integration position</div>
               </div>
             </div>
             <div className="p-5 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
               <Target className="w-6 h-6 text-yellow-400 mb-2" />
-              <h3 className="text-sm font-semibold text-yellow-300 mb-2">Solid Niche, Linear Growth</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-yellow-300">Solid Niche, Linear Growth</h3>
+                <span className="text-[10px] font-mono bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded">~50% probability</span>
+              </div>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> Strong ROI for sites but sponsor adoption slow; network effects limited (one-sided); steady growth but no market-defining position</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Site customer growth steady but sponsor pipeline weak; single-side usage dominates; competitive alternatives emerge</div>
+                <div><span className="text-cream/50 font-medium">Specific conditions:</span> WCG site rollout reaches 30\u201350 sites in 12 months (adoption friction from neutrality concerns); sponsor adoption slow (1\u20132 pilots, no production); ClinSphere integration takes 12+ months; competitive alternatives emerge but don&apos;t dominate</div>
+                <div><span className="text-cream/50 font-medium">We believe this is most likely because:</span> Integration timelines in clinical trial tech historically exceed projections; site adoption requires change management at each institution; sponsor-side multi-party negotiation is a harder sell than site-side productivity</div>
                 <div><span className="text-cream/50 font-medium">Implications:</span> Deepen site-side value; consider white-label/OEM for sponsors; strengthen partnership channel</div>
               </div>
             </div>
             <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-xl">
               <AlertTriangle className="w-6 h-6 text-red-400 mb-2" />
-              <h3 className="text-sm font-semibold text-red-300 mb-2">AI Commoditization Pressures</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-red-300">AI Commoditization / Integration Failure</h3>
+                <span className="text-[10px] font-mono bg-red-500/20 text-red-300 px-2 py-0.5 rounded">~25% probability</span>
+              </div>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> Frontier AI models enable any CLM vendor to add CTA-specific markup; generic tools become &quot;good enough&quot; for 80% of cases; domain moat erodes faster than network effects build</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Veeva/Clio/Ironclad announce CTA features; large CROs build internal tools; commoditized AI contract review widespread</div>
-                <div><span className="text-cream/50 font-medium">Implications:</span> Double down on network effects and multi-party collaboration; accelerate data asset; pursue strategic acquisition for distribution</div>
+                <div><span className="text-cream/50 font-medium">Specific conditions:</span> Veeva launches CTA negotiation module in SiteVault (2026\u201327); frontier models reach &quot;good enough&quot; for 80% of CTA markup use cases; WCG data rights insufficient for Mercury integration; Florence partnership disrupted by WCG ownership</div>
+                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Veeva/Ironclad announce CTA features; large CROs build internal tools; Mercury customer retention drops below 80%</div>
+                <div><span className="text-cream/50 font-medium">Acquisition-specific downside:</span> WCG pays acquisition premium for AI optionality that doesn&apos;t materialize. Mercury becomes a modest productivity tool rather than a platform-defining capability. The premium paid above build-vs-buy cost ($2.6\u2013$4.0M) represents the at-risk AI optionality value.</div>
               </div>
             </div>
           </div>
@@ -566,30 +598,41 @@ function buildSlideContentMap() {
                 concept: 'Claude-powered contract review via API or enterprise platform with CTA-specific prompting',
                 functions: 'Auto-redlining, clause comparison, compliance flagging via general-purpose model with domain prompts',
                 position: 'Integrated into existing workflows via API; enterprise tooling layer on top',
-                why: 'Frontier vendors will naturally add enterprise/legal tooling; question is whether niche of site contracts is required for outcomes'
+                why: 'Frontier vendors will naturally add enterprise/legal tooling; question is whether niche of site contracts is required for outcomes',
+                stack: 'Claude API → custom prompting layer → document processing pipeline → enterprise auth integration',
+                timeline: '3–6 months to MVP; $500K–$1M in engineering',
+                cantReplicate: 'Multi-party trust architecture, institutional playbook library, 4,000+ analyzed CTA issue points'
               },
               {
                 mode: 'Competitors (Veeva SiteVault)',
                 concept: 'CTA negotiation module within SiteVault CTMS',
                 functions: 'AI-driven contract markup, budget + contract linkage, status tracking across sites',
                 position: 'Integrated into site\'s existing SiteVault platform for study start-up',
-                why: 'Sites already on SiteVault avoid a new vendor; sponsor side benefits from existing data flows'
+                why: 'Sites already on SiteVault avoid a new vendor; sponsor side benefits from existing data flows',
+                stack: 'SiteVault platform → LLM integration → clause-level CTA parsing → site workflow embedding',
+                timeline: '6–12 months to announce; 12–18 months to production (Veeva AI Agents roadmap targets 2026)',
+                cantReplicate: 'Mercury\u2019s neutrality positioning — Veeva is sponsor-aligned; domain-specific CTA playbooks co-developed with Mayo Clinic'
               },
               {
                 mode: 'Niche (CRO Internal)',
                 concept: 'Internal AI contract review tool trained on thousands of historical CTAs',
                 functions: 'Automated first-pass review, deviation flagging, standard clause library',
                 position: 'Used by CRO\'s own legal/contracts team only',
-                why: 'CROs control enough volume for data advantage internally; no external platform needed'
+                why: 'CROs control enough volume for data advantage internally; no external platform needed',
+                stack: 'Internal LLM deployment → historical CTA training corpus → deviation detection → internal workflow',
+                timeline: '6–9 months for internal tool; productization unlikely (historically CROs do not productize internal tools)',
+                cantReplicate: 'Multi-party openness (CROs serve one side); platform approach with counterparty collaboration'
               },
             ].map((row) => (
               <div key={row.mode} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
                 <h3 className="text-sm font-semibold text-cream mb-3">{row.mode}</h3>
-                <div className="grid md:grid-cols-2 gap-3 text-xs">
+                <div className="grid md:grid-cols-3 gap-3 text-xs">
                   <div><span className="text-cream/40 font-medium">Product concept:</span> <span className="text-cream/70">{row.concept}</span></div>
                   <div><span className="text-cream/40 font-medium">Core functions:</span> <span className="text-cream/70">{row.functions}</span></div>
-                  <div><span className="text-cream/40 font-medium">Workflow position:</span> <span className="text-cream/70">{row.position}</span></div>
+                  <div><span className="text-cream/40 font-medium">Specific stack:</span> <span className="text-cream/70">{row.stack}</span></div>
+                  <div><span className="text-cream/40 font-medium">Build timeline &amp; cost:</span> <span className="text-cream/70">{row.timeline}</span></div>
                   <div><span className="text-cream/40 font-medium">Why &quot;good enough&quot;:</span> <span className="text-cream/70">{row.why}</span></div>
+                  <div><span className="text-red-300/60 font-medium">Cannot easily replicate:</span> <span className="text-cream/70">{row.cantReplicate}</span></div>
                 </div>
               </div>
             ))}
@@ -703,8 +746,53 @@ function buildSlideContentMap() {
               </ul>
             </div>
           </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-[11px] mb-4">
+              <thead>
+                <tr className="border-b-2 border-purple-500/40">
+                  <th className="text-left p-2 text-cream/80 font-medium">Capability</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Replicable in 12 months?</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Primary Barrier</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Moat Durability</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">AI Contract Markup</td>
+                  <td className="p-2"><span className="text-green-300">Yes</span> — basic version in days</td>
+                  <td className="p-2">None for basic; pipeline quality for production-grade</td>
+                  <td className="p-2 text-red-300">Low (commoditizing)</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Multi-Party Platform</td>
+                  <td className="p-2"><span className="text-yellow-300">Partially</span> — tech yes, trust no</td>
+                  <td className="p-2">Earned credibility with both sponsors and sites</td>
+                  <td className="p-2 text-green-300">High (network effect)</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Domain Playbooks</td>
+                  <td className="p-2"><span className="text-yellow-300">Partially</span> — defaults yes, institutional no</td>
+                  <td className="p-2">Co-developed with Mayo, Duke — years of domain expertise</td>
+                  <td className="p-2 text-green-300">High (knowledge)</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Metagreement™ Data Asset</td>
+                  <td className="p-2"><span className="text-red-300">No</span></td>
+                  <td className="p-2">~4,000 analyzed issue points; 100% data rights; years to accumulate</td>
+                  <td className="p-2 text-green-300">Very High (data)</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Congruency Pipeline</td>
+                  <td className="p-2"><span className="text-yellow-300">With significant effort</span></td>
+                  <td className="p-2">500+ sub-issue orchestration across 150 playbook topics</td>
+                  <td className="p-2 text-yellow-300">Medium (engineering)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div className="p-3 rounded-xl bg-purple-500/10 border-l-4 border-purple-500">
             <p className="text-xs text-cream/70"><span className="font-medium text-purple-300">Key Takeaway:</span> Mercury&apos;s most defensible assets are the multi-party network trust and institutional credibility (Mayo Clinic). AI markup functionality in isolation is replicable in days. The combination of AI + network + domain data is the defensible moat.</p>
+            <p className="text-xs text-cream/70 mt-2"><span className="font-medium text-purple-300">→ Bridge to AI Assessment:</span> Given what a well-resourced competitor <em>could</em> build, the next section assesses what Mercury <em>actually has</em> — and where the gaps and advantages sit against the replicability benchmark above.</p>
           </div>
         </div>
   )
@@ -797,6 +885,7 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength</h2>
+            <p className="text-xs text-cream/50">Evaluated against three criteria: Is the data proprietary, differentiated, and compounding?</p>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[11px]">
@@ -848,6 +937,20 @@ function buildSlideContentMap() {
               </tbody>
             </table>
           </div>
+          <div className="grid md:grid-cols-3 gap-3">
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+              <h4 className="text-[10px] uppercase tracking-wider text-green-300 mb-1">Proprietary?</h4>
+              <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Partially.</span> Mercury&apos;s data comes from customer usage, not public sources (not ClinicalTrials.gov). The asset is the <em>structured clause-level extraction and negotiation outcome data</em>, which is genuinely proprietary. However, institutional playbooks are customer-contributed — Mercury curates, structures, and enhances them.</p>
+            </div>
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+              <h4 className="text-[10px] uppercase tracking-wider text-green-300 mb-1">Differentiated?</h4>
+              <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Yes.</span> Historical negotiation outcomes, clause-level benchmarking across institutions, and co-developed playbooks (Mayo, Duke) are data no competitor has. This is not publicly available or scrape-able information.</p>
+            </div>
+            <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+              <h4 className="text-[10px] uppercase tracking-wider text-yellow-300 mb-1">Compounding?</h4>
+              <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">Yes, but early-stage.</span> Each new client and negotiation adds to the corpus. Benchmarking accuracy improves with volume. This connects directly to the <em>data-flywheel</em> thesis in Phase 4 — WCG volume could accelerate compounding by an order of magnitude.</p>
+            </div>
+          </div>
         </div>
   )
 
@@ -880,8 +983,18 @@ function buildSlideContentMap() {
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-3 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50">
-              <div className="text-xs uppercase tracking-wider text-yellow-300 mb-1">Channel Posture</div>
-              <p className="text-xs text-cream/70">Channel access is <span className="text-yellow-300 font-medium">weak / early days</span>, which is expected and acceptable given stage. Concentration on Florence is understood, not a gap — it is the natural first channel partner. More partnerships could emerge as Mercury gains traction. Direct sales resource-constrained but active (3-5 security questionnaires/month).</p>
+              <div className="text-xs uppercase tracking-wider text-yellow-300 mb-1">Transactional vs. Embedded Relationships</div>
+              <p className="text-xs text-cream/70 mb-2">Channel strength for a clinical trial services company is about <span className="text-cream/90 font-medium">switching costs and workflow embeddedness</span> — not just customer count.</p>
+              <div className="grid md:grid-cols-2 gap-2 text-[10px]">
+                <div className="p-2 bg-cream/5 rounded-lg">
+                  <span className="text-yellow-300 font-medium">Transactional (one-time):</span>
+                  <p className="text-cream/60 mt-0.5">Conference leads, website demos, investor referrals — these generate awareness but not lock-in. Mercury&apos;s current direct sales channel is largely transactional.</p>
+                </div>
+                <div className="p-2 bg-cream/5 rounded-lg">
+                  <span className="text-green-300 font-medium">Embedded (workflow-integrated):</span>
+                  <p className="text-cream/60 mt-0.5">Florence eISF integration, Mayo Clinic co-development, institutional playbook configuration — these create switching costs. A client mid-trial cannot rip Mercury out without disrupting active negotiations.</p>
+                </div>
+              </div>
             </div>
             <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
               <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Replication Difficulty</div>
@@ -935,7 +1048,7 @@ function buildSlideContentMap() {
               { dim: 'Leveling / Seniority Fit', rating: 'HIGH', why: 'Exceptional senior leadership: CEO (DocuSign/Seal VP, Duke Law), CTO (MIT, Bank of America SVP, serial CTO), CPO (Blackstone VP, Cornell), Co-founder (Blackstone CTO). Very senior for a seed-stage company.' },
               { dim: 'Functional Representation', rating: 'MEDIUM-HIGH', why: 'Per management: four functional teams — development, product, support, and analytics. Analytics team (4 analysts + 1 director) is a distinct third pillar alongside product and engineering, handling substantive content work, prompt engineering, and customer onboarding.' },
               { dim: 'Resourcing Balance', rating: 'MEDIUM-HIGH', why: 'Weighted toward product/technology, but the analyst team provides a bridge between R&D and customer success. CEO and CPO jointly drive go-to-market. No dedicated sales org, but active customer onboarding cadence (3-5 security reviews/month suggests steady new customer flow). Functional maturity is impressive for stage — resourcing balance reflects deliberate choices rather than gaps.' },
-              { dim: 'Process Maturity', rating: 'HIGH', why: 'Unusually mature for stage. Real development flywheel: balancing people/process/tech stack with explicit reinvestment in systems. Per management: weekly AI review calls; GitHub Actions CI/CD with automated vulnerability, license, and AI code review; Jira/Confluence for requirements; Figma for design. Deliberate human-in-the-loop checkpoints at staging and production. Explicit credit to CTO (Phil Richards) and CPO (Maya Pochiraju) for operating model maturity.' },
+              { dim: 'Process Maturity', rating: 'HIGH', why: 'Unusually mature for stage. Real development flywheel: balancing people/process/tech stack with explicit reinvestment in systems. Per management: weekly AI review calls; GitHub Actions CI/CD with automated vulnerability, license, and AI code review; Jira/Confluence for requirements; Figma for design. Deliberate human-in-the-loop checkpoints at staging and production.' },
             ].map((row) => (
               <div key={row.dim} className="p-4 bg-white/5 border border-cream/10 rounded-xl flex items-start gap-4">
                 <RatingBadge rating={row.rating} size="lg" />
@@ -945,6 +1058,28 @@ function buildSlideContentMap() {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
+            <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Key Person Retention — WCG Integration Priority</div>
+            <p className="text-xs text-cream/70 mb-2">The 3\u20135 roles WCG cannot afford to lose in the first 18 months post-acquisition:</p>
+            <div className="grid md:grid-cols-5 gap-2">
+              {[
+                { role: 'CTO', risk: 'HIGH', why: 'Single point for all architecture decisions; reviews every PR; institutional AI knowledge' },
+                { role: 'CEO', risk: 'HIGH', why: 'Domain thought leader; customer relationships; MAGI credibility; serial contract-AI founder' },
+                { role: 'CPO', risk: 'MEDIUM', why: 'Owns product vision and GTM; customer onboarding; ex-Blackstone operational expertise' },
+                { role: 'Principal Eng. ×2', risk: 'MEDIUM', why: 'Infrastructure and platform architecture; critical institutional knowledge; team cohesion anchors' },
+                { role: 'Dir. Solutions', risk: 'MEDIUM', why: 'Manages analyst team — Mercury\u2019s domain knowledge capture mechanism; customer playbook translation' },
+              ].map((p) => (
+                <div key={p.role} className="p-2 bg-cream/5 rounded-lg text-[10px]">
+                  <div className="flex items-center gap-1 mb-1">
+                    <span className="text-cream/90 font-medium">{p.role}</span>
+                    <span className={`font-mono px-1 py-0.5 rounded ${p.risk === 'HIGH' ? 'bg-red-500/20 text-red-300' : 'bg-yellow-500/20 text-yellow-300'}`}>{p.risk}</span>
+                  </div>
+                  <p className="text-cream/50">{p.why}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-cream/50 mt-2 italic">Retention plan should include equity/earnout provisions, role clarity under WCG structure, and protection of Mercury&apos;s operating autonomy during integration.</p>
           </div>
         </div>
   )
@@ -1116,6 +1251,7 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Assessment — Executive Summary</h2>
+            <p className="text-xs text-cream/50">Against the &quot;build-it-today&quot; replicability benchmark, Mercury&apos;s AI portfolio shows strengths in pipeline orchestration and domain data, with commodity risk concentrated in basic markup functionality.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {[
@@ -1142,6 +1278,11 @@ function buildSlideContentMap() {
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
             <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
+          </div>
+          <div className="flex items-center gap-4 text-[10px] text-cream/50">
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400" /> Shipped &amp; revenue-generating</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400" /> Shipped, pre-revenue / in development</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-red-400" /> Conceptual / planned</span>
           </div>
           {/* Contract Intake & Preparation */}
           <div>
@@ -1254,12 +1395,26 @@ function buildSlideContentMap() {
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness</h2>
             <p className="text-xs text-cream/50">Per management diligence calls — qualitative assessment</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-4 mt-6">
+          <div className="grid md:grid-cols-3 gap-4 mt-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">1. Can Mercury&apos;s AI run on WCG&apos;s infrastructure?</h3>
+              <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Likely yes without re-platform.</span> Mercury is cloud-first serverless on AWS (CDK-managed). WCG&apos;s ClinSphere is also cloud-based. Integration is API-level, not infrastructure-level. Separate AWS accounts for dev/staging vs prod already exist.</p>
+            </div>
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">2. Is the data pipeline real?</h3>
+              <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Yes — production ETL with Neo4j graph database.</span> Not CSV uploads. Clause-level structured data extraction (Metagreement™) is automated. Multi-model pipeline (Anthropic, OpenAI, Gemini) with prompt management stored in database, not code. Agent orchestration with isolation and observability.</p>
+            </div>
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-xs font-semibold text-cream mb-2">3. What&apos;s the model dependency risk?</h3>
+              <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">Mitigated by multi-model architecture.</span> Mercury uses model-per-task selection (Anthropic, OpenAI, Gemini). Model abstraction layer allows hot-swapping — tested Sonnet 4.6 within ~1 week of release. However, no formal MLOps/monitoring system yet (agent gateway is a foundation but not formalized).</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-green-300 mb-3">Strong</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>• Cloud-first serverless architecture; uses off-the-shelf hyperscale tools</li>
-                <li>• Multi-model AI pipeline (Anthropic, OpenAI, Gemini) with prompt management stored in database</li>
+                <li>• Multi-model AI pipeline with prompt management stored in database</li>
                 <li>• Agent orchestration with isolation, observability, and user identity passthrough</li>
               </ul>
             </div>
@@ -1267,7 +1422,7 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-yellow-300 mb-3">Adequate for Stage</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>• Small scale currently; customer base still early</li>
-                <li>• Graph database (Neo4j) well-suited for contract network data; captures clause reuse and version history</li>
+                <li>• Graph database (Neo4j) well-suited for contract network data</li>
                 <li>• AWS CDK enables rapid deployment; separate accounts for dev/staging vs. prod</li>
               </ul>
             </div>
@@ -1349,7 +1504,8 @@ function buildSlideContentMap() {
                 valueDrivers: 'Pricing Power (customers pay for this capability); Speed-to-Close (first response in minutes vs. days)',
                 proof: 'Claims "first-draft AI markups in minutes." 50–80% reduction reported. No independent verification.',
                 replicability: 'MEDIUM-HIGH', replicabilityNote: 'Others can build similar-looking but not equal in design/quality without dataset/pipeline',
-                comparables: 'Luminance, Ironclad, Harvey, any CLM vendor adding AI'
+                comparables: 'Luminance, Ironclad, Harvey, any CLM vendor adding AI',
+                mercuryPosition: 'At parity on basic markup; ahead on domain-specific CTA accuracy (per bake-off wins vs. Spot Draft and generic tools). Behind on distribution vs. Ironclad/Luminance.'
               },
               {
                 title: 'Metagreement™ Structured Data + Intelligence',
@@ -1357,7 +1513,8 @@ function buildSlideContentMap() {
                 valueDrivers: 'Pricing Power (unique benchmarking data; industry standard comparisons); Speed-to-Close (both parties see structured data); Direct Revenue (data product potential)',
                 proof: 'Product page describes feature; no independent verification of accuracy or completeness.',
                 replicability: 'LOW', replicabilityNote: 'LOW replicability — needs dataset of ~4,000 contracts to compare; others cannot replicate without corpus',
-                comparables: 'No direct comparable in CTA-specific structured data'
+                comparables: 'No direct comparable in CTA-specific structured data',
+                mercuryPosition: 'Ahead — no competitor has CTA-specific structured data at clause level. Luminance has general contract analytics but not clinical trial domain depth.'
               },
               {
                 title: 'Multi-Party Negotiation with AI Compliance',
@@ -1365,7 +1522,8 @@ function buildSlideContentMap() {
                 valueDrivers: 'Speed-to-Close (real-time collaboration vs. serial email chains); Pricing Power (unique multi-party capability)',
                 proof: 'Platform architecture described; "Negotiate Your Way" and "Stay Standards-Compliant" features.',
                 replicability: 'LOW', replicabilityNote: 'Multi-party trust + neutrality + both-side adoption — deepest moat',
-                comparables: 'No direct comparable; CLM tools serve one side; general collaboration lacks contract features'
+                comparables: 'No direct comparable; CLM tools serve one side; general collaboration lacks contract features',
+                mercuryPosition: 'Ahead — unique in CTA space. CLM vendors serve one side only. Florence is complementary (eISF), not competitive on multi-party negotiation.'
               },
             ].map((ex) => (
               <div key={ex.title} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1397,6 +1555,7 @@ function buildSlideContentMap() {
                   <span className="text-[10px] text-cream/50">{ex.replicabilityNote}</span>
                 </div>
                 <p className="text-[10px] text-cream/40 mt-1">Comparables: {ex.comparables}</p>
+                <p className="text-[10px] text-purple-300/80 mt-1"><span className="font-medium">Mercury vs. benchmark:</span> {ex.mercuryPosition}</p>
               </div>
             ))}
           </div>
@@ -1414,7 +1573,7 @@ function buildSlideContentMap() {
             <div className="p-4 bg-sage-500/10 border border-sage-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-sage-300 mb-3">Cost</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; Small dev team (4 developers) indicates high cost efficiency</li>
+                <li>&bull; <span className="text-cream/90 font-medium">4-person dev team</span> delivering full-platform capabilities — estimated 2\u20133x output leverage vs. non-AI-assisted team of equivalent size</li>
                 <li>&bull; Almost all code written with AI assistance — reduces need for additional engineering headcount</li>
                 <li>&bull; QA contractors (not FTEs) provide flexibility on testing spend</li>
               </ul>
@@ -1422,8 +1581,8 @@ function buildSlideContentMap() {
             <div className="p-4 bg-sage-500/10 border border-sage-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-sage-300 mb-3">Speed</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; Releases to production at least weekly</li>
-                <li>&bull; Staging deployments sometimes multiple times per day</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Weekly production releases;</span> staging deployments multiple times per day</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Model hot-swap in ~1 week:</span> tested Sonnet 4.6 within a week of release (per management)</li>
                 <li>&bull; Automated deploy to dev; human-approved to staging/prod</li>
                 <li>&bull; AWS CDK enables rapid infrastructure changes</li>
               </ul>
@@ -1438,6 +1597,14 @@ function buildSlideContentMap() {
               </ul>
             </div>
           </div>
+          <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50 mb-2">
+            <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Quantified Internal Proof Points</div>
+            <div className="grid md:grid-cols-3 gap-3 text-xs text-cream/70">
+              <div>&bull; <span className="text-cream/90 font-medium">CTA first-draft review:</span> Reduced from ~3 days manual to &lt;4 hours with AI (per management)</div>
+              <div>&bull; <span className="text-cream/90 font-medium">Negotiation cycle time:</span> 64 days industry avg → 16 days Mercury (claimed); 15\u201318% verified in client support data</div>
+              <div>&bull; <span className="text-cream/90 font-medium">AI code review catch rate:</span> Customized Claude agent reviews 100% of PRs — replaces ~1 FTE of review capacity (per management)</div>
+            </div>
+          </div>
           <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
             <p className="text-xs text-cream/70"><span className="font-medium text-sage-300">CI/CD Tie-In:</span> GitHub Actions pipeline includes automated vulnerability scanning, license checking, code scanning, and AI code review. Spec + TDD first approach ensures quality despite high velocity. The engineering model is a proof point for Mercury&apos;s AI-native operating philosophy.</p>
           </div>
@@ -1447,32 +1614,50 @@ function buildSlideContentMap() {
   slideContentMap['quantification-placeholder'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Quantification — Placeholder</h2>
-            <p className="text-xs text-cream/50">To be completed with internal data</p>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Quantification Summary</h2>
+            <p className="text-xs text-cream/50">Directional ranges based on available data — underlying model to be built as separate workstream</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
-            <div className="p-5 bg-purple-500/5 border border-purple-500/20 rounded-xl">
-              <h3 className="text-sm font-semibold text-purple-300 mb-3">External Value Impact</h3>
-              <ul className="space-y-2 text-xs text-cream/70">
-                <li className="flex items-center gap-2"><GapTag /> Pricing power: premium vs. generic CLM tools</li>
-                <li className="flex items-center gap-2"><GapTag /> Speed-to-close: CTA cycle time reduction (quantified)</li>
-                <li className="flex items-center gap-2"><GapTag /> Customer willingness to pay / competitive win rate data</li>
-                <li className="flex items-center gap-2"><GapTag /> Network effect value: cross-side adoption metrics</li>
-              </ul>
-            </div>
-            <div className="p-5 bg-sage-500/5 border border-sage-500/20 rounded-xl">
-              <h3 className="text-sm font-semibold text-sage-300 mb-3">Internal Value Impact</h3>
-              <ul className="space-y-2 text-xs text-cream/70">
-                <li className="flex items-center gap-2"><GapTag /> Cost: engineering cost per feature / per release</li>
-                <li className="flex items-center gap-2"><GapTag /> Speed: release cadence trends; time from spec to production</li>
-                <li className="flex items-center gap-2"><GapTag /> Productivity: lines of code / features per developer; AI assistance ratio</li>
-                <li className="flex items-center gap-2"><GapTag /> Quality: defect rate; AI code review catch rate</li>
-              </ul>
-            </div>
+          <div className="overflow-x-auto mt-6">
+            <table className="w-full border-collapse text-xs">
+              <thead>
+                <tr className="border-b-2 border-blue-500/40">
+                  <th className="text-left p-3 text-cream/80 font-medium">Synergy Category</th>
+                  <th className="text-left p-3 text-cream/80 font-medium">Low</th>
+                  <th className="text-left p-3 text-cream/80 font-medium">High</th>
+                  <th className="text-left p-3 text-cream/80 font-medium">Key Assumptions</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                <tr className="border-b border-cream/5">
+                  <td className="p-3 font-medium text-cream/90">Cost synergies (WCG productivity gains from Mercury AI)</td>
+                  <td className="p-3 text-cream">$1.5M</td>
+                  <td className="p-3 text-cream">$4.0M</td>
+                  <td className="p-3 text-cream/60">Automating 5-day manual SLA for contract review, budget development, and coverage analysis across 100\u2013300 sites; assumes 40\u201360% of current manual FTE hours displaced</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-3 font-medium text-cream/90">Revenue synergies (Mercury products through WCG channel)</td>
+                  <td className="p-3 text-cream">$500K</td>
+                  <td className="p-3 text-cream">$5.0M</td>
+                  <td className="p-3 text-cream/60">Mercury cross-sell to 50\u2013300 WCG-enabled sites at ~$10K/site/year; sponsor-side revenue from 1\u20135 pilot programs; contract intelligence data product (Year 3)</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-3 font-medium text-cream/90">Build-vs-buy cost avoidance</td>
+                  <td className="p-3 text-cream">$2.6M</td>
+                  <td className="p-3 text-cream">$4.0M</td>
+                  <td className="p-3 text-cream/60">Year 1 fully loaded cost of assembling equivalent team; does not include opportunity cost of 18\u201324 month delay to market</td>
+                </tr>
+                <tr className="border-t-2 border-blue-500/40 bg-blue-500/5">
+                  <td className="p-3 font-semibold text-cream">Total (Year 1\u20133 range)</td>
+                  <td className="p-3 font-semibold text-cream">$4.6M</td>
+                  <td className="p-3 font-semibold text-cream">$13.0M</td>
+                  <td className="p-3 text-cream/60"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div className="p-4 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50">
-            <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">NOTE:</span> Both external and internal value quantification require access to Mercury&apos;s internal metrics and customer data. These placeholders will be populated during the next phase of diligence.</p>
+            <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">NOTE:</span> These are directional ranges based on public data and diligence call estimates. Final quantification requires WCG internal data inputs (site count, current cost-to-serve, enablement pricing, data rights validation). The detail behind each row lives in slides 35, 37, and the supporting model we will build as a separate workstream.</p>
           </div>
         </div>
   )
@@ -1615,11 +1800,12 @@ function buildSlideContentMap() {
             </div>
           </div>
           <div className="p-3 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50">
-            <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Prerequisites by Wave</div>
-            <ul className="text-[10px] text-cream/70 space-y-0.5">
-              <li><span className="text-green-300">W1:</span> Clear integration authority; combined product leadership; data rights assessment</li>
-              <li><span className="text-yellow-300">W2:</span> Engineering investment in platform integration; combined AI team; sales alignment; data rights validated</li>
-              <li><span className="text-purple-300">W3:</span> Full organizational alignment; unified technology platform; regulatory validation; sponsor relationships cultivated</li>
+            <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Wave Transition Gates</div>
+            <p className="text-[10px] text-cream/50 mb-2 italic">Waves transition on milestone gates, not time gates — if a gate isn&apos;t met, the wave doesn&apos;t advance regardless of calendar.</p>
+            <ul className="text-[10px] text-cream/70 space-y-1.5">
+              <li><span className="text-green-300 font-medium">W1 → W2 Gate:</span> Data rights assessment complete and validated; first 10+ sites actively using Mercury via WCG channel; ClinSphere API integration spec finalized; Florence partnership terms clarified under WCG ownership</li>
+              <li><span className="text-yellow-300 font-medium">W2 → W3 Gate:</span> ClinSphere platform integration live in production (not staging); first joint client using end-to-end workflow (feasibility → contract → activation); 50+ sites on Mercury; at least 1 sponsor pilot in production</li>
+              <li><span className="text-purple-300 font-medium">W3 entry criteria:</span> Full organizational alignment; unified technology platform; regulatory validation complete; sponsor relationships cultivated with 3+ top-20 pharma</li>
             </ul>
           </div>
         </div>
@@ -1636,18 +1822,33 @@ function buildSlideContentMap() {
               {
                 num: '1', title: 'Accelerate Site Start-Up: ClinSphere + Mercury Integration',
                 buckets: 'Speed-to-Close, Cost',
+                estCost: '$500K–$1M (6–9 month engineering integration)',
+                upliftLow: '$1.5M (Year 1 — productivity gains from automating 5-day manual SLA)',
+                upliftHigh: '$4M (Year 3 — at scale with 100+ sites)',
+                timeline: '6–9 months to first joint client live',
+                whatMustBeTrue: 'ClinSphere API integration completes on schedule; WCG data rights permit contract data flow; site adoption rate exceeds 30% of WCG-enabled sites',
                 assumptions: ['# sites Buyer currently supports in study start-up', 'Current avg CTA negotiation time', 'Mercury reduces by 50–80% (public claim)', 'Each day saved = $600K–$8M (industry est.)'],
                 output: 'Days saved per CTA × CTAs per year → total sponsor value → Buyer share captured'
               },
               {
                 num: '2', title: 'Cross-Sell Mercury to Buyer Site Enablement Clients',
                 buckets: 'Pricing Power, Productivity',
+                estCost: '$200K–$400K (sales training, pricing alignment, packaging)',
+                upliftLow: '$500K (Year 1 — 50 sites × ~$10K/site)',
+                upliftHigh: '$3M (Year 3 — 300 sites × ~$10K/site)',
+                timeline: '3–6 months to first cross-sell',
+                whatMustBeTrue: 'Mercury pricing aligns with WCG site enablement packaging; neutrality perception does not impede adoption; WCG sales team trained and incentivized',
                 assumptions: ['% of Buyer sites paying for enablement', 'Mercury pricing per site/year', 'Adoption rate %'],
                 output: 'Incremental ARR from Mercury cross-sell; net revenue retention improvement'
               },
               {
                 num: '3', title: 'Launch Contract Intelligence Data Product',
                 buckets: 'Pricing Power, Speed',
+                estCost: '$300K–$600K (ML model development, data infrastructure)',
+                upliftLow: '$0 (Year 1 — insufficient data volume)',
+                upliftHigh: '$2M (Year 3 — premium benchmarking tier)',
+                timeline: '12–18 months to viable product',
+                whatMustBeTrue: 'Mercury data volume reaches 10,000+ agreements for statistical significance; ML model achieves 80%+ accuracy on contract outcome prediction; sponsors willing to pay for benchmarking data',
                 assumptions: ['Mercury data volume reaches sufficient agreements', 'ML model accuracy', 'Data product pricing'],
                 output: 'Data product revenue; premium ClinSphere tier pricing with contract intelligence'
               },
@@ -1660,20 +1861,26 @@ function buildSlideContentMap() {
                     <span className="text-[10px] font-mono text-cream/40">Value buckets: {init.buckets}</span>
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-4 gap-3">
                   <div>
-                    <span className="text-[10px] text-cream/40 font-medium">Key Assumptions (INPUTS NEEDED):</span>
-                    <ul className="mt-1 space-y-0.5">
-                      {init.assumptions.map((a, i) => (
-                        <li key={i} className="text-[10px] text-cream/60 flex items-center gap-1">
-                          <GapTag /> {a}
-                        </li>
-                      ))}
-                    </ul>
+                    <span className="text-[10px] text-cream/40 font-medium">Est. Cost:</span>
+                    <p className="text-[10px] text-cream/70 mt-0.5">{init.estCost}</p>
+                    <span className="text-[10px] text-cream/40 font-medium mt-1 block">Timeline to Value:</span>
+                    <p className="text-[10px] text-cream/70 mt-0.5">{init.timeline}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-cream/40 font-medium">Uplift (Low):</span>
+                    <p className="text-[10px] text-cream/70 mt-0.5">{init.upliftLow}</p>
+                    <span className="text-[10px] text-cream/40 font-medium mt-1 block">Uplift (High):</span>
+                    <p className="text-[10px] text-cream/70 mt-0.5">{init.upliftHigh}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-red-300/60 font-medium">What Needs to Be True:</span>
+                    <p className="text-[10px] text-cream/60 mt-0.5">{init.whatMustBeTrue}</p>
                   </div>
                   <div>
                     <span className="text-[10px] text-cream/40 font-medium">Output Metric:</span>
-                    <p className="text-xs text-cream/70 mt-1">{init.output}</p>
+                    <p className="text-[10px] text-cream/70 mt-0.5">{init.output}</p>
                   </div>
                 </div>
               </div>
@@ -1724,39 +1931,47 @@ function buildSlideContentMap() {
             <table className="w-full border-collapse text-xs">
               <thead>
                 <tr className="border-b-2 border-red-500/40">
-                  <th className="text-left p-2 text-cream/80 font-medium">Assumption</th>
-                  <th className="text-left p-2 text-green-300 font-medium">High</th>
-                  <th className="text-left p-2 text-yellow-300 font-medium">Medium</th>
-                  <th className="text-left p-2 text-red-300 font-medium">Low</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Sensitivity Axis</th>
+                  <th className="text-left p-2 text-green-300 font-medium">Optimistic</th>
+                  <th className="text-left p-2 text-yellow-300 font-medium">Base</th>
+                  <th className="text-left p-2 text-red-300 font-medium">Pessimistic</th>
                 </tr>
               </thead>
               <tbody className="text-cream/70">
-                {[
-                  'Neutrality perception under Buyer ownership',
-                  'ClinSphere integration timeline',
-                  'Florence partnership durability post-acquisition',
-                  'Competitive response from Veeva SiteVault',
-                  'Sponsor-side adoption rate',
-                ].map((label, i) => (
-                  <tr key={i} className="border-b border-cream/5">
-                    <td className="p-2 font-medium text-cream/90">{label}</td>
-                    <td className="p-2"><GapTag /></td>
-                    <td className="p-2"><GapTag /></td>
-                    <td className="p-2"><GapTag /></td>
-                  </tr>
-                ))}
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Synergy capture rate<br /><span className="text-[10px] text-cream/40">(Industry benchmark: 40\u201360% realized in first 18 months)</span></td>
+                  <td className="p-2 text-green-300">70% of identified synergies realized in Year 1</td>
+                  <td className="p-2 text-yellow-300">50% realized in Year 1</td>
+                  <td className="p-2 text-red-300">30% realized in Year 1</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Client retention through acquisition<br /><span className="text-[10px] text-cream/40">(Mercury has 22+ sites; zero churn to date)</span></td>
+                  <td className="p-2 text-green-300">0\u20135% client loss; WCG channel adds net new</td>
+                  <td className="p-2 text-yellow-300">10\u201315% client loss from acquisition uncertainty</td>
+                  <td className="p-2 text-red-300">20\u201330% loss; neutrality concerns drive departures</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Integration timeline<br /><span className="text-[10px] text-cream/40">(ClinSphere integration is the critical path)</span></td>
+                  <td className="p-2 text-green-300">6 months to production; NPV impact: minimal delay</td>
+                  <td className="p-2 text-yellow-300">12 months; NPV reduces by ~15\u201320%</td>
+                  <td className="p-2 text-red-300">18+ months; NPV reduces by ~30\u201340% from delayed synergy</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <div className="p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
+            <div className="text-xs uppercase tracking-wider text-green-300 mb-2">Stress Test Result</div>
+            <p className="text-xs text-cream/70">At pessimistic assumptions on all three axes simultaneously (30% synergy capture, 25% client loss, 18-month integration), the remaining synergy value is approximately <span className="text-cream/90 font-medium">$1.4M\u2013$2.7M over 3 years</span>. The deal still works if the acquisition price is at or below the risk-adjusted build-vs-buy cost ($2.6\u2013$4.0M), because even at pessimistic assumptions, WCG avoids the internal build risk and timeline.</p>
+          </div>
           <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
-            <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Assumptions That Matter Most</div>
+            <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Assumptions the IC Will Challenge</div>
             <div className="grid md:grid-cols-2 gap-3">
               {[
-                { num: '1', title: 'Neutrality perception', detail: 'Can Buyer-owned Mercury maintain credibility as a neutral platform for both sponsors and sites?' },
-                { num: '2', title: 'ClinSphere integration timeline', detail: 'How quickly can Mercury be embedded in the ClinSphere workflow?' },
-                { num: '3', title: 'Florence partnership durability', detail: 'Does Buyer ownership strengthen or weaken the Florence relationship?' },
-                { num: '4', title: 'Veeva competitive response', detail: 'Does Veeva launch a CTA negotiation module in SiteVault?' },
-                { num: '5', title: 'Sponsor-side adoption', detail: 'Will sponsors use a platform owned by a company that also serves their counterparties?' },
+                { num: '1', title: 'Synergy capture rate', detail: 'What % of identified synergies actually materialize? Most tech acquisitions realize 40\u201360% in the first 18 months.' },
+                { num: '2', title: 'Neutrality preservation', detail: 'Can WCG-owned Mercury maintain credibility as a neutral platform? This is the single biggest thesis risk.' },
+                { num: '3', title: 'Integration timeline', detail: 'If ClinSphere integration takes 18 months instead of 9, what\u2019s the NPV impact of delayed synergy realization?' },
+                { num: '4', title: 'Client retention', detail: 'If Mercury loses 10/20/30% of clients due to acquisition uncertainty, does the growth curve still work?' },
+                { num: '5', title: 'Competitive response', detail: 'Does Veeva launch a CTA module in SiteVault within the integration window, eroding Mercury\u2019s first-mover advantage?' },
               ].map((a) => (
                 <div key={a.num} className="flex items-start gap-2 text-xs">
                   <span className="text-red-300 font-mono flex-shrink-0">{a.num}.</span>
@@ -1810,6 +2025,29 @@ function buildSlideContentMap() {
             </div>
           </div>
 
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3">Specific Capability-to-Gap Mapping</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[11px] border-collapse">
+                <thead>
+                  <tr className="border-b border-cream/20">
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">ClinSphere Gap</th>
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Mercury Capability</th>
+                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Current State (Manual)</th>
+                    <th className="text-left py-2 text-cream/60 font-medium">Integration Complexity</th>
+                  </tr>
+                </thead>
+                <tbody className="text-cream/70">
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">AI-assisted site cost estimation</td><td className="py-1.5 pr-3">Budget module (H1 2026) — protocol-budget reconciliation</td><td className="py-1.5 pr-3">Manual by WCG analysts; 5-day SLA</td><td className="py-1.5 text-yellow-300">6\u20139 month API integration</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Contract negotiation workflow</td><td className="py-1.5 pr-3">CTA AI Markup + multi-party platform</td><td className="py-1.5 pr-3">Manual by WCG contract specialists; 5-day SLA</td><td className="py-1.5 text-yellow-300">6\u20139 month API integration</td></tr>
+                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Coverage analysis automation</td><td className="py-1.5 pr-3">Medicare Coverage Analysis (H2 2026 roadmap)</td><td className="py-1.5 pr-3">Manual by WCG compliance experts</td><td className="py-1.5 text-red-300">12\u201318 month (regulatory validation)</td></tr>
+                  <tr><td className="py-1.5 pr-3">Contract-to-CTMS data handoff</td><td className="py-1.5 pr-3">Metagreement™ structured data export</td><td className="py-1.5 pr-3">Manual re-entry into eResearch CTMS</td><td className="py-1.5 text-green-300">3\u20136 month data mapping</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[10px] text-cream/40 mt-2 italic">Example scenario: For a Phase III oncology trial with 200 sites, the combined ClinSphere + Mercury Budget workflow would reduce budgeting cycle time from ~5 days manual to &lt;4 hours AI-assisted, with human review for exceptions only.</p>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-sm font-semibold text-cream mb-2">Facts</h3>
@@ -1840,6 +2078,7 @@ function buildSlideContentMap() {
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Deeper dive on the new budget product from Mercury.</p>
+            <p className="text-[10px] text-cream/40 mt-1 italic">Budget receives a dedicated deep dive because it is Mercury&apos;s largest near-term revenue expansion vector and the primary synergy point with WCG&apos;s ClinSphere Study Start-Up Services, which currently delivers budget development manually with a 5-day SLA.</p>
           </div>
 
           <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
@@ -2007,6 +2246,24 @@ function buildSlideContentMap() {
             <p className="text-xs text-cream/70">Replicating Mercury&apos;s specialized team would cost an estimated <span className="text-cream font-medium">$2.6M–$4.0M in Year 1</span> and take <span className="text-cream font-medium">12–18+ months</span> of recruiting. The build option also forfeits the existing data asset, customer relationships, and 2.5+ years of team cohesion.</p>
           </div>
 
+          <div className="grid md:grid-cols-3 gap-3">
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl text-center">
+              <div className="text-[10px] text-cream/40 uppercase tracking-wider mb-1">Cost to Build Equivalent</div>
+              <div className="text-lg font-serif text-cream">$2.6M–$4.0M</div>
+              <p className="text-[10px] text-cream/50 mt-1">Team of 10\u201311 roles, loaded cost + 20% recruiting fees</p>
+            </div>
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl text-center">
+              <div className="text-[10px] text-cream/40 uppercase tracking-wider mb-1">Time to Market if Built</div>
+              <div className="text-lg font-serif text-cream">18–24 months</div>
+              <p className="text-[10px] text-cream/50 mt-1">12\u201318 months recruiting + 6\u201312 months to production-grade</p>
+            </div>
+            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl text-center">
+              <div className="text-[10px] text-cream/40 uppercase tracking-wider mb-1">Probability of Successful Build</div>
+              <div className="text-lg font-serif text-red-300">Low</div>
+              <p className="text-[10px] text-cream/50 mt-1">Most internal AI builds in regulated industries take 2\u20133x longer than planned. Domain expertise cannot be hired off the shelf.</p>
+            </div>
+          </div>
+
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Leadership Tier — Irreplaceable Domain Founders</h3>
             <div className="overflow-x-auto">
@@ -2096,6 +2353,13 @@ function buildSlideContentMap() {
           <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
             <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
             <p className="text-xs text-cream/70">Mercury&apos;s ~4,000 analyzed issue points are the <span className="text-cream font-medium">seed corpus</span> for an AI-driven benchmarking engine. WCG&apos;s network would dramatically expand this — potentially by an order of magnitude within 12–18 months — creating a <span className="text-cream font-medium">self-reinforcing data flywheel</span> that becomes the industry standard for clinical trial contract and budget benchmarking.</p>
+          </div>
+
+          <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+            <div className="text-xs uppercase tracking-wider text-green-300 mb-2">First Turn of the Flywheel — Concrete Example</div>
+            <p className="text-xs text-cream/70"><span className="text-cream/90 font-medium">Input:</span> WCG feeds its historical IRB review data (80K+ protocols, 31TB Knowledge Base) into Mercury&apos;s congruency pipeline. This is the first data asset WCG has that Mercury currently lacks.</p>
+            <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Output:</span> Mercury&apos;s AI can now predict protocol amendment risk based on IRB review patterns — e.g., &quot;protocols with X characteristic have a Y% likelihood of triggering a budget renegotiation within 6 months.&quot; This is a novel insight neither company can produce alone.</p>
+            <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Flywheel effect:</span> Sites that see amendment risk predictions close contracts faster → faster closings generate more data → more data improves predictions → attracting more sites.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
