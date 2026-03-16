@@ -1848,7 +1848,7 @@ function buildSlideContentMap() {
                   <tr className="border-b border-cream/5"><td className="py-2 pr-3">Total Feasibility</td><td className="py-2 pr-3">Site identification, feasibility assessment, enrollment modeling</td><td className="py-2"><span className="text-green-400">Live</span></td></tr>
                   <tr className="border-b border-cream/5"><td className="py-2 pr-3">eResearch Enterprise CTMS</td><td className="py-2 pr-3">Study management, calendar builds, milestone tracking, invoicing</td><td className="py-2"><span className="text-green-400">Live</span></td></tr>
                   <tr className="border-b border-cream/5"><td className="py-2 pr-3">Study Start-Up Services</td><td className="py-2 pr-3">Coverage analysis, budget development, contract review, CTMS builds</td><td className="py-2"><span className="text-yellow-400">Manual — 5-day TAT</span></td></tr>
-                  <tr><td className="py-2 pr-3 text-amber-300 font-medium">Contract &amp; Budget AI (Mercury)</td><td className="py-2 pr-3 text-amber-300">AI-powered contract markup, budget reconciliation, market insights</td><td className="py-2"><span className="text-red-400 font-medium">GAP — not in ClinSphere today</span></td></tr>
+                  <tr><td className="py-2 pr-3 text-amber-300 font-medium">Contract &amp; Budget AI (Mercury)</td><td className="py-2 pr-3 text-amber-300">AI-powered contract markup, budget reconciliation, market insights</td><td className="py-2"><span className="text-amber-300 font-medium">Not in ClinSphere today</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -1865,23 +1865,14 @@ function buildSlideContentMap() {
                 <li>&bull; WCG claims 40–60% faster timelines from best practices — but these are manual, not software automation</li>
               </ul>
             </div>
-            <div className="space-y-4">
-              <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-                <h3 className="text-sm font-semibold text-cream mb-2">Inferences</h3>
-                <ul className="space-y-1.5 text-[11px] text-cream/70">
-                  <li>&bull; Mercury would serve as the &quot;missing module&quot; converting manual workflows into AI-powered software within ClinSphere</li>
-                  <li>&bull; Creates closed-loop startup: IRB (eReview) → site selection (Total Feasibility) → contract/budget (Mercury) → activation (CTMS)</li>
-                  <li>&bull; Mercury&apos;s AI turnaround could substantially outperform the current 5-day manual SLA</li>
-                  <li>&bull; Cross-sell to ~3,400 institutional partners as a platform upgrade rather than a separate product</li>
-                </ul>
-              </div>
-              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-                <GapTag />
-                <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
-                  <li>&bull; No public documentation on ClinSphere&apos;s API/integration layer — technical assessment required</li>
-                  <li>&bull; Unknown whether competing CTMS platforms are developing native contract AI</li>
-                </ul>
-              </div>
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-2">Inferences</h3>
+              <ul className="space-y-1.5 text-[11px] text-cream/70">
+                <li>&bull; Mercury would serve as the &quot;missing module&quot; converting manual workflows into AI-powered software within ClinSphere</li>
+                <li>&bull; Creates closed-loop startup: IRB (eReview) → site selection (Total Feasibility) → contract/budget (Mercury) → activation (CTMS)</li>
+                <li>&bull; Mercury&apos;s AI turnaround could substantially outperform the current 5-day manual SLA</li>
+                <li>&bull; Cross-sell to ~3,400 institutional partners as a platform upgrade rather than a separate product</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1946,7 +1937,7 @@ function buildSlideContentMap() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div>
             <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
               <ul className="space-y-1 text-[10px] text-cream/60">
@@ -1954,14 +1945,6 @@ function buildSlideContentMap() {
                 <li>&bull; Same-buyer-persona advantage enables land-and-expand from contracts → budgets → coverage analysis</li>
                 <li>&bull; Medicare Coverage Analysis (H2 2026) is a natural integration point with WCG&apos;s coverage consulting</li>
                 <li>&bull; 2027 Margin Calculation shifts Mercury from compliance/efficiency to financial optimization — commands higher willingness to pay</li>
-              </ul>
-            </div>
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-              <GapTag />
-              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
-                <li>&bull; Unknown whether budget features will be bundled or sold as a separate SKU</li>
-                <li>&bull; Competitive landscape for budget-specific tools (Greenphire, Medidata Rave) is unassessed</li>
-                <li>&bull; Budget product needs its own data corpus — unclear how quickly this can be bootstrapped vs. contracts&apos; ~4,000 issue point foundation</li>
               </ul>
             </div>
           </div>
@@ -2042,20 +2025,13 @@ function buildSlideContentMap() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div>
             <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
               <ul className="space-y-1 text-[10px] text-cream/60">
                 <li>&bull; Internal transformation may be as compelling as external product synergy — Mercury automates WCG&apos;s own operations</li>
                 <li>&bull; Phased approach: copilot (0–6 mo) → autonomous routine handling (6–18 mo) → strategic relationship focus (18+ mo)</li>
                 <li>&bull; WCG currently only uses Microsoft Copilot internally — CEO views this as insufficient</li>
-              </ul>
-            </div>
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-              <GapTag />
-              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
-                <li>&bull; WCG Site Enablement headcount and cost structure unknown — quantifying cost-to-serve reduction requires data room access</li>
-                <li>&bull; Unknown whether automating services would reduce revenue (effort-priced) or increase margins (value-priced)</li>
               </ul>
             </div>
           </div>
@@ -2230,7 +2206,7 @@ function buildSlideContentMap() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div>
             <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
               <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
               <ul className="space-y-1 text-[10px] text-cream/60">
@@ -2238,14 +2214,6 @@ function buildSlideContentMap() {
                 <li>&bull; WCG&apos;s benchmarking brand and industry relationships provide credibility and distribution</li>
                 <li>&bull; More data → better congruency scores → better outcomes → more adoption → more data</li>
                 <li>&bull; Competitors would need equivalent network coverage — a multi-year, capital-intensive effort</li>
-              </ul>
-            </div>
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-              <GapTag />
-              <ul className="space-y-1 text-[10px] text-cream/60 mt-1">
-                <li>&bull; Unknown whether WCG&apos;s manual operations generate structured data ingestible by Mercury, or unstructured formats requiring extraction</li>
-                <li>&bull; Data quality across 3,400+ institutions with varying processes is unverified</li>
-                <li>&bull; Volume threshold for &quot;industry benchmark&quot; status has not been defined</li>
               </ul>
             </div>
           </div>
