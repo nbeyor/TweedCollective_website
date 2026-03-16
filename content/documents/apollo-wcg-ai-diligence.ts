@@ -80,6 +80,7 @@ export const slides: SlideData[] = [
   { id: 'synergy-waves', title: 'Synergy Pathways (3 Waves)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'synergy-waves' } } },
   { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
   { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'sensitivity' } } },
+  { id: 'ai-impact-summary', title: 'AI Opportunity — Quantified Impact', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary' } } },
 ]
 
 export default slides
