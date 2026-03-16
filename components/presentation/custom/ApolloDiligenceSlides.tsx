@@ -130,9 +130,9 @@ function buildSlideContentMap() {
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-6">
             {[
-              { chapter: 'Phase 1 — Business Value & Growth Thesis', slides: ['Apollo\u2019s growth is anchored in a large, embedded, and highly sticky site footprint (90%+ retention) built around EISF; this installed base is a major asset for monetization expansion.', 'The most material AI value creation path is TrialFlow (workflow orchestration), but it is gated by data availability and rights.'], color: 'border-sage' },
+              { chapter: 'Phase 1 — Business Value & Growth Thesis', slides: ['Apollo\u2019s growth is anchored in a large, embedded, and highly sticky site footprint (121% net revenue retention, 92% logo retention) built around EISF (~$1,500/study site); ~20% penetrated with significant runway. SOP lock-in is a key retention driver.', 'The most material AI value creation path is TrialFlow (workflow orchestration), but it is gated by data availability and rights. Near-term: \u201C3 on 3\u201D target of $3M AI ARR from feasibility, Doc QC, and Trial Flow.'], color: 'border-sage' },
               { chapter: 'Phase 2 — AI Initiatives & Disruption Risk', slides: ['Platform displacement risk is low given deep workflow embedding, form design investment, and stickiness; wholesale \u201CAI eats the workflow\u201D is unlikely (massive change management required).', 'Apollo has a broad portfolio of AI initiatives, but the value narrative should be centered on TrialFlow/Flowbot as the scalable orchestration layer rather than disconnected automations.'], color: 'border-purple-500' },
-              { chapter: 'Phase 3 — Team, Assets & Defensibility', slides: ['Apollo\u2019s moat is strongest in channel + relationships + deployment; product is solid but could be better, and data value is constrained by rights/access.', 'The current team has been effective at building and penetrating the network; the next phase (services + monetization expansion) may require different leadership capabilities.'], color: 'border-green-500' },
+              { chapter: 'Phase 3 — Team, Assets & Defensibility', slides: ['Apollo\u2019s moat is strongest in channel + relationships + deployment; product is solid but improvable; data value constrained by a two-category rights framework (audit trail data confirmed for business use; document content requires per-customer consent).', 'Engineering team confirmed: 53 developers, 18 product, 7 data, 85-90% FTE; Belgrade subsidiary with high-tenure Serbian leadership. Operating model maturity higher than initially assessed.'], color: 'border-green-500' },
               { chapter: 'Phase 4 — ROI Quantification & Synergy Roadmap', slides: ['Near-term value comes from WCG as a channel driving Apollo product deployment and revenue uplift; longer-term upside comes from combining Apollo product data with WCG operational data to enable service/ops lift.', 'The next growth phase likely requires evolving from a product-only posture to a service-enabled model, where cross-product operational data informs measurable workflow/ops improvements.'], color: 'border-blue-500' },
             ].map((ch) => (
               <div key={ch.chapter} className={`p-4 bg-white/5 border-l-4 ${ch.color} rounded-r-lg`}>
@@ -162,10 +162,10 @@ function buildSlideContentMap() {
               <TrendingUp className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Drivers of Growth</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• <span className="text-cream/90 font-medium">Connected site network</span> is a massive asset: 65K+ sites, 600+ sponsors, 90+ countries, very low churn (90%+ stickiness); Apollo ~5x ahead of closest competitor</li>
-                <li>• <span className="text-cream/90 font-medium">EISF is the core product</span> from which multi-product upsell expands: eBinders &rarr; SiteLink &rarr; eTMF &rarr; eConsent &rarr; Site Feasibility &rarr; Site Selection</li>
-                <li>• Growth shifted from site-by-site (first 100 took ~6 yrs) to sponsor-driven bulk deployment &mdash; up to 500 sites/week during peaks</li>
-                <li>• Broader push toward digitization + expanding digital footprint &rarr; growing appetite for data across the clinical trial ecosystem</li>
+                <li>• <span className="text-cream/90 font-medium">Connected site network</span> is a massive asset: 65K+ sites (~20% of ~300K annual study site launches), ~400 customers (~300 sites, ~100 sponsors), 90+ countries; 121% net revenue retention, 92% logo retention; Apollo ~5x ahead of closest competitor</li>
+                <li>• <span className="text-cream/90 font-medium">EISF is the core product</span> (~$1,500/study site) from which multi-product upsell expands: eBinders &rarr; SiteLink &rarr; eTMF &rarr; eConsent (~75% YoY growth) &rarr; Site Feasibility (~$500 add-on) &rarr; Site Selection</li>
+                <li>• Growth shifted from site-by-site (first 100 took ~6 yrs) to sponsor-driven bulk deployment &mdash; now 500 sites/week via sponsor deals, continuing to accelerate</li>
+                <li>• Sites write Apollo workflows into their SOPs (auditable items), making switching costly &mdash; key retention driver beyond product quality</li>
                 <li>• Regulatory tailwinds: ICH E6 R3 mandates + FDA eSource guidance favoring electronic workflows</li>
               </ul>
             </div>
@@ -173,10 +173,11 @@ function buildSlideContentMap() {
               <Brain className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">AI Opportunities</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
+                <li>• <span className="text-cream/90 font-medium">2026 &ldquo;3 on 3&rdquo; target:</span> 3 new AI workflows targeting $3M AI ARR (up from $0 in 2025): site feasibility, Doc QC, Trial Flow (POC stage). All priced as independent SKUs.</li>
                 <li>• <span className="text-cream/90 font-medium">TrialFlow / Workflow Orchestration</span> &mdash; the primary AI value creation path; intelligent orchestration of trial operations with task dependencies (like Monday.com/MS Project for trial startup)</li>
                 <li>• <span className="text-yellow-300 font-medium">Key dependency:</span> TrialFlow requires data capture + usable rights (may not have rights to use/operationalize)</li>
-                <li>• Site Feasibility &mdash; automates 500&ndash;1,000 questionnaires/yr per site using knowledge library</li>
-                <li>• Doc QC &mdash; Tesseract OCR for deterministic checks + LLM for semantic checks (blank pages, readability, ordering)</li>
+                <li>• Site Feasibility &mdash; automates ~100 feasibility surveys/month per mid-size site network (~$500/site add-on); dual value: time savings + validated profile for sponsor marketing</li>
+                <li>• Doc QC &mdash; deterministic-first approach (Tesseract OCR for blank pages, readability) + LLM only for semantic checks (title-content matching). Merck co-developing; first SOW imminent; &ldquo;low seven figure&rdquo; opportunity per large sponsor.</li>
                 <li>• Risk-Based Reporting &mdash; structured + unstructured data overlay producing risk heat maps and exec summaries</li>
                 <li>• FlowBot &mdash; AI assistant embedded in eBinders for role-based onboarding</li>
               </ul>
@@ -185,7 +186,7 @@ function buildSlideContentMap() {
               <Target className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Alignment</h3>
               <RatingBadge rating="HIGH" size="lg" />
-              <p className="text-xs text-cream/70 mt-2">Apollo&apos;s AI roadmap directly targets the two largest time sinks in clinical trials — study startup and ongoing monitoring. 2026 strategy organized around a &ldquo;3 on 3&rdquo; goal: 3 new AI workflows targeting $3M AI-specific ARR, up from $0 in 2025. AI priced as independent SKUs, not bundled.</p>
+              <p className="text-xs text-cream/70 mt-2">Apollo&apos;s AI roadmap directly targets the two largest time sinks in clinical trials — study startup and ongoing monitoring. 2026 strategy organized around a &ldquo;3 on 3&rdquo; goal: 3 new AI workflows targeting $3M AI-specific ARR, up from $0 in 2025. AI priced as independent SKUs, not bundled. All AI via AWS Bedrock with Claude Sonnet 3.</p>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <AlertTriangle className="w-6 h-6 text-yellow-400 mb-2" />
@@ -195,7 +196,7 @@ function buildSlideContentMap() {
                 <li>• Regulatory push toward decentralized trials and remote monitoring post-COVID</li>
                 <li>• Veeva SiteVault&apos;s free eISF creating pricing pressure on site-facing product</li>
                 <li>• PE consolidation across clinical trial technology (e.g., WCG&apos;s own LGP/Arsenal/Novo recapitalization)</li>
-                <li>• Apollo TA mix &asymp; 50% oncology, TA-agnostic infrastructure — site selection may introduce TA-specific patient data</li>
+                <li>• Apollo TA mix mirrors NIH distribution (~50% oncology, 50% everything else) — &ldquo;infrastructure&rdquo; play, not TA-specific. Site selection positioned as &ldquo;part of the data sets&rdquo; sponsors consider, not a complete solution.</li>
               </ul>
             </div>
           </div>
@@ -216,14 +217,18 @@ function buildSlideContentMap() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Total Funding', val: '$116M', sub: 'Seed–C-1' },
-                  { label: 'Total Customers', val: '~400', sub: '' },
-                  { label: 'Avg Rev / Study Site', val: '~$1,500', sub: '' },
-                  { label: 'Feasibility Add-on', val: '~$500', sub: '' },
-                  { label: 'AI Revenue Entering 2026', val: '$0', sub: '→ $3M target' },
-                  { label: 'eConsent YoY Growth', val: '~75%', sub: '' },
-                  { label: 'Monthly Workflows', val: '7.2M', sub: 'Current' },
-                  { label: 'Remote Monitoring', val: '5.8M/mo', sub: 'Current' },
+                  { label: 'Net Revenue Retention', val: '121%', sub: 'Confirmed [T1]' },
+                  { label: 'Logo Retention', val: '92%', sub: 'Confirmed [T1]' },
+                  { label: 'Total Customers', val: '~400', sub: '~300 sites, ~100 sponsors' },
+                  { label: 'Avg Rev / Study Site', val: '~$1,500', sub: 'Core eISF [T1]' },
+                  { label: 'Market Penetration', val: '~20%', sub: '65K of ~300K sites/yr' },
+                  { label: 'Activation Velocity', val: '500/wk', sub: 'Via sponsor deals' },
+                  { label: 'AI Revenue Entering 2026', val: '$0', sub: '→ $3M "3 on 3" target' },
+                  { label: 'eConsent YoY Growth', val: '~75%', sub: '~2 yrs old, hyper growth' },
+                  { label: 'Feasibility Add-on', val: '~$500/site', sub: 'On top of $1,500 eISF' },
+                  { label: 'Doc QC (Large Sponsor)', val: 'Low 7 fig.', sub: '10-15% uplift on ~$10M' },
+                  { label: 'Documents in Platform', val: '50M', sub: '+20K/day ingest' },
+                  { label: 'AWS Spend', val: '~$1M/yr', sub: 'Confirmed [T2]' },
                 ].map((m) => (
                   <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
                     <div className="text-sm font-serif text-sage-300">{m.val}</div>
@@ -236,11 +241,11 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
               <div className="space-y-3">
                 {[
-                  'Apollo is likely near saturation in EISF penetration — growth is not primarily driven by additional site network expansion',
+                  'Apollo is ~20% penetrated (65K of ~300K study sites launched/yr) — significant runway remains, but growth is shifting from site-by-site to sponsor-driven bulk deployment',
                   'Apollo must monetize the footprint in a new way: bundles, AI features, and/or services that stitch products together to expand ARPU',
                   'Trial operations / stitching is the center of the growth thesis — evolution toward a service-enabled model',
-                  'Retention must remain high as the foundation for monetization expansion (90%+ stickiness must hold against Veeva\u2019s free SiteVault)',
-                  'AI features must prove value: "3 on 3" target of $3M AI ARR from three new SKUs, up from $0',
+                  'Retention is strong: 121% net revenue retention, 92% logo retention. Sites write Apollo workflows into SOPs (auditable items), making switching costly. Must hold against Veeva\u2019s free SiteVault.',
+                  'AI features must prove value: "3 on 3" target — 3 new AI workflows (site feasibility, Doc QC, Trial Flow) targeting $3M AI ARR, up from $0',
                   'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes',
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
@@ -405,8 +410,8 @@ function buildSlideContentMap() {
               <Rocket className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-green-300 mb-2">Platform Flywheel Accelerates</h3>
               <div className="space-y-3 text-xs text-cream/70">
-                <div><span className="text-cream/50 font-medium">What becomes true:</span> AI workflows drive measurable startup time reduction; evolution toward service-enabled model; &ldquo;3 on 3&rdquo; AI revenue target exceeded; multi-product bundles become standard commercial motion</div>
-                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Evidence of customers using multiple Apollo products + operational data to drive service/workflow changes; AI adoption &gt;30% in year one; eConsent continues 75%+ growth; site churn &lt;5%</div>
+                <div><span className="text-cream/50 font-medium">What becomes true:</span> AI workflows drive measurable startup time reduction; evolution toward service-enabled model; &ldquo;3 on 3&rdquo; AI revenue target exceeded ($3M+ AI ARR); multi-product bundles become standard. ~20% penetration accelerates toward 30%+.</div>
+                <div><span className="text-cream/50 font-medium">Leading indicators:</span> Evidence of customers using multiple Apollo products + operational data to drive service/workflow changes; AI adoption &gt;30% in year one; eConsent continues 75%+ growth; net retention stays above 121%; 45% faster second-study effect drives referrals</div>
                 <div><span className="text-cream/50 font-medium">Implications:</span> Apollo becomes system-of-record for trial operations; commands premium pricing via service-enabled model</div>
               </div>
             </div>
@@ -445,7 +450,7 @@ function buildSlideContentMap() {
                 <h3 className="text-sm font-semibold text-cream">Mode 1: Platform Displacement</h3>
                 <RatingBadge rating="LOW" />
               </div>
-              <p className="text-xs text-cream/70">&ldquo;A better Apollo&rdquo; &mdash; platform displacement risk is low given strong product, deep deployment, and high stickiness (90%+ retention). Deep form/workflow design investment creates significant change management barriers for sites.</p>
+              <p className="text-xs text-cream/70">&ldquo;A better Apollo&rdquo; &mdash; platform displacement risk is low given strong product, deep deployment, and high stickiness (121% net revenue retention, 92% logo retention). Sites write Apollo workflows into SOPs (auditable items), creating significant change management barriers.</p>
             </div>
             <div className="p-5 bg-white/5 border border-cream/10 rounded-xl">
               <Brain className="w-6 h-6 text-purple-400 mb-2" />
@@ -492,6 +497,13 @@ function buildSlideContentMap() {
                 items: [
                   { name: 'Veeva SiteVault', rtw: 'Free eISF targeting Apollo\u2019s core market; monetize via SiteVault Enterprise + sponsor-side Vault', must: 'Most direct threat — strategy: free base + premium upsell' },
                   { name: 'Medidata (Dassault)', rtw: 'Rave platform has broad clinical trial capabilities', must: 'Could extend into site enablement via acquisition or build' },
+                ]
+              },
+              {
+                mode: 'Data / Analytics',
+                color: 'border-blue-500/40',
+                items: [
+                  { name: 'TriNetX (patient population/RWD)', rtw: 'Strong on patient-specific population data and real-world data for site selection', must: 'Apollo acknowledges not as strong on patient data. Apollo\u2019s strength is operational/workflow data exhaust + feasibility survey data. Site selection is \u201Cnot a complete solution\u201D — positioned as one input into sponsor scoring matrix, API-first for integration.' },
                 ]
               },
               {
@@ -680,10 +692,10 @@ function buildSlideContentMap() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {[
-              { asset: 'Product', score: 60, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'MEDIUM', bullets: ['Six products spanning site + sponsor workflows, all built natively', 'Strong but could be better; EISF is the core from which multi-product upsell expands', 'Three AI-native products in development; unified data model across all products'] },
-              { asset: 'Data', score: 25, donutColor: 'rgba(239, 68, 68, 0.7)', dotColor: 'red' as const, rating: 'LOW', bullets: ['Data is created on-platform but rights/access unclear; hard to operationalize', 'Milestone-based audit trail data (rights to use partially confirmed)', 'Data quality: 50-60% sponsor side very clean, 15-20% good from sites; two-tier data rights are the key question'] },
-              { asset: 'Channel', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['Strong penetration and deployment; dual go-to-market: site-up + sponsor-down', '~400 total customers; sponsor deals driving 500 sites/week peaks', 'Deployed in every Merck/Pfizer study, every FSO IQVIA study'] },
-              { asset: 'Relationships', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['Merck, Pfizer, IQVIA as named anchor customers', 'Merck co-developing Doc QC (5,000 hrs/month problem)', 'Existing WCG partnership; eConsent has completed IRB integrations'] },
+              { asset: 'Product', score: 60, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'MEDIUM', bullets: ['Six products spanning site + sponsor workflows, all built natively', 'EISF core (~$1,500/site) + eConsent (~75% YoY growth) + Feasibility (~$500 add-on)', '45% faster on second study — platform learning effect. Three AI SKUs in development.'] },
+              { asset: 'Data', score: 35, donutColor: 'rgba(250, 204, 21, 0.7)', dotColor: 'yellow' as const, rating: 'LOW-MEDIUM', bullets: ['50M production docs, 20K/day ingest; ~75% of data is clean (40K sponsor-provisioned)', 'Two-category rights: audit trail/milestone data confirmed for business use; document content requires per-customer consent', 'Opt-in features (Doc QC) create consent-by-usage pathway. Not strong on patient-level data.'] },
+              { asset: 'Channel', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['~20% penetrated (65K of ~300K study sites/yr); 121% net retention, 92% logo', '~400 total customers (~300 sites, ~100 sponsors); sponsor side drives majority of revenue', 'Now 500 sites/week activation via sponsors. SOP lock-in makes switching costly.'] },
+              { asset: 'Relationships', score: 85, donutColor: 'rgba(74, 222, 128, 0.7)', dotColor: 'green' as const, rating: 'HIGH', bullets: ['Deployed in every Merck/Pfizer study, every FSO IQVIA study', '3 co-dev partners: Merck (Doc QC), NHS (TrialFlow), Lily (SiteLink + feasibility)', 'WCG IRB integrations already in production — not a future aspiration'] },
             ].map((a) => {
               const donut = assetDonut(a.score, a.donutColor)
               return (
@@ -725,8 +737,8 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-cream mb-2">Site-Side Products (3)</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>• <span className="text-cream/90 font-medium">eBinders:</span> Structured document workflow with categorization, metadata, signature workflows. &quot;Box.net purpose-built for clinical research.&quot;</li>
-                <li>• <span className="text-cream/90 font-medium">eConsent:</span> Document editing, preview, routing, audit trail. &quot;DocuSign for clinical research.&quot; ~75% YoY growth, only ~2 years old.</li>
-                <li>• <span className="text-cream/90 font-medium">Site Feasibility:</span> AI-native product. Automates feasibility questionnaire completion using knowledge library. Sites receive 500-1,000 questionnaires/year.</li>
+                <li>• <span className="text-cream/90 font-medium">eConsent:</span> Document editing, preview, routing, audit trail. &quot;DocuSign for clinical research.&quot; ~75% YoY growth, only ~2 years old — &ldquo;hyper growth stage.&rdquo;</li>
+                <li>• <span className="text-cream/90 font-medium">Site Feasibility:</span> AI-native product (~$500/site add-on). Mid-size site responds to ~100 feasibility surveys/month. Dual value: time savings + validated profile for sponsor marketing.</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -744,7 +756,8 @@ function buildSlideContentMap() {
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>• Site-first design philosophy: core architecture provides workflow value to sites, with data as a secondary output of doing the work</li>
                 <li>• All products built natively with own e-signature, security, and document markup — no dependency on DocuSign, Box, or third parties</li>
-                <li>• #1 ranked clinical trial technology for 6 consecutive years; created the eISF category; ~5x ahead of closest competitor</li>
+                <li>• #1 ranked clinical trial technology for 6 consecutive years; created the eISF category; ~5x ahead of closest competitor in data gathered from site applications</li>
+                <li>• <span className="text-green-300 font-medium">Platform learning effect:</span> sites using Apollo for their second study add content 45% faster (~50 days faster). Compounding value from repeated use.</li>
                 <li>• Unified data model — sites and sponsors see the same data with different views</li>
               </ul>
             </div>
@@ -783,35 +796,42 @@ function buildSlideContentMap() {
               <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-cream/90">Audit trail / milestone data (structured)</td>
-                  <td className="p-2">Yes — on-platform</td>
-                  <td className="p-2">High — 50-60% sponsor side very clean; 15-20% good from sites</td>
-                  <td className="p-2 text-green-300">Business rights confirmed</td>
+                  <td className="p-2"><span className="text-green-300">Proprietary</span> — on-platform workflow data</td>
+                  <td className="p-2">High — ~75% clean overall. 40K sponsor-provisioned sites = very clean; of 25K site-originated, ~half clean, ~half messy (legacy folder structures)</td>
+                  <td className="p-2 text-green-300">Business rights confirmed [T1]. Includes milestone events (first patient in, consent completions).</td>
                   <td className="p-2 text-red-300 font-medium">Very High</td>
                 </tr>
                 <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">Document content (50M+ docs, 20K added/day)</td>
-                  <td className="p-2">Yes — stored on platform</td>
-                  <td className="p-2">Medium — mix of structured and unstructured</td>
-                  <td className="p-2 text-yellow-300">Requires per-customer consent</td>
+                  <td className="p-2 font-medium text-cream/90">Document content (50M production docs, 20K/day; 1.6B incl. backups)</td>
+                  <td className="p-2"><span className="text-green-300">Proprietary</span> — stored on platform</td>
+                  <td className="p-2">Medium — mix of structured and unstructured. 85% of code is for creating, circulating, version-controlling content.</td>
+                  <td className="p-2 text-yellow-300">Does NOT have rights to scrape through LLM pipelines. Must get customer-by-customer consent. However, opt-in features (Doc QC) create consent-by-usage model.</td>
                   <td className="p-2 text-red-300 font-medium">Very High</td>
                 </tr>
                 <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">Site performance signals (enrollment, startup, compliance)</td>
-                  <td className="p-2">Yes — derived from audit trail</td>
-                  <td className="p-2">Medium-High — cross-sponsor view unique</td>
-                  <td className="p-2 text-yellow-300">TBD / not clearly covered under business use</td>
+                  <td className="p-2 font-medium text-cream/90">Feasibility survey responses</td>
+                  <td className="p-2"><span className="text-green-300">Proprietary</span> — sites submit into database for sponsor promotion</td>
+                  <td className="p-2">High — structured, self-reported by sites</td>
+                  <td className="p-2 text-green-300">Sites voluntarily submit for sponsor visibility</td>
                   <td className="p-2 text-red-300 font-medium">Very High</td>
                 </tr>
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-cream/90">Flow Records (master metadata store)</td>
-                  <td className="p-2">Yes — SQL store</td>
+                  <td className="p-2"><span className="text-green-300">Proprietary</span> — SQL store</td>
                   <td className="p-2">High — structured milestones, especially sponsor-generated</td>
                   <td className="p-2 text-green-300">Internal platform asset</td>
                   <td className="p-2 text-red-300 font-medium">Very High</td>
                 </tr>
                 <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">Third-party data (Sightline partnership)</td>
+                  <td className="p-2 text-yellow-300">Third-party</td>
+                  <td className="p-2">Medium — site selection enrichment data</td>
+                  <td className="p-2 text-yellow-300">Partnership-dependent</td>
+                  <td className="p-2 text-yellow-300">Moderate</td>
+                </tr>
+                <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-cream/90">eConsent interaction data</td>
-                  <td className="p-2">Yes</td>
+                  <td className="p-2"><span className="text-green-300">Proprietary</span></td>
                   <td className="p-2">Medium — consent completion rates, engagement</td>
                   <td className="p-2 text-yellow-300">HIPAA/GDPR constrained</td>
                   <td className="p-2 text-yellow-300">Moderate</td>
@@ -824,22 +844,23 @@ function buildSlideContentMap() {
               <Database className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Data Architecture</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• <span className="text-cream/90 font-medium">MongoDB:</span> Primary data store for core product data</li>
-                <li>• <span className="text-cream/90 font-medium">SQL:</span> SiteLink and Flow Records (master metadata)</li>
-                <li>• <span className="text-cream/90 font-medium">S3:</span> 50M+ document storage</li>
-                <li>• <span className="text-cream/90 font-medium">Three AWS regions:</span> US, EU, Australia (same codebase)</li>
-                <li>• <span className="text-cream/90 font-medium">Tamer:</span> Data mastering tool for completeness and quality</li>
-                <li>• <span className="text-cream/90 font-medium">Kafka:</span> Underway for improved pipeline speed, resilience, and cost</li>
-                <li>• <span className="text-cream/90 font-medium">Data team:</span> 7 people under Philip</li>
+                <li>• <span className="text-cream/90 font-medium">MongoDB:</span> eBinders, eConsent (primary data stores)</li>
+                <li>• <span className="text-cream/90 font-medium">PostgreSQL/RDS:</span> SiteLink 2 and newer products</li>
+                <li>• <span className="text-cream/90 font-medium">S3:</span> 50M production docs (1.6B incl. backups), 20K new docs/day</li>
+                <li>• <span className="text-cream/90 font-medium">Snowflake:</span> Data warehouse (US East) with Fivetran + dbt for ETL; 15-min refresh cycle</li>
+                <li>• <span className="text-cream/90 font-medium">Tamr:</span> Data mastering (just starting — site and study data)</li>
+                <li>• <span className="text-cream/90 font-medium">Kafka:</span> Underway (4-5 mo) for real-time streaming; replaces RabbitMQ; reduces Snowflake compute costs</li>
+                <li>• <span className="text-cream/90 font-medium">Data team:</span> 7 people under Philip (US-based)</li>
+                <li>• <span className="text-cream/90 font-medium">Note:</span> Apollo is NOT strong on patient-level population data (TriNetX/similar are better). ~25% of customers use print-to-file from EMR, but Apollo doesn&apos;t use this data yet.</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Lock className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Two-Tier Data Rights</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• <span className="text-green-300 font-medium">Tier 1 — Audit trail / milestone data:</span> AutoTrail milestone data appears confirmed for business use. High quality and key differentiator.</li>
-                <li>• <span className="text-yellow-300 font-medium">Tier 2 — Site performance data:</span> Rights TBD / not clearly covered under business use. This is the highest-value rights question.</li>
-                <li>• <span className="text-yellow-300 font-medium">Tier 3 — Document content:</span> Apollo does NOT have rights to scrape/analyze without customer consent. Access obtained per-feature when customers opt in (e.g., Doc QC).</li>
+                <li>• <span className="text-green-300 font-medium">Category 1 — Audit trail / milestone data:</span> Apollo has the right to use for business purposes [confirmed T1 — Ryan Jones]. Includes milestone-based events (first patient in, consent completions). This is where most AI energy has been going.</li>
+                <li>• <span className="text-yellow-300 font-medium">Category 2 — Document content:</span> Apollo has all the documents but does NOT have rights to scrape them through LLM pipelines. Must get customer-by-customer consent. Not actively pursuing broad access yet.</li>
+                <li>• <span className="text-sage-300 font-medium">Consent-by-usage pathway:</span> For opt-in features like Doc QC, users give consent by enabling the feature — creating a consent-by-usage model that incrementally builds data access rights.</li>
               </ul>
             </div>
           </div>
@@ -858,16 +879,16 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-cream mb-2">Site-Up Motion</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
                 <li>• Started the business selling to sites only. First 100 customers were sites (took ~6 years).</li>
-                <li>• Currently ~400 total customers.</li>
+                <li>• Currently ~400 total customers: ~300 site networks, ~100 sponsors. 25% of customer count (sponsors) drives majority of revenue.</li>
                 <li>• In early days, activating a single site customer added ~50 study sites every couple of weeks.</li>
-                <li>• Site Feasibility product seeded free to drive rapid adoption across site user base.</li>
+                <li>• 121% net revenue retention, 92% logo retention. Sites write Apollo workflows into SOPs (auditable items) — switching is costly.</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Zap className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Sponsor-Down Motion</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• Sponsor adoption creates exponential site activation — during peak periods, 500 sites activated per week via sponsor deals.</li>
+                <li>• Sponsor adoption creates exponential site activation — now turning on 500 sites per week via sponsor deals, and this continues to accelerate. ~20% market penetration (65K of ~300K study sites launched/yr).</li>
                 <li>• Predictable pattern: ClinOps person at sponsor encounters Apollo at a site, endorses internally, sponsor buys SiteLink.</li>
                 <li>• When a sponsor deploys SiteLink, all sites in that study are activated on Apollo — network-driven distribution.</li>
               </ul>
@@ -907,12 +928,14 @@ function buildSlideContentMap() {
           </div>
           <div className="space-y-3 mt-4">
             {[
-              { name: 'Merck', detail: 'Deployed in every study Merck launches. Spending 5,000 hrs/month on manual document QC. Actively co-developing Doc QC use case with Apollo — wants site-level deployment to catch issues before submission, eliminating the review-return cycle.', tag: 'Anchor' },
-              { name: 'Pfizer', detail: 'Deployed in every study Pfizer launches. Apollo supported Pfizer\'s COVID-19 vaccine clinical trials.', tag: 'Anchor' },
+              { name: 'Merck', detail: 'Deployed in every study Merck launches. Team of 20 spending 5,000 hrs/month on manual document QC. Co-developing Doc QC AI — first SOW imminent. Apollo believes they can eliminate 50%+ of QC burden. \u201CLow seven figure\u201D opportunity (10-15% uplift on ~$10M relationship).', tag: 'Anchor + Co-Dev' },
+              { name: 'Pfizer', detail: 'Deployed in every study Pfizer launches. Apollo supported Pfizer\u2019s COVID-19 vaccine clinical trials.', tag: 'Anchor' },
               { name: 'IQVIA', detail: 'Deployed in every FSO (Full-Service Outsourced) study IQVIA launches.', tag: 'Anchor' },
-              { name: 'WCG Clinical (Partner since Nov 2023)', detail: 'Integration between Apollo eBinders and WCG ClinTech/ClinSphere for IRB, training, and safety letter document flow. eConsent product has completed IRB integrations — consent forms flow from IRB, creating intersection with WCG\'s IRB business.', tag: 'Strategic' },
+              { name: 'NHS (UK)', detail: 'Co-developing Trial Flow (workflow automation). Actively requesting Apollo replace legacy systems as main system of record.', tag: 'Co-Dev' },
+              { name: 'Lily', detail: 'Helping build out SiteLink and feasibility capabilities. Active co-development partner.', tag: 'Co-Dev' },
+              { name: 'WCG Clinical (Partner since Nov 2023)', detail: 'Apollo has already completed several IRB integrations with WCG because that\u2019s where consent forms flow from — this is an active, in-production integration, not a future aspiration. eConsent \u2194 IRB document flow is live.', tag: 'Strategic' },
               { name: 'Insight Partners (Lead Investor)', detail: 'Led Series C ($80M) and C-1 ($27M). Significant board influence likely.', tag: 'Financial' },
-              { name: 'Technology Partners', detail: 'Greenphire, TruLab, Yunu, WCG Velos. EMR integration via "print to file" (~25% of customers). Currently point-to-point integrations; working with a partner to build middleware bus for out-of-box integrations.', tag: 'Integration' },
+              { name: 'Technology Partners', detail: 'Greenphire, TruLab, Yunu, WCG Velos. Sightline (site selection data enrichment). EMR integration via \u201Cprint to file\u201D (~25% of customers). Currently point-to-point; middleware bus project underway.', tag: 'Integration' },
             ].map((rel) => (
               <div key={rel.name} className="p-4 bg-white/5 border border-cream/10 rounded-xl flex items-start gap-4">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-sage-300 bg-sage-500/10 px-2 py-1 rounded flex-shrink-0">{rel.tag}</span>
@@ -924,7 +947,7 @@ function buildSlideContentMap() {
             ))}
           </div>
           <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
-            <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Durability:</span> Named anchor customers (Merck, Pfizer, IQVIA) represent deep operational embedding — Apollo is infrastructure for their clinical operations, not a discretionary tool. Merck co-development relationship suggests design partner influence on roadmap. Relationships are non-exclusive.</p>
+            <p className="text-xs text-cream/70"><span className="text-green-300 font-medium">Durability:</span> Named anchor customers (Merck, Pfizer, IQVIA) represent deep operational embedding — Apollo is infrastructure for their clinical operations, not a discretionary tool. Three active co-development partnerships (NHS, Lily, Merck) demonstrate customer-initiated AI development — a strong product-market fit signal. Customer-initiated development (Merck asking Apollo to build Doc QC) is particularly powerful. WCG IRB integrations already in production.</p>
           </div>
         </div>
   )
@@ -944,10 +967,10 @@ function buildSlideContentMap() {
           </div>
           <div className="space-y-3">
             {[
-              { dim: 'Execution', rating: 'MEDIUM-HIGH', why: 'CEO + CTO are co-founders with ~10 years building the network. CTO Andres Garcia leads OCTO for innovation POCs. COO Shankar Jagannathan owns product + engineering execution.' },
-              { dim: 'Engineering Leadership', rating: 'MEDIUM', why: 'COO Shankar + VP Engineering Kapil Bage (~1.5 yrs) + VP-level domain leads. Apparent over-investment in engineering and unclear efficiency relative to product scope.' },
-              { dim: 'Product Team', rating: 'MEDIUM-HIGH', why: '18 PMs total. Deliberately diminishing UX role as AI tools (Vercel) used for rapid prototyping by PMs directly.' },
-              { dim: 'Regulatory & Compliance', rating: 'HIGH', why: '~6 person regulatory team works closely with QA for GxP compliance. Uses Ketrix for compliance management. Each feature/unit test tagged for 21 CFR compliance.' },
+              { dim: 'Execution', rating: 'MEDIUM-HIGH', why: 'CEO + CTO are co-founders with ~10 years building the network. CTO Andres Garcia leads \u201COcto Office\u201D for innovation POCs. COO Shankar Jagannathan owns product + engineering execution.' },
+              { dim: 'Engineering Leadership', rating: 'MEDIUM', why: 'COO Shankar + VP Engineering Kapil (~1.5 yrs, deep data/AI background) + VP-level domain leads (Sri, Jelena). Belgrade subsidiary with high-tenure Serbian leadership (7-8 years). 85-90% FTE, 10-15% contractors (3 firms).' },
+              { dim: 'Product Team', rating: 'MEDIUM-HIGH', why: '18 PMs total. Deliberately diminishing UX role as AI tools (Vercel) used for rapid prototyping by PMs directly. 3 active co-development partners (NHS, Lily, Merck).' },
+              { dim: 'Regulatory & Compliance', rating: 'HIGH', why: '~6 person regulatory team works closely with QA for GxP compliance. Uses Ketrix for compliance management (integrated with Jira). Each feature/unit test tagged for 21 CFR compliance.' },
               { dim: 'Overall Headcount', rating: 'LOW-MEDIUM', why: '~115 total: ~91 engineering (53 developers, 7 data, DevOps CoE, QA), ~18 product, ~6 regulatory. Engineering scale appears high relative to product scope — feels over-resourced for largely document-management-like functionality.' },
             ].map((row) => (
               <div key={row.dim} className="p-4 bg-white/5 border border-cream/10 rounded-xl flex items-start gap-4">
@@ -981,14 +1004,15 @@ function buildSlideContentMap() {
               <tbody className="text-cream/70">
                 {[
                   ['Ryan Jones', 'CEO / Co-Founder', 'Company strategy, vision, customer relationships', 'Co-founder, ~10 years'],
-                  ['Andres Garcia', 'CTO / Co-Founder', 'OCTO — bleeding edge technology, innovation POCs, AI architecture', 'Co-founder, ~10 years. Leads small team focused on emerging tech. Hands off productionized work.'],
+                  ['Andres Garcia', 'CTO / Co-Founder', 'Leads \u201COcto Office\u201D — bleeding-edge innovation/POC incubation function', 'Co-founder, ~10 years. When POC is viable, a new scrum team is raised with standard governance.'],
                   ['Shankar Jagannathan', 'COO', 'Product + Engineering execution, operational cadence', 'Recruited; owns the build-and-ship engine. Previously worked with Sri.'],
-                  ['Kapil Bage', 'VP Engineering', 'Engineering operations, AI-augmented SDLC, developer tooling', '~1.5 years. Deep data/AI background. Drove AIDLC adoption.'],
+                  ['Kapil Bage', 'VP Engineering', 'Engineering operations, AI-augmented SDLC, developer tooling, data-side experience', '~1.5 years. Led significant engineering ops changes including AI adoption.'],
                   ['Sri', 'VP Platform + Sponsor Products', 'Platform architecture, sponsor-side product engineering', 'Deep enterprise customer experience. Previously worked with Shankar.'],
-                  ['Jelena', 'VP Site Products + Serbia Ops', 'Site-side product engineering, Serbia team management', 'Manages all Serbian engineering. Harmonizes roadmaps across products.'],
-                  ['Philip', 'Data Team Lead', 'Data mastering, data stores, API exposure', 'US-based. 7-person team managing Tamer, Flow Records, data pipeline.'],
-                  ['Nicola', 'DevOps Lead', 'Centralized DevOps CoE', 'Runs DevOps as a center of excellence.'],
-                  ['Mariana', 'QA Lead', 'Quality assurance, regulatory compliance testing', 'Works closely with regulatory team. Each feature/unit test tagged for 21 CFR compliance.'],
+                  ['Jelena', 'VP Site Products + Serbia Ops', 'Site-side product engineering + manages entire Serbian team', 'Strong process/operations standardization role. Harmonizes roadmaps across products.'],
+                  ['Philip', 'Data Team Lead', 'Data mastering, data stores, API exposure', 'US-based. 7-person team managing Tamr, Flow Records, data pipeline.'],
+                  ['Rosco', 'Engineering Team Lead (Serbia)', 'Engineering execution in Belgrade subsidiary', 'Serbian leadership has high tenure (7-8 years with company).'],
+                  ['Nicola', 'DevOps Lead', 'Centralized DevOps CoE, shared across all scrum teams', 'Runs DevOps as a center of excellence.'],
+                  ['Mariana', 'QA + Compliance Lead', 'Quality assurance, regulatory compliance testing', 'Works closely with 6-person regulatory team via Ketrix tool.'],
                 ].map((row, i) => (
                   <tr key={i} className="border-b border-cream/5">
                     <td className="p-2 font-medium text-cream/90">{row[0]}</td>
@@ -1003,11 +1027,13 @@ function buildSlideContentMap() {
           <div className="p-3 rounded-lg bg-sage-500/10 border border-sage-500/20">
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Organizational Layers</div>
             <ul className="text-xs text-cream/70 space-y-1">
-              <li>• Ryan + Andres (founders) &rarr; Strategic direction + innovation</li>
+              <li>• Ryan + Andres (founders) &rarr; Strategic direction + innovation (Octo Office)</li>
               <li>• Shankar &rarr; Operational ownership of product + engineering</li>
               <li>• Kapil, Sri, Jelena &rarr; VP-level domain leads</li>
-              <li>• Philip, Nicola, Mariana &rarr; Functional leads (data, DevOps, QA)</li>
-              <li>• ~6 person regulatory team &rarr; Cross-cutting compliance function</li>
+              <li>• Philip, Rosco, Nicola, Mariana &rarr; Functional leads (data, engineering, DevOps, QA)</li>
+              <li>• ~6 person regulatory team &rarr; Cross-cutting compliance function (Ketrix)</li>
+              <li>• Scrum teams organized by animal names (e.g., Bear = eBinders, Shark = SiteLink). Platform team operates with &ldquo;not the bottleneck&rdquo; principle.</li>
+              <li>• Contractors: 3 firms &mdash; Nordic (Serbia), Spark (US), CTS Tech (India). 85-90% FTE, 10-15% contractors.</li>
             </ul>
           </div>
         </div>
@@ -1053,11 +1079,11 @@ function buildSlideContentMap() {
               <Users className="w-5 h-5 text-taupe-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Workforce Composition</h3>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>• 85-90% captive employees (full-time)</li>
-                <li>• 10-15% contractors</li>
-                <li>• Deliberately increasing contractor capacity for flexibility</li>
-                <li>• Majority of engineering is Serbia-based (managed by Jelena)</li>
-                <li>• Data team (Philip) and some leadership are US-based</li>
+                <li>• 85-90% full-time Florence employees</li>
+                <li>• 10-15% contractors from 3 firms: Nordic (Serbia), Spark (US), CTS Tech (India)</li>
+                <li>• Most engineering/product in Serbia (Belgrade subsidiary); Serbian leadership has high tenure (7-8 years)</li>
+                <li>• ~10 US-based (mostly data team under Philip + a few developers)</li>
+                <li>• Offices: Atlanta (HQ) + Belgrade; all others remote</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1081,12 +1107,12 @@ function buildSlideContentMap() {
           </div>
           <div className="space-y-4 mt-6">
             {[
-              { dim: 'SDLC Process + AI-Augmented Development', score: 3, label: 'Developing', obs: 'Beta → GA lifecycle for established products; LA process with ~10 test customers for new products. "AIDLC" concept using Claude, Cursor, Vercel. Kapil drove adoption. Moving CI/CD to GitHub Actions.' },
-              { dim: 'Product', score: 3, label: 'Developing', obs: 'Pendo for feature usage tracking. Tableau exposed through services team. AG Grid for in-product charts/tables. Data team builds feeds for product consumption.' },
-              { dim: 'Engineering', score: 3, label: 'Developing', obs: 'Jellyfish for velocity and story point tracking. Used for engineering performance management.' },
-              { dim: 'DevOps / Infrastructure', score: 3, label: 'Developing', obs: 'Centralized DevOps CoE under Nicola. 100% AWS. Moving from Orchis to AWS Step Functions (completing this quarter). CloudWatch + New Relic for monitoring. RabbitMQ / Amazon MQ for messaging.' },
-              { dim: 'Data Infrastructure', score: 2, label: 'Early', obs: 'Vision exists but implementation not in place. MongoDB primary, SQL for SiteLink/Flow Records. Tamer for data mastering. Kafka underway. Data quality: 50-60% very clean (sponsor), 15-20% good (sites).' },
-              { dim: 'Security & Compliance', score: 4, label: 'Strong', obs: 'SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. Dedicated regulatory team + QA partnership. Ketrix for compliance management.' },
+              { dim: 'SDLC Process + AI-Augmented Development', score: 4, label: 'Strong', obs: 'Fully CI/CD via GitHub Actions (migrating eBinders from Semaphore). 4 environments: build → QA → UAT → prod; adding performance + pre-prod in Q2. API test coverage ~90%; app automation ~70%. Feature flags via Schematic. Blue-green and canary deployments. Beta → GA for established; LA with ~10 customers for new. AIDLC with Claude Code (primary), Copilot, Cursor.' },
+              { dim: 'Product', score: 4, label: 'Strong', obs: 'Requirements centralized in Aha (CS, support, CABs, ideas board). CABs twice/yr — summer (sponsor-focused), fall (combined at customer show). Biweekly stakeholder calls. Pendo for feature usage. 3 co-development partners: NHS (TrialFlow), Lily (SiteLink + feasibility), Merck (Doc QC AI).' },
+              { dim: 'Engineering', score: 4, label: 'Strong', obs: 'Jellyfish for velocity, DORA metrics, AI adoption tracking. Story pointing for sprint measurement. Scrum teams by animal names (Bear = eBinders, Shark = SiteLink). When POC viable, new scrum team raised with standard governance.' },
+              { dim: 'DevOps / Infrastructure', score: 4, label: 'Strong', obs: 'Centralized DevOps CoE under Nicola. 100% AWS; 51 microservices on ECS Fargate. Orcus → AWS Step Functions (end of Q1). RabbitMQ → Kafka. New Relic APM + CloudWatch + CloudTrail. PagerDuty for incidents. Terraform for IaC. 99.95% uptime target. Auto-scaling in place.' },
+              { dim: 'Data Infrastructure', score: 3, label: 'Developing', obs: 'MongoDB + PostgreSQL/RDS. Snowflake (US East) with Fivetran + dbt; 15-min refresh cycle. Tamr for data mastering (just starting). Kafka migration underway (4-5 mo) for real-time streaming. Data quality: ~75% clean, ~25% messy. 50M production docs, 20K/day ingest. Neo4j in POC only.' },
+              { dim: 'Security & Compliance', score: 4, label: 'Strong', obs: 'SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. 6-person regulatory team + QA partnership. Ketrix for compliance (integrated with Jira). Wiz for cloud security. Mimecast for web security. Auth0 for auth.' },
             ].map((row) => (
               <div key={row.dim} className="flex items-center gap-4">
                 <div className="w-48 flex-shrink-0">
@@ -1145,7 +1171,7 @@ function buildSlideContentMap() {
             </div>
           </div>
           <div className="p-3 rounded-xl bg-gold/10 border-l-4 border-gold/50">
-            <p className="text-xs text-cream/70"><span className="text-gold font-medium">Design Principle:</span> Human-in-the-loop (HITL) is a firm design principle for all GxP-regulated workflows. Deterministic processing first (Tesseract OCR), LLM only when semantic understanding required. All AI via AWS Bedrock.</p>
+            <p className="text-xs text-cream/70"><span className="text-gold font-medium">Design Principle:</span> Deterministic-first approach [confirmed by CTO Andres Garcia]: Apollo deliberately pursues deterministic processing wherever possible before resorting to LLMs. Example: Doc QC uses Tesseract OCR for blank page detection, readability checks — no LLM needed. LLMs (Claude Sonnet 3 via Bedrock) used selectively when semantic understanding required (e.g., title-content matching). This is a deliberate cost management and margin strategy. HITL for all GxP-regulated workflows.</p>
           </div>
           <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
             <p className="text-xs text-cream/70"><span className="text-sage-300 font-medium">Chapter E Summary:</span> Apollo has automation-focused features within products and a longer-term TrialFlow ambition, but the enabling data system is not in place; internal AI leverage appears early-stage and not reflected organizationally.</p>
@@ -1172,13 +1198,13 @@ function buildSlideContentMap() {
               </thead>
               <tbody className="text-cream/70">
                 {[
-                  { cap: 'Trial Flow / Flowbot', stage: 'POC / Deployed', desc: 'Workflow orchestration with task dependencies for study startup (like Monday.com/MS Project). FlowBot AI assistant embedded in eBinders for role-based onboarding.', rev: 'TBD / Bundled with eBinders', evidence: 'Highest interest; primary growth bet' },
-                  { cap: 'Site Feasibility', stage: 'Limited Availability', desc: 'Knowledge library auto-completion of feasibility questionnaires. 500–1,000 questionnaires/yr per site.', rev: '~$500/study site add-on', evidence: '~10 test customers in LA' },
-                  { cap: 'Site Selection', stage: 'Limited Availability', desc: 'Sponsor-side search by TA, geography, performance. API-first for enterprise integration.', rev: 'Part of sponsor platform (TBD)', evidence: 'API-first design for large pharma scoring' },
-                  { cap: 'Doc QC', stage: 'Active Dev (OCTO)', desc: 'Tesseract OCR (deterministic) + LLM (semantic). Blank pages, readability, ordering, title-content matching.', rev: 'Independent SKU, consumption-based pricing', evidence: 'Merck: 5K hrs/month manual QC' },
+                  { cap: 'Trial Flow / Flowbot', stage: 'POC / Deployed', desc: 'Workflow orchestration with task dependencies for study startup (like Monday.com/MS Project). FlowBot AI assistant embedded in eBinders for role-based onboarding. One of three \u201C3 on 3\u201D target workflows.', rev: 'TBD / Bundled with eBinders', evidence: 'Highest interest; primary growth bet. NHS co-developing.' },
+                  { cap: 'Site Feasibility', stage: 'Limited Availability', desc: 'Knowledge library auto-completion. Mid-size site responds to ~100 surveys/mo (~1,200/yr). Dual value: time savings + validated profile for sponsor marketing.', rev: '~$500/study site add-on', evidence: '~10 test customers in LA. Lily co-developing.' },
+                  { cap: 'Site Selection', stage: 'Limited Availability', desc: 'Sponsor-side search by TA, geography, performance. API-first for enterprise integration. Positioned as \u201Cpart of the data sets\u201D in sponsor scoring, not a complete solution.', rev: 'Part of sponsor platform (TBD)', evidence: 'Sightline data partnership for enrichment' },
+                  { cap: 'Doc QC', stage: 'Active Dev (OCTO)', desc: 'Deterministic-first: Tesseract OCR for blank pages, readability (no LLM needed). LLM (Claude Sonnet 3 via Bedrock) only for semantic checks (title-content matching). More checks = more tokens = pricing consideration.', rev: 'Independent SKU; \u201Clow 7 fig.\u201D per large sponsor', evidence: 'Merck: team of 20, 5K hrs/mo. First SOW imminent.' },
                   { cap: 'Risk-Based Reporting', stage: 'Active Dev', desc: 'Structured + unstructured data overlay. Heat maps, exec summaries, recommended actions.', rev: 'Independent SKU', evidence: 'Built on 7.2M monthly workflows' },
-                  { cap: 'Operational Audit Trails', stage: 'Deployed (Free)', desc: 'AI-enhanced consumption of audit trail data. Launched late 2025 as free feature.', rev: 'Free (adoption driver)', evidence: 'First AI feature shipped; $0 revenue by design' },
-                  { cap: 'AIDLC (Internal)', stage: 'Deployed', desc: 'Claude + Cursor (53 devs), Vercel (PMs), AI for QA functionalization.', rev: 'N/A (internal productivity)', evidence: 'Organization-wide adoption' },
+                  { cap: 'Operational Audit Trails', stage: 'Deployed (Free)', desc: 'AI-enhanced consumption of audit trail data. Launched late 2025 as free feature. First AI feature shipped.', rev: 'Free (adoption driver)', evidence: '$0 AI revenue by design; all new AI products priced as independent SKUs' },
+                  { cap: 'AIDLC (Internal)', stage: 'Deployed', desc: 'Claude Code (primary, standardizing), GitHub Copilot, Cursor across 53 devs. Vercel for PM prototyping. AI for QA functionalization.', rev: 'N/A (internal productivity)', evidence: 'Organization-wide adoption; Kapil drove adoption' },
                 ].map((c) => (
                   <tr key={c.cap} className="border-b border-cream/5">
                     <td className="p-2 font-medium text-cream/90">{c.cap}</td>
@@ -1195,7 +1221,7 @@ function buildSlideContentMap() {
             <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">Overarching Assessment:</span> Many AI initiatives appear to lack a clear monetization/value path; tighten to a smaller set with explicit value capture logic.</p>
           </div>
           <div className="p-3 rounded-xl bg-cream/5 border border-cream/10 mb-2">
-            <p className="text-xs text-cream/70"><span className="text-gold font-medium">AI Architecture:</span> All AI via AWS Bedrock. HITL for GxP. Deterministic-first (Tesseract OCR), LLM only for semantic checks. No fine-tuned or custom models disclosed.</p>
+            <p className="text-xs text-cream/70"><span className="text-gold font-medium">AI Architecture:</span> All AI via AWS Bedrock with Claude Sonnet 3 (confirmed — not OpenAI). HITL for GxP. Deliberate deterministic-first approach: pursue deterministic processing wherever possible before resorting to LLMs as a cost management strategy. No fine-tuned or custom models disclosed.</p>
           </div>
         </div>
   )
@@ -1214,24 +1240,32 @@ function buildSlideContentMap() {
                 <table className="w-full border-collapse text-[10px]">
                   <tbody className="text-cream/70">
                     {[
-                      ['Frontend', 'Angular (various) + TypeScript'],
-                      ['Backend', 'Node.js'],
-                      ['Primary DB', 'MongoDB'],
-                      ['Relational DB', 'SQL (SiteLink, Flow Records)'],
-                      ['Object Storage', 'S3 (50M+ docs)'],
+                      ['Frontend', 'Angular (v14 legacy eBinders/eConsent; v21 SiteLink 2)'],
+                      ['Backend', 'Node.js (all products); some Python'],
+                      ['Primary DB', 'MongoDB (eBinders, eConsent)'],
+                      ['Relational DB', 'PostgreSQL/RDS (SiteLink 2, newer products)'],
+                      ['Object Storage', 'S3 (50M+ production docs; 1.6B incl. backups)'],
                       ['Cloud', 'AWS 100%, architecture-approved partner'],
-                      ['Regions', 'US, EU, Australia (same codebase)'],
-                      ['Orchestration', 'AWS Step Functions (migrating from Orchis)'],
-                      ['Messaging', 'RabbitMQ / Amazon MQ'],
-                      ['AI Services', 'AWS Bedrock'],
-                      ['OCR', 'Tesseract'],
-                      ['CI/CD', 'GitHub Actions (migration in progress)'],
-                      ['Monitoring', 'CloudWatch + New Relic'],
+                      ['Regions', '3: US-Virginia, EU-Frankfurt, APAC-Sydney'],
+                      ['Containers', 'ECS Fargate (51 microservices; no EC2 outside ECS)'],
+                      ['Orchestration', 'Orcus → AWS Step Functions (migrating by end of Q1)'],
+                      ['Messaging', 'RabbitMQ / Amazon MQ → Kafka (4-5 mo migration)'],
+                      ['AI/LLM', 'AWS Bedrock + Claude Sonnet 3 (not OpenAI)'],
+                      ['OCR', 'Tesseract (deterministic-first approach)'],
+                      ['Auth', 'Auth0'],
+                      ['Data Warehouse', 'Snowflake (US East) + Fivetran + dbt'],
+                      ['Data Mastering', 'Tamr (site + study data; just starting)'],
+                      ['CI/CD', 'GitHub Actions (migrating eBinders from Semaphore)'],
+                      ['Monitoring', 'New Relic (APM) + CloudWatch (logs) + CloudTrail (audit)'],
+                      ['Feature Flags', 'Schematic (per-customer rollout + risk reduction)'],
+                      ['Incident Response', 'PagerDuty'],
+                      ['IaC', 'Terraform'],
+                      ['BI', 'Tableau + Apex Charts + AG Grid (in-product)'],
                       ['Product Analytics', 'Pendo'],
-                      ['Eng Metrics', 'Jellyfish'],
-                      ['Compliance', 'Ketrix'],
-                      ['Data Mastering', 'Tamer'],
-                      ['Data Pipeline', 'Kafka (future)'],
+                      ['Eng Metrics', 'Jellyfish (velocity, DORA, AI adoption)'],
+                      ['Compliance', 'Ketrix (integrated with Jira for audit trail)'],
+                      ['Dev AI Tools', 'Claude Code (primary), GitHub Copilot, Cursor'],
+                      ['AWS Spend', '~$1M/yr'],
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-cream/5">
                         <td className="p-1.5 font-medium text-cream/90 w-28">{row[0]}</td>
@@ -1246,13 +1280,13 @@ function buildSlideContentMap() {
               <h3 className="text-sm font-semibold text-cream mb-3">AI Readiness Assessment</h3>
               <div className="space-y-2">
                 {[
-                  { area: 'Cloud-native', status: 'ready' as const, note: '100% AWS with Bedrock access — no infra migration needed for AI' },
-                  { area: 'Data Availability', status: 'ready' as const, note: '7.2M workflows/mo, 5.8M monitoring activities accessible for AI' },
-                  { area: 'Data Quality', status: 'developing' as const, note: 'Mixed: 50–60% very clean (sponsor), 15–20% good (site), ~25% lower. Tamer addressing.' },
-                  { area: 'Data Pipeline', status: 'developing' as const, note: 'Adequate but Kafka migration needed for AI-scale real-time processing' },
-                  { area: 'Observability', status: 'developing' as const, note: 'CloudWatch + New Relic functional but no AI-specific monitoring (model drift, inference latency)' },
-                  { area: 'Compliance Readiness', status: 'ready' as const, note: 'Strong GxP infra (Ketrix, regulatory team, tagged unit tests)' },
-                  { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway' },
+                  { area: 'Cloud-native', status: 'ready' as const, note: '100% AWS; 51 microservices on ECS Fargate; Bedrock + Claude Sonnet 3 for AI; 99.95% uptime target per region' },
+                  { area: 'Data Availability', status: 'ready' as const, note: '50M production docs (20K/day ingest), 7.2M workflows/mo, 5.8M monitoring activities. 80% load on US East.' },
+                  { area: 'Data Quality', status: 'developing' as const, note: '~75% clean (40K sponsor-provisioned sites = very clean; ~half of 25K site-originated = clean); ~25% messy (legacy). Tamr addressing.' },
+                  { area: 'Data Pipeline', status: 'developing' as const, note: 'Snowflake refreshes every 15 min (batch); Kafka migration in progress (4-5 mo) for real-time streaming + replaces RabbitMQ' },
+                  { area: 'Observability', status: 'developing' as const, note: 'New Relic APM + CloudWatch logs + CloudTrail audit; DORA metrics via Jellyfish; no AI-specific monitoring yet' },
+                  { area: 'Compliance Readiness', status: 'ready' as const, note: 'Strong GxP infra (Ketrix, regulatory team, tagged unit tests). Feature flags via Schematic for rollout control.' },
+                  { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway. Auto-scaling in place (e.g., eBinders: 20 instances peak, 10 off-peak).' },
                 ].map((r) => (
                   <div key={r.area} className="flex items-start gap-2 text-xs">
                     <ReadinessIcon status={r.status} />
@@ -1266,10 +1300,11 @@ function buildSlideContentMap() {
               <div className="mt-3 pt-3 border-t border-cream/10">
                 <div className="text-[10px] uppercase tracking-wider text-red-300 mb-1">Architecture Debt / Risk</div>
                 <ul className="text-[10px] text-cream/60 space-y-0.5">
-                  <li>&bull; Angular version fragmentation across products may slow unified AI feature deployment</li>
-                  <li>&bull; Orchestration migration (Orchis &rarr; Step Functions) in-flight</li>
-                  <li>&bull; No mention of feature flagging system for AI rollout management</li>
-                  <li>&bull; MongoDB may challenge relational queries needed by AI analytics</li>
+                  <li>&bull; Angular version fragmentation (v14 legacy vs v21 newer) may slow unified AI feature deployment</li>
+                  <li>&bull; Orchestration migration (Orcus &rarr; Step Functions) in-flight, targeting end of Q1</li>
+                  <li>&bull; eBinders monolith decomposition to microservices underway — significant architectural debt item</li>
+                  <li>&bull; DR upgrade from AZ-level to multi-region cross-region replication targeted for Q1</li>
+                  <li>&bull; MongoDB may challenge relational queries needed by AI analytics; PostgreSQL/RDS used for newer products</li>
                 </ul>
               </div>
             </div>
@@ -1299,8 +1334,8 @@ function buildSlideContentMap() {
                   <tbody className="text-cream/70">
                     {[
                       { cap: 'TrialFlow', bucket: 'Time + Cost', proof: 'Intelligent orchestration of trial operations; value in both time and cost' },
-                      { cap: 'Doc QC', bucket: 'Cost Reduction', proof: 'Merck: 5K hrs/month manual QC' },
-                      { cap: 'Site Feasibility', bucket: 'Time Compression', proof: '500–1K questionnaires/yr per site' },
+                      { cap: 'Doc QC', bucket: 'Cost Reduction', proof: 'Merck: team of 20, 5K hrs/mo. \u201CLow 7 fig.\u201D per large sponsor (10-15% uplift on ~$10M). First SOW imminent.' },
+                      { cap: 'Site Feasibility', bucket: 'Time Compression', proof: '~100 surveys/mo per mid-size site network. ~$500/site add-on. Dual value: time savings + sponsor marketing.' },
                       { cap: 'Site Selection', bucket: 'Time Compression', proof: 'API-first for enterprise scoring' },
                       { cap: 'Risk-Based Reporting', bucket: 'Risk Reduction + Operational Intelligence', proof: 'Built on 7.2M monthly workflows' },
                     ].map((r) => (
@@ -1362,44 +1397,44 @@ function buildSlideContentMap() {
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono text-gold bg-gold/10 px-2 py-0.5 rounded">1</span>
-                <h3 className="text-sm font-semibold text-cream">Document Quality Control (Doc QC)</h3>
+                <h3 className="text-sm font-semibold text-cream">Document Quality Control (Doc QC) — Merck Case Study</h3>
               </div>
               <div className="grid md:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-cream/40 font-medium">What it does:</span>
-                  <p className="text-cream/70 mt-0.5">Deterministic pipeline (Tesseract OCR) + LLM for semantic checks. Blank pages, readability, page ordering, title-content matching. HITL for GxP.</p>
+                  <p className="text-cream/70 mt-0.5">Deterministic-first pipeline: Tesseract OCR for blank page detection, readability checks (no LLM needed). Claude Sonnet 3 via Bedrock only for semantic checks (title-content matching). More checks = more token consumption = pricing consideration. HITL for GxP.</p>
                 </div>
                 <div>
-                  <span className="text-cream/40 font-medium">Value evidence:</span>
-                  <p className="text-cream/70 mt-0.5">Merck: 5,000 hrs/month on manual QC. Requesting site-level deployment to catch issues pre-submission.</p>
+                  <span className="text-cream/40 font-medium">Merck case study:</span>
+                  <p className="text-cream/70 mt-0.5">Merck has a team of 20 people doing nothing but document QC, spending 5,000 hrs/month. Apollo believes they can eliminate 50%+ of that. Doc QC came directly from Merck asking Apollo to solve the problem. Apollo is deployed in every study Merck launches.</p>
                 </div>
                 <div>
-                  <span className="text-cream/40 font-medium">Pricing:</span>
-                  <p className="text-cream/70 mt-0.5">Independent SKU. Consumption-based pricing under consideration given variable LLM costs per document.</p>
+                  <span className="text-cream/40 font-medium">Revenue opportunity:</span>
+                  <p className="text-cream/70 mt-0.5">Ryan estimated &ldquo;low seven figure&rdquo; opportunity per large sponsor. Against a ~$10M Merck relationship, that&apos;s 10-15% uplift. First SOW being submitted imminently; first bookings targeted by end of quarter. Independent SKU; consumption-based pricing under consideration.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Replicability:</span>
-                  <p className="text-cream/70 mt-0.5"><RatingBadge rating="MEDIUM-HIGH" /> Requires dual-sided platform + clinical doc expertise. Standalone AI doc-checking tools lack workflow integration.</p>
+                  <p className="text-cream/70 mt-0.5"><RatingBadge rating="MEDIUM-HIGH" /> Requires dual-sided platform + clinical doc expertise. Standalone AI doc-checking tools lack workflow integration. Customer-initiated development is a strong product-market fit signal.</p>
                 </div>
               </div>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono text-gold bg-gold/10 px-2 py-0.5 rounded">2</span>
-                <h3 className="text-sm font-semibold text-cream">Site Feasibility (AI-Assisted Questionnaire Completion)</h3>
+                <h3 className="text-sm font-semibold text-cream">Site Feasibility — Automated Questionnaire Completion</h3>
               </div>
               <div className="grid md:grid-cols-2 gap-3 text-[11px]">
                 <div>
                   <span className="text-cream/40 font-medium">What it does:</span>
-                  <p className="text-cream/70 mt-0.5">Knowledge library auto-completion of feasibility questionnaires across formats (web forms, PDFs, uploads). Sites review and confirm.</p>
+                  <p className="text-cream/70 mt-0.5">Knowledge library auto-completion of feasibility questionnaires across formats. A mid-size site network responds to ~100 feasibility surveys/month (~1,200/year). Apollo can automate &ldquo;almost all of that.&rdquo;</p>
                 </div>
                 <div>
-                  <span className="text-cream/40 font-medium">Value evidence:</span>
-                  <p className="text-cream/70 mt-0.5">Sites receive 500&ndash;1,000 questionnaires/year. Auto-completion saves hundreds of hours annually. ~10 test customers in LA.</p>
+                  <span className="text-cream/40 font-medium">Dual value proposition:</span>
+                  <p className="text-cream/70 mt-0.5">(1) Time savings on survey completion — hundreds of hours annually. (2) Sites build a validated profile to market themselves more effectively to sponsors. This dual value (efficiency + marketing) strengthens the willingness-to-pay argument.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Pricing:</span>
-                  <p className="text-cream/70 mt-0.5">~$500/study site add-on to core eBinders product.</p>
+                  <p className="text-cream/70 mt-0.5">~$500/site add-on (on top of $1,500 core eISF). ~10 test customers in LA. Co-developing with Lily.</p>
                 </div>
                 <div>
                   <span className="text-cream/40 font-medium">Replicability:</span>
@@ -1431,6 +1466,22 @@ function buildSlideContentMap() {
                 </div>
               </div>
             </div>
+            <div className="p-4 bg-sage-500/5 border border-sage-500/20 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-mono text-sage-300 bg-sage-500/10 px-2 py-0.5 rounded">4</span>
+                <h3 className="text-sm font-semibold text-cream">Platform Learning Effect — 45% Faster</h3>
+              </div>
+              <div className="grid md:grid-cols-2 gap-3 text-[11px]">
+                <div>
+                  <span className="text-cream/40 font-medium">What it demonstrates:</span>
+                  <p className="text-cream/70 mt-0.5">Sites using Apollo for their second study add content 45% faster — about 50 days faster — than a site that hasn&apos;t used the platform before. [Confirmed by Ryan Jones, T1]</p>
+                </div>
+                <div>
+                  <span className="text-cream/40 font-medium">Why it matters:</span>
+                  <p className="text-cream/70 mt-0.5">Demonstrates compounding value from repeated use — a network/learning effect that strengthens defensibility. Each additional study on the platform makes the next one faster, creating a durable competitive advantage.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
   )
@@ -1446,10 +1497,10 @@ function buildSlideContentMap() {
           <p className="text-xs text-cream/60 mt-1">Multiple validated integration points with quantifiable value potential.</p>
           <div className="grid md:grid-cols-3 gap-4 mt-4">
             <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
-              <h3 className="text-sm font-semibold text-green-300 mb-2">Tier 1: Validated (Unvalidated)</h3>
-              <p className="text-[10px] text-cream/50 mb-2">Product can be dropped in</p>
+              <h3 className="text-sm font-semibold text-green-300 mb-2">Tier 1: Validated (In Production)</h3>
+              <p className="text-[10px] text-cream/50 mb-2">Active integrations, not future aspirations</p>
               <ul className="space-y-1.5 text-xs text-cream/70">
-                <li>&bull; <span className="text-cream/90 font-medium">IRB &rarr; eConsent:</span> Integration already built. Consent forms flow from IRB to sites through Apollo.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">IRB &rarr; eConsent:</span> Already completed several IRB integrations with WCG — consent forms flow from IRB. This is an active, in-production integration. [Confirmed T1 — Shankar]</li>
                 <li>&bull; <span className="text-cream/90 font-medium">Document Flow:</span> eBinders &harr; ClinTech/ClinSphere active. 250K+ exchanges/yr target.</li>
                 <li>&bull; <span className="text-cream/90 font-medium">Doc QC via WCG sponsor network:</span> WCG&apos;s sponsor relationships as distribution channel.</li>
               </ul>
@@ -1531,9 +1582,9 @@ function buildSlideContentMap() {
           <div className="space-y-3 mt-4">
             {[
               {
-                num: '1', title: 'eConsent ↔ WCG IRB',
-                value: 'eConsent growing 75% YoY. IRB integration complete — consent forms already flow from IRB through Apollo. Every WCG IRB approval could trigger site-level consent deployment.',
-                prereq: 'Low complexity — integration pathways already exist',
+                num: '1', title: 'eConsent ↔ WCG IRB (In Production)',
+                value: 'eConsent growing ~75% YoY (~2 yrs old, hyper growth stage). Apollo has already completed several IRB integrations with WCG — this is active and in-production, not a future aspiration. Every WCG IRB approval could trigger site-level consent deployment.',
+                prereq: 'Low complexity — integration pathways already exist and are live',
                 constraint: 'Accelerates eConsent adoption across WCG’s IRB customer base (~3,500+ sponsors)'
               },
               {
@@ -2054,12 +2105,15 @@ function buildSlideContentMap() {
               <Layers className="w-5 h-5 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Current Architecture</h3>
               <ul className="space-y-1 text-xs text-cream/70">
-                <li>&bull; <span className="text-cream/90 font-medium">Databases:</span> MongoDB + PostgreSQL</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Data lake:</span> Snowflake</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Databases:</span> MongoDB (eBinders, eConsent) + PostgreSQL/RDS (SiteLink 2, newer products)</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Data warehouse:</span> Snowflake (US East) — data consolidated for cross-region reporting</li>
                 <li>&bull; <span className="text-cream/90 font-medium">ETL:</span> Fivetran (ingestion) + dbt (transformation)</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Reporting latency:</span> 15-min intervals (constrained by Snowflake compute)</li>
-                <li>&bull; <span className="text-cream/90 font-medium">In-progress:</span> Kafka migration for real-time streaming (4&ndash;5 month project)</li>
-                <li>&bull; <span className="text-cream/90 font-medium">Neo4j:</span> POC/testing only, not in production</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Reporting latency:</span> 15-min batch refreshes (costly due to Snowflake compute)</li>
+                <li>&bull; <span className="text-cream/90 font-medium">In-progress:</span> Kafka implementation for real-time data streaming (4&ndash;5 months to complete). Also replaces RabbitMQ as platform messaging layer.</li>
+                <li>&bull; <span className="text-cream/90 font-medium">eBinders decomposition:</span> Monolithic to microservices underway — significant architectural debt item</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Flow Records:</span> Master metadata store for sponsor-generated data</li>
+                <li>&bull; <span className="text-cream/90 font-medium">Neo4j:</span> Exists in dev/POC only (graph database experiments), not in production</li>
+                <li>&bull; <span className="text-cream/90 font-medium">DR upgrade:</span> From AZ-level to multi-region cross-region replication targeted for Q1</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
