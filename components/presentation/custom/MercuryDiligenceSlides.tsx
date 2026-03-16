@@ -2107,28 +2107,31 @@ function buildSlideContentMap() {
             <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-green-300 mb-2">High Case — &quot;Network Flywheel&quot;</h3>
               <ul className="text-[10px] text-cream/70 space-y-1">
-                <li>• 100+ sites via Buyer channel in 12 months</li>
-                <li>• 3+ sponsor pilots convert to production</li>
-                <li>• ClinSphere integration in 6 months</li>
-                <li>• Mercury data reaches critical mass</li>
+                <li>• Site base retains fully and Budget module attach rate accelerates</li>
+                <li>• Sponsor pipeline converts; initial enterprise conversations begin</li>
+                <li>• WCG channel cross-sell activates within the first integration phase</li>
+                <li>• ClinSphere integration proceeds on fast track; joint product SKU defined early</li>
+                <li>• Mercury data reaches critical mass for benchmarking differentiation</li>
               </ul>
             </div>
             <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-yellow-300 mb-2">Medium Case — &quot;Steady Build&quot;</h3>
               <ul className="text-[10px] text-cream/70 space-y-1">
-                <li>• 30–50 sites in 12 months</li>
-                <li>• 1–2 sponsor pilots</li>
-                <li>• ClinSphere integration takes 12 months</li>
-                <li>• Data grows but insufficient for benchmarking</li>
+                <li>• Site base holds with moderate Budget upsell traction</li>
+                <li>• Sponsor revenue slips or closes at entry-level tier only</li>
+                <li>• WCG cross-sell produces early wins but is integration-gated</li>
+                <li>• ClinSphere integration proceeds on standard timeline; joint revenue is deferred</li>
+                <li>• Data flywheel is seeded but not yet producing differentiated output</li>
               </ul>
             </div>
             <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
               <h3 className="text-sm font-semibold text-red-300 mb-2">Low Case — &quot;Integration Drag&quot;</h3>
               <ul className="text-[10px] text-cream/70 space-y-1">
-                <li>• Integration harder than expected (18+ months)</li>
-                <li>• Neutrality perception slows site adoption</li>
-                <li>• AI capabilities replicated by competitors</li>
-                <li>• Florence partnership disrupted</li>
+                <li>• Neutrality perception slows site adoption; some existing clients churn</li>
+                <li>• Budget module attach stalls as sites wait to see post-acquisition direction</li>
+                <li>• Sponsor pipeline does not convert in the near term</li>
+                <li>• ClinSphere integration is delayed or deprioritized; synergy value deferred</li>
+                <li>• Competitive response from Veeva or similar erodes first-mover window</li>
               </ul>
             </div>
           </div>
@@ -2144,42 +2147,50 @@ function buildSlideContentMap() {
               </thead>
               <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">Synergy capture rate<br /><span className="text-[10px] text-cream/40">(Industry benchmark: 40\u201360% realized in first 18 months)</span></td>
-                  <td className="p-2 text-green-300">70% of identified synergies realized in Year 1</td>
-                  <td className="p-2 text-yellow-300">50% realized in Year 1</td>
-                  <td className="p-2 text-red-300">30% realized in Year 1</td>
+                  <td className="p-2 font-medium text-cream/90">Site platform retention & expansion<br /><span className="text-[10px] text-cream/40">(the installed base)</span></td>
+                  <td className="p-2 text-green-300">Full retention; expansion into new site networks via referrals</td>
+                  <td className="p-2 text-yellow-300">Modest net growth; a few losses offset by new additions</td>
+                  <td className="p-2 text-red-300">Net attrition as neutrality concerns drive departures</td>
                 </tr>
                 <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">Client retention through acquisition<br /><span className="text-[10px] text-cream/40">(Mercury has 22+ sites; zero churn to date)</span></td>
-                  <td className="p-2 text-green-300">0\u20135% client loss; WCG channel adds net new</td>
-                  <td className="p-2 text-yellow-300">10\u201315% client loss from acquisition uncertainty</td>
-                  <td className="p-2 text-red-300">20\u201330% loss; neutrality concerns drive departures</td>
+                  <td className="p-2 font-medium text-cream/90">Budget module attach<br /><span className="text-[10px] text-cream/40">(the upsell multiplier)</span></td>
+                  <td className="p-2 text-green-300">Majority of site customers adopt; becomes the primary value driver</td>
+                  <td className="p-2 text-yellow-300">Moderate attach; adoption tracks but doesn&apos;t accelerate</td>
+                  <td className="p-2 text-red-300">Low attach; sites treat base contract module as sufficient</td>
                 </tr>
                 <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-cream/90">Integration timeline<br /><span className="text-[10px] text-cream/40">(ClinSphere integration is the critical path)</span></td>
-                  <td className="p-2 text-green-300">6 months to production; NPV impact: minimal delay</td>
-                  <td className="p-2 text-yellow-300">12 months; NPV reduces by ~15\u201320%</td>
-                  <td className="p-2 text-red-300">18+ months; NPV reduces by ~30\u201340% from delayed synergy</td>
+                  <td className="p-2 font-medium text-cream/90">Sponsor pipeline conversion<br /><span className="text-[10px] text-cream/40">(the growth thesis)</span></td>
+                  <td className="p-2 text-green-300">Pipeline converts and opens enterprise-tier conversations</td>
+                  <td className="p-2 text-yellow-300">Entry-level sponsor deal closes; enterprise remains distant</td>
+                  <td className="p-2 text-red-300">Sponsor pipeline stalls; growth thesis is deferred</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">WCG channel activation<br /><span className="text-[10px] text-cream/40">(the synergy unlock)</span></td>
+                  <td className="p-2 text-green-300">WCG account teams actively bundle Mercury into sponsor conversations</td>
+                  <td className="p-2 text-yellow-300">Introductions happen but conversion requires Mercury-led selling</td>
+                  <td className="p-2 text-red-300">Channel produces awareness but no closed deals in the near term</td>
+                </tr>
+                <tr className="border-b border-cream/5">
+                  <td className="p-2 font-medium text-cream/90">ClinSphere integration pace<br /><span className="text-[10px] text-cream/40">(the long-term compounder)</span></td>
+                  <td className="p-2 text-green-300">Fast-track integration; joint product enters market quickly</td>
+                  <td className="p-2 text-yellow-300">Standard integration timeline; joint revenue is a next-year story</td>
+                  <td className="p-2 text-red-300">Integration delayed or deprioritized; synergy value pushed out significantly</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div className="p-4 rounded-xl bg-green-500/10 border-l-4 border-green-500/50">
-            <div className="text-xs uppercase tracking-wider text-green-300 mb-2">Stress Test Result</div>
-            <p className="text-xs text-cream/70">At pessimistic assumptions on all three axes simultaneously (30% synergy capture, 25% client loss, 18-month integration), the remaining synergy value is approximately <span className="text-cream/90 font-medium">$1.4M\u2013$2.7M over 3 years</span>. The deal still works if the acquisition price is at or below the risk-adjusted build-vs-buy cost ($2.6\u2013$4.0M), because even at pessimistic assumptions, WCG avoids the internal build risk and timeline.</p>
-          </div>
-          <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
-            <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Assumptions the IC Will Challenge</div>
+          <div className="p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500/50">
+            <div className="text-xs uppercase tracking-wider text-amber-300 mb-2">Assumptions the IC Will Challenge</div>
             <div className="grid md:grid-cols-2 gap-3">
               {[
-                { num: '1', title: 'Synergy capture rate', detail: 'What % of identified synergies actually materialize? Most tech acquisitions realize 40\u201360% in the first 18 months.' },
+                { num: '1', title: 'Synergy capture rate', detail: 'What fraction of identified synergies will actually materialize, and how quickly? Most tech acquisitions see significant dilution from plan.' },
                 { num: '2', title: 'Neutrality preservation', detail: 'Can WCG-owned Mercury maintain credibility as a neutral platform? This is the single biggest thesis risk.' },
-                { num: '3', title: 'Integration timeline', detail: 'If ClinSphere integration takes 18 months instead of 9, what\u2019s the NPV impact of delayed synergy realization?' },
-                { num: '4', title: 'Client retention', detail: 'If Mercury loses 10/20/30% of clients due to acquisition uncertainty, does the growth curve still work?' },
-                { num: '5', title: 'Competitive response', detail: 'Does Veeva launch a CTA module in SiteVault within the integration window, eroding Mercury\u2019s first-mover advantage?' },
+                { num: '3', title: 'Integration timeline', detail: 'If ClinSphere integration takes longer than expected, how much synergy value is deferred or lost?' },
+                { num: '4', title: 'Client retention through ownership change', detail: 'If sites perceive Mercury as compromised, does the installed base hold or erode?' },
+                { num: '5', title: 'Competitive response', detail: 'Does Veeva or a similar incumbent launch a competing module within the integration window, eroding Mercury\u2019s first-mover advantage?' },
               ].map((a) => (
                 <div key={a.num} className="flex items-start gap-2 text-xs">
-                  <span className="text-red-300 font-mono flex-shrink-0">{a.num}.</span>
+                  <span className="text-amber-300 font-mono flex-shrink-0">{a.num}.</span>
                   <div>
                     <span className="text-cream/90 font-medium">{a.title}</span>
                     <span className="text-cream/50"> — {a.detail}</span>
