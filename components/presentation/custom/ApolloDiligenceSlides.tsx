@@ -97,23 +97,43 @@ const slideContentMap: Record<string, React.ReactNode> = {}
 
 function buildSlideContentMap() {
 
-  slideContentMap['executive-summary'] = (
+  slideContentMap['framework-overview'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 02</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">How We Evaluated Apollo&apos;s AI Portfolio</h2>
+            <p className="text-cream/50 text-sm">4-phase AI due diligence framework</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            {[
+              { phase: '01', title: 'Business Value & Growth Thesis', desc: 'Revenue model, cost structure, competitive positioning. Map internal/external value pools and identify where AI creates highest-leverage P&L impact.', color: 'border-sage', textColor: 'text-sage-300' },
+              { phase: '02', title: 'AI Initiatives & Disruption Risk', desc: 'Inventory all active AI initiatives. Evaluate each individually — what it does, who uses it, defensibility, and displacement risk from foundation models and incumbents.', color: 'border-purple-500', textColor: 'text-purple-300' },
+              { phase: '03', title: 'Team, Assets & Defensibility', desc: 'Assess whether the team can execute the AI roadmap. Score product, data, channel, and relationship assets for durability.', color: 'border-green-500', textColor: 'text-green-400' },
+              { phase: '04', title: 'ROI Quantification & Synergy Roadmap', desc: 'Quantify value creation through synergies, leading indicator measurement, and a phased execution plan.', color: 'border-blue-500', textColor: 'text-blue-400' },
+            ].map((p) => (
+              <div key={p.phase} className={`p-4 bg-white/5 border-l-4 ${p.color} rounded-r-lg`}>
+                <div className={`text-xs font-mono ${p.textColor} mb-1`}>{p.phase}</div>
+                <h3 className="text-sm font-semibold text-cream mb-2">{p.title}</h3>
+                <p className="text-xs text-cream/60">{p.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['executive-summary'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 03</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
-            <p className="text-cream/50 text-sm">Key findings by chapter</p>
+            <p className="text-cream/50 text-sm">Key findings by phase</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-6">
             {[
-              { chapter: 'A — Growth Thesis Alignment', slides: ['Apollo\u2019s growth is anchored in a large, embedded, and highly sticky site footprint (90%+ retention) built around EISF; this installed base is a major asset for monetization expansion.', 'The most material AI value creation path is TrialFlow (workflow orchestration), but it is gated by data availability and rights.'], color: 'border-sage' },
-              { chapter: 'B — What Has to Be True', slides: ['Growth is not primarily driven by additional site network expansion; Apollo is near saturation in EISF penetration and must shift to a new monetization model that expands ARPU via bundles, AI features, and potentially services.', 'Retention must remain high as the foundation for monetization expansion.'], color: 'border-yellow-500' },
-              { chapter: 'C — Product + AI Initiatives', slides: ['Apollo has a broad portfolio of AI initiatives, but the value narrative should be centered on TrialFlow/Flowbot as the scalable orchestration layer rather than disconnected automations.', 'A persistent risk: many AI initiatives lack clear monetization/value linkage; tighten the story around where value is created and captured.'], color: 'border-gold' },
-              { chapter: 'D — Commercial / Operating Model', slides: ['The next growth phase likely requires evolving from a product-only posture to a service-enabled model, where cross-product operational data informs measurable workflow/ops improvements.', 'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes.'], color: 'border-taupe' },
-              { chapter: 'E — Competitive / Disruption Risk', slides: ['Platform displacement risk is low given deep workflow embedding, form design investment, and stickiness; wholesale \u201CAI eats the workflow\u201D is unlikely (massive change management required).', 'The bigger competitive risk emerges at the edges of the EISF core and as Apollo moves toward services, where alternative data systems/products could limit growth.'], color: 'border-purple-500' },
-              { chapter: 'F — Defensibility + Data Rights', slides: ['Apollo\u2019s moat is strongest in channel + relationships + deployment; product is solid but could be better, and data value is constrained by rights/access.', 'The highest-value rights question is two-tier data rights; site performance rights appear TBD / not clearly covered.'], color: 'border-green-500' },
-              { chapter: 'G — Team + Execution', slides: ['The current team has been effective at building and penetrating the network; the next phase (services + monetization expansion) may require different leadership capabilities.', 'Engineering scale appears high relative to \u201Cdocument-management-like\u201D scope; execution efficiency is unclear.'], color: 'border-red-400' },
-              { chapter: 'H — Integration with WCG', slides: ['Near-term value comes from WCG as a channel driving Apollo product deployment and revenue uplift; longer-term upside comes from combining Apollo product data with WCG operational data to enable service/ops lift.'], color: 'border-blue-500' },
+              { chapter: 'Phase 1 — Business Value & Growth Thesis', slides: ['Apollo\u2019s growth is anchored in a large, embedded, and highly sticky site footprint (90%+ retention) built around EISF; this installed base is a major asset for monetization expansion.', 'The most material AI value creation path is TrialFlow (workflow orchestration), but it is gated by data availability and rights.'], color: 'border-sage' },
+              { chapter: 'Phase 2 — AI Initiatives & Disruption Risk', slides: ['Platform displacement risk is low given deep workflow embedding, form design investment, and stickiness; wholesale \u201CAI eats the workflow\u201D is unlikely (massive change management required).', 'Apollo has a broad portfolio of AI initiatives, but the value narrative should be centered on TrialFlow/Flowbot as the scalable orchestration layer rather than disconnected automations.'], color: 'border-purple-500' },
+              { chapter: 'Phase 3 — Team, Assets & Defensibility', slides: ['Apollo\u2019s moat is strongest in channel + relationships + deployment; product is solid but could be better, and data value is constrained by rights/access.', 'The current team has been effective at building and penetrating the network; the next phase (services + monetization expansion) may require different leadership capabilities.'], color: 'border-green-500' },
+              { chapter: 'Phase 4 — ROI Quantification & Synergy Roadmap', slides: ['Near-term value comes from WCG as a channel driving Apollo product deployment and revenue uplift; longer-term upside comes from combining Apollo product data with WCG operational data to enable service/ops lift.', 'The next growth phase likely requires evolving from a product-only posture to a service-enabled model, where cross-product operational data informs measurable workflow/ops improvements.'], color: 'border-blue-500' },
             ].map((ch) => (
               <div key={ch.chapter} className={`p-4 bg-white/5 border-l-4 ${ch.color} rounded-r-lg`}>
                 <h3 className="text-sm font-semibold text-cream mb-2">{ch.chapter}</h3>
@@ -134,7 +154,7 @@ function buildSlideContentMap() {
   slideContentMap['growth-thesis-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -185,7 +205,7 @@ function buildSlideContentMap() {
   slideContentMap['growth-projections'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -237,7 +257,7 @@ function buildSlideContentMap() {
   slideContentMap['offering-ai-growth-matrix'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -312,7 +332,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-roadmap-fit'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis</h2>
           </div>
           <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-6 items-start">
@@ -377,7 +397,7 @@ function buildSlideContentMap() {
   slideContentMap['scenarios'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios (2–3) for Outcomes</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -415,7 +435,7 @@ function buildSlideContentMap() {
   slideContentMap['disruption-risk-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Disruption Risk — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -453,7 +473,7 @@ function buildSlideContentMap() {
   slideContentMap['who-could-disrupt'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt</h2>
           </div>
           <div className="space-y-4 mt-4">
@@ -503,7 +523,7 @@ function buildSlideContentMap() {
   slideContentMap['what-they-would-build'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build</h2>
           </div>
           <div className="space-y-4 mt-4">
@@ -547,7 +567,7 @@ function buildSlideContentMap() {
   slideContentMap['what-must-change'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">What Must Change for Disruption to Be True</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -592,7 +612,7 @@ function buildSlideContentMap() {
   slideContentMap['build-it-today'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability</h2>
           </div>
           {/* Difficulty gradient bar */}
@@ -655,7 +675,7 @@ function buildSlideContentMap() {
   slideContentMap['asset-value-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Underlying Asset Value — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -696,7 +716,7 @@ function buildSlideContentMap() {
   slideContentMap['product-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -746,7 +766,7 @@ function buildSlideContentMap() {
   slideContentMap['data-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -829,7 +849,7 @@ function buildSlideContentMap() {
   slideContentMap['channel-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Channel Asset Strength</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -882,7 +902,7 @@ function buildSlideContentMap() {
   slideContentMap['relationship-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Relationship Asset Strength</h2>
           </div>
           <div className="space-y-3 mt-4">
@@ -912,7 +932,7 @@ function buildSlideContentMap() {
   slideContentMap['team-ops-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary</h2>
           </div>
           <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl mb-4 mt-4">
@@ -945,7 +965,7 @@ function buildSlideContentMap() {
   slideContentMap['people-roles'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -996,7 +1016,7 @@ function buildSlideContentMap() {
   slideContentMap['functional-coverage'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Functional Coverage &amp; Resourcing</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1056,7 +1076,7 @@ function buildSlideContentMap() {
   slideContentMap['operating-model-maturity'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Operating Model Maturity</h2>
           </div>
           <div className="space-y-4 mt-6">
@@ -1090,7 +1110,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-assessment-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Assessment — Executive Summary</h2>
             <p className="text-sm text-cream/50">Internal vs External AI Value</p>
           </div>
@@ -1136,7 +1156,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-inventory'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1183,7 +1203,7 @@ function buildSlideContentMap() {
   slideContentMap['architecture-readiness'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -1260,7 +1280,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-value-framework'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework</h2>
             <p className="text-sm text-cream/50">Internal vs External Value Buckets</p>
           </div>
@@ -1334,7 +1354,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-value-proof'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value &amp; Proof — Examples</h2>
             <p className="text-xs text-cream/40 italic">These are examples; not comprehensive.</p>
           </div>
@@ -1418,7 +1438,7 @@ function buildSlideContentMap() {
   slideContentMap['synergies-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer &harr; Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergies — Executive Summary</h2>
             <p className="text-sm text-cream/50">WCG &harr; Apollo synergy thesis well-supported.</p>
           </div>
@@ -1459,7 +1479,7 @@ function buildSlideContentMap() {
   slideContentMap['synergy-matrix'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer &harr; Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Connections Mapped to Assets</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1505,7 +1525,7 @@ function buildSlideContentMap() {
   slideContentMap['synergy-detail'] = (
         <div className="space-y-4 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer &harr; Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Detail (Selected Connections)</h2>
           </div>
           <div className="space-y-3 mt-4">
@@ -1554,7 +1574,7 @@ function buildSlideContentMap() {
   slideContentMap['synergy-waves'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer &harr; Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (3 Waves)</h2>
           </div>
           {/* Visual timeline bar */}
@@ -1611,7 +1631,7 @@ function buildSlideContentMap() {
   slideContentMap['priority-initiatives'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-2">Chapter G — Quantified Impact</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift</h2>
             <p className="text-xs text-cream/50">Illustrative models using diligence data points. NOT projections &mdash; frameworks for discussion requiring validation with data room financials.</p>
           </div>
@@ -1677,7 +1697,7 @@ function buildSlideContentMap() {
   slideContentMap['sensitivity'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-2">Chapter G — Quantified Impact</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Sensitivity: Impact on Growth Curve</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1745,7 +1765,7 @@ function buildSlideContentMap() {
   slideContentMap['dd-veeva-consolidation'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-1</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat</h2>
             <p className="text-cream/50 text-sm">As Veeva expands into a full-stack clinical platform, could sponsors consolidate spend onto Veeva and displace Apollo&apos;s US market share over a 3&ndash;5 year horizon?</p>
           </div>
@@ -1870,7 +1890,7 @@ function buildSlideContentMap() {
   slideContentMap['dd-econsent-landscape'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-2</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">eICF &amp; eConsent — Competitive Landscape</h2>
             <p className="text-cream/50 text-sm">Market ~$430M (2023), ~11% CAGR. 100% of top 10 pharma have implemented eConsent. Apollo&apos;s product is ~2 years old — &ldquo;like a DocuSign&rdquo; for clinical consent.</p>
           </div>
@@ -1948,7 +1968,7 @@ function buildSlideContentMap() {
   slideContentMap['dd-data-rights'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-3</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Rights — Content vs. Metadata</h2>
             <p className="text-cream/50 text-sm">The data <em>in</em> documents vs. the data <em>about</em> documents carry very different rights profiles and commercial potential.</p>
           </div>
@@ -2023,7 +2043,7 @@ function buildSlideContentMap() {
   slideContentMap['dd-data-architecture'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-orange-400 mb-2">Deep Dive Supplement — DD-4</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost</h2>
             <p className="text-cream/50 text-sm">Apollo&apos;s infrastructure manages <em>documents</em> but lacks a <em>data architecture</em> for operational metrics needed to support AI products and premium analytics.</p>
           </div>
