@@ -2200,7 +2200,7 @@ function buildSlideContentMap() {
             </div>
           </div>
         </div>
-  )
+  ) /* end sensitivity */
 
   /* ───────────────────────────────────────────────────────────────────
      Former appendix slides — now inlined within Phases 3 & 4
