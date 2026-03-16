@@ -170,19 +170,7 @@ function buildSlideContentMap() {
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
             <p className="text-cream/50 text-sm">Key findings by phase</p>
           </div>
-          <div className="grid grid-cols-3 gap-3 mt-4 mb-2">
-            {[
-              { q: 'Is the AI real?', answer: 'Yes — production AI pipeline with multi-model orchestration, 500+ sub-issue processing, and institutional playbook integration. Not vaporware, not a chatbot, not rebranded rules. Customers who tried generic tools returned.', color: 'text-green-300' },
-              { q: 'Does it compound under WCG ownership?', answer: 'Conditionally — WCG\u2019s data (80K+ protocols, 31TB Knowledge Base) and channel (3,400+ institutions) would materially strengthen Mercury\u2019s AI. But data rights must be validated and neutrality preserved.', color: 'text-yellow-300' },
-              { q: 'Risk-adjusted value range?', answer: 'Directional: low single-digit $M in Year 1 cost synergies (WCG productivity gains), scaling to mid-single-digit $M by Year 3 with revenue synergies. Quantification model pending — see Phase 4 detail for assumptions.', color: 'text-yellow-300' },
-            ].map((item) => (
-              <div key={item.q} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-                <h3 className="text-xs font-semibold text-cream mb-1">{item.q}</h3>
-                <p className={`text-[10px] ${item.color}`}>{item.answer}</p>
-              </div>
-            ))}
-          </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             {[
               { chapter: 'Phase 1 — Business Value & Growth Thesis', bullets: ['Mercury targets the CTA negotiation bottleneck with AI-powered markup. Client support suggests 15\u201318% negotiation time reduction.', 'Rise of agentic AI creates macro tailwind.'], color: 'border-sage' },
               { chapter: 'Phase 2 — AI Initiatives & Disruption Risk', bullets: ['Two key threats: frontier models (good enough for most?), and competitors with existing site relationships.', 'Mercury\u2019s pipeline complexity and domain expertise create genuine barriers.', 'Mercury is committed to AI both in product and internal processes, continuing to double down on differentiation vs foundation models.'], color: 'border-purple-500' },
