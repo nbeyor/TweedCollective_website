@@ -141,19 +141,16 @@ function buildSlideContentMap() {
   slideContentMap['executive-summary'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 02</div>
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Slide 03</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Executive Summary</h2>
-            <p className="text-cream/50 text-sm">Key findings by section</p>
+            <p className="text-cream/50 text-sm">Key findings by phase</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-6">
             {[
-              { chapter: 'A — Growth Thesis', bullets: ['Mercury targets the CTA negotiation bottleneck with AI-powered markup. Client support suggests 15\u201318% negotiation time reduction.', 'Rise of agentic AI creates macro tailwind.'], color: 'border-sage' },
-              { chapter: 'B — Disruption Risk', bullets: ['Two key threats: frontier models (good enough for most?), and competitors with existing site relationships.', 'Mercury\u2019s pipeline complexity and domain expertise create genuine barriers.'], color: 'border-purple-500' },
-              { chapter: 'C — Asset Value', bullets: ['Strong product and relationship assets (Mayo, Duke, Cleveland Clinic).', 'Data and channel assets are early-stage but growing with each customer.'], color: 'border-green-500' },
-              { chapter: 'D — Team & Ops', bullets: ['Unusually mature for stage \u2014 4-person dev team with high process maturity.', 'Strong vision/product/tech focus; under-resourced on commercial.'], color: 'border-taupe' },
-              { chapter: 'E — AI Assessment', bullets: ['Mercury is committed to AI both in product and internal processes, continuing to double down on differentiation vs foundation models.'], color: 'border-gold' },
-              { chapter: 'F — Synergies', bullets: ['High synergy potential \u2014 WCG brings data + channel; Mercury brings differentiated product.', 'Data rights and neutrality are key constraints.'], color: 'border-blue-500' },
-              { chapter: 'G — Quantified Impact', bullets: ['Significant potential but quantification requires internal data not yet available.'], color: 'border-red-400' },
+              { chapter: 'Phase 1 — Business Value & Growth Thesis', bullets: ['Mercury targets the CTA negotiation bottleneck with AI-powered markup. Client support suggests 15\u201318% negotiation time reduction.', 'Rise of agentic AI creates macro tailwind.'], color: 'border-sage' },
+              { chapter: 'Phase 2 — AI Initiatives & Disruption Risk', bullets: ['Two key threats: frontier models (good enough for most?), and competitors with existing site relationships.', 'Mercury\u2019s pipeline complexity and domain expertise create genuine barriers.', 'Mercury is committed to AI both in product and internal processes, continuing to double down on differentiation vs foundation models.'], color: 'border-purple-500' },
+              { chapter: 'Phase 3 — Team, Assets & Defensibility', bullets: ['Strong product and relationship assets (Mayo, Duke, Cleveland Clinic).', 'Data and channel assets are early-stage but growing with each customer.', 'Unusually mature for stage \u2014 4-person dev team with high process maturity.', 'Strong vision/product/tech focus; under-resourced on commercial.'], color: 'border-green-500' },
+              { chapter: 'Phase 4 — ROI Quantification & Synergy Roadmap', bullets: ['High synergy potential \u2014 WCG brings data + channel; Mercury brings differentiated product.', 'Data rights and neutrality are key constraints.', 'Significant potential but quantification requires internal data not yet available.'], color: 'border-blue-500' },
             ].map((ch) => (
               <div key={ch.chapter} className={`p-4 bg-white/5 border-l-4 ${ch.color} rounded-r-lg`}>
                 <h3 className="text-sm font-semibold text-cream mb-2">{ch.chapter}</h3>
@@ -174,7 +171,7 @@ function buildSlideContentMap() {
   slideContentMap['growth-thesis-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -226,7 +223,7 @@ function buildSlideContentMap() {
   slideContentMap['growth-projections'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -276,7 +273,7 @@ function buildSlideContentMap() {
   slideContentMap['offering-ai-growth-matrix'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -344,7 +341,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-roadmap-fit'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis</h2>
           </div>
           <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-6 items-start">
@@ -407,7 +404,7 @@ function buildSlideContentMap() {
   slideContentMap['scenarios'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Chapter A — Growth Thesis Alignment</div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios (2–3) for Outcomes</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -445,7 +442,7 @@ function buildSlideContentMap() {
   slideContentMap['disruption-risk-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Disruption Risk — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -484,7 +481,7 @@ function buildSlideContentMap() {
   slideContentMap['who-could-disrupt'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt</h2>
           </div>
           <div className="space-y-4 mt-4">
@@ -535,7 +532,7 @@ function buildSlideContentMap() {
   slideContentMap['what-they-would-build'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build</h2>
           </div>
           <div className="space-y-4 mt-4">
@@ -579,7 +576,7 @@ function buildSlideContentMap() {
   slideContentMap['what-must-change'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">What Must Change for Disruption to Be True</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -630,7 +627,7 @@ function buildSlideContentMap() {
   slideContentMap['build-it-today'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Chapter B — Disruption Risk</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability</h2>
           </div>
           <div className="mt-6 mb-2">
@@ -691,7 +688,7 @@ function buildSlideContentMap() {
   slideContentMap['asset-value-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Underlying Asset Value — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -726,7 +723,7 @@ function buildSlideContentMap() {
   slideContentMap['product-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -774,7 +771,7 @@ function buildSlideContentMap() {
   slideContentMap['data-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength</h2>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -833,7 +830,7 @@ function buildSlideContentMap() {
   slideContentMap['channel-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Channel Asset Strength</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -873,7 +870,7 @@ function buildSlideContentMap() {
   slideContentMap['relationship-asset'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Chapter C — Underlying Asset Value</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Relationship Asset Strength</h2>
           </div>
           <div className="space-y-3 mt-4">
@@ -904,7 +901,7 @@ function buildSlideContentMap() {
   slideContentMap['team-ops-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary</h2>
             <p className="text-xs text-cream/50">Per management: ~15 people across four functional teams (development, product, support, analytics)</p>
           </div>
@@ -931,7 +928,7 @@ function buildSlideContentMap() {
   slideContentMap['people-roles'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles</h2>
             <p className="text-xs text-cream/50">Accountability map updated with org chart shared during diligence</p>
           </div>
@@ -995,7 +992,7 @@ function buildSlideContentMap() {
   slideContentMap['functional-coverage'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Functional Coverage &amp; Resourcing</h2>
             <p className="text-xs text-cream/50">Headcount allocation per org chart shared during diligence</p>
           </div>
@@ -1060,7 +1057,7 @@ function buildSlideContentMap() {
   slideContentMap['operating-model-maturity'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-taupe-300 mb-2">Chapter D — Team + Operating Model</div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Operating Model Maturity</h2>
           </div>
           <div className="space-y-4 mt-6">
@@ -1093,7 +1090,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-assessment-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Assessment — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -1118,7 +1115,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-inventory'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
             <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
           </div>
@@ -1229,7 +1226,7 @@ function buildSlideContentMap() {
   slideContentMap['architecture-readiness'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness</h2>
             <p className="text-xs text-cream/50">Per management diligence calls — qualitative assessment</p>
           </div>
@@ -1273,7 +1270,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-value-framework'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework</h2>
             <p className="text-sm text-cream/50">Internal vs External Value Buckets</p>
           </div>
@@ -1316,7 +1313,7 @@ function buildSlideContentMap() {
   slideContentMap['ai-value-proof'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples</h2>
             <p className="text-xs text-cream/50">These are product capabilities that generate external (revenue-driving) value</p>
           </div>
@@ -1385,7 +1382,7 @@ function buildSlideContentMap() {
   slideContentMap['internal-value-proofs'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs</h2>
             <p className="text-xs text-cream/50">Cost, Speed, Productivity — tied to CI/CD and AI-enabled engineering model</p>
           </div>
@@ -1426,7 +1423,7 @@ function buildSlideContentMap() {
   slideContentMap['quantification-placeholder'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-gold mb-2">Chapter E — AI Assessment</div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Quantification — Placeholder</h2>
             <p className="text-xs text-cream/50">To be completed with internal data</p>
           </div>
@@ -1459,7 +1456,7 @@ function buildSlideContentMap() {
   slideContentMap['synergies-exec'] = (
         <div className="space-y-6 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer ↔ Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergies — Executive Summary</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -1494,7 +1491,7 @@ function buildSlideContentMap() {
   slideContentMap['synergy-detail'] = (
         <div className="space-y-4 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer ↔ Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Detail (Selected Connections)</h2>
           </div>
           <div className="space-y-3 mt-4">
@@ -1549,7 +1546,7 @@ function buildSlideContentMap() {
   slideContentMap['synergy-waves'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Chapter F — Buyer ↔ Target Synergies</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (3 Waves)</h2>
           </div>
           <div className="flex items-center gap-0 mt-4 mb-2">
@@ -1607,7 +1604,7 @@ function buildSlideContentMap() {
   slideContentMap['priority-initiatives'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-2">Chapter G — Quantified Impact</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift</h2>
           </div>
           <div className="space-y-4 mt-4">
@@ -1667,7 +1664,7 @@ function buildSlideContentMap() {
   slideContentMap['sensitivity'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-2">Chapter G — Quantified Impact</div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Sensitivity: Impact on Growth Curve</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-4">
@@ -1753,13 +1750,13 @@ function buildSlideContentMap() {
   slideContentMap['consolidated-gaps'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix</div>
+            <div className="text-xs uppercase tracking-wider text-cream/40 mb-2">Closing</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Consolidated Gaps &amp; Open Questions</h2>
-            <p className="text-xs text-cream/50">All outstanding questions organized by section</p>
+            <p className="text-xs text-cream/50">All outstanding questions organized by phase</p>
           </div>
           <div className="space-y-4 mt-4">
             <div className="p-4 bg-white/5 border-l-4 border-sage rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">A — Growth Thesis</h3>
+              <h3 className="text-sm font-semibold text-cream mb-2">Phase 1 — Business Value & Growth Thesis</h3>
               <ul className="text-xs text-cream/70 space-y-1">
                 <li>&bull; What is Mercury&apos;s current ARR, customer count, and contract volume throughput?</li>
                 <li>&bull; What is the revenue model (per-seat SaaS, per-agreement transaction, institutional license)?</li>
@@ -1769,41 +1766,31 @@ function buildSlideContentMap() {
               </ul>
             </div>
             <div className="p-4 bg-white/5 border-l-4 border-purple-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">B — Disruption Risk</h3>
+              <h3 className="text-sm font-semibold text-cream mb-2">Phase 2 — AI Initiatives & Disruption Risk</h3>
               <ul className="text-xs text-cream/70 space-y-1">
                 <li>&bull; Is Veeva actively developing CTA negotiation capabilities in SiteVault?</li>
                 <li>&bull; Are any large CROs building internal AI-powered CTA tools?</li>
                 <li>&bull; What is Mercury&apos;s patent portfolio status?</li>
                 <li>&bull; What is the installed base and competitive trajectory of Huron&apos;s ResearchSuite?</li>
                 <li>&bull; How dependent is the competitive moat on continued model improvement from Anthropic/OpenAI?</li>
+                <li>&bull; What is uptime/reliability track record? SLA commitments?</li>
+                <li>&bull; What is the plan and timeline for SOC2 certification?</li>
               </ul>
             </div>
             <div className="p-4 bg-white/5 border-l-4 border-green-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">C — Asset Value</h3>
+              <h3 className="text-sm font-semibold text-cream mb-2">Phase 3 — Team, Assets & Defensibility</h3>
               <ul className="text-xs text-cream/70 space-y-1">
                 <li>&bull; What are customer contract terms (multi-year? annual? at-will)?</li>
                 <li>&bull; What is the churn/retention rate among early customers?</li>
                 <li>&bull; Volume constraint on data asset — value proportional to adoption</li>
                 <li>&bull; Rights to aggregate and benchmark customer data must be clearly established</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-white/5 border-l-4 border-taupe rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">D — Team &amp; Ops</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
                 <li>&bull; What is the contractor vs. FTE split? How dependent is engineering on the two principal engineers?</li>
                 <li>&bull; What is attrition risk for key technical staff? Any retention agreements in place?</li>
                 <li>&bull; What is the analyst team&apos;s capacity — how many concurrent customer onboardings can they support?</li>
               </ul>
             </div>
-            <div className="p-4 bg-white/5 border-l-4 border-gold rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">E — AI Assessment</h3>
-              <ul className="text-xs text-cream/70 space-y-1">
-                <li>&bull; What is uptime/reliability track record? SLA commitments?</li>
-                <li>&bull; What is the plan and timeline for SOC2 certification?</li>
-              </ul>
-            </div>
             <div className="p-4 bg-white/5 border-l-4 border-blue-500 rounded-r-lg">
-              <h3 className="text-sm font-semibold text-cream mb-2">F — Synergies</h3>
+              <h3 className="text-sm font-semibold text-cream mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</h3>
               <ul className="text-xs text-cream/70 space-y-1">
                 <li>&bull; Would WCG-owned Mercury maintain neutrality? How would sites perceive this?</li>
                 <li>&bull; Technical integration path between ClinSphere and Mercury?</li>
@@ -1816,14 +1803,14 @@ function buildSlideContentMap() {
   )
 
   /* ───────────────────────────────────────────────────────────────────
-     APPENDIX — Follow-Up Deep Dive (A-1 through A-5)
+     Former appendix slides — now inlined within Phases 3 & 4
      ─────────────────────────────────────────────────────────────────── */
 
-  slideContentMap['appendix-ctms-synergy'] = (
+  slideContentMap['ctms-synergy'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-1: CTMS Synergy — Mercury as the Missing ClinSphere Module</h2>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">CTMS Synergy — Mercury as the Missing ClinSphere Module</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Would Mercury help the WCG CTMS offering?</p>
           </div>
 
@@ -1878,11 +1865,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['appendix-budget-deep-dive'] = (
+  slideContentMap['budget-deep-dive'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-2: Budget Product Deep Dive</h2>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Deeper dive on the new budget product from Mercury.</p>
           </div>
 
@@ -1951,11 +1938,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['appendix-internal-transformation'] = (
+  slideContentMap['internal-transformation'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-3: Internal WCG Transformation</h2>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Internal WCG Transformation Opportunity</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How could Mercury&apos;s technology help transform WCG&apos;s internal operations?</p>
           </div>
 
@@ -2038,11 +2025,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['appendix-build-vs-buy'] = (
+  slideContentMap['build-vs-buy'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-4: Build vs. Buy — Cost to Replicate Mercury&apos;s Team</h2>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Build vs. Buy — Cost to Replicate</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How long would it take to hire the Mercury team, and what would it cost?</p>
           </div>
 
@@ -2129,11 +2116,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['appendix-data-flywheel'] = (
+  slideContentMap['data-flywheel'] = (
         <div className="space-y-5 px-4">
           <div>
-            <div className="text-xs uppercase tracking-wider text-amber-400 mb-2">Appendix — Follow-Up Deep Dive</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">A-5: WCG Data Flywheel</h2>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">WCG Data Flywheel</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How will WCG&apos;s data assets create more differentiation for Mercury when combined?</p>
           </div>
 
