@@ -1763,22 +1763,17 @@ function buildSlideContentMap() {
               <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-green-300">High Case</td>
-                  <td className="p-2">WCG channel converts 15%+ sponsors in Year 1; Doc QC achieves $5M+ ARR; eConsent maintains 75% growth; site network exceeds 100K by 2027; AI adoption 25%+</td>
+                  <td className="p-2">AI adoption accelerates broadly across sponsor base; WCG channel drives strong cross-sell conversion; site network growth outpaces Veeva competition; AI features command pricing premium; data platform integration completes ahead of plan</td>
                   <td className="p-2">Significant acceleration &mdash; combined entity growth rate meaningfully above Apollo standalone</td>
                 </tr>
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-yellow-300">Medium Case (Base)</td>
-                  <td className="p-2">WCG channel converts 5&ndash;10% sponsors; Doc QC achieves $1&ndash;3M ARR; eConsent growth moderates to 40&ndash;50%; site network reaches 80&ndash;90K; AI adoption 10&ndash;15%</td>
-                  <td className="p-2">Moderate acceleration &mdash; synergy value adds 10&ndash;20% growth above standalone trajectory</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-2 font-medium text-purple-300">Integration Accelerant (WCG-Specific)</td>
-                  <td className="p-2">WCG acquisition closes; IRB&rarr;eBinders deepens (already underway); combined data asset enables unique intelligence; WCG channel deploys Apollo to thousands more sites; Doc QC via WCG sponsors</td>
-                  <td className="p-2">Combined entity becomes dominant in site enablement + trial operations. Post-close Wave 1 under 6 months; Merck QC expands to 5+ pharma via WCG.</td>
+                  <td className="p-2">AI adoption grows steadily but faces workflow friction; WCG channel converts at moderate rates; site retention holds but growth moderates; AI features included in existing pricing tiers; integration proceeds on standard timeline</td>
+                  <td className="p-2">Moderate acceleration &mdash; synergy value adds incremental growth above standalone trajectory</td>
                 </tr>
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-red-300">Low Case</td>
-                  <td className="p-2">Integration friction delays Wave 1 beyond 6 months; Doc QC delayed to 2027; Veeva accelerates competitive response; AI adoption below 10%; key personnel departure</td>
+                  <td className="p-2">AI adoption stalls below expectations; Veeva accelerates competitive response on both pricing and AI; WCG channel conversion underperforms due to sales motion friction; integration timeline extends significantly; key personnel departure</td>
                   <td className="p-2">Minimal acceleration &mdash; synergy capture delayed; standalone growth trajectory applies for 12&ndash;18 months</td>
                 </tr>
               </tbody>
