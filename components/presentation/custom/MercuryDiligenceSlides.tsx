@@ -133,6 +133,80 @@ function assetDonut(score: number, color: string) {
 }
 
 
+// AI Opportunity — Quantified Impact horizontal bar chart
+const aiImpactData = {
+  labels: [
+    'Site Platform Licenses',
+    'Budget Module Add-on',
+    'Sponsor — Project',
+    'Sponsor — Enterprise',
+    'Channel Cross-Sell',
+    'ClinSphere Integration',
+    'Internal WCG Transform',
+    'Data Flywheel',
+  ],
+  datasets: [
+    {
+      label: 'Low ($K)',
+      data: [900, 280, 0, 0, 350, 0, 10, 0],
+      backgroundColor: 'rgba(74, 93, 76, 0.45)',
+      borderColor: 'rgba(107, 142, 111, 0.7)',
+      borderWidth: 1,
+      borderRadius: 3,
+    },
+    {
+      label: 'High ($K)',
+      data: [270, 245, 175, 0, 650, 250, 70, 0],
+      backgroundColor: 'rgba(107, 142, 111, 0.85)',
+      borderColor: 'rgba(107, 142, 111, 1)',
+      borderWidth: 1,
+      borderRadius: 3,
+    },
+  ],
+}
+
+const aiImpactOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  indexAxis: 'y' as const,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top' as const,
+      labels: { color: 'rgba(245, 244, 240, 0.6)', font: { size: 9 }, boxWidth: 12, padding: 8 },
+    },
+    tooltip: {
+      callbacks: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        label: (ctx: any) => {
+          const dsLabel = ctx.dataset.label || ''
+          return `${dsLabel}: $${ctx.parsed?.x ?? 0}K`
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      stacked: true,
+      ticks: {
+        color: 'rgba(245, 244, 240, 0.4)',
+        font: { size: 9 },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        callback: (v: any) => `$${v}K`,
+      },
+      grid: { color: 'rgba(245, 244, 240, 0.05)' },
+      border: { display: false },
+      beginAtZero: true,
+    },
+    y: {
+      stacked: true,
+      ticks: { color: 'rgba(245, 244, 240, 0.6)', font: { size: 9 } },
+      grid: { display: false },
+      border: { color: 'rgba(245, 244, 240, 0.1)' },
+    },
+  },
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const slideContentMap: Record<string, React.ReactNode> = {}
 
@@ -1599,53 +1673,196 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['quantification-placeholder'] = (
-        <div className="space-y-5 px-4">
+  slideContentMap['ai-quantified-impact'] = (
+        <div className="space-y-3 px-4">
+          {/* Header */}
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Quantification Summary</h2>
-            <p className="text-xs text-cream/50">Directional ranges based on available data — underlying model to be built as separate workstream</p>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact</h2>
           </div>
-          <div className="overflow-x-auto mt-6">
-            <table className="w-full border-collapse text-xs">
-              <thead>
-                <tr className="border-b-2 border-blue-500/40">
-                  <th className="text-left p-3 text-cream/80 font-medium">Synergy Category</th>
-                  <th className="text-left p-3 text-cream/80 font-medium">Low</th>
-                  <th className="text-left p-3 text-cream/80 font-medium">High</th>
-                  <th className="text-left p-3 text-cream/80 font-medium">Key Assumptions</th>
-                </tr>
-              </thead>
-              <tbody className="text-cream/70">
-                <tr className="border-b border-cream/5">
-                  <td className="p-3 font-medium text-cream/90">Cost synergies (WCG productivity gains from Mercury AI)</td>
-                  <td className="p-3 text-cream">$1.5M</td>
-                  <td className="p-3 text-cream">$4.0M</td>
-                  <td className="p-3 text-cream/60">Automating 5-day manual SLA for contract review, budget development, and coverage analysis across 100\u2013300 sites; assumes 40\u201360% of current manual FTE hours displaced</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-3 font-medium text-cream/90">Revenue synergies (Mercury products through WCG channel)</td>
-                  <td className="p-3 text-cream">$500K</td>
-                  <td className="p-3 text-cream">$5.0M</td>
-                  <td className="p-3 text-cream/60">Mercury cross-sell to 50\u2013300 WCG-enabled sites at ~$10K/site/year; sponsor-side revenue from 1\u20135 pilot programs; contract intelligence data product (Year 3)</td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="p-3 font-medium text-cream/90">Build-vs-buy cost avoidance</td>
-                  <td className="p-3 text-cream">$2.6M</td>
-                  <td className="p-3 text-cream">$4.0M</td>
-                  <td className="p-3 text-cream/60">Year 1 fully loaded cost of assembling equivalent team; does not include opportunity cost of 18\u201324 month delay to market</td>
-                </tr>
-                <tr className="border-t-2 border-blue-500/40 bg-blue-500/5">
-                  <td className="p-3 font-semibold text-cream">Total (Year 1\u20133 range)</td>
-                  <td className="p-3 font-semibold text-cream">$4.6M</td>
-                  <td className="p-3 font-semibold text-cream">$13.0M</td>
-                  <td className="p-3 text-cream/60"></td>
-                </tr>
-              </tbody>
-            </table>
+
+          {/* Top strip — Framing statement */}
+          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-400/30">
+            <p className="text-[11px] text-cream/80 leading-relaxed">
+              Year 1 AI + synergy opportunity ranges from <span className="text-cream font-semibold">$1.5M to $3.2M</span>, with Mercury standalone AI revenue of $1.2M–$1.9M bracketing management&apos;s $1.1M target. Site platform licenses are the near-term base; the Budget add-on attach rate and WCG channel cross-sell are the two variables that determine whether Year 1 tracks to base or upside.
+            </p>
+            <div className="mt-2 flex items-center gap-3">
+              <span className="text-[9px] text-cream/40 font-mono">5-YR RAMP</span>
+              <div className="flex items-center gap-1 text-[9px] text-cream/50 font-mono">
+                <span className="text-cream/70">$1.1M</span>
+                <span>→</span>
+                <span>$3.1M</span>
+                <span>→</span>
+                <span>$8.9M</span>
+                <span>→</span>
+                <span>$21.5M</span>
+                <span>→</span>
+                <span className="text-sage font-semibold">$37.8M</span>
+              </div>
+            </div>
           </div>
-          <div className="p-4 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50">
-            <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">NOTE:</span> These are directional ranges based on public data and diligence call estimates. Final quantification requires WCG internal data inputs (site count, current cost-to-serve, enablement pricing, data rights validation). The detail behind each row lives in slides 35, 37, and the supporting model we will build as a separate workstream.</p>
+
+          {/* Main content — Chart (left 60%) + Assumption cards (right 40%) */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+            {/* Left column — Data tables + Chart */}
+            <div className="lg:col-span-3 space-y-2">
+              {/* Section: Mercury AI Revenue */}
+              <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mt-1">Mercury AI Revenue</div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <thead>
+                    <tr className="border-b border-sage/30">
+                      <th className="text-left py-1 px-2 text-cream/60 font-medium">Initiative</th>
+                      <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">Low</th>
+                      <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">High</th>
+                      <th className="text-left py-1 px-2 text-cream/60 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-cream/70">
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Site Platform Licenses ($45K/site)</td>
+                      <td className="py-1 px-2 text-right text-cream">$900K</td>
+                      <td className="py-1 px-2 text-right text-cream">$1,170K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">26 customers confirmed</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Budget Module Add-on ($35K/site)</td>
+                      <td className="py-1 px-2 text-right text-cream">$280K</td>
+                      <td className="py-1 px-2 text-right text-cream">$525K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Pricing confirmed; attach TBD</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Sponsor — Project ($175K)</td>
+                      <td className="py-1 px-2 text-right text-cream">$0</td>
+                      <td className="py-1 px-2 text-right text-cream">$175K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">1 in pipeline</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/70">Sponsor — Enterprise ($1–4.5M)</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">2029+ thesis</span></td>
+                    </tr>
+                    <tr className="border-t border-sage/30 bg-sage/5">
+                      <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — Mercury AI</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,180K</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,870K</td>
+                      <td className="py-1.5 px-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Section: WCG Synergies */}
+              <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mt-2">WCG Synergies</div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <tbody className="text-cream/70">
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Channel Cross-Sell (→ WCG sponsors)</td>
+                      <td className="py-1 px-2 text-right text-cream w-16">$350K</td>
+                      <td className="py-1 px-2 text-right text-cream w-16">$1,000K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Needs sales enablement</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">ClinSphere Integration Value</td>
+                      <td className="py-1 px-2 text-right text-cream">$0</td>
+                      <td className="py-1 px-2 text-right text-cream">$250K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/50">12–18 mo integration</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Internal WCG Transformation</td>
+                      <td className="py-1 px-2 text-right text-cream">$10K</td>
+                      <td className="py-1 px-2 text-right text-cream">$80K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">WCG controls adoption</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/70">Data Flywheel — First Turn</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">Strategic; no Yr 1 rev</span></td>
+                    </tr>
+                    <tr className="border-t border-blue-400/30 bg-blue-500/5">
+                      <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — WCG Synergies</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$360K</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,330K</td>
+                      <td className="py-1.5 px-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Total row */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-cream/5 border border-cream/10 mt-1">
+                <span className="text-xs font-bold text-cream">TOTAL</span>
+                <div className="flex items-center gap-6">
+                  <span className="text-xs font-bold text-cream">$1,540K</span>
+                  <span className="text-[10px] text-cream/40">to</span>
+                  <span className="text-xs font-bold text-sage">$3,200K</span>
+                </div>
+              </div>
+
+              {/* Stacked bar chart */}
+              <div className="h-40 mt-1">
+                <Bar data={aiImpactData} options={aiImpactOptions} />
+              </div>
+            </div>
+
+            {/* Right column — 3 Assumption cards */}
+            <div className="lg:col-span-2 space-y-2">
+              {/* Card 1 */}
+              <div className="p-3 rounded-xl border border-sage/30 bg-sage/5">
+                <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mb-1">1 — Site Licenses Are the Floor. Budget Attach Is the Swing.</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  Site platform licenses ($45K) represent 63–76% of Mercury&apos;s Year 1 AI revenue. That base is relatively de-risked with 26 confirmed customers. The Budget module add-on ($35K) is the primary swing variable: at 30% attach ($280K) vs. 58% attach ($525K), it&apos;s a <span className="text-cream font-medium">$245K delta</span>.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  Key question: is Budget the real product and the platform is the wedge — or is Budget a nice-to-have?
+                </p>
+              </div>
+
+              {/* Card 2 */}
+              <div className="p-3 rounded-xl border border-blue-400/30 bg-blue-500/5">
+                <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mb-1">2 — WCG Channel Cross-Sell Is the Biggest Synergy Lever</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  Cross-sell through WCG&apos;s sponsor relationships accounts for $350K–$1M — roughly 75–97% of Year 1 synergy value. The range depends on WCG execution: account team training, comp alignment on Mercury deals, and sponsor product readiness.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  This synergy needs a named owner and a 90-day plan on Day 1 post-close.
+                </p>
+              </div>
+
+              {/* Card 3 */}
+              <div className="p-3 rounded-xl border border-cream/15 bg-cream/5">
+                <div className="text-[10px] uppercase tracking-wider text-cream/60 font-semibold mb-1">3 — ClinSphere + Data Flywheel Are the Deal Thesis — Not Year 1 Revenue</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  The strategic rationale — Mercury as the missing ClinSphere module, WCG data powering Mercury&apos;s AI — contributes <span className="text-cream font-medium">$0–$250K in Year 1</span>. Both require 12–18 months of integration. This is fine as long as the IC prices them as Year 2+ optionality, not Year 1 cash.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  If the flywheel never turns, the AI premium in the acquisition price is not justified.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom strip — Management anchor */}
+          <div className="p-3 rounded-lg bg-cream/5 border-l-4 border-sage/50">
+            <div className="text-[10px] uppercase tracking-wider text-sage mb-1 font-semibold">Management Anchor</div>
+            <p className="text-[10px] text-cream/70 leading-relaxed">
+              Management projects <span className="text-cream font-medium">$1.1M for 2026</span>. Our standalone low estimate ($1.18M) slightly exceeds this, suggesting management may be accounting for churn, ramp timing, or pilot discounts not yet visible in diligence. Our high case ($1.87M) requires strong Budget attach + sponsor pipeline conversion. Including WCG synergies, the combined range is <span className="text-cream font-medium">1.4–2.9× management&apos;s standalone target</span> — but synergy capture requires active integration investment, not passive ownership.
+            </p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[9px] text-cream/50">
+              <span>Validate: (1) Budget attach rate among 26 customers</span>
+              <span>|</span>
+              <span>(2) WCG sponsor overlap with Mercury&apos;s target market</span>
+              <span>|</span>
+              <span>(3) ClinSphere integration technical feasibility</span>
+            </div>
+          </div>
+
+          {/* Source notes */}
+          <div className="text-[8px] text-cream/30 leading-relaxed pt-1 border-t border-cream/5">
+            Sources: Site count (26 confirmed), license pricing ($45K/yr), Budget pricing ($35K/yr), sponsor project pricing ($175K) — all from management/diligence materials. Management projections: 2026/$1.1M, 2027/$3.1M, 2028/$8.9M, 2029/$21.5M, 2030/$37.8M. WCG synergy estimates: Tweed Collective outside-in analysis; marked [GAP] pending confirmation. Customer value context: site savings $10K–$23K/yr; sponsor savings $70K–$260K/trial — Mercury captures 3.5–8× in pricing.
           </div>
         </div>
   )
