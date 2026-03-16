@@ -91,7 +91,7 @@ export const slides: SlideData[] = [
   { id: 'build-vs-buy', title: 'Build vs. Buy — Cost to Replicate', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'build-vs-buy' } } },
   { id: 'data-flywheel', title: 'WCG Data Flywheel', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-flywheel' } } },
   { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
-  { id: 'quantification-placeholder', title: 'Synergy Quantification Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'quantification-placeholder' } } },
+  { id: 'ai-quantified-impact', title: 'AI Opportunity — Quantified Impact', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-quantified-impact' } } },
   { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity' } } },
 ]
 
