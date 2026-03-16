@@ -1809,6 +1809,197 @@ function buildSlideContentMap() {
   )
 
   /* ============================================================
+   * AI OPPORTUNITY — QUANTIFIED IMPACT SUMMARY
+   * Translates the AI Opportunity Model spreadsheet into a single visual slide
+   * ============================================================ */
+
+  slideContentMap['ai-impact-summary'] = (
+        <div className="space-y-3 px-4">
+          {/* Header */}
+          <div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact</h2>
+          </div>
+
+          {/* Top Strip — Framing Statement */}
+          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-400/30">
+            <p className="text-xs text-cream/90 leading-relaxed">
+              Year 1 AI + synergy opportunity ranges from <span className="text-blue-300 font-semibold">$8M to $77M</span>, with Apollo standalone AI revenue of <span className="text-blue-300 font-semibold">$6.5M–$42M</span> bracketing management&apos;s $3M target. Customer value delivered is 10–20× Apollo&apos;s revenue capture, indicating significant pricing power headroom.
+            </p>
+          </div>
+
+          {/* Main Two-Column Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+            {/* Left Column (60%) — Horizontal Bar Chart */}
+            <div className="md:col-span-3 space-y-3">
+              {/* AI Revenue Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-400" />
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-blue-300">Apollo AI Revenue</span>
+                </div>
+                {[
+                  { label: 'Doc QC (sponsor subs)', low: 4.0, high: 31.5, status: 'green', statusLabel: 'First SOW imminent' },
+                  { label: 'Site Feasibility ($500/site)', low: 2.5, high: 7.5, status: 'green', statusLabel: 'Pricing confirmed' },
+                  { label: 'Trial Flow (risk monitoring)', low: 0, high: 2.5, status: 'yellow', statusLabel: 'Still in POC' },
+                  { label: 'Site Selection AI premium', low: 0, high: 0.6, status: 'gray', statusLabel: 'Bundled / modest' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-2 mb-1.5">
+                    <div className="w-[140px] flex-shrink-0 text-right">
+                      <span className="text-[10px] text-cream/70">{item.label}</span>
+                    </div>
+                    <div className="flex-1 h-5 bg-white/5 rounded relative overflow-hidden">
+                      {/* Low bar */}
+                      <div
+                        className="absolute top-0 left-0 h-full bg-blue-400/40 rounded-l"
+                        style={{ width: `${(item.low / 35) * 100}%` }}
+                      />
+                      {/* High bar */}
+                      <div
+                        className="absolute top-0 left-0 h-full bg-blue-400/80 rounded"
+                        style={{ width: `${(item.high / 35) * 100}%` }}
+                      />
+                      <div className="absolute inset-0 flex items-center px-2">
+                        <span className="text-[9px] font-mono text-cream/90 drop-shadow-md">
+                          {item.low > 0 ? `$${item.low}M` : '$0'} – ${item.high}M
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-[20px] flex-shrink-0 flex items-center justify-center">
+                      <div className={`w-2 h-2 rounded-full ${item.status === 'green' ? 'bg-green-400' : item.status === 'yellow' ? 'bg-yellow-400' : 'bg-gray-400'}`} title={item.statusLabel} />
+                    </div>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 mt-1 pt-1 border-t border-blue-400/20">
+                  <div className="w-[140px] flex-shrink-0 text-right">
+                    <span className="text-[10px] text-blue-300 font-semibold">Subtotal — AI Revenue</span>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-mono text-blue-300 font-semibold">$6.5M – $42.1M</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-cream/10" />
+
+              {/* WCG Synergies Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-purple-400" />
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-purple-300">WCG Synergies</span>
+                </div>
+                {[
+                  { label: 'Channel cross-sell (→ sponsors)', low: 0.8, high: 7.5, status: 'yellow', statusLabel: 'Requires overlap analysis' },
+                  { label: 'IRB → eBinders automation', low: 1.0, high: 24.0, status: 'green', statusLabel: 'Partially in production' },
+                  { label: 'Combined data intelligence', low: 0, high: 3.5, status: 'gray', statusLabel: 'Longest lead time' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-2 mb-1.5">
+                    <div className="w-[140px] flex-shrink-0 text-right">
+                      <span className="text-[10px] text-cream/70">{item.label}</span>
+                    </div>
+                    <div className="flex-1 h-5 bg-white/5 rounded relative overflow-hidden">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-purple-400/40 rounded-l"
+                        style={{ width: `${(item.low / 35) * 100}%` }}
+                      />
+                      <div
+                        className="absolute top-0 left-0 h-full bg-purple-400/80 rounded"
+                        style={{ width: `${(item.high / 35) * 100}%` }}
+                      />
+                      <div className="absolute inset-0 flex items-center px-2">
+                        <span className="text-[9px] font-mono text-cream/90 drop-shadow-md">
+                          {item.low > 0 ? `$${item.low}M` : '$0'} – ${item.high}M
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-[20px] flex-shrink-0 flex items-center justify-center">
+                      <div className={`w-2 h-2 rounded-full ${item.status === 'green' ? 'bg-green-400' : item.status === 'yellow' ? 'bg-yellow-400' : 'bg-gray-400'}`} title={item.statusLabel} />
+                    </div>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 mt-1 pt-1 border-t border-purple-400/20">
+                  <div className="w-[140px] flex-shrink-0 text-right">
+                    <span className="text-[10px] text-purple-300 font-semibold">Subtotal — Synergies</span>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-mono text-purple-300 font-semibold">$1.8M – $35.0M</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="flex items-center gap-2 pt-2 border-t-2 border-cream/20">
+                <div className="w-[140px] flex-shrink-0 text-right">
+                  <span className="text-xs text-cream font-bold">TOTAL</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-sm font-mono text-cream font-bold">$8.3M – $77.1M</span>
+                </div>
+              </div>
+
+              {/* Status legend */}
+              <div className="flex items-center gap-4 mt-1">
+                {[
+                  { color: 'bg-green-400', label: 'Confirmed / in-market' },
+                  { color: 'bg-yellow-400', label: 'In development' },
+                  { color: 'bg-gray-400', label: 'Speculative' },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-center gap-1">
+                    <div className={`w-1.5 h-1.5 rounded-full ${s.color}`} />
+                    <span className="text-[8px] text-cream/40">{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column (40%) — 3 Assumption Cards */}
+            <div className="md:col-span-2 space-y-2.5">
+              {/* Card 1 */}
+              <div className="p-3 bg-white/5 border border-cream/15 rounded-xl">
+                <h4 className="text-[11px] font-semibold text-blue-300 mb-1.5">Doc QC Adoption Drives the Range</h4>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  Doc QC is 60–75% of the total in both the low and high cases. The swing variable is how many large sponsors adopt in Year 1 (3 vs. 8) and how richly it&apos;s priced ($1M vs. $3M per sponsor). Merck&apos;s 5,000 hrs/month of manual QC provides a concrete value anchor — Apollo captures ~10–15% of that value.
+                </p>
+              </div>
+
+              {/* Card 2 */}
+              <div className="p-3 bg-white/5 border border-cream/15 rounded-xl">
+                <h4 className="text-[11px] font-semibold text-green-300 mb-1.5">Feasibility Has the Clearest Unit Economics</h4>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  $500/site on top of $1,500 core eISF. Confirmed by management. The question is adoption rate across 65K sites — 8% in Year 1 (low) vs. 23% (high). Dual value prop (time savings + sponsor-facing profile) gives sites two reasons to pay.
+                </p>
+              </div>
+
+              {/* Card 3 */}
+              <div className="p-3 bg-white/5 border border-cream/15 rounded-xl">
+                <h4 className="text-[11px] font-semibold text-purple-300 mb-1.5">WCG Synergies Are Real but Require Execution</h4>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  IRB automation is the most de-risked synergy — integration already works in production. Cross-sell and data monetization require sales alignment and engineering investment respectively. All three require the deal to close and integration authority to be granted.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Strip — Management Anchor */}
+          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-400/30">
+            <div className="text-[10px] uppercase tracking-wider text-amber-300 font-semibold mb-1">Management Anchor + Interpretation</div>
+            <p className="text-[10px] text-cream/80 leading-relaxed">
+              <span className="font-semibold text-cream/90">Management &ldquo;3 on 3&rdquo; target:</span> $3M AI ARR from 3 workflows (feasibility, Doc QC, Trial Flow). Our low estimate ($6.5M) exceeds this by ~2×, suggesting either (a) the plan is deliberately conservative, or (b) our sponsor count / pricing assumptions are generous. <span className="text-amber-300 font-medium">Recommend validating large-sponsor pipeline and Doc QC pricing in next diligence session.</span>
+            </p>
+          </div>
+
+          {/* Source Notes */}
+          <div className="pt-1 border-t border-cream/5">
+            <div className="text-[8px] text-cream/30 space-y-0.5">
+              <p>Sources: Doc QC sizing from Merck case study (5,000 hrs/month, &ldquo;low seven figures&rdquo; per Ryan Jones) &bull; Feasibility pricing (&ldquo;$500, something like that&rdquo; — Ryan Jones) &bull; &ldquo;3 on 3&rdquo; target (Shankar Jagannathan) &bull; IRB integration (&ldquo;already completed several&rdquo; — Shankar) &bull; All [GAP] items noted in AI Opportunity Model spreadsheet</p>
+            </div>
+          </div>
+        </div>
+  )
+
+  /* ============================================================
    * DEEP DIVE SUPPLEMENT — DD-1 through DD-4
    * Follow-up deep dive slides addressing questions from diligence review
    * ============================================================ */
