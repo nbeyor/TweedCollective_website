@@ -94,7 +94,7 @@ export async function GET() {
         if (!grantInfo[docId]) {
           grantInfo[docId] = {
             method: 'manual',
-            timestamp: user.createdAt.toString()
+            timestamp: new Date(user.createdAt).toISOString()
           }
         }
       })

@@ -56,6 +56,34 @@ export async function POST(request: Request) {
       },
     })
 
+    // Record audit trail for grants
+    if (action === 'grant') {
+      const auditTrail = (currentUserData.publicMetadata?.accessAuditTrail as Array<{
+        userId: string
+        email: string
+        documentIds: string[]
+        timestamp: string
+        method: 'invitation' | 'manual'
+      }>) || []
+
+      auditTrail.push({
+        userId,
+        email: targetUser.primaryEmailAddress?.emailAddress || 'Unknown',
+        documentIds: [documentId],
+        timestamp: new Date().toISOString(),
+        method: 'manual'
+      })
+
+      const recentAudit = auditTrail.slice(-100)
+
+      await client.users.updateUserMetadata(currentUserId, {
+        publicMetadata: {
+          ...currentUserData.publicMetadata,
+          accessAuditTrail: recentAudit
+        }
+      })
+    }
+
     return NextResponse.json({ success: true, documentAccess: newAccess })
   } catch (error) {
     console.error('Error updating access:', error)
