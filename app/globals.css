@@ -429,6 +429,22 @@ body {
   .bg-void {
     background: white !important;
   }
+
+  /* Disable animations and force visibility in print */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .animate-fade-up,
+  .animate-fade-in,
+  [class*="opacity-"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* Webkit text fill safeguard */
+  * {
+    -webkit-text-fill-color: currentColor !important;
+  }
 }
 
 /* Selection Styling */

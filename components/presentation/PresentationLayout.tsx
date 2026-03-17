@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Menu, X, Maximize2, Minimize2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Menu, X, Maximize2, Minimize2, FileDown } from 'lucide-react'
 
 export interface Slide {
   id: string
@@ -17,6 +17,7 @@ interface PresentationLayoutProps {
   slides: Slide[]
   logo?: React.ReactNode
   classificationBanner?: string
+  documentId?: string
 }
 
 export default function PresentationLayout({
@@ -24,7 +25,8 @@ export default function PresentationLayout({
   subtitle,
   slides,
   logo,
-  classificationBanner
+  classificationBanner,
+  documentId
 }: PresentationLayoutProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -208,6 +210,15 @@ export default function PresentationLayout({
         </div>
         
         <div className="flex items-center gap-2">
+          {documentId && (
+            <Link
+              href={`/documents/${documentId}/export`}
+              className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
+              title="Export PDF"
+            >
+              <FileDown className="icon-md" />
+            </Link>
+          )}
           <button
             onClick={toggleFullscreen}
             className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
@@ -215,7 +226,7 @@ export default function PresentationLayout({
           >
             {isFullscreen ? <Minimize2 className="icon-md" /> : <Maximize2 className="icon-md" />}
           </button>
-          
+
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"

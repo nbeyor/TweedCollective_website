@@ -4,13 +4,8 @@ import { auth, currentUser } from '@clerk/nextjs/server'
 // Import document registry
 import { DOCUMENT_CONFIGS } from '@/content/documents'
 
-// Import slide data for each document
-import { slides as salmonSlides } from '@/content/documents/salmon-ai-genomics'
-import { slides as healthTechSlides } from '@/content/documents/health-tech-market'
-import { slides as vibeSlides } from '@/content/documents/vibe-coding'
-import { slides as apolloSlides } from '@/content/documents/apollo-wcg-ai-diligence'
-import { slides as mercurySlides } from '@/content/documents/mercury-buyer-ai-diligence'
-import { slides as aiOpportunitySlides } from '@/content/documents/ai-opportunity-roadmap'
+// Dynamic document content loader (no hardcoded slide imports)
+import { loadDocumentContent } from '@/content/documents/loader'
 
 // Import design system
 import { spacing, typography, colors } from '@/lib/slideTemplates'
@@ -86,16 +81,19 @@ export default async function DocumentExportPage({
     )
   }
 
-  // Get slides for this document
-  const slideMap: Record<string, any[]> = {
-    'salmon-ai-genomics': salmonSlides,
-    'health-tech-market-2024': healthTechSlides,
-    'vibe-coding-in-enterprise-for-pe': vibeSlides,
-    'apollo-wcg-ai-diligence': apolloSlides,
-    'mercury-buyer-ai-diligence': mercurySlides,
-    'ai-opportunity-roadmap': aiOpportunitySlides,
+  // Dynamically load slides for this document (no hardcoded map)
+  const slides = await loadDocumentContent(documentId) || []
+
+  if (slides.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">No export content</h1>
+          <p className="text-gray-600">This document has no exportable slide content.</p>
+        </div>
+      </div>
+    )
   }
-  const slides = slideMap[documentId] || []
 
   return (
     <div data-export-view>
@@ -143,7 +141,7 @@ export default async function DocumentExportPage({
         }
 
         @page {
-          size: landscape;
+          size: 11in 8.5in;
           margin: 0.5in;
         }
 
@@ -196,25 +194,12 @@ export default async function DocumentExportPage({
           position: relative;
         }
 
-        .export-slide.export-slide-auto {
-          height: auto;
-          min-height: 7.5in;
-          overflow: visible;
-        }
-
         @media print {
           .export-slide {
             margin: 0;
             border: none;
             height: 7.5in;
             width: 10in;
-          }
-
-          .export-slide.export-slide-auto {
-            height: auto;
-            min-height: auto;
-            overflow: visible;
-            page-break-inside: auto;
           }
         }
 
@@ -797,9 +782,14 @@ export default async function DocumentExportPage({
           overflow: visible;
         }
 
-        /* Print break hints for custom slide children */
-        .export-custom-slide > div > div,
-        .export-custom-slide > div > section {
+        /* Print break hints — only on small atomic elements */
+        .export-custom-slide li,
+        .export-custom-slide tr,
+        .export-custom-slide .export-card,
+        .export-custom-slide .kpi-card,
+        .export-custom-slide .stance-card,
+        .export-custom-slide .framework-level,
+        .export-custom-slide .metric-card {
           break-inside: avoid;
           page-break-inside: avoid;
         }
@@ -969,6 +959,61 @@ export default async function DocumentExportPage({
           -webkit-backdrop-filter: none !important;
           background-color: #f5f5f5 !important;
         }
+
+        /* === Print-safe visibility overrides === */
+        /* Disable all animations and transitions in export/print */
+        [data-export-view] *,
+        [data-export-view] *::before,
+        [data-export-view] *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        /* Force full opacity on everything */
+        [data-export-view] [class*="opacity-"],
+        [data-export-view] .animate-fade-up,
+        [data-export-view] .animate-fade-in {
+          opacity: 1 !important;
+        }
+
+        /* Neutralize transforms that can hide content */
+        [data-export-view] .animate-fade-up,
+        [data-export-view] .animate-fade-in {
+          transform: none !important;
+        }
+
+        /* Webkit text fill color safeguard */
+        [data-export-view] * {
+          -webkit-text-fill-color: currentColor !important;
+        }
+
+        /* Neutralize filters that hide content (except chart inversions) */
+        [data-export-view] [class*="blur"],
+        [data-export-view] [class*="backdrop"] {
+          filter: none !important;
+          -webkit-filter: none !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+
+        @media print {
+          /* Double-down: force visibility in print context */
+          * {
+            animation: none !important;
+            transition: none !important;
+          }
+
+          [class*="opacity-"],
+          .animate-fade-up,
+          .animate-fade-in {
+            opacity: 1 !important;
+          }
+
+          .animate-fade-up,
+          .animate-fade-in {
+            transform: none !important;
+          }
+        }
       `}} />
 
       {/* Print instruction header (hidden on print) */}
@@ -999,17 +1044,10 @@ export default async function DocumentExportPage({
             // Hide header for title/cover slides
             const isTitleSlide = slide.content?.type === 'title'
 
-            // Custom component slides need auto height to avoid content clipping
-            const isCustomComponent = slide.content?.type === 'custom' &&
-              slide.content?.componentId &&
-              !slide.content?.props?.items &&
-              !slide.content?.props?.regions &&
-              slide.content?.componentId !== 'AdoptionStancesDetailedSlide'
-
             pages.push(
               <div
                 key={`${slide.id}-page-${pageIdx}`}
-                className={`export-slide ${isCustomComponent ? 'export-slide-auto' : ''} ${showPageBreak ? 'page-break' : ''}`}
+                className={`export-slide ${showPageBreak ? 'page-break' : ''}`}
               >
                 {!isTitleSlide && (
                   <div className="slide-header">
