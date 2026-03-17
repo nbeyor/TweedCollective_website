@@ -61,7 +61,7 @@ export const slides: SlideData[] = [
           'Strong governance — multi-layered AI governance framework impressive for a company of MKG\'s size',
         ],
         risks: [
-          'Portfolio sprawl across 15+ branded AI tools — too much surface area for ~$150M revenue',
+          'Portfolio sprawl across 15+ branded AI tools — too much surface area for ~$180M revenue',
           'Limited closed-loop ROI measurement — 81qd explicitly does not measure ROI on analytics engagements',
           'Displacement risk in client-facing tools as foundation models improve (Verba, MagpAI, PerspectivX)',
         ],
