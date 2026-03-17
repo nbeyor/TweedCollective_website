@@ -164,11 +164,6 @@ export default async function DocumentExportPage({
             display: block !important;
           }
 
-          .page-break {
-            page-break-after: always;
-            break-after: page;
-          }
-
           .no-print {
             display: none;
           }
@@ -192,8 +187,20 @@ export default async function DocumentExportPage({
 
         @media print {
           .export-pages-container {
-            padding: 0;
-            margin: 0;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+
+          /* Only apply page-break-after to non-last slides */
+          .export-slide.page-break {
+            page-break-after: always;
+            break-after: page;
+          }
+
+          /* Ensure last slide never forces a trailing break */
+          .export-slide:last-child {
+            page-break-after: auto !important;
+            break-after: auto !important;
           }
         }
 
@@ -214,7 +221,9 @@ export default async function DocumentExportPage({
             margin: 0;
             border: none;
             height: 7.5in;
+            max-height: 7.5in;
             width: 10in;
+            overflow: hidden;
           }
         }
 
@@ -241,8 +250,9 @@ export default async function DocumentExportPage({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          height: 100%;
-          min-height: calc(7.5in - 3rem);
+          height: calc(7.5in - 3rem);
+          max-height: calc(7.5in - 3rem);
+          overflow: hidden;
         }
 
         .slide-subtitle {
@@ -793,8 +803,8 @@ export default async function DocumentExportPage({
           background: #fff;
           font-size: 0.8125rem;
           line-height: 1.4;
-          height: 100%;
-          overflow: visible;
+          max-height: 100%;
+          overflow: hidden;
         }
 
         /* Print break hints — only on small atomic elements */
@@ -1227,7 +1237,8 @@ function buildExportPages(slides: any[]): ExportPage[] {
     })
   }
 
-  return pages
+  // Filter out any pages with zero-content chunks (safety net)
+  return pages.filter((page) => page.render !== null)
 }
 
 // =============================================================================
@@ -1266,6 +1277,11 @@ function getStandardChunking(slide: any): { items: any[]; splitAt: number; type:
     return { items: content.sections, splitAt: 3, type: 'sources' }
   }
 
+  // List groups — split at 3 groups per page when dense
+  if (content.type === 'list' && content.groups && content.groups.length > 3) {
+    return { items: content.groups, splitAt: 3, type: 'list' }
+  }
+
   // Stances
   if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' &&
       content.props?.stances && content.props.stances.length > 2) {
@@ -1279,7 +1295,7 @@ function getStandardChunking(slide: any): { items: any[]; splitAt: number; type:
 // Table pagination with header repetition
 // =============================================================================
 
-const MAX_TABLE_ROWS = 12
+const MAX_TABLE_ROWS = 10
 
 function renderTablePage(slide: any, pageIndex: number): React.ReactNode {
   const content = slide.content
@@ -1489,13 +1505,22 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
       )
 
     case 'list':
+      const allGroups = content.groups || []
+      const displayGroups = (startIdx !== undefined && endIdx !== undefined)
+        ? allGroups.slice(startIdx, endIdx)
+        : allGroups
+      const isFirstListPage = startIdx === undefined || startIdx === 0
+      const isLastListPage = endIdx === undefined || endIdx >= allGroups.length
       return (
         <>
           {content.sectionLabel && <div className="text-xs text-gray-500 mb-2">{content.sectionLabel}</div>}
           {content.heading && <h3 className="section-heading">{content.heading}</h3>}
-          {content.description && <p className="text-gray-600 mb-4">{content.description}</p>}
+          {isFirstListPage && content.description && <p className="text-gray-600 mb-4">{content.description}</p>}
+          {!isFirstListPage && (
+            <div className="text-sm text-gray-500 mb-2">(continued)</div>
+          )}
 
-          {content.groups.map((group: any, i: number) => (
+          {displayGroups.map((group: any, i: number) => (
             <div key={i} className="content-section">
               {group.title && <h4 className="font-semibold mb-2" style={{color: '#000'}}>{group.title}</h4>}
               <ul>
@@ -1509,7 +1534,7 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
             </div>
           ))}
 
-          {content.insightBox && (
+          {isLastListPage && content.insightBox && (
             <div className="insight-box">
               <div className="insight-label">{content.insightBox.label}</div>
               <div className="insight-text">{content.insightBox.text}</div>
