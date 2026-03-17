@@ -81,6 +81,7 @@ export default function DocumentPage() {
         subtitle={config.description}
         slides={slides}
         classificationBanner={config.visibility === 'unlisted' ? 'Confidential' : undefined}
+        documentId={documentId}
       />
     </DocumentAccessWrapper>
   )
