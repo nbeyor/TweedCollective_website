@@ -111,7 +111,7 @@ export const slides: SlideData[] = [
         heading: 'Business Context & Competitive Landscape',
         revenueMix: {
           chartType: 'HorizontalBarChart',
-          title: 'Revenue Mix (~$150M)',
+          title: 'Revenue Mix (~$180M)',
           icon: 'TrendingUp',
           items: [
             { label: 'Strategy & Content', value: 21 },
