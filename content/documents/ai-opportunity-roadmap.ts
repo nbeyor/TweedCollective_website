@@ -340,34 +340,7 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 9: AI VALUE FRAMEWORK (Section 5)
-  // ================================================================
-  {
-    id: 'value-framework',
-    title: 'AI Value Framework',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ValueFrameworkSlide',
-      props: {
-        heading: 'AI Value Framework',
-        description: 'MKG\'s AI initiatives create value through five distinct channels, organized into internal (cost/efficiency) and external (revenue/growth) buckets. Every product value story maps to one or more of these buckets.',
-        internalBuckets: [
-          { bucket: 'Cost', definition: 'Reduce labor cost per deliverable. AI eliminates rework, catches errors earlier, and reduces hours per output.', kpis: 'Hours per project; cost per completed deliverable; external vendor spend reduction' },
-          { bucket: 'Speed', definition: 'Reduce cycle time from draft to delivery. AI compresses the timeline by automating sequential steps.', kpis: 'Days from brief to final; rounds of revision; time to first client response' },
-          { bucket: 'Productivity', definition: 'Enable more output per FTE. Existing staff handle higher volume without proportional headcount growth.', kpis: 'Deliverables per employee per month; concurrent projects per team' },
-        ],
-        externalBuckets: [
-          { bucket: 'Pricing Power', definition: 'Command premium pricing via AI-differentiated capabilities. When AI makes the offering faster, more accurate, or analytically richer, MKG can charge more.', kpis: 'Price per engagement vs. prior year; willingness to pay vs. alternatives; margin' },
-          { bucket: 'Speed-to-Close', definition: 'Reduce time from prospect interest to signed engagement. AI-powered tools that deliver faster results shorten the sales cycle.', kpis: 'Proposal-to-signed-deal days; trial start-up time; site activation timeline' },
-        ],
-      },
-    },
-  },
-
-
-  // ================================================================
-  // SLIDE 10: SUPER PRODUCT VISION (moved after product deep dives)
+  // SLIDE 9: SUPER PRODUCT VISION
   // ================================================================
   {
     id: 'super-product',
@@ -420,99 +393,35 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 11: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
+  // SLIDE 10: AI VALUE FRAMEWORK (Section 5)
   // ================================================================
   {
-    id: 'internal-productivity-value',
-    title: 'Internal Productivity Value Summary',
+    id: 'value-framework',
+    title: 'AI Value Framework',
     type: 'custom',
     content: {
       type: 'custom',
-      componentId: 'InternalProductivityValueSlide',
+      componentId: 'ValueFrameworkSlide',
       props: {
-        heading: 'Internal Productivity Value Summary',
-        rows: [
-          { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '5%', lowValue: '$480K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
-          { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
-          { initiative: 'Compliance Core', primaryValueDriver: 'Risk prevention: MLR rejections avoided', ftes: '20', comp: '$140K', lowUplift: '5%', lowValue: '$140K', highUplift: '15%', highValue: '$420K', rationale: 'Each prevented rejection avoids 3–5 days of rework cascading across writers, editors, and compliance staff.' },
-          { initiative: 'Pantheon + Practice Master', primaryValueDriver: 'Research speed: HCP profiling time', ftes: '25', comp: '$105K', lowUplift: '10%', lowValue: '$263K', highUplift: '20%', highValue: '$525K', rationale: 'Automated search and affiliation harmonization replaces manual profiling that currently takes weeks per project.' },
-          { initiative: 'Plexus', primaryValueDriver: 'Analysis depth: influence mapping automation', ftes: '15', comp: '$130K', lowUplift: '5%', lowValue: '$98K', highUplift: '15%', highValue: '$293K', rationale: 'AI-enhanced network modeling produces richer outputs in less time than manual analysis.' },
-          { initiative: 'Verba + BloomLab + PerspectivX', primaryValueDriver: 'Synthesis speed: research to deliverable', ftes: '40', comp: '$115K', lowUplift: '10%', lowValue: '$460K', highUplift: '20%', highValue: '$920K', rationale: 'AI-assisted summarization and concept scoring compress the research-to-insight cycle.' },
-          { initiative: 'ChatMKG + ION portal', primaryValueDriver: 'General productivity: knowledge work efficiency', ftes: '200', comp: '$95K', lowUplift: '1%', lowValue: '$190K', highUplift: '5%', highValue: '$950K', rationale: 'Broad-based efficiency gains contingent on data integration with ION. Wide range reflects uncertainty.' },
+        heading: 'AI Value Framework',
+        description: 'MKG\'s AI initiatives create value through seven distinct channels, organized into internal (cost/efficiency) and external (revenue/growth) buckets. Every product value story maps to one or more of these buckets.',
+        internalBuckets: [
+          { bucket: 'Cost', definition: 'Reduce labor cost per deliverable. AI eliminates rework, catches errors earlier, and reduces hours per output.', kpis: 'Hours per project; cost per completed deliverable; external vendor spend reduction' },
+          { bucket: 'Speed', definition: 'Reduce cycle time from draft to delivery. AI compresses the timeline by automating sequential steps.', kpis: 'Days from brief to final; rounds of revision; time to first client response' },
+          { bucket: 'Productivity', definition: 'Enable more output per FTE. Existing staff handle higher volume without proportional headcount growth.', kpis: 'Deliverables per employee per month; concurrent projects per team' },
         ],
-        totalLow: '$2.1M',
-        totalHigh: '$5.4M',
+        externalBuckets: [
+          { bucket: 'Pricing Power', definition: 'Command premium pricing via AI-differentiated capabilities. When AI makes the offering faster, more accurate, or analytically richer, MKG can charge more.', kpis: 'Price per engagement vs. prior year; willingness to pay vs. alternatives; margin' },
+          { bucket: 'Speed-to-Close', definition: 'Reduce time from prospect interest to signed engagement. AI-powered tools that deliver faster results shorten the sales cycle.', kpis: 'Proposal-to-signed-deal days; trial start-up time; site activation timeline' },
+          { bucket: 'Direct Revenue', definition: 'Turn AI capabilities into billable products — subscriptions, modules, or standalone engagements — not just internal efficiency tools.', kpis: 'AI product revenue as % of total; paying AI product clients; average contract value on AI engagements' },
+          { bucket: 'Retention Rate', definition: 'Embed AI workflows that become essential to client operations, raising switching costs and renewal rates.', kpis: 'Renewal rate on AI-enhanced vs. non-AI accounts; logo churn rate; net revenue retention' },
+        ],
       },
     },
   },
 
   // ================================================================
-  // SLIDE 12: EXTERNAL REVENUE UPSIDE (pAdd)
-  // ================================================================
-  {
-    id: 'external-revenue',
-    title: 'External Revenue Upside',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'ExternalRevenueSlide',
-      props: {
-        heading: 'External Revenue Upside',
-        rows: [
-          { product: 'Pantheon', primaryValueDriver: 'Subscription shift — recurring revenue', lowAssumptions: '10 customers × $10K', lowRevenue: '$100K', highAssumptions: '20 customers × $40K', highRevenue: '$800K', rationale: 'Converting <10% of eligible 81qd clients to subscription validates the model shift.' },
-          { product: 'Plexus', primaryValueDriver: 'Pricing premium — AI-enhanced analytics', lowAssumptions: '$0 (AI as "cost of entry")', lowRevenue: '$0', highAssumptions: '20 projects × $50K premium', highRevenue: '$1,000K', rationale: 'AI enhancement justifies modest price premium on bundled analytics engagements. Nick noted AI efficiency is becoming "cost of entry."' },
-          { product: 'PerspectivX', primaryValueDriver: 'New revenue — concept testing add-on', lowAssumptions: '10 tests × $15K', lowRevenue: '$150K', highAssumptions: '20 tests × $30K', highRevenue: '$600K', rationale: 'Priced at a fraction of traditional qual ($75K–$150K), making adoption low-risk for clients.' },
-          { product: 'Verba', primaryValueDriver: 'Premium add-on — advisory board synthesis', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '20 boards × $10K', highRevenue: '$200K', rationale: 'Low case reflects that off-the-shelf LLMs can do structured synthesis — likely bundled, not charged separately.' },
-          { product: 'MagpAI', primaryValueDriver: 'New revenue — simulation engagements', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '10 engagements × $20K', highRevenue: '$200K', rationale: 'Earlier stage — low case reflects current use as demo/deal sweetener. High case requires standalone training simulation value.' },
-          { product: 'BloomLab', primaryValueDriver: 'New methodology — AI market research', lowAssumptions: '10 engagements × $25K', lowRevenue: '$250K', highAssumptions: '20 engagements × $45K', highRevenue: '$900K', rationale: 'Novel method requires parallel validation before clients trust it standalone.' },
-          { product: 'Sentiment Tracker', primaryValueDriver: 'Share-of-wallet lift on existing clients', lowAssumptions: '0.2% on $50M base', lowRevenue: '$100K', highAssumptions: '0.8% on $50M base', highRevenue: '$400K', rationale: 'Indirect mechanism — better-targeted campaigns → stronger outcomes → expanded scope.' },
-        ],
-        totalLow: '$0.6M',
-        totalHigh: '$4.2M',
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 13: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
-  // ================================================================
-  {
-    id: 'combined-value-waterfall',
-    title: 'Combined AI Opportunity — Year 1 Impact',
-    type: 'custom',
-    content: {
-      type: 'custom',
-      componentId: 'CombinedValueWaterfallSlide',
-      props: {
-        heading: 'Combined AI Opportunity — Year 1 Impact',
-        internalItems: [
-          { label: 'DynAImic Content', low: '$480K', high: '$1,440K', midpoint: 960 },
-          { label: 'Route Reagent + Annotation', low: '$495K', high: '$825K', midpoint: 660 },
-          { label: 'Compliance Core', low: '$140K', high: '$420K', midpoint: 280 },
-          { label: 'Pantheon + Practice Master', low: '$263K', high: '$525K', midpoint: 394 },
-          { label: 'Plexus', low: '$98K', high: '$293K', midpoint: 196 },
-          { label: 'Verba + BloomLab + PerspectivX', low: '$460K', high: '$920K', midpoint: 690 },
-          { label: 'ChatMKG + ION', low: '$190K', high: '$950K', midpoint: 570 },
-        ],
-        externalItems: [
-          { label: 'Pantheon (subscription)', low: '$100K', high: '$800K', midpoint: 450 },
-          { label: 'Plexus (premium)', low: '$0', high: '$1,000K', midpoint: 500 },
-          { label: 'PerspectivX', low: '$150K', high: '$600K', midpoint: 375 },
-          { label: 'Verba', low: '$0', high: '$200K', midpoint: 100 },
-          { label: 'MagpAI', low: '$0', high: '$200K', midpoint: 100 },
-          { label: 'BloomLab', low: '$250K', high: '$900K', midpoint: 575 },
-          { label: 'Sentiment Tracker', low: '$100K', high: '$400K', midpoint: 250 },
-        ],
-        internalTotal: { low: '$2.1M', high: '$5.4M' },
-        externalTotal: { low: '$0.6M', high: '$4.2M' },
-        grandTotal: { low: '$2.7M', high: '$9.6M', pctLow: '1.8%', pctHigh: '6.4%' },
-        footnote: 'Internal values represent labor cost equivalent of productivity freed — capacity for redeployment or margin improvement, not headcount reduction. External values represent incremental revenue from AI-differentiated products. Ranges reflect low (basic adoption) to high (targeted workflow automation) scenarios.',
-      },
-    },
-  },
-
-  // ================================================================
-  // SLIDE 14: LEADING INDICATORS & MEASUREMENT (Section 17)
+  // SLIDE 11: LEADING INDICATORS & MEASUREMENT (Section 17)
   // ================================================================
   {
     id: 'leading-indicators',
@@ -545,6 +454,98 @@ export const slides: SlideData[] = [
           'Expect people to need time to choose how work will change. AI adoption is a change management challenge, not a technology deployment. People need to see, try, reflect, and decide — not be told their workflow changed overnight.',
         ],
         recommendation: 'Build an enterprise AI KPI dashboard tracking leading indicators weekly. Review in existing Monthly Senior Leadership meeting.',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 12: INTERNAL PRODUCTIVITY VALUE SUMMARY (p22)
+  // ================================================================
+  {
+    id: 'internal-productivity-value',
+    title: 'Internal Productivity Value Summary',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'InternalProductivityValueSlide',
+      props: {
+        heading: 'Internal Productivity Value Summary',
+        rows: [
+          { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '5%', lowValue: '$480K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
+          { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
+          { initiative: 'Compliance Core', primaryValueDriver: 'Risk prevention: MLR rejections avoided', ftes: '20', comp: '$140K', lowUplift: '5%', lowValue: '$140K', highUplift: '15%', highValue: '$420K', rationale: 'Each prevented rejection avoids 3–5 days of rework cascading across writers, editors, and compliance staff.' },
+          { initiative: 'Pantheon + Practice Master', primaryValueDriver: 'Research speed: HCP profiling time', ftes: '25', comp: '$105K', lowUplift: '10%', lowValue: '$263K', highUplift: '20%', highValue: '$525K', rationale: 'Automated search and affiliation harmonization replaces manual profiling that currently takes weeks per project.' },
+          { initiative: 'Plexus', primaryValueDriver: 'Analysis depth: influence mapping automation', ftes: '15', comp: '$130K', lowUplift: '5%', lowValue: '$98K', highUplift: '15%', highValue: '$293K', rationale: 'AI-enhanced network modeling produces richer outputs in less time than manual analysis.' },
+          { initiative: 'Verba + BloomLab + PerspectivX', primaryValueDriver: 'Synthesis speed: research to deliverable', ftes: '40', comp: '$115K', lowUplift: '10%', lowValue: '$460K', highUplift: '20%', highValue: '$920K', rationale: 'AI-assisted summarization and concept scoring compress the research-to-insight cycle.' },
+          { initiative: 'ChatMKG + ION portal', primaryValueDriver: 'General productivity: knowledge work efficiency', ftes: '200', comp: '$95K', lowUplift: '1%', lowValue: '$190K', highUplift: '5%', highValue: '$950K', rationale: 'Broad-based efficiency gains contingent on data integration with ION. Wide range reflects uncertainty.' },
+        ],
+        totalLow: '$2.1M',
+        totalHigh: '$5.4M',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 13: EXTERNAL REVENUE UPSIDE (pAdd)
+  // ================================================================
+  {
+    id: 'external-revenue',
+    title: 'External Revenue Upside',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ExternalRevenueSlide',
+      props: {
+        heading: 'External Revenue Upside',
+        rows: [
+          { product: 'Pantheon', primaryValueDriver: 'Subscription shift — recurring revenue', lowAssumptions: '10 customers × $10K', lowRevenue: '$100K', highAssumptions: '20 customers × $40K', highRevenue: '$800K', rationale: 'Converting <10% of eligible 81qd clients to subscription validates the model shift.' },
+          { product: 'Plexus', primaryValueDriver: 'Pricing premium — AI-enhanced analytics', lowAssumptions: '$0 (AI as "cost of entry")', lowRevenue: '$0', highAssumptions: '20 projects × $50K premium', highRevenue: '$1,000K', rationale: 'AI enhancement justifies modest price premium on bundled analytics engagements. Nick noted AI efficiency is becoming "cost of entry."' },
+          { product: 'PerspectivX', primaryValueDriver: 'New revenue — concept testing add-on', lowAssumptions: '10 tests × $15K', lowRevenue: '$150K', highAssumptions: '20 tests × $30K', highRevenue: '$600K', rationale: 'Priced at a fraction of traditional qual ($75K–$150K), making adoption low-risk for clients.' },
+          { product: 'Verba', primaryValueDriver: 'Premium add-on — advisory board synthesis', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '20 boards × $10K', highRevenue: '$200K', rationale: 'Low case reflects that off-the-shelf LLMs can do structured synthesis — likely bundled, not charged separately.' },
+          { product: 'MagpAI', primaryValueDriver: 'New revenue — simulation engagements', lowAssumptions: '$0 (deal sweetener)', lowRevenue: '$0', highAssumptions: '10 engagements × $20K', highRevenue: '$200K', rationale: 'Earlier stage — low case reflects current use as demo/deal sweetener. High case requires standalone training simulation value.' },
+          { product: 'BloomLab', primaryValueDriver: 'New methodology — AI market research', lowAssumptions: '10 engagements × $25K', lowRevenue: '$250K', highAssumptions: '20 engagements × $45K', highRevenue: '$900K', rationale: 'Novel method requires parallel validation before clients trust it standalone.' },
+          { product: 'Sentiment Tracker', primaryValueDriver: 'Share-of-wallet lift on existing clients', lowAssumptions: '0.2% on $50M base', lowRevenue: '$100K', highAssumptions: '0.8% on $50M base', highRevenue: '$400K', rationale: 'Indirect mechanism — better-targeted campaigns → stronger outcomes → expanded scope.' },
+        ],
+        totalLow: '$0.6M',
+        totalHigh: '$4.2M',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 14: COMBINED AI OPPORTUNITY — YEAR 1 IMPACT (NEW)
+  // ================================================================
+  {
+    id: 'combined-value-waterfall',
+    title: 'Combined AI Opportunity — Year 1 Impact',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'CombinedValueWaterfallSlide',
+      props: {
+        heading: 'Combined AI Opportunity — Year 1 Impact',
+        internalItems: [
+          { label: 'DynAImic Content', low: '$480K', high: '$1,440K', midpoint: 960 },
+          { label: 'Route Reagent + Annotation', low: '$495K', high: '$825K', midpoint: 660 },
+          { label: 'Compliance Core', low: '$140K', high: '$420K', midpoint: 280 },
+          { label: 'Pantheon + Practice Master', low: '$263K', high: '$525K', midpoint: 394 },
+          { label: 'Plexus', low: '$98K', high: '$293K', midpoint: 196 },
+          { label: 'Verba + BloomLab + PerspectivX', low: '$460K', high: '$920K', midpoint: 690 },
+          { label: 'ChatMKG + ION', low: '$190K', high: '$950K', midpoint: 570 },
+        ],
+        externalItems: [
+          { label: 'Pantheon (subscription)', low: '$100K', high: '$800K', midpoint: 450 },
+          { label: 'Plexus (premium)', low: '$0', high: '$1,000K', midpoint: 500 },
+          { label: 'PerspectivX', low: '$150K', high: '$600K', midpoint: 375 },
+          { label: 'Verba', low: '$0', high: '$200K', midpoint: 100 },
+          { label: 'MagpAI', low: '$0', high: '$200K', midpoint: 100 },
+          { label: 'BloomLab', low: '$250K', high: '$900K', midpoint: 575 },
+          { label: 'Sentiment Tracker', low: '$100K', high: '$400K', midpoint: 250 },
+        ],
+        internalTotal: { low: '$2.1M', high: '$5.4M' },
+        externalTotal: { low: '$0.6M', high: '$4.2M' },
+        grandTotal: { low: '$2.7M', high: '$9.6M', pctLow: '1.8%', pctHigh: '6.4%' },
+        footnote: 'Internal values represent labor cost equivalent of productivity freed — capacity for redeployment or margin improvement, not headcount reduction. External values represent incremental revenue from AI-differentiated products. Ranges reflect low (basic adoption) to high (targeted workflow automation) scenarios.',
       },
     },
   },
