@@ -14,6 +14,9 @@ import { spacing, typography, colors } from '@/lib/slideTemplates'
 import PrintButton from './PrintButton'
 import ExportCustomSlide from './ExportCustomSlide'
 
+// Export adapters for custom slide pagination (server-safe metadata only)
+import { getCustomSlidePageInfo } from './adapters'
+
 // Design system values for CSS (extracted for inline styles)
 const exportStyles = {
   // Spacing
@@ -179,6 +182,18 @@ export default async function DocumentExportPage({
             padding: 0 !important;
             margin: 0 !important;
             flex-grow: 0 !important;
+          }
+        }
+
+        /* Container: zero padding in print to prevent blank page artifacts */
+        .export-pages-container {
+          padding: 2rem 0;
+        }
+
+        @media print {
+          .export-pages-container {
+            padding: 0;
+            margin: 0;
           }
         }
 
@@ -1030,155 +1045,286 @@ export default async function DocumentExportPage({
         </div>
       </div>
 
-      {/* Slides */}
-      <div className="py-8">
-        {slides.flatMap((slide, slideIndex) => {
-          const pageCount = getSlidePageCount(slide)
-          const pages = []
-          
-          for (let pageIdx = 0; pageIdx < pageCount; pageIdx++) {
-            const isLastPage = pageIdx === pageCount - 1
-            const isLastSlide = slideIndex === slides.length - 1
-            const showPageBreak = !(isLastSlide && isLastPage)
-            
-            // Hide header for title/cover slides
-            const isTitleSlide = slide.content?.type === 'title'
+      {/* Slides — rendered from normalized ExportPage model */}
+      <div className="export-pages-container">
+        {buildExportPages(slides).map((page, idx, allPages) => {
+          const isLast = idx === allPages.length - 1
 
-            pages.push(
-              <div
-                key={`${slide.id}-page-${pageIdx}`}
-                className={`export-slide ${showPageBreak ? 'page-break' : ''}`}
-              >
-                {!isTitleSlide && (
-                  <div className="slide-header">
-                    <div className="text-xs text-gray-500 mb-2">
-                      Slide {slideIndex + 1} of {slides.length}
-                    </div>
-                    <h2 className="slide-title">
-                      {slide.title}
-                      {pageCount > 1 && <span className="slide-page-indicator"> ({pageIdx + 1} of {pageCount})</span>}
-                    </h2>
+          return (
+            <div
+              key={page.key}
+              className={`export-slide${!isLast ? ' page-break' : ''}`}
+            >
+              {!page.isTitleSlide && (
+                <div className="slide-header">
+                  <div className="text-xs text-gray-500 mb-2">
+                    Slide {page.slideNumber} of {page.totalSlides}
                   </div>
-                )}
-
-                <div className={`slide-content ${isTitleSlide ? 'title-slide-content' : ''}`}>
-                  {renderSlideWithPagination(slide, pageIdx, pageCount)}
+                  <h2 className="slide-title">
+                    {page.slideTitle}
+                    {page.pageCount > 1 && (
+                      <span className="slide-page-indicator"> ({page.pageIndex + 1} of {page.pageCount})</span>
+                    )}
+                  </h2>
                 </div>
+              )}
+
+              <div className={`slide-content${page.isTitleSlide ? ' title-slide-content' : ''}`}>
+                {page.render()}
               </div>
-            )
-          }
-          
-          return pages
+            </div>
+          )
         })}
       </div>
     </div>
   )
 }
 
-// Helper to determine if content needs page breaks
-function needsPageBreak(slide: any): { needsBreak: boolean; splitAt?: number } {
+// =============================================================================
+// ExportPage Model — normalized page representation for deterministic rendering
+// =============================================================================
+
+interface ExportPage {
+  key: string
+  slideId: string
+  slideTitle: string
+  slideNumber: number
+  totalSlides: number
+  pageIndex: number
+  pageCount: number
+  isTitleSlide: boolean
+  render: () => React.ReactNode
+}
+
+/**
+ * Build a flat array of ExportPages from slide data.
+ * Each entry maps to exactly one printed page. No empty pages are produced.
+ */
+function buildExportPages(slides: any[]): ExportPage[] {
+  const pages: ExportPage[] = []
+
+  for (let si = 0; si < slides.length; si++) {
+    const slide = slides[si]
+    const content = slide.content
+    const isTitleSlide = content?.type === 'title'
+    const slideNumber = si + 1
+
+    // --- Custom slide with pagination adapter? ---
+    if (content?.type === 'custom' && content.componentId) {
+      const pageInfo = getCustomSlidePageInfo(
+        content.componentId,
+        content.props || {}
+      )
+
+      if (pageInfo) {
+        for (let pi = 0; pi < pageInfo.pageCount; pi++) {
+          const range = pageInfo.pageRanges[pi]
+          pages.push({
+            key: `${slide.id}-adapted-${pi}`,
+            slideId: slide.id,
+            slideTitle: slide.title,
+            slideNumber,
+            totalSlides: slides.length,
+            pageIndex: pi,
+            pageCount: pageInfo.pageCount,
+            isTitleSlide: false,
+            render: () => (
+              <ExportCustomSlide
+                componentId={content.componentId}
+                props={content.props || {}}
+                sectionRange={range}
+              />
+            ),
+          })
+        }
+        continue
+      }
+    }
+
+    // --- Standard type chunking ---
+    const chunking = getStandardChunking(slide)
+
+    if (chunking) {
+      const { items, splitAt, type } = chunking
+      const pageCount = Math.ceil(items.length / splitAt)
+
+      for (let pi = 0; pi < pageCount; pi++) {
+        const startIdx = pi * splitAt
+        const endIdx = Math.min(startIdx + splitAt, items.length)
+        const capturedStart = startIdx
+        const capturedEnd = endIdx
+
+        pages.push({
+          key: `${slide.id}-chunk-${pi}`,
+          slideId: slide.id,
+          slideTitle: slide.title,
+          slideNumber,
+          totalSlides: slides.length,
+          pageIndex: pi,
+          pageCount,
+          isTitleSlide: false,
+          render: () => renderSlideContent(slide, capturedStart, capturedEnd),
+        })
+      }
+      continue
+    }
+
+    // --- Table pagination ---
+    if (content?.type === 'table' && content.rows && content.rows.length > MAX_TABLE_ROWS) {
+      const pageCount = Math.ceil(content.rows.length / MAX_TABLE_ROWS)
+
+      for (let pi = 0; pi < pageCount; pi++) {
+        const capturedPi = pi
+        pages.push({
+          key: `${slide.id}-table-${pi}`,
+          slideId: slide.id,
+          slideTitle: slide.title,
+          slideNumber,
+          totalSlides: slides.length,
+          pageIndex: pi,
+          pageCount,
+          isTitleSlide: false,
+          render: () => renderTablePage(slide, capturedPi),
+        })
+      }
+      continue
+    }
+
+    // --- Custom slide fallback (single page, no adapter) ---
+    if (content?.type === 'custom' && content.componentId &&
+        !content.props?.items && !content.props?.regions &&
+        content.componentId !== 'AdoptionStancesDetailedSlide') {
+      pages.push({
+        key: `${slide.id}-custom`,
+        slideId: slide.id,
+        slideTitle: slide.title,
+        slideNumber,
+        totalSlides: slides.length,
+        pageIndex: 0,
+        pageCount: 1,
+        isTitleSlide: false,
+        render: () => (
+          <ExportCustomSlide
+            componentId={content.componentId}
+            props={content.props || {}}
+          />
+        ),
+      })
+      continue
+    }
+
+    // --- Single page (title slides, simple content, etc.) ---
+    pages.push({
+      key: `${slide.id}-single`,
+      slideId: slide.id,
+      slideTitle: slide.title,
+      slideNumber,
+      totalSlides: slides.length,
+      pageIndex: 0,
+      pageCount: 1,
+      isTitleSlide,
+      render: () => renderSlideContent(slide, undefined, undefined),
+    })
+  }
+
+  return pages
+}
+
+// =============================================================================
+// Standard chunking rules (grid, timeline, framework, metrics, sources, stances)
+// =============================================================================
+
+function getStandardChunking(slide: any): { items: any[]; splitAt: number; type: string } | null {
   const content = slide.content
-  
-  // Grid slides - split based on column count (2 rows per page max)
+
+  // Grid slides - 2 rows per page
   if (content.type === 'grid' && content.items) {
     const columns = content.columns || 3
-    const maxItemsPerPage = columns * 2 // 2 rows per page
+    const maxItemsPerPage = columns * 2
     if (content.items.length > maxItemsPerPage) {
-      return { needsBreak: true, splitAt: maxItemsPerPage }
+      return { items: content.items, splitAt: maxItemsPerPage, type: 'grid' }
     }
   }
-  
-  // Timeline with more than 2 items needs splitting
+
+  // Timeline items
   if (content.type === 'custom' && content.props?.items && content.props.items.length > 2) {
-    return { needsBreak: true, splitAt: 2 }
+    return { items: content.props.items, splitAt: 2, type: 'timeline' }
   }
-  
-  // Framework with more than 2 levels needs splitting
+
+  // Framework levels
   if (content.type === 'framework' && content.levels && content.levels.length > 2) {
-    return { needsBreak: true, splitAt: 2 }
+    return { items: content.levels, splitAt: 2, type: 'framework' }
   }
-  
-  // KPIs/Metrics with more than 3 items needs splitting (tightened from 4)
+
+  // KPI metrics
   if (content.type === 'metrics' && content.kpis && content.kpis.length > 3) {
-    return { needsBreak: true, splitAt: 3 }
+    return { items: content.kpis, splitAt: 3, type: 'metrics' }
   }
-  
-  // Sources with more than 3 sections needs splitting
+
+  // Sources sections
   if (content.type === 'sources' && content.sections && content.sections.length > 3) {
-    return { needsBreak: true, splitAt: 3 }
+    return { items: content.sections, splitAt: 3, type: 'sources' }
   }
-  
-  // Stances with more than 2 items needs splitting
-  if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && 
+
+  // Stances
+  if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' &&
       content.props?.stances && content.props.stances.length > 2) {
-    return { needsBreak: true, splitAt: 2 }
+    return { items: content.props.stances, splitAt: 2, type: 'stances' }
   }
-  
-  return { needsBreak: false }
+
+  return null
 }
 
-// Render content with optional pagination
-function renderSlideWithPagination(slide: any, pageIndex: number, totalPages: number): React.ReactNode {
-  const content = slide.content
-  const { needsBreak, splitAt } = needsPageBreak(slide)
-  
-  if (!needsBreak || splitAt === undefined) {
-    return renderSlideContent(slide, undefined, undefined)
-  }
-  
-  // Calculate start and end indices for this page
-  let items: any[] = []
-  let itemKey = ''
-  
-  if (content.type === 'grid' && content.items) {
-    items = content.items
-    itemKey = 'items'
-  } else if (content.type === 'framework' && content.levels) {
-    items = content.levels
-    itemKey = 'levels'
-  } else if (content.type === 'metrics' && content.kpis) {
-    items = content.kpis
-    itemKey = 'kpis'
-  } else if (content.type === 'sources' && content.sections) {
-    items = content.sections
-    itemKey = 'sections'
-  } else if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && content.props?.stances) {
-    items = content.props.stances
-    itemKey = 'stances'
-  } else if (content.type === 'custom' && content.props?.items) {
-    items = content.props.items
-    itemKey = 'items'
-  }
-  
-  const startIdx = pageIndex * splitAt
-  const endIdx = Math.min(startIdx + splitAt, items.length)
-  
-  return renderSlideContent(slide, startIdx, endIdx)
-}
+// =============================================================================
+// Table pagination with header repetition
+// =============================================================================
 
-// Calculate how many pages a slide needs
-function getSlidePageCount(slide: any): number {
+const MAX_TABLE_ROWS = 12
+
+function renderTablePage(slide: any, pageIndex: number): React.ReactNode {
   const content = slide.content
-  const { needsBreak, splitAt } = needsPageBreak(slide)
-  
-  if (!needsBreak || splitAt === undefined) return 1
-  
-  let itemCount = 0
-  if (content.type === 'grid' && content.items) {
-    itemCount = content.items.length
-  } else if (content.type === 'framework' && content.levels) {
-    itemCount = content.levels.length
-  } else if (content.type === 'metrics' && content.kpis) {
-    itemCount = content.kpis.length
-  } else if (content.type === 'sources' && content.sections) {
-    itemCount = content.sections.length
-  } else if (content.type === 'custom' && content.componentId === 'AdoptionStancesDetailedSlide' && content.props?.stances) {
-    itemCount = content.props.stances.length
-  } else if (content.type === 'custom' && content.props?.items) {
-    itemCount = content.props.items.length
-  }
-  
-  return Math.ceil(itemCount / splitAt)
+  const allRows = content.rows || []
+  const startIdx = pageIndex * MAX_TABLE_ROWS
+  const endIdx = Math.min(startIdx + MAX_TABLE_ROWS, allRows.length)
+  const pageRows = allRows.slice(startIdx, endIdx)
+  const isFirstPage = pageIndex === 0
+
+  return (
+    <>
+      {isFirstPage && content.sectionLabel && <div className="text-xs text-gray-500 mb-2">{content.sectionLabel}</div>}
+      {isFirstPage && content.heading && <h3 className="section-heading">{content.heading}</h3>}
+      {isFirstPage && content.description && <p className="text-gray-600 mb-4">{content.description}</p>}
+      {!isFirstPage && <div className="text-sm text-gray-500 mb-2">(continued)</div>}
+
+      <table>
+        <thead>
+          <tr>
+            {content.headers.map((header: string, i: number) => (
+              <th key={i}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {pageRows.map((row: string[], i: number) => (
+            <tr key={startIdx + i}>
+              {row.map((cell: string, j: number) => (
+                <td key={j} className={content.highlightFirstColumn && j === 0 ? 'font-semibold' : ''}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {pageIndex === Math.ceil(allRows.length / MAX_TABLE_ROWS) - 1 && content.insightBox && (
+        <div className="insight-box">
+          <div className="insight-label">{content.insightBox.label}</div>
+          <div className="insight-text">{content.insightBox.text}</div>
+        </div>
+      )}
+    </>
+  )
 }
 
 function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
