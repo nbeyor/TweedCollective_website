@@ -210,6 +210,9 @@ const aiImpactOptions = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const slideContentMap: Record<string, React.ReactNode> = {}
 
+// Module-level section arrays for export pagination support
+let _dataFlywheelSections: React.ReactNode[] = []
+
 function buildSlideContentMap() {
 
   slideContentMap['framework-overview'] = (
@@ -2558,102 +2561,109 @@ function buildSlideContentMap() {
         </div>
   )
 
+  // data-flywheel: stored as sections for export pagination support
+  _dataFlywheelSections = [
+    // Section 0: Header + Thesis
+    <div key="dfs-0">
+      <div>
+        <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+        <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">WCG Data Flywheel</h2>
+        <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How will WCG&apos;s data assets create more differentiation for Mercury when combined?</p>
+      </div>
+      <div className="mt-5 p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
+        <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
+        <p className="text-xs text-cream/70">Mercury&apos;s ~4,000 analyzed issue points are the <span className="text-cream font-medium">seed corpus</span> for an AI-driven benchmarking engine. WCG&apos;s network would dramatically expand this — potentially by an order of magnitude within 12–18 months — creating a <span className="text-cream font-medium">self-reinforcing data flywheel</span> that becomes the industry standard for clinical trial contract and budget benchmarking.</p>
+      </div>
+    </div>,
+    // Section 1: First Turn of the Flywheel
+    <div key="dfs-1" className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+      <div className="text-xs uppercase tracking-wider text-green-300 mb-2">First Turn of the Flywheel — Concrete Example</div>
+      <p className="text-xs text-cream/70"><span className="text-cream/90 font-medium">Input:</span> WCG feeds its historical IRB review data (80K+ protocols, 31TB Knowledge Base) into Mercury&apos;s congruency pipeline. This is the first data asset WCG has that Mercury currently lacks.</p>
+      <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Output:</span> Mercury&apos;s AI can now predict protocol amendment risk based on IRB review patterns — e.g., &quot;protocols with X characteristic have a Y% likelihood of triggering a budget renegotiation within 6 months.&quot; This is a novel insight neither company can produce alone.</p>
+      <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Flywheel effect:</span> Sites that see amendment risk predictions close contracts faster → faster closings generate more data → more data improves predictions → attracting more sites.</p>
+    </div>,
+    // Section 2: Mercury Standalone vs WCG Multiplier
+    <div key="dfs-2" className="grid md:grid-cols-2 gap-4">
+      <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-xs font-semibold text-cream mb-2">Mercury Standalone (Today)</h3>
+        <ul className="space-y-1 text-[10px] text-cream/60">
+          <li>&bull; ~4,000 analyzed issue points (seed from Mayo, Duke, UHN)</li>
+          <li>&bull; ~2,000× more contract data flowing through platform</li>
+          <li>&bull; 100% customer data rights — no opt-outs</li>
+          <li>&bull; 22+ active sites; targeting 50+ standalone this year</li>
+        </ul>
+      </div>
+      <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-xs font-semibold text-cream mb-2">WCG Volume Multiplier</h3>
+        <ul className="space-y-1 text-[10px] text-cream/60">
+          <li>&bull; 3,400+ institutional partners; 140,000+ PIs globally</li>
+          <li>&bull; 3,000+ new protocols reviewed annually</li>
+          <li>&bull; 58,000+ ethical reviews performed (cumulative)</li>
+          <li>&bull; ~2,000–5,000 estimated negotiation events per year</li>
+        </ul>
+      </div>
+    </div>,
+    // Section 3: Flywheel Mechanics
+    <div key="dfs-3">
+      <h3 className="text-sm font-semibold text-cream mb-3">Flywheel Mechanics</h3>
+      <div className="grid md:grid-cols-4 gap-2">
+        {[
+          { stage: '1', timeline: '0–6 mo', title: 'Data Ingestion', desc: 'WCG routes negotiation volume through Mercury. Capturing a fraction of ~2,000–5,000 annual events would multiply data asset 5–10× in year one.' },
+          { stage: '2', timeline: '6–12 mo', title: 'Insights Enrichment', desc: 'Statistically robust insights across agreement types, sponsor-site pairings, therapeutic areas, and geographies. Novel benchmarking products become viable.' },
+          { stage: '3', timeline: '12–24 mo', title: 'Industry Benchmark', desc: 'Mercury\'s data becomes the de facto industry reference. WCG extends existing benchmarking brand to contract/budget intelligence. Competitors cannot replicate without equivalent scale.' },
+          { stage: '4', timeline: '24+ mo', title: 'Network Lock-In', desc: 'Sites relying on benchmarking data are unlikely to switch. Sponsors engage because Mercury-equipped sites close faster. Classic two-sided network effect.' },
+        ].map((s) => (
+          <div key={s.stage} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">{s.stage}</span>
+              <span className="text-[10px] text-cream/40 font-mono">{s.timeline}</span>
+            </div>
+            <h4 className="text-xs font-semibold text-cream mb-1">{s.title}</h4>
+            <p className="text-[10px] text-cream/60">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>,
+    // Section 4: Before & After table
+    <div key="dfs-4">
+      <h3 className="text-sm font-semibold text-cream mb-3">Data Before &amp; After WCG</h3>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[11px] border-collapse">
+          <thead>
+            <tr className="border-b border-cream/20">
+              <th className="text-left py-2 pr-3 text-cream/60 font-medium">Dimension</th>
+              <th className="text-left py-2 pr-3 text-cream/60 font-medium">Mercury Standalone</th>
+              <th className="text-left py-2 text-cream/60 font-medium">Mercury + WCG (18 mo)</th>
+            </tr>
+          </thead>
+          <tbody className="text-cream/70">
+            <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Contract data points</td><td className="py-1.5 pr-3">~4,000 issue points + 2,000× growth</td><td className="py-1.5 text-green-300">50,000–100,000+ issue points</td></tr>
+            <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Agreement types</td><td className="py-1.5 pr-3">Primarily CTAs</td><td className="py-1.5 text-green-300">CTAs + budgets + consent + amendments</td></tr>
+            <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Site coverage</td><td className="py-1.5 pr-3">22 sites (mostly AMCs)</td><td className="py-1.5 text-green-300">100+ sites; access to 3,400+ institutions</td></tr>
+            <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Sponsor visibility</td><td className="py-1.5 pr-3">Major sponsors via site contracts</td><td className="py-1.5 text-green-300">Comprehensive via 5,000+ relationships</td></tr>
+            <tr><td className="py-1.5 pr-3">Benchmarking credibility</td><td className="py-1.5 pr-3">Emerging — strong early data</td><td className="py-1.5 text-green-300">Industry standard — statistically robust</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>,
+    // Section 5: Inferences
+    <div key="dfs-5">
+      <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
+        <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
+        <ul className="space-y-1 text-[10px] text-cream/60">
+          <li>&bull; At scale, the data asset could become <span className="text-cream/80 font-medium">as or more valuable than the software platform itself</span></li>
+          <li>&bull; WCG&apos;s benchmarking brand and industry relationships provide credibility and distribution</li>
+          <li>&bull; More data → better congruency scores → better outcomes → more adoption → more data</li>
+          <li>&bull; Competitors would need equivalent network coverage — a multi-year, capital-intensive effort</li>
+        </ul>
+      </div>
+    </div>,
+  ]
+
   slideContentMap['data-flywheel'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">WCG Data Flywheel</h2>
-            <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How will WCG&apos;s data assets create more differentiation for Mercury when combined?</p>
-          </div>
-
-          <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
-            <div className="text-xs uppercase tracking-wider text-amber-300 mb-1">Thesis</div>
-            <p className="text-xs text-cream/70">Mercury&apos;s ~4,000 analyzed issue points are the <span className="text-cream font-medium">seed corpus</span> for an AI-driven benchmarking engine. WCG&apos;s network would dramatically expand this — potentially by an order of magnitude within 12–18 months — creating a <span className="text-cream font-medium">self-reinforcing data flywheel</span> that becomes the industry standard for clinical trial contract and budget benchmarking.</p>
-          </div>
-
-          <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
-            <div className="text-xs uppercase tracking-wider text-green-300 mb-2">First Turn of the Flywheel — Concrete Example</div>
-            <p className="text-xs text-cream/70"><span className="text-cream/90 font-medium">Input:</span> WCG feeds its historical IRB review data (80K+ protocols, 31TB Knowledge Base) into Mercury&apos;s congruency pipeline. This is the first data asset WCG has that Mercury currently lacks.</p>
-            <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Output:</span> Mercury&apos;s AI can now predict protocol amendment risk based on IRB review patterns — e.g., &quot;protocols with X characteristic have a Y% likelihood of triggering a budget renegotiation within 6 months.&quot; This is a novel insight neither company can produce alone.</p>
-            <p className="text-xs text-cream/70 mt-1"><span className="text-cream/90 font-medium">Flywheel effect:</span> Sites that see amendment risk predictions close contracts faster → faster closings generate more data → more data improves predictions → attracting more sites.</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-              <h3 className="text-xs font-semibold text-cream mb-2">Mercury Standalone (Today)</h3>
-              <ul className="space-y-1 text-[10px] text-cream/60">
-                <li>&bull; ~4,000 analyzed issue points (seed from Mayo, Duke, UHN)</li>
-                <li>&bull; ~2,000× more contract data flowing through platform</li>
-                <li>&bull; 100% customer data rights — no opt-outs</li>
-                <li>&bull; 22+ active sites; targeting 50+ standalone this year</li>
-              </ul>
-            </div>
-            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-              <h3 className="text-xs font-semibold text-cream mb-2">WCG Volume Multiplier</h3>
-              <ul className="space-y-1 text-[10px] text-cream/60">
-                <li>&bull; 3,400+ institutional partners; 140,000+ PIs globally</li>
-                <li>&bull; 3,000+ new protocols reviewed annually</li>
-                <li>&bull; 58,000+ ethical reviews performed (cumulative)</li>
-                <li>&bull; ~2,000–5,000 estimated negotiation events per year</li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-cream mb-3">Flywheel Mechanics</h3>
-            <div className="grid md:grid-cols-4 gap-2">
-              {[
-                { stage: '1', timeline: '0–6 mo', title: 'Data Ingestion', desc: 'WCG routes negotiation volume through Mercury. Capturing a fraction of ~2,000–5,000 annual events would multiply data asset 5–10× in year one.' },
-                { stage: '2', timeline: '6–12 mo', title: 'Insights Enrichment', desc: 'Statistically robust insights across agreement types, sponsor-site pairings, therapeutic areas, and geographies. Novel benchmarking products become viable.' },
-                { stage: '3', timeline: '12–24 mo', title: 'Industry Benchmark', desc: 'Mercury\'s data becomes the de facto industry reference. WCG extends existing benchmarking brand to contract/budget intelligence. Competitors cannot replicate without equivalent scale.' },
-                { stage: '4', timeline: '24+ mo', title: 'Network Lock-In', desc: 'Sites relying on benchmarking data are unlikely to switch. Sponsors engage because Mercury-equipped sites close faster. Classic two-sided network effect.' },
-              ].map((s) => (
-                <div key={s.stage} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded">{s.stage}</span>
-                    <span className="text-[10px] text-cream/40 font-mono">{s.timeline}</span>
-                  </div>
-                  <h4 className="text-xs font-semibold text-cream mb-1">{s.title}</h4>
-                  <p className="text-[10px] text-cream/60">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-cream mb-3">Data Before &amp; After WCG</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-[11px] border-collapse">
-                <thead>
-                  <tr className="border-b border-cream/20">
-                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Dimension</th>
-                    <th className="text-left py-2 pr-3 text-cream/60 font-medium">Mercury Standalone</th>
-                    <th className="text-left py-2 text-cream/60 font-medium">Mercury + WCG (18 mo)</th>
-                  </tr>
-                </thead>
-                <tbody className="text-cream/70">
-                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Contract data points</td><td className="py-1.5 pr-3">~4,000 issue points + 2,000× growth</td><td className="py-1.5 text-green-300">50,000–100,000+ issue points</td></tr>
-                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Agreement types</td><td className="py-1.5 pr-3">Primarily CTAs</td><td className="py-1.5 text-green-300">CTAs + budgets + consent + amendments</td></tr>
-                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Site coverage</td><td className="py-1.5 pr-3">22 sites (mostly AMCs)</td><td className="py-1.5 text-green-300">100+ sites; access to 3,400+ institutions</td></tr>
-                  <tr className="border-b border-cream/5"><td className="py-1.5 pr-3">Sponsor visibility</td><td className="py-1.5 pr-3">Major sponsors via site contracts</td><td className="py-1.5 text-green-300">Comprehensive via 5,000+ relationships</td></tr>
-                  <tr><td className="py-1.5 pr-3">Benchmarking credibility</td><td className="py-1.5 pr-3">Emerging — strong early data</td><td className="py-1.5 text-green-300">Industry standard — statistically robust</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div>
-            <div className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-              <h3 className="text-xs font-semibold text-cream mb-2">Inferences</h3>
-              <ul className="space-y-1 text-[10px] text-cream/60">
-                <li>&bull; At scale, the data asset could become <span className="text-cream/80 font-medium">as or more valuable than the software platform itself</span></li>
-                <li>&bull; WCG&apos;s benchmarking brand and industry relationships provide credibility and distribution</li>
-                <li>&bull; More data → better congruency scores → better outcomes → more adoption → more data</li>
-                <li>&bull; Competitors would need equivalent network coverage — a multi-year, capital-intensive effort</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-5 px-4">
+      {_dataFlywheelSections}
+    </div>
   )
 }
 
@@ -2666,6 +2676,24 @@ function getSlideContent(slideId: string): React.ReactNode {
       <p className="text-cream/40">Slide &quot;{slideId}&quot; not found</p>
     </div>
   )
+}
+
+/**
+ * Get export sections for slides that need pagination.
+ * Returns null for slides that fit on a single page.
+ * Each array element is a section that can be grouped into pages.
+ */
+export function getMercuryExportSections(slideId: string): React.ReactNode[] | null {
+  // Ensure content is built
+  if (Object.keys(slideContentMap).length === 0) {
+    buildSlideContentMap()
+  }
+
+  if (slideId === 'data-flywheel') {
+    return _dataFlywheelSections
+  }
+
+  return null
 }
 
 export function MercuryDiligenceSlide({ slideId }: { slideId: string }) {
