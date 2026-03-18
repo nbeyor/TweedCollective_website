@@ -50,12 +50,17 @@ export const slides: SlideData[] = [
   },
   { id: 'executive-summary', title: 'Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'executive-summary' } } },
 
-  // ── Phase 1 — Business Value & Growth Thesis (slides 4–8) ──────────
-  { id: 'growth-thesis-exec', title: 'Phase 1: Growth Thesis Alignment — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-thesis-exec' } } },
-  { id: 'growth-projections', title: 'Growth Projections — Snapshot + Assumptions', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-projections' } } },
-  { id: 'offering-ai-growth-matrix', title: 'Offering + AI Initiatives ↔ Growth Drivers', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'offering-ai-growth-matrix' } } },
-  { id: 'ai-roadmap-fit', title: 'AI Roadmap Fit to Growth Thesis', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-roadmap-fit' } } },
-  { id: 'scenarios', title: 'Scenarios for Growth & Disruption Outcomes', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'scenarios' } } },
+  // ── Phase 1 — Business Value & Growth Thesis (slides 4–13) ─────────
+  { id: 'growth-thesis-exec-1', title: 'Phase 1: Growth Thesis Alignment — Executive Summary (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-thesis-exec-1' } } },
+  { id: 'growth-thesis-exec-2', title: 'Phase 1: Growth Thesis Alignment — Executive Summary (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-thesis-exec-2' } } },
+  { id: 'growth-projections-1', title: 'Growth Projections — Snapshot + Assumptions (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-projections-1' } } },
+  { id: 'growth-projections-2', title: 'Growth Projections — Snapshot + Assumptions (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'growth-projections-2' } } },
+  { id: 'offering-ai-growth-matrix-1', title: 'Offering + AI Initiatives ↔ Growth Drivers (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'offering-ai-growth-matrix-1' } } },
+  { id: 'offering-ai-growth-matrix-2', title: 'Offering + AI Initiatives ↔ Growth Drivers (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'offering-ai-growth-matrix-2' } } },
+  { id: 'ai-roadmap-fit-1', title: 'AI Roadmap Fit to Growth Thesis (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-roadmap-fit-1' } } },
+  { id: 'ai-roadmap-fit-2', title: 'AI Roadmap Fit to Growth Thesis (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-roadmap-fit-2' } } },
+  { id: 'scenarios-1', title: 'Scenarios for Growth & Disruption Outcomes (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'scenarios-1' } } },
+  { id: 'scenarios-2', title: 'Scenarios for Growth & Disruption Outcomes (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'scenarios-2' } } },
 
   // ── Phase 2 — AI Initiatives & Disruption Risk (slides 9–19) ───────
   { id: 'disruption-risk-exec', title: 'Phase 2: Disruption Risk — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'disruption-risk-exec' } } },

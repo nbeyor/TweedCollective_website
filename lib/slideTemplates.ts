@@ -263,6 +263,27 @@ export const layoutSpacing = {
 } as const
 
 // ============================================
+// Page Dimensions (Letter Landscape Export)
+// ============================================
+
+/**
+ * Standard page dimensions for letter landscape export.
+ * All slides must fit within these dimensions.
+ * When content exceeds maxContentHeight, split into multiple slides
+ * with "(1 of N)" / "(2 of N)" title suffixes.
+ */
+export const PAGE_DIMENSIONS = {
+  /** Full page width: 11in minus 2 × 0.5in margins */
+  width: '10in',
+  /** Full page height: 8.5in minus 2 × 0.5in margins */
+  height: '7.5in',
+  /** Usable content height after header, title, and padding */
+  maxContentHeight: '6in',
+  /** Aspect ratio for letter landscape (width / height) */
+  aspectRatio: '10 / 7.5',
+} as const
+
+// ============================================
 // Icon System
 // ============================================
 
