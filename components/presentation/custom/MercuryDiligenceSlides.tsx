@@ -664,11 +664,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['who-could-disrupt'] = (
+  slideContentMap['who-could-disrupt-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt (1 of 2)</h2>
           </div>
           <div className="space-y-4 mt-4">
             {[
@@ -689,6 +689,32 @@ function buildSlideContentMap() {
                   { name: 'Ironclad / Agiloft / DocuSign CLM', rtw: 'Established CLM platforms with AI', must: 'Need CTA-specific domain, multi-party architecture, regulatory compliance for clinical research' },
                 ]
               },
+            ].map((section) => (
+              <div key={section.mode} className={`p-4 bg-white/5 border-l-4 ${section.color} rounded-r-lg`}>
+                <h3 className="text-sm font-semibold text-cream mb-3">{section.mode}</h3>
+                <div className="space-y-3">
+                  {section.items.map((item) => (
+                    <div key={item.name} className="grid md:grid-cols-[1fr_1fr_1fr] gap-3 text-xs">
+                      <div className="font-medium text-cream/90">{item.name}</div>
+                      <div className="text-cream/60"><span className="text-cream/40 font-medium">Right to win:</span> {item.rtw}</div>
+                      <div className="text-cream/60"><span className="text-cream/40 font-medium">Must be true:</span> {item.must}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['who-could-disrupt-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt (2 of 2)</h2>
+          </div>
+          <div className="space-y-4 mt-4">
+            {[
               {
                 mode: 'Niche / Lightweight',
                 color: 'border-cream/20',
@@ -715,11 +741,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['what-they-would-build'] = (
+  slideContentMap['what-they-would-build-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build (1 of 2)</h2>
           </div>
           <div className="space-y-4 mt-4">
             {[
@@ -743,6 +769,31 @@ function buildSlideContentMap() {
                 timeline: '6–12 months to announce; 12–18 months to production (Veeva AI Agents roadmap targets 2026)',
                 cantReplicate: 'Mercury\u2019s neutrality positioning — Veeva is sponsor-aligned; domain-specific CTA playbooks co-developed with Mayo Clinic'
               },
+            ].map((row) => (
+              <div key={row.mode} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+                <h3 className="text-sm font-semibold text-cream mb-3">{row.mode}</h3>
+                <div className="grid md:grid-cols-3 gap-3 text-xs">
+                  <div><span className="text-cream/40 font-medium">Product concept:</span> <span className="text-cream/70">{row.concept}</span></div>
+                  <div><span className="text-cream/40 font-medium">Core functions:</span> <span className="text-cream/70">{row.functions}</span></div>
+                  <div><span className="text-cream/40 font-medium">Specific stack:</span> <span className="text-cream/70">{row.stack}</span></div>
+                  <div><span className="text-cream/40 font-medium">Build timeline &amp; cost:</span> <span className="text-cream/70">{row.timeline}</span></div>
+                  <div><span className="text-cream/40 font-medium">Why &quot;good enough&quot;:</span> <span className="text-cream/70">{row.why}</span></div>
+                  <div><span className="text-red-300/60 font-medium">Cannot easily replicate:</span> <span className="text-cream/70">{row.cantReplicate}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['what-they-would-build-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build (2 of 2)</h2>
+          </div>
+          <div className="space-y-4 mt-4">
+            {[
               {
                 mode: 'Niche (CRO Internal)',
                 concept: 'Internal AI contract review tool trained on thousands of historical CTAs',
@@ -821,11 +872,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['build-it-today'] = (
+  slideContentMap['build-it-today-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability (1 of 2)</h2>
           </div>
           <div className="mt-6 mb-2">
             <div className="flex items-center gap-0">
@@ -875,6 +926,15 @@ function buildSlideContentMap() {
                 <li>• Mayo Clinic collaboration and endorsement — cannot be replicated</li>
               </ul>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['build-it-today-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability (2 of 2)</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[11px] mb-4">
@@ -1402,11 +1462,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-inventory'] = (
+  slideContentMap['ai-inventory-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists) (1 of 2)</h2>
             <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-cream/50">
@@ -1474,6 +1534,21 @@ function buildSlideContentMap() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-inventory-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists) (2 of 2)</h2>
+            <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
+          </div>
+          <div className="flex items-center gap-4 text-[10px] text-cream/50">
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400" /> Shipped &amp; revenue-generating</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400" /> Shipped, pre-revenue / in development</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-red-400" /> Conceptual / planned</span>
           </div>
           {/* Data & Analytics */}
           <div>
@@ -1576,44 +1651,52 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-value-framework'] = (
+  slideContentMap['ai-value-framework-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework</h2>
-            <p className="text-sm text-cream/50">Internal vs External Value Buckets</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework (1 of 2)</h2>
+            <p className="text-sm text-cream/50">Internal Value Buckets</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 mt-4">
-            <div>
-              <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-3">Internal Value Buckets</h3>
-              <div className="space-y-3">
-                {[
-                  { bucket: 'Cost', def: 'Reduce labor cost per agreement', kpis: 'Hours per CTA; cost per completed negotiation; external counsel spend', proof: 'Before/after comparisons; FTE equivalents' },
-                  { bucket: 'Speed', def: 'Reduce cycle time from draft to execution', kpis: 'Days to signed CTA; rounds of negotiation; time to first response', proof: 'Time-series data; benchmarking' },
-                  { bucket: 'Productivity', def: 'Enable more agreements per FTE', kpis: 'CTAs per specialist/month; concurrent negotiations handled', proof: 'Throughput metrics; capacity utilization' },
-                ].map((b) => (
-                  <div key={b.bucket} className="p-3 bg-sage-500/5 border border-sage-500/20 rounded-lg">
-                    <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
-                    <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
-                    <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
-                  </div>
-                ))}
-              </div>
+          <div className="mt-4">
+            <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-3">Internal Value Buckets</h3>
+            <div className="space-y-3">
+              {[
+                { bucket: 'Cost', def: 'Reduce labor cost per agreement', kpis: 'Hours per CTA; cost per completed negotiation; external counsel spend', proof: 'Before/after comparisons; FTE equivalents' },
+                { bucket: 'Speed', def: 'Reduce cycle time from draft to execution', kpis: 'Days to signed CTA; rounds of negotiation; time to first response', proof: 'Time-series data; benchmarking' },
+                { bucket: 'Productivity', def: 'Enable more agreements per FTE', kpis: 'CTAs per specialist/month; concurrent negotiations handled', proof: 'Throughput metrics; capacity utilization' },
+              ].map((b) => (
+                <div key={b.bucket} className="p-3 bg-sage-500/5 border border-sage-500/20 rounded-lg">
+                  <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
+                  <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
+                  <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
+                </div>
+              ))}
             </div>
-            <div>
-              <h3 className="text-xs uppercase tracking-wider text-purple-300 mb-3">External Value Buckets</h3>
-              <div className="space-y-3">
-                {[
-                  { bucket: 'Pricing Power', def: 'Premium pricing via AI-differentiated capabilities', kpis: 'Price per seat/agreement; willingness to pay vs. alternatives; margin', proof: 'Pricing studies; competitive benchmarking' },
-                  { bucket: 'Speed-to-Close', def: 'Reduce time from prospect interest to signed deal', kpis: 'Trial start-up time (CTA portion); site activation timeline', proof: 'Customer case studies; industry benchmarks' },
-                ].map((b) => (
-                  <div key={b.bucket} className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
-                    <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
-                    <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
-                    <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
-                  </div>
-                ))}
-              </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-value-framework-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework (2 of 2)</h2>
+            <p className="text-sm text-cream/50">External Value Buckets</p>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-xs uppercase tracking-wider text-purple-300 mb-3">External Value Buckets</h3>
+            <div className="space-y-3">
+              {[
+                { bucket: 'Pricing Power', def: 'Premium pricing via AI-differentiated capabilities', kpis: 'Price per seat/agreement; willingness to pay vs. alternatives; margin', proof: 'Pricing studies; competitive benchmarking' },
+                { bucket: 'Speed-to-Close', def: 'Reduce time from prospect interest to signed deal', kpis: 'Trial start-up time (CTA portion); site activation timeline', proof: 'Customer case studies; industry benchmarks' },
+              ].map((b) => (
+                <div key={b.bucket} className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
+                  <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
+                  <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
+                  <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
