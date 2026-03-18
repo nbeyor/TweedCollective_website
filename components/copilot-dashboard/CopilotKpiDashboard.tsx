@@ -40,6 +40,7 @@ import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
 import { SizeComplexityQaHeatmap } from './charts/SizeComplexityQaHeatmap'
 import { CumulativeChart } from './charts/CumulativeChart'
 import { SurveySection } from '../dashboard/charts/SurveySection'
+import { CopilotCorrelationChart } from './charts/CopilotCorrelationChart'
 import { MethodologyFooter } from './charts/MethodologyFooter'
 
 export function CopilotKpiDashboard() {
@@ -104,6 +105,7 @@ export function CopilotKpiDashboard() {
 
         <div className="grid grid-cols-2 gap-4 mb-8">
           <CopilotAdoptionChart data={filtered} />
+          <CopilotCorrelationChart data={filtered} />
           <SizeComplexityHeatmap data={filtered} />
           <CumulativeChart data={filtered} />
           <SizeComplexityQaHeatmap data={filtered} />
