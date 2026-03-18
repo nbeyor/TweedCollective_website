@@ -1702,11 +1702,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-value-proof'] = (
+  slideContentMap['ai-value-proof-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples (1 of 2)</h2>
             <p className="text-xs text-cream/50">These are product capabilities that generate external (revenue-driving) value</p>
           </div>
           <div className="space-y-4 mt-4">
@@ -1729,6 +1729,52 @@ function buildSlideContentMap() {
                 comparables: 'No direct comparable in CTA-specific structured data',
                 mercuryPosition: 'Ahead — no competitor has CTA-specific structured data at clause level. Luminance has general contract analytics but not clinical trial domain depth.'
               },
+            ].map((ex) => (
+              <div key={ex.title} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+                <h3 className="text-sm font-semibold text-cream mb-1">{ex.title}</h3>
+                <p className="text-[10px] text-purple-300 font-medium mb-3">{ex.classification}</p>
+                <div className="grid md:grid-cols-2 gap-3 text-[11px]">
+                  <div>
+                    <span className="text-cream/40 font-medium">Value drivers:</span>
+                    <p className="text-cream/70 mt-0.5">{ex.valueDrivers}</p>
+                  </div>
+                  <div>
+                    <span className="text-cream/40 font-medium">Proof:</span>
+                    <p className="text-yellow-300/70 mt-0.5">{ex.proof}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-cream/40">Replicability:</span>
+                    <RatingBadge rating={ex.replicability} />
+                  </div>
+                  <div className="flex-1 h-1.5 bg-cream/10 rounded-full overflow-hidden max-w-[120px]">
+                    <div className={`h-full rounded-full ${
+                      ex.replicability === 'MEDIUM-HIGH' ? 'bg-red-400 w-[70%]' :
+                      ex.replicability === 'MEDIUM' ? 'bg-yellow-400 w-[55%]' :
+                      ex.replicability === 'LOW' ? 'bg-green-400 w-[20%]' :
+                      'bg-yellow-400 w-[55%]'
+                    }`} />
+                  </div>
+                  <span className="text-[10px] text-cream/50">{ex.replicabilityNote}</span>
+                </div>
+                <p className="text-[10px] text-cream/40 mt-1">Comparables: {ex.comparables}</p>
+                <p className="text-[10px] text-purple-300/80 mt-1"><span className="font-medium">Mercury vs. benchmark:</span> {ex.mercuryPosition}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-value-proof-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples (2 of 2)</h2>
+            <p className="text-xs text-cream/50">These are product capabilities that generate external (revenue-driving) value</p>
+          </div>
+          <div className="space-y-4 mt-4">
+            {[
               {
                 title: 'Multi-Party Negotiation with AI Compliance',
                 classification: 'EXTERNAL value — speed-to-close',
