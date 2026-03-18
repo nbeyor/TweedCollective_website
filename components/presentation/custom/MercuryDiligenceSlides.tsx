@@ -1294,11 +1294,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['people-roles'] = (
+  slideContentMap['people-roles-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (1 of 2)</h2>
             <p className="text-xs text-cream/50">Accountability map updated with org chart shared during diligence</p>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1327,6 +1327,16 @@ function buildSlideContentMap() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['people-roles-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (2 of 2)</h2>
+            <p className="text-xs text-cream/50">R&amp;D allocation and key observations</p>
           </div>
           <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
             <h3 className="text-xs uppercase tracking-wider text-taupe-300 mb-2">R&amp;D Allocation Model (per management)</h3>
