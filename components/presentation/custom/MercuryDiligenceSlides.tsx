@@ -566,13 +566,13 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['scenarios'] = (
+  slideContentMap['scenarios-1'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios (2–3) for Outcomes</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios for Growth & Disruption Outcomes (1 of 2)</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-4 mt-6">
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-5 bg-green-500/5 border border-green-500/20 rounded-xl">
               <Rocket className="w-6 h-6 text-green-400 mb-2" />
               <div className="flex items-center justify-between mb-2">
@@ -597,6 +597,18 @@ function buildSlideContentMap() {
                 <div><span className="text-cream/50 font-medium">Implications:</span> Deepen site-side value; consider white-label/OEM for sponsors; strengthen partnership channel</div>
               </div>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['scenarios-2'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios for Growth & Disruption Outcomes (2 of 2)</h2>
+            <p className="text-sm text-cream/50 italic">Continued — Downside Scenario</p>
+          </div>
+          <div className="grid md:grid-cols-1 gap-4 mt-6 max-w-2xl">
             <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-xl">
               <AlertTriangle className="w-6 h-6 text-red-400 mb-2" />
               <div className="flex items-center justify-between mb-2">
