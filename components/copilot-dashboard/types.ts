@@ -39,6 +39,7 @@ export interface CopilotDashboardData {
   sizeComplexity: SizeComplexityEntry[]
   availability: AvailabilityEntry[]
   copilotAdoption: CopilotAdoption | null
+  copilotPrCorrelation: CopilotPrCorrelation | null
   survey?: SurveyData | null
 }
 
@@ -98,7 +99,38 @@ export interface CopilotWeeklyEntry {
   copilotPct: number
   totalCodeGen: number
   totalCodeAccept: number
-  agentUsers: number
-  chatUsers: number
+  agentUsers?: number
+  chatUsers?: number
   locAdded: number
+}
+
+export interface CopilotPrCorrelation {
+  totalTickets: number
+  assistedTickets: number
+  nonAssistedTickets: number
+  assistedProductivity: number
+  nonAssistedProductivity: number
+  productivityLift: string
+  assistedQAChurn: number
+  nonAssistedQAChurn: number
+  qaChurnDelta: string
+  weeklyComparison: CopilotCorrelationWeekly[]
+  copilotIntensity: Record<string, IntensityBucket>
+}
+
+export interface CopilotCorrelationWeekly {
+  week: string
+  assistedTickets: number
+  nonAssistedTickets: number
+  assistedProductivity: number | null
+  nonAssistedProductivity: number | null
+  assistedQARate: number | null
+  nonAssistedQARate: number | null
+}
+
+export interface IntensityBucket {
+  tickets: number
+  productivity: number
+  qaChurn: number
+  avgSuggestions: number
 }
