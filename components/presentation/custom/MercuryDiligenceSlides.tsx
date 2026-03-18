@@ -1022,11 +1022,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['product-asset'] = (
+  slideContentMap['product-asset-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength (1 of 2)</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1051,7 +1051,18 @@ function buildSlideContentMap() {
                 <li>• CTO&apos;s research focused on transparency, market dynamics, volatility reduction</li>
               </ul>
             </div>
-            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl md:col-span-2">
+          </div>
+        </div>
+  )
+
+  slideContentMap['product-asset-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength (2 of 2)</h2>
+          </div>
+          <div className="grid md:grid-cols-1 gap-4 mt-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Lock className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Switching Friction / Stickiness</h3>
               <div className="grid md:grid-cols-2 gap-3 text-xs text-cream/70">
@@ -1225,11 +1236,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['team-ops-exec'] = (
+  slideContentMap['team-ops-exec-1'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary (1 of 2)</h2>
             <p className="text-xs text-cream/50">Per management: ~15 people across four functional teams (development, product, support, analytics)</p>
           </div>
           <div className="space-y-3 mt-6">
@@ -1248,6 +1259,15 @@ function buildSlideContentMap() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['team-ops-exec-2'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary (2 of 2)</h2>
           </div>
           <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
             <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Key Person Retention — WCG Integration Priority</div>
@@ -1821,11 +1841,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['internal-value-proofs'] = (
+  slideContentMap['internal-value-proofs-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs (1 of 2)</h2>
             <p className="text-xs text-cream/50">Cost, Speed, Productivity — tied to CI/CD and AI-enabled engineering model</p>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -1855,6 +1875,16 @@ function buildSlideContentMap() {
                 <li>&bull; Weekly calls to refine AI coding agent and process</li>
               </ul>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['internal-value-proofs-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs (2 of 2)</h2>
+            <p className="text-xs text-cream/50">Quantified proof points and CI/CD integration</p>
           </div>
           <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50 mb-2">
             <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Quantified Internal Proof Points</div>
