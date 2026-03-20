@@ -10,7 +10,7 @@
 --   Phase 3 (Mature):     Feb 7, 2026+ — 80%+ weekly Copilot adoption
 --
 -- Usage: Run each numbered query independently. The VIEW (v_tickets) must be
---        created first as it is referenced by queries 1–4.
+--        created first as it is referenced by queries 1–4 and 7–8.
 -- ============================================================================
 
 
@@ -44,16 +44,26 @@ CREATE TABLE IF NOT EXISTS pr_jira_metrics (
     qa_churn_lines           INTEGER     NOT NULL DEFAULT 0
 );
 
--- GitHub Copilot telemetry — one row per user per day.
--- Maps to the "Copilot_All" Excel sheet.
+-- Copilot / AI telemetry — one row per user per day.
+-- Supports two source formats:
+--   Legacy: "Copilot_All" sheet (GithubUserId-based)
+--   New:    "AI All MM_DD_YY" sheet (AuthorUUID-based, enables PR correlation)
+--
+-- Column names use the canonical (normalized) form from _load_copilot_df().
+-- When loading legacy data, map: GithubUserId→user_id,
+--   CodeGenerationActivityCount→suggestions, CodeAcceptanceActivityCount→acceptances,
+--   LocAddedSum→loc_added.
+-- When loading new data, map: AuthorUUID→user_id,
+--   suggestionCount→suggestions, acceptedSuggestionCount→acceptances,
+--   LineCountAdded→loc_added.
 CREATE TABLE IF NOT EXISTS copilot_telemetry (
-    event_day                          DATE    NOT NULL,
-    github_user_id                     TEXT    NOT NULL,
-    code_generation_activity_count     INTEGER NOT NULL DEFAULT 0,
-    code_acceptance_activity_count     INTEGER NOT NULL DEFAULT 0,
-    used_agent                         BOOLEAN NOT NULL DEFAULT FALSE,
-    used_chat                          BOOLEAN NOT NULL DEFAULT FALSE,
-    loc_added_sum                      INTEGER NOT NULL DEFAULT 0
+    event_day       DATE    NOT NULL,
+    user_id         TEXT    NOT NULL,     -- AuthorUUID (new) or GithubUserId (legacy)
+    suggestions     INTEGER NOT NULL DEFAULT 0,
+    acceptances     INTEGER NOT NULL DEFAULT 0,
+    used_agent      BOOLEAN DEFAULT NULL, -- may be absent in new format
+    used_chat       BOOLEAN DEFAULT NULL, -- may be absent in new format
+    loc_added       INTEGER NOT NULL DEFAULT 0
 );
 
 
@@ -425,20 +435,20 @@ ORDER BY g.size_bucket, g.complexity_bucket;
 -- and lines of code added from GitHub Copilot telemetry.
 
 WITH total_users AS (
-    SELECT COUNT(DISTINCT github_user_id) AS total FROM copilot_telemetry
+    SELECT COUNT(DISTINCT user_id) AS total FROM copilot_telemetry
 ),
 weekly_copilot AS (
     SELECT
         -- Saturday-ending week (same bucketing as PR data)
         (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date  AS week_ending,
-        COUNT(DISTINCT github_user_id)                                 AS active_users,
-        SUM(code_generation_activity_count)                            AS total_code_gen,
-        SUM(code_acceptance_activity_count)                            AS total_code_accept,
-        -- Users who used agent at least once this week
-        COUNT(DISTINCT CASE WHEN used_agent THEN github_user_id END)   AS agent_users,
-        -- Users who used chat at least once this week
-        COUNT(DISTINCT CASE WHEN used_chat  THEN github_user_id END)   AS chat_users,
-        SUM(loc_added_sum)                                             AS loc_added
+        COUNT(DISTINCT user_id)                                        AS active_users,
+        SUM(suggestions)                                               AS total_code_gen,
+        SUM(acceptances)                                               AS total_code_accept,
+        -- Users who used agent at least once this week (NULL-safe for new format)
+        COUNT(DISTINCT CASE WHEN used_agent THEN user_id END)          AS agent_users,
+        -- Users who used chat at least once this week (NULL-safe for new format)
+        COUNT(DISTINCT CASE WHEN used_chat  THEN user_id END)          AS chat_users,
+        SUM(loc_added)                                                 AS loc_added
     FROM copilot_telemetry
     GROUP BY (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
 )
@@ -468,10 +478,10 @@ ORDER BY w.week_ending;
 
 WITH user_days AS (
     SELECT
-        github_user_id,
+        user_id,
         COUNT(DISTINCT event_day) AS days_active
     FROM copilot_telemetry
-    GROUP BY github_user_id
+    GROUP BY user_id
 ),
 tiers AS (
     SELECT
@@ -488,7 +498,7 @@ recent_daily AS (
     -- Average daily users over the most recent 4 weeks
     SELECT AVG(daily_users) AS avg_daily_users
     FROM (
-        SELECT event_day, COUNT(DISTINCT github_user_id) AS daily_users
+        SELECT event_day, COUNT(DISTINCT user_id) AS daily_users
         FROM copilot_telemetry
         WHERE event_day >= (
             SELECT MIN(week_start) FROM (
@@ -509,7 +519,7 @@ monthly_trend AS (
     FROM (
         SELECT
             date_trunc('month', event_day)::date AS month,
-            COUNT(DISTINCT github_user_id) AS monthly_users,
+            COUNT(DISTINCT user_id) AS monthly_users,
             ROW_NUMBER() OVER (ORDER BY date_trunc('month', event_day)) AS month_rank,
             COUNT(*) OVER () AS month_count
         FROM copilot_telemetry
@@ -517,7 +527,7 @@ monthly_trend AS (
     ) m
 )
 SELECT
-    (SELECT COUNT(DISTINCT github_user_id) FROM copilot_telemetry) AS total_copilot_users,
+    (SELECT COUNT(DISTINCT user_id) FROM copilot_telemetry) AS total_copilot_users,
     MAX(CASE WHEN tier = 'heavy'  THEN user_count ELSE 0 END)     AS heavy_users,
     MAX(CASE WHEN tier = 'medium' THEN user_count ELSE 0 END)     AS medium_users,
     MAX(CASE WHEN tier = 'light'  THEN user_count ELSE 0 END)     AS light_users,
@@ -527,3 +537,320 @@ SELECT
         || (SELECT last_month_users FROM monthly_trend)
         || ' monthly users'                                        AS adoption_trend
 FROM tiers;
+
+
+-- ============================================================================
+-- QUERY 7: Copilot-PR Correlation — Weekly Assisted vs Non-Assisted
+-- ============================================================================
+-- Mirrors: refresh_copilot.py → compute_copilot_pr_correlation()
+--
+-- Requires the NEW format (AuthorUUID-based telemetry) where user_id matches
+-- author_uuid in pr_jira_metrics. Correlates Copilot usage with PRs by
+-- matching AuthorUUID + week. A ticket is "Copilot-assisted" if any of its
+-- PRs were authored by someone with Copilot suggestions that same week.
+--
+-- Returns:
+--   Part A: Weekly comparison (assisted vs non-assisted productivity & QA)
+--   Part B: Overall mature-period summary with productivity lift & QA delta
+
+WITH copilot_weekly_by_user AS (
+    -- Aggregate copilot telemetry to (user_id, week) level
+    SELECT
+        user_id,
+        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        SUM(suggestions)  AS suggestions,
+        SUM(acceptances)  AS acceptances
+    FROM copilot_telemetry
+    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+),
+pr_with_copilot AS (
+    -- Join each PR with its author's copilot activity for that week
+    SELECT
+        p.jira_ticket,
+        p.author_uuid,
+        p.pr_end,
+        p.pr_files,
+        p.pr_lines,
+        p.qa_churn_lines,
+        (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        COALESCE(c.suggestions, 0)  AS copilot_suggestions,
+        COALESCE(c.acceptances, 0)  AS copilot_acceptances,
+        (COALESCE(c.suggestions, 0) > 0) AS copilot_assisted
+    FROM pr_jira_metrics p
+    LEFT JOIN copilot_weekly_by_user c
+        ON p.author_uuid::text = c.user_id
+        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+),
+corr_tickets AS (
+    -- Aggregate to ticket level with copilot flags
+    SELECT
+        jira_ticket,
+        MAX(pr_end)::date AS pr_end_date,
+        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        SUM(pr_lines)              AS total_lines,
+        MAX(pr_files)              AS max_files,
+        SUM(qa_churn_lines)        AS total_qa_churn_lines,
+        (SUM(qa_churn_lines) > 0)  AS has_qa_churn,
+        BOOL_OR(copilot_assisted)  AS copilot_assisted,
+        SUM(copilot_suggestions)   AS total_suggestions,
+        SUM(copilot_acceptances)   AS total_acceptances
+    FROM pr_with_copilot
+    GROUP BY jira_ticket
+),
+mature_corr AS (
+    SELECT * FROM corr_tickets
+    WHERE pr_end_date >= current_setting('app.mature_start')::date
+),
+-- Part A: Weekly comparison
+weekly_assisted AS (
+    SELECT
+        week_ending,
+        COUNT(*) AS assisted_tickets,
+        COUNT(DISTINCT (SELECT p.author_uuid FROM pr_jira_metrics p WHERE p.jira_ticket = t.jira_ticket LIMIT 1))
+            AS assisted_authors,
+        SUM(CASE WHEN has_qa_churn THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(*), 0) AS assisted_qa_rate
+    FROM mature_corr t
+    WHERE copilot_assisted
+    GROUP BY week_ending
+),
+weekly_non_assisted AS (
+    SELECT
+        week_ending,
+        COUNT(*) AS non_assisted_tickets,
+        COUNT(DISTINCT (SELECT p.author_uuid FROM pr_jira_metrics p WHERE p.jira_ticket = t.jira_ticket LIMIT 1))
+            AS non_assisted_authors,
+        SUM(CASE WHEN has_qa_churn THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(*), 0) AS non_assisted_qa_rate
+    FROM mature_corr t
+    WHERE NOT copilot_assisted
+    GROUP BY week_ending
+),
+-- Get unique authors per week per group more accurately
+weekly_assisted_authors AS (
+    SELECT
+        t.week_ending,
+        COUNT(DISTINCT p.author_uuid) AS author_count
+    FROM mature_corr t
+    JOIN pr_jira_metrics p ON p.jira_ticket = t.jira_ticket
+    WHERE t.copilot_assisted
+    GROUP BY t.week_ending
+),
+weekly_non_assisted_authors AS (
+    SELECT
+        t.week_ending,
+        COUNT(DISTINCT p.author_uuid) AS author_count
+    FROM mature_corr t
+    JOIN pr_jira_metrics p ON p.jira_ticket = t.jira_ticket
+    WHERE NOT t.copilot_assisted
+    GROUP BY t.week_ending
+),
+all_mature_weeks AS (
+    SELECT DISTINCT week_ending FROM mature_corr
+)
+SELECT
+    w.week_ending,
+    COALESCE(a.assisted_tickets, 0)    AS assisted_tickets,
+    COALESCE(na.non_assisted_tickets, 0) AS non_assisted_tickets,
+    -- Assisted productivity = tickets / (authors × 5)
+    CASE WHEN COALESCE(a.assisted_tickets, 0) > 0
+         THEN ROUND(a.assisted_tickets::numeric
+              / (GREATEST(COALESCE(aa.author_count, 1), 1) * current_setting('app.workdays_per_week')::int), 6)
+         ELSE NULL
+    END AS assisted_productivity,
+    -- Non-assisted productivity
+    CASE WHEN COALESCE(na.non_assisted_tickets, 0) > 0
+         THEN ROUND(na.non_assisted_tickets::numeric
+              / (GREATEST(COALESCE(naa.author_count, 1), 1) * current_setting('app.workdays_per_week')::int), 6)
+         ELSE NULL
+    END AS non_assisted_productivity,
+    ROUND(a.assisted_qa_rate, 6)       AS assisted_qa_rate,
+    ROUND(na.non_assisted_qa_rate, 6)  AS non_assisted_qa_rate
+FROM all_mature_weeks w
+LEFT JOIN weekly_assisted a USING (week_ending)
+LEFT JOIN weekly_non_assisted na USING (week_ending)
+LEFT JOIN weekly_assisted_authors aa USING (week_ending)
+LEFT JOIN weekly_non_assisted_authors naa USING (week_ending)
+ORDER BY w.week_ending;
+
+
+-- ============================================================================
+-- QUERY 7b: Copilot-PR Correlation — Overall Summary
+-- ============================================================================
+-- Mirrors: the summary portion of compute_copilot_pr_correlation()
+--
+-- Mean-of-weekly productivity for assisted vs non-assisted, plus deltas.
+
+WITH copilot_weekly_by_user AS (
+    SELECT
+        user_id,
+        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        SUM(suggestions) AS suggestions
+    FROM copilot_telemetry
+    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+),
+pr_with_copilot AS (
+    SELECT
+        p.jira_ticket,
+        p.author_uuid,
+        p.pr_end,
+        p.qa_churn_lines,
+        (COALESCE(c.suggestions, 0) > 0) AS copilot_assisted
+    FROM pr_jira_metrics p
+    LEFT JOIN copilot_weekly_by_user c
+        ON p.author_uuid::text = c.user_id
+        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+),
+corr_tickets AS (
+    SELECT
+        jira_ticket,
+        MAX(pr_end)::date AS pr_end_date,
+        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (SUM(qa_churn_lines) > 0) AS has_qa_churn,
+        BOOL_OR(copilot_assisted) AS copilot_assisted
+    FROM pr_with_copilot
+    GROUP BY jira_ticket
+),
+mature_corr AS (
+    SELECT * FROM corr_tickets
+    WHERE pr_end_date >= current_setting('app.mature_start')::date
+),
+-- Weekly productivity per group
+weekly_stats AS (
+    SELECT
+        t.week_ending,
+        t.copilot_assisted,
+        COUNT(*) AS tickets,
+        COUNT(DISTINCT p.author_uuid) AS authors,
+        SUM(CASE WHEN t.has_qa_churn THEN 1 ELSE 0 END) AS qa_tickets
+    FROM mature_corr t
+    JOIN pr_jira_metrics p ON p.jira_ticket = t.jira_ticket
+    GROUP BY t.week_ending, t.copilot_assisted
+),
+avg_prod AS (
+    SELECT
+        copilot_assisted,
+        AVG(tickets::numeric / (GREATEST(authors, 1) * current_setting('app.workdays_per_week')::int))
+            AS mean_productivity
+    FROM weekly_stats
+    GROUP BY copilot_assisted
+),
+overall_qa AS (
+    SELECT
+        copilot_assisted,
+        SUM(CASE WHEN has_qa_churn THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(*), 0) AS qa_churn
+    FROM mature_corr
+    GROUP BY copilot_assisted
+)
+SELECT
+    (SELECT COUNT(*) FROM mature_corr)                                    AS total_tickets,
+    (SELECT COUNT(*) FROM mature_corr WHERE copilot_assisted)             AS assisted_tickets,
+    (SELECT COUNT(*) FROM mature_corr WHERE NOT copilot_assisted)         AS non_assisted_tickets,
+    ROUND(a_prod.mean_productivity, 4)                                    AS assisted_productivity,
+    ROUND(na_prod.mean_productivity, 4)                                   AS non_assisted_productivity,
+    -- Productivity lift: (assisted - non_assisted) / non_assisted × 100
+    ROUND(
+        (a_prod.mean_productivity - na_prod.mean_productivity)
+        / NULLIF(na_prod.mean_productivity, 0) * 100, 1
+    )                                                                     AS productivity_lift_pct,
+    ROUND(a_qa.qa_churn, 4)                                               AS assisted_qa_churn,
+    ROUND(na_qa.qa_churn, 4)                                              AS non_assisted_qa_churn,
+    -- QA churn delta: (assisted - non_assisted) / non_assisted × 100
+    ROUND(
+        (a_qa.qa_churn - na_qa.qa_churn)
+        / NULLIF(na_qa.qa_churn, 0) * 100, 1
+    )                                                                     AS qa_churn_delta_pct
+FROM
+    (SELECT mean_productivity FROM avg_prod WHERE copilot_assisted)       a_prod,
+    (SELECT mean_productivity FROM avg_prod WHERE NOT copilot_assisted)   na_prod,
+    (SELECT qa_churn FROM overall_qa WHERE copilot_assisted)              a_qa,
+    (SELECT qa_churn FROM overall_qa WHERE NOT copilot_assisted)          na_qa;
+
+
+-- ============================================================================
+-- QUERY 8: Copilot Intensity Buckets
+-- ============================================================================
+-- Mirrors: refresh_copilot.py → compute_copilot_pr_correlation() intensity portion
+--
+-- Classifies mature-period tickets by total Copilot suggestions received:
+--   none:   0 suggestions
+--   low:    1–10 suggestions
+--   medium: 11–50 suggestions
+--   high:   51+ suggestions
+--
+-- For each bucket: ticket count, productivity, QA churn rate, avg suggestions.
+
+WITH copilot_weekly_by_user AS (
+    SELECT
+        user_id,
+        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        SUM(suggestions) AS suggestions,
+        SUM(acceptances) AS acceptances
+    FROM copilot_telemetry
+    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+),
+pr_with_copilot AS (
+    SELECT
+        p.jira_ticket,
+        p.author_uuid,
+        p.pr_end,
+        p.pr_files,
+        p.pr_lines,
+        p.qa_churn_lines,
+        COALESCE(c.suggestions, 0) AS copilot_suggestions
+    FROM pr_jira_metrics p
+    LEFT JOIN copilot_weekly_by_user c
+        ON p.author_uuid::text = c.user_id
+        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+),
+corr_tickets AS (
+    SELECT
+        jira_ticket,
+        MAX(pr_end)::date AS pr_end_date,
+        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (SUM(qa_churn_lines) > 0) AS has_qa_churn,
+        SUM(copilot_suggestions)  AS total_suggestions
+    FROM pr_with_copilot
+    GROUP BY jira_ticket
+),
+mature_intensity AS (
+    SELECT
+        *,
+        CASE
+            WHEN total_suggestions = 0  THEN 'none'
+            WHEN total_suggestions <= 10 THEN 'low'
+            WHEN total_suggestions <= 50 THEN 'medium'
+            ELSE 'high'
+        END AS intensity_bucket
+    FROM corr_tickets
+    WHERE pr_end_date >= current_setting('app.mature_start')::date
+),
+-- Per-bucket: authors and weeks for FTE-day normalization
+bucket_context AS (
+    SELECT
+        mi.intensity_bucket,
+        COUNT(*)                         AS ticket_count,
+        COUNT(DISTINCT mi.week_ending)   AS weeks,
+        COUNT(DISTINCT p.author_uuid)    AS authors,
+        SUM(CASE WHEN mi.has_qa_churn THEN 1 ELSE 0 END) AS qa_tickets,
+        AVG(mi.total_suggestions)        AS avg_suggestions
+    FROM mature_intensity mi
+    JOIN pr_jira_metrics p ON p.jira_ticket = mi.jira_ticket
+    GROUP BY mi.intensity_bucket
+)
+SELECT
+    intensity_bucket,
+    ticket_count,
+    -- Productivity = tickets / (authors × weeks × 5)
+    ROUND(
+        ticket_count::numeric
+        / NULLIF(GREATEST(authors, 1) * GREATEST(weeks, 1) * current_setting('app.workdays_per_week')::int, 0)
+    , 4)                                                  AS productivity,
+    ROUND(qa_tickets::numeric / NULLIF(ticket_count, 0), 4) AS qa_churn,
+    ROUND(avg_suggestions::numeric, 1)                    AS avg_suggestions
+FROM bucket_context
+ORDER BY
+    CASE intensity_bucket
+        WHEN 'none'   THEN 1
+        WHEN 'low'    THEN 2
+        WHEN 'medium' THEN 3
+        WHEN 'high'   THEN 4
+    END;
