@@ -3082,39 +3082,6 @@ function getSlideContent(slideId: string): React.ReactNode {
   )
 }
 
-/**
- * Get export sections for slides that need pagination.
- * For data-flywheel, returns pre-built manually curated sections.
- * For other slides, generically extracts top-level children from the
- * wrapper div as semantic sections (each child = one section).
- * Returns null only if the slide doesn't exist.
- */
-export function getMercuryExportSections(slideId: string): React.ReactNode[] | null {
-  // Ensure content is built
-  if (Object.keys(slideContentMap).length === 0) {
-    buildSlideContentMap()
-  }
-
-  // Pre-built sections for manually curated slides
-  if (slideId === 'data-flywheel') {
-    return _dataFlywheelSections
-  }
-
-  // Generic: extract top-level children from any slide's wrapper div
-  const content = slideContentMap[slideId]
-  if (!content) return null
-
-  const element = content as React.ReactElement
-  if (element?.props?.children) {
-    const children = React.Children.toArray(element.props.children)
-    if (children.length >= 2) {
-      return children as React.ReactNode[]
-    }
-  }
-
-  return null
-}
-
 export function MercuryDiligenceSlide({ slideId }: { slideId: string }) {
   return <>{getSlideContent(slideId)}</>
 }
