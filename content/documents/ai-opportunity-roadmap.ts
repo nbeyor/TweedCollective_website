@@ -6,6 +6,11 @@
  *
  * Updated: March 20, 2026 per MKG_AI_Assessment_EDIT_GUIDE
  * 42 slides total (split dense slides for letter landscape fit)
+ *
+ * SLIDE SIZING RULE: Each slide must fit within letter landscape
+ * (10in × 7.5in, ~6in usable content height after header).
+ * If content exceeds this, split into multiple slides with
+ * "(1 of N)" / "(2 of N)" title suffixes.
  */
 
 import { SlideData } from '@/lib/types'

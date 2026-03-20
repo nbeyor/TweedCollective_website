@@ -1037,6 +1037,37 @@ export default async function DocumentExportPage({
             transform: none !important;
           }
         }
+
+        /* Dev-time overflow warning: screen-only indicator for slides that exceed page height */
+        @media screen {
+          .export-slide[data-overflow="true"] {
+            outline: 3px solid #dc2626;
+          }
+          .export-slide[data-overflow="true"]::after {
+            content: 'Content exceeds page — split this slide';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            z-index: 10;
+          }
+        }
+      `}} />
+
+      {/* Client-side overflow detection script (screen preview only) */}
+      <script dangerouslySetInnerHTML={{__html: `
+        if (typeof window !== 'undefined' && !window.matchMedia('print').matches) {
+          requestAnimationFrame(function checkOverflow() {
+            document.querySelectorAll('.export-slide').forEach(function(slide) {
+              slide.setAttribute('data-overflow',
+                slide.scrollHeight > slide.clientHeight ? 'true' : 'false'
+              );
+            });
+          });
+        }
       `}} />
 
       {/* Print instruction header (hidden on print) */}

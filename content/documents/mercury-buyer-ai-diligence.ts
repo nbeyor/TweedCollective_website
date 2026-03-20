@@ -9,7 +9,12 @@
  * component for now due to the complexity of the 40-slide document.
  * Future refactor: progressively extract text/data into this file's props.
  *
- * Structure: Front Matter → Phase 1–4 (39 slides)
+ * Structure: Front Matter → Phase 1–4 (65 slides)
+ *
+ * SLIDE SIZING RULE: Each slide must fit within letter landscape
+ * (10in × 7.5in, ~6in usable content height after header).
+ * If content exceeds this, split into multiple slides with
+ * "(1 of N)" / "(2 of N)" title suffixes.
  */
 
 import { SlideData } from '@/lib/types'
