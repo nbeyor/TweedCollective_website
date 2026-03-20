@@ -1681,7 +1681,7 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap[‘synergy-matrix-1’] = (
+  slideContentMap['synergy-matrix-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
@@ -1700,17 +1700,17 @@ function buildSlideContentMap() {
               </thead>
               <tbody className="text-cream/70">
                 {[
-                  { apollo: ‘eConsent (IRB integrations)’, wcg: ‘IRB Services (largest globally)’, conn: ‘Product Integration’, val: ‘Streamlined consent workflow; reduced cycle time’, level: ‘HIGH’, levelNote: ‘integration built’ },
-                  { apollo: ‘eBinders / Doc workflows’, wcg: ‘ClinTech / ClinSphere’, conn: ‘Data Exchange’, val: ‘250K+ doc exchanges/yr; automated regulatory flow’, level: ‘HIGH’, levelNote: ‘integration active’ },
-                  { apollo: ‘Doc QC (AI)’, wcg: ‘Sponsor relationships (3,500+)’, conn: ‘Channel’, val: ‘Distribute Doc QC via WCG channel; Merck proof point’, level: ‘MEDIUM’, levelNote: ‘product in dev’ },
-                  { apollo: ‘Site performance data (65K)’, wcg: ‘Total Enrollment’, conn: ‘Data Combination’, val: ‘Site-level enrollment prediction from historical data’, level: ‘MEDIUM’, levelNote: ‘data exists, product doesn\’t’ },
+                  { apollo: 'eConsent (IRB integrations)', wcg: 'IRB Services (largest globally)', conn: 'Product Integration', val: 'Streamlined consent workflow; reduced cycle time', level: 'HIGH', levelNote: 'integration built' },
+                  { apollo: 'eBinders / Doc workflows', wcg: 'ClinTech / ClinSphere', conn: 'Data Exchange', val: '250K+ doc exchanges/yr; automated regulatory flow', level: 'HIGH', levelNote: 'integration active' },
+                  { apollo: 'Doc QC (AI)', wcg: 'Sponsor relationships (3,500+)', conn: 'Channel', val: 'Distribute Doc QC via WCG channel; Merck proof point', level: 'MEDIUM', levelNote: 'product in dev' },
+                  { apollo: 'Site performance data (65K)', wcg: 'Total Enrollment', conn: 'Data Combination', val: 'Site-level enrollment prediction from historical data', level: 'MEDIUM', levelNote: 'data exists, product doesn\'t' },
                 ].map((r) => (
                   <tr key={r.apollo} className="border-b border-cream/5">
                     <td className="p-2 font-medium text-cream/90">{r.apollo}</td>
                     <td className="p-2 text-blue-300">{r.wcg}</td>
                     <td className="p-2">{r.conn}</td>
                     <td className="p-2">{r.val}</td>
-                    <td className="p-2"><span className={`font-bold ${r.level === ‘HIGH’ ? ‘text-green-300’ : ‘text-yellow-300’}`}>{r.level}</span> <span className="text-cream/40">&mdash; {r.levelNote}</span></td>
+                    <td className="p-2"><span className={`font-bold ${r.level === 'HIGH' ? 'text-green-300' : 'text-yellow-300'}`}>{r.level}</span> <span className="text-cream/40">&mdash; {r.levelNote}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -1719,7 +1719,7 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap[‘synergy-matrix-2’] = (
+  slideContentMap['synergy-matrix-2'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
@@ -1736,7 +1736,7 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap[‘synergy-detail-1’] = (
+  slideContentMap['synergy-detail-1'] = (
         <div className="space-y-4 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
@@ -1745,16 +1745,16 @@ function buildSlideContentMap() {
           <div className="space-y-3 mt-4">
             {[
               {
-                num: ‘1’, title: ‘eConsent ↔ WCG IRB (In Production)’,
-                value: ‘eConsent growing ~75% YoY (~2 yrs old, hyper growth stage). Apollo has already completed several IRB integrations with WCG — this is active and in-production, not a future aspiration. Every WCG IRB approval could trigger site-level consent deployment.’,
-                prereq: ‘Low complexity — integration pathways already exist and are live’,
-                constraint: ‘Accelerates eConsent adoption across WCG\’s IRB customer base (~3,500+ sponsors)’
+                num: '1', title: 'eConsent ↔ WCG IRB (In Production)',
+                value: 'eConsent growing ~75% YoY (~2 yrs old, hyper growth stage). Apollo has already completed several IRB integrations with WCG — this is active and in-production, not a future aspiration. Every WCG IRB approval could trigger site-level consent deployment.',
+                prereq: 'Low complexity — integration pathways already exist and are live',
+                constraint: 'Accelerates eConsent adoption across WCG\'s IRB customer base (~3,500+ sponsors)'
               },
               {
-                num: ‘2’, title: ‘Doc QC → WCG Sponsor Channel’,
-                value: ‘Merck validated pain point (5K hrs/month). WCG introduces Doc QC to sponsor relationships → sponsors deploy across Apollo-connected sites. Combined sales motion.’,
-                prereq: ‘Product not yet GA; pricing model TBD; consumption-based LLM costs need management’,
-                constraint: ‘Premium AI SKU sold through combined channel; potential to reach sponsors not yet using Apollo’
+                num: '2', title: 'Doc QC → WCG Sponsor Channel',
+                value: 'Merck validated pain point (5K hrs/month). WCG introduces Doc QC to sponsor relationships → sponsors deploy across Apollo-connected sites. Combined sales motion.',
+                prereq: 'Product not yet GA; pricing model TBD; consumption-based LLM costs need management',
+                constraint: 'Premium AI SKU sold through combined channel; potential to reach sponsors not yet using Apollo'
               },
             ].map((conn) => (
               <div key={conn.num} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
@@ -1773,7 +1773,7 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap[‘synergy-detail-2’] = (
+  slideContentMap['synergy-detail-2'] = (
         <div className="space-y-4 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
@@ -1782,16 +1782,16 @@ function buildSlideContentMap() {
           <div className="space-y-3 mt-4">
             {[
               {
-                num: ‘3’, title: ‘Combined Data Asset (Protocol + Site Ops)’,
-                value: ‘Apollo\’s site-level performance data (enrollment speed, startup efficiency) + WCG protocol data (complexity scores, amendment rates, IRB cycle times) = predictive study feasibility model.’,
-                prereq: ‘Data normalization; privacy/consent framework; new product development; 18+ month timeline’,
-                constraint: ‘Unique data asset no competitor can replicate — requires both site-originated operational data AND protocol/IRB intelligence’
+                num: '3', title: 'Combined Data Asset (Protocol + Site Ops)',
+                value: 'Apollo\'s site-level performance data (enrollment speed, startup efficiency) + WCG protocol data (complexity scores, amendment rates, IRB cycle times) = predictive study feasibility model.',
+                prereq: 'Data normalization; privacy/consent framework; new product development; 18+ month timeline',
+                constraint: 'Unique data asset no competitor can replicate — requires both site-originated operational data AND protocol/IRB intelligence'
               },
               {
-                num: ‘4’, title: ‘WCG Channel → Apollo Site Network’,
-                value: ‘WCG\’s 3,500+ sponsor relationships could accelerate Apollo site deployment beyond current 500/week peaks. Joint sales enablement.’,
-                prereq: ‘Coordinated sales motion; compensation alignment; SSO federation between platforms’,
-                constraint: ‘Apollo\’s site-first brand identity must be maintained; sites may resist mandatory adoption’
+                num: '4', title: 'WCG Channel → Apollo Site Network',
+                value: 'WCG\'s 3,500+ sponsor relationships could accelerate Apollo site deployment beyond current 500/week peaks. Joint sales enablement.',
+                prereq: 'Coordinated sales motion; compensation alignment; SSO federation between platforms',
+                constraint: 'Apollo\'s site-first brand identity must be maintained; sites may resist mandatory adoption'
               },
             ].map((conn) => (
               <div key={conn.num} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
