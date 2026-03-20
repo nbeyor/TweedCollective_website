@@ -53,48 +53,56 @@ export function EvaluationFrameworkSlide({ sectionLabel, heading, cards }: {
 export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, radarChart, strengths, risks, immediateFocus }: {
   sectionLabel?: string
   heading: string
-  summaryText: string
-  radarChart: { labels: string[]; values: number[]; height: number }
-  strengths: string[]
-  risks: string[]
-  immediateFocus: string[]
+  summaryText?: string
+  radarChart?: { labels: string[]; values: number[]; height: number }
+  strengths?: string[]
+  risks?: string[]
+  immediateFocus?: string[]
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3">AI Maturity Radar</h3>
-          <RadarChart labels={radarChart.labels} values={radarChart.values} height={radarChart.height} />
-          {summaryText && (
-            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed whitespace-pre-line">{summaryText}</p>
-          )}
-        </div>
+      <div className={radarChart && (strengths || risks) ? 'grid md:grid-cols-2 gap-6' : 'space-y-4'}>
+        {radarChart && (
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <h3 className="text-sm font-semibold text-cream mb-3">AI Maturity Radar</h3>
+            <RadarChart labels={radarChart.labels} values={radarChart.values} height={radarChart.height} />
+            {summaryText && (
+              <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed whitespace-pre-line">{summaryText}</p>
+            )}
+          </div>
+        )}
         <div className="space-y-4">
-          <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
-            <h3 className="text-sm font-semibold text-green-300 mb-2 flex items-center gap-2">
-              <Check className="w-4 h-4" /> Top Strengths
-            </h3>
-            <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
-              {strengths.map((s, i) => <li key={i}>{s}</li>)}
-            </ol>
-          </div>
-          <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
-            <h3 className="text-sm font-semibold text-red-300 mb-2 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4" /> Top Risks
-            </h3>
-            <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
-              {risks.map((r, i) => <li key={i}>{r}</li>)}
-            </ol>
-          </div>
-          <div className="p-4 bg-sage/10 border border-sage/30 rounded-xl">
-            <h3 className="text-sm font-semibold text-sage-bright mb-2 flex items-center gap-2">
-              <Rocket className="w-4 h-4" /> Immediate Focus
-            </h3>
-            <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
-              {immediateFocus.map((f, i) => <li key={i}>{f}</li>)}
-            </ol>
-          </div>
+          {strengths && strengths.length > 0 && (
+            <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-green-300 mb-2 flex items-center gap-2">
+                <Check className="w-4 h-4" /> Top Strengths
+              </h3>
+              <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
+                {strengths.map((s, i) => <li key={i}>{s}</li>)}
+              </ol>
+            </div>
+          )}
+          {risks && risks.length > 0 && (
+            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
+              <h3 className="text-sm font-semibold text-red-300 mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4" /> Top Risks
+              </h3>
+              <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
+                {risks.map((r, i) => <li key={i}>{r}</li>)}
+              </ol>
+            </div>
+          )}
+          {immediateFocus && immediateFocus.length > 0 && (
+            <div className="p-4 bg-sage/10 border border-sage/30 rounded-xl">
+              <h3 className="text-sm font-semibold text-sage-bright mb-2 flex items-center gap-2">
+                <Rocket className="w-4 h-4" /> Immediate Focus
+              </h3>
+              <ol className="space-y-1.5 text-xs text-cream/70 list-decimal list-inside">
+                {immediateFocus.map((f, i) => <li key={i}>{f}</li>)}
+              </ol>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -105,9 +113,9 @@ export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, rada
 export function BusinessDriversSlide({ sectionLabel, heading, revenueMix, costStructure, economicSensitivities, revenueMixSource, costStructureSource, economicSensitivityRationale }: {
   sectionLabel?: string
   heading: string
-  revenueMix: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
-  costStructure: { title: string; segments: Array<{ label: string; value: number; color: string }>; height: number }
-  economicSensitivities: { title: string; headers: string[]; rows: Array<{ area: string; impact: string; ebitda: string }> }
+  revenueMix?: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
+  costStructure?: { title: string; segments: Array<{ label: string; value: number; color: string }>; height: number }
+  economicSensitivities?: { title: string; headers: string[]; rows: Array<{ area: string; impact: string; ebitda: string }> }
   revenueMixSource?: string
   costStructureSource?: string
   economicSensitivityRationale?: string
@@ -115,54 +123,62 @@ export function BusinessDriversSlide({ sectionLabel, heading, revenueMix, costSt
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-sage-bright" />
-            {revenueMix.title}
-          </h3>
-          <HorizontalBarChart items={revenueMix.items} suffix={revenueMix.suffix} maxValue={revenueMix.maxValue} height={revenueMix.height} />
-          {revenueMixSource && (
-            <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{revenueMixSource}</p>
+      {(revenueMix || costStructure) && (
+        <div className="grid md:grid-cols-2 gap-6">
+          {revenueMix && (
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-sage-bright" />
+                {revenueMix.title}
+              </h3>
+              <HorizontalBarChart items={revenueMix.items} suffix={revenueMix.suffix} maxValue={revenueMix.maxValue} height={revenueMix.height} />
+              {revenueMixSource && (
+                <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{revenueMixSource}</p>
+              )}
+            </div>
+          )}
+          {costStructure && (
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-sage-bright" />
+                {costStructure.title}
+              </h3>
+              <PieChart segments={costStructure.segments} height={costStructure.height} />
+              {costStructureSource && (
+                <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{costStructureSource}</p>
+              )}
+            </div>
           )}
         </div>
+      )}
+      {economicSensitivities && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-sage-bright" />
-            {costStructure.title}
-          </h3>
-          <PieChart segments={costStructure.segments} height={costStructure.height} />
-          {costStructureSource && (
-            <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{costStructureSource}</p>
-          )}
-        </div>
-      </div>
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <h3 className="text-sm font-semibold text-cream mb-3">{economicSensitivities.title}</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-cream/10">
-                {economicSensitivities.headers.map((h, i) => (
-                  <th key={i} className="text-left py-2 pr-4 text-cream/50 font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {economicSensitivities.rows.map((row, i) => (
-                <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2 pr-4 text-cream/80 font-medium">{row.area}</td>
-                  <td className="py-2 pr-4"><RatingBadge rating={row.impact} /></td>
-                  <td className="py-2"><RatingBadge rating={row.ebitda} /></td>
+          <h3 className="text-sm font-semibold text-cream mb-3">{economicSensitivities.title}</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-cream/10">
+                  {economicSensitivities.headers.map((h, i) => (
+                    <th key={i} className="text-left py-2 pr-4 text-cream/50 font-medium">{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {economicSensitivities.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-2 pr-4 text-cream/80 font-medium">{row.area}</td>
+                    <td className="py-2 pr-4"><RatingBadge rating={row.impact} /></td>
+                    <td className="py-2"><RatingBadge rating={row.ebitda} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {economicSensitivityRationale && (
+            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{economicSensitivityRationale}</p>
+          )}
         </div>
-        {economicSensitivityRationale && (
-          <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{economicSensitivityRationale}</p>
-        )}
-      </div>
+      )}
     </div>
   )
 }
@@ -1099,12 +1115,12 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
   heading: string
   opportunities?: Array<{ opportunity: string; impact: string }>
   problems?: string[]
-  stages: Array<{ name: string; component: string; description: string }>
-  features: Array<{ feature: string; source: string; description: string }>
-  efficiencies: Array<{ title: string; description: string }>
-  valueTable: Array<{ area: string; ftes: string; lowValue: string; highValue: string; target: string }>
-  totalLow: string
-  totalHigh: string
+  stages?: Array<{ name: string; component: string; description: string }>
+  features?: Array<{ feature: string; source: string; description: string }>
+  efficiencies?: Array<{ title: string; description: string }>
+  valueTable?: Array<{ area: string; ftes: string; lowValue: string; highValue: string; target: string }>
+  totalLow?: string
+  totalHigh?: string
 }) {
   const opps = opportunities ?? (problems?.map(p => {
     const dash = p.indexOf(' — ')
@@ -1114,6 +1130,7 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       {/* Pipeline visualization */}
+      {stages && stages.length > 0 && (
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-sage-bright" /> Integrated Pipeline
@@ -1136,7 +1153,9 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
           ))}
         </div>
       </div>
+      )}
       {/* Opportunities (reframed from problems per edit guide) */}
+      {opps.length > 0 && (
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <Lightbulb className="w-4 h-4 text-sage-bright" /> Opportunities

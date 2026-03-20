@@ -151,13 +151,13 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['growth-thesis-exec'] = (
+  slideContentMap['growth-thesis-exec-1'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (1 of 2)</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <TrendingUp className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Drivers of Growth</h3>
@@ -182,6 +182,17 @@ function buildSlideContentMap() {
                 <li>• FlowBot &mdash; AI assistant embedded in eBinders for role-based onboarding</li>
               </ul>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['growth-thesis-exec-2'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (2 of 2)</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Target className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Alignment</h3>
@@ -203,67 +214,74 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['growth-projections'] = (
+  slideContentMap['growth-projections-1'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions (1 of 2)</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
-            <div>
-              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Site Network Growth</h3>
-              <div className="h-44 mb-4">
-                <Bar data={siteGrowthData} options={siteGrowthOptions} />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Net Revenue Retention', val: '121%', sub: 'Confirmed [T1]' },
-                  { label: 'Logo Retention', val: '92%', sub: 'Confirmed [T1]' },
-                  { label: 'Total Customers', val: '~400', sub: '~300 sites, ~100 sponsors' },
-                  { label: 'Avg Rev / Study Site', val: '~$1,500', sub: 'Core eISF [T1]' },
-                  { label: 'Market Penetration', val: '~20%', sub: '65K of ~300K sites/yr' },
-                  { label: 'Activation Velocity', val: '500/wk', sub: 'Via sponsor deals' },
-                  { label: 'AI Revenue Entering 2026', val: '$0', sub: '→ $3M "3 on 3" target' },
-                  { label: 'eConsent YoY Growth', val: '~75%', sub: '~2 yrs old, hyper growth' },
-                  { label: 'Feasibility Add-on', val: '~$500/site', sub: 'On top of $1,500 eISF' },
-                  { label: 'Doc QC (Large Sponsor)', val: 'Low 7 fig.', sub: '10-15% uplift on ~$10M' },
-                  { label: 'Documents in Platform', val: '50M', sub: '+20K/day ingest' },
-                  { label: 'AWS Spend', val: '~$1M/yr', sub: 'Confirmed [T2]' },
-                ].map((m) => (
-                  <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
-                    <div className="text-sm font-serif text-sage-300">{m.val}</div>
-                    <div className="text-[10px] text-cream/50">{m.label}</div>
-                  </div>
-                ))}
-              </div>
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Site Network Growth</h3>
+            <div className="h-44 mb-4">
+              <Bar data={siteGrowthData} options={siteGrowthOptions} />
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
-              <div className="space-y-3">
-                {[
-                  'Apollo is ~20% penetrated (65K of ~300K study sites launched/yr) — significant runway remains, but growth is shifting from site-by-site to sponsor-driven bulk deployment',
-                  'Apollo must monetize the footprint in a new way: bundles, AI features, and/or services that stitch products together to expand ARPU',
-                  'Trial operations / stitching is the center of the growth thesis — evolution toward a service-enabled model',
-                  'Retention is strong: 121% net revenue retention, 92% logo retention. Sites write Apollo workflows into SOPs (auditable items), making switching costly. Must hold against Veeva\u2019s free SiteVault.',
-                  'AI features must prove value: "3 on 3" target — 3 new AI workflows (site feasibility, Doc QC, Trial Flow) targeting $3M AI ARR, up from $0',
-                  'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes',
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
-                    <ArrowRight className="w-3 h-3 text-sage-300 mt-0.5 flex-shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+              {[
+                { label: 'Net Revenue Retention', val: '121%', sub: 'Confirmed [T1]' },
+                { label: 'Logo Retention', val: '92%', sub: 'Confirmed [T1]' },
+                { label: 'Total Customers', val: '~400', sub: '~300 sites, ~100 sponsors' },
+                { label: 'Avg Rev / Study Site', val: '~$1,500', sub: 'Core eISF [T1]' },
+                { label: 'Market Penetration', val: '~20%', sub: '65K of ~300K sites/yr' },
+                { label: 'Activation Velocity', val: '500/wk', sub: 'Via sponsor deals' },
+                { label: 'AI Revenue Entering 2026', val: '$0', sub: '→ $3M "3 on 3" target' },
+                { label: 'eConsent YoY Growth', val: '~75%', sub: '~2 yrs old, hyper growth' },
+                { label: 'Feasibility Add-on', val: '~$500/site', sub: 'On top of $1,500 eISF' },
+                { label: 'Doc QC (Large Sponsor)', val: 'Low 7 fig.', sub: '10-15% uplift on ~$10M' },
+                { label: 'Documents in Platform', val: '50M', sub: '+20K/day ingest' },
+                { label: 'AWS Spend', val: '~$1M/yr', sub: 'Confirmed [T2]' },
+              ].map((m) => (
+                <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
+                  <div className="text-sm font-serif text-sage-300">{m.val}</div>
+                  <div className="text-[10px] text-cream/50">{m.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
   )
 
-  slideContentMap['offering-ai-growth-matrix'] = (
+  slideContentMap['growth-projections-2'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions (2 of 2)</h2>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
+            <div className="space-y-3">
+              {[
+                'Apollo is ~20% penetrated (65K of ~300K study sites launched/yr) — significant runway remains, but growth is shifting from site-by-site to sponsor-driven bulk deployment',
+                'Apollo must monetize the footprint in a new way: bundles, AI features, and/or services that stitch products together to expand ARPU',
+                'Trial operations / stitching is the center of the growth thesis — evolution toward a service-enabled model',
+                'Retention is strong: 121% net revenue retention, 92% logo retention. Sites write Apollo workflows into SOPs (auditable items), making switching costly. Must hold against Veeva\u2019s free SiteVault.',
+                'AI features must prove value: "3 on 3" target — 3 new AI workflows (site feasibility, Doc QC, Trial Flow) targeting $3M AI ARR, up from $0',
+                'Leading indicator: customers actively using multiple Apollo products and operational data across them to drive service/workflow changes',
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                  <ArrowRight className="w-3 h-3 text-sage-300 mt-0.5 flex-shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['offering-ai-growth-matrix-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers (1 of 2)</h2>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[10px]">
@@ -306,6 +324,32 @@ function buildSlideContentMap() {
                   <td className="p-1.5"><span className="text-green-300 font-medium">Strong</span> &mdash; upsell from SiteLink</td>
                   <td className="p-1.5"><span className="text-green-300 font-medium">Strong</span> &mdash; premium AI SKU</td>
                 </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['offering-ai-growth-matrix-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers (2 of 2)</h2>
+          </div>
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-sage/40">
+                  <th className="text-left p-1.5 text-cream/80 font-medium min-w-[80px]">Growth Driver</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">eBinders (Sites)</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">eConsent (Sites)</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Site Feasibility (AI)</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">SiteLink (Sponsors)</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Site Selection (API)</th>
+                  <th className="text-left p-1.5 text-cream/80 font-medium">Doc QC / Risk (AI)</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
                   <td className="p-1.5 font-medium text-cream/90">Retention</td>
                   <td className="p-1.5"><span className="text-green-300 font-medium">Strong</span> &mdash; audit trail lock-in</td>
@@ -1179,11 +1223,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-inventory'] = (
+  slideContentMap['ai-inventory-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory — What Exists (1 of 2)</h2>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[10px]">
@@ -1202,6 +1246,40 @@ function buildSlideContentMap() {
                   { cap: 'Site Feasibility', stage: 'Limited Availability', desc: 'Knowledge library auto-completion. Mid-size site responds to ~100 surveys/mo (~1,200/yr). Dual value: time savings + validated profile for sponsor marketing.', rev: '~$500/study site add-on', evidence: '~10 test customers in LA. Lily co-developing.' },
                   { cap: 'Site Selection', stage: 'Limited Availability', desc: 'Sponsor-side search by TA, geography, performance. API-first for enterprise integration. Positioned as \u201Cpart of the data sets\u201D in sponsor scoring, not a complete solution.', rev: 'Part of sponsor platform (TBD)', evidence: 'Sightline data partnership for enrichment' },
                   { cap: 'Doc QC', stage: 'Active Dev (OCTO)', desc: 'Deterministic-first: Tesseract OCR for blank pages, readability (no LLM needed). LLM (Claude Sonnet 3 via Bedrock) only for semantic checks (title-content matching). More checks = more tokens = pricing consideration.', rev: 'Independent SKU; \u201Clow 7 fig.\u201D per large sponsor', evidence: 'Merck: team of 20, 5K hrs/mo. First SOW imminent.' },
+                ].map((c) => (
+                  <tr key={c.cap} className="border-b border-cream/5">
+                    <td className="p-2 font-medium text-cream/90">{c.cap}</td>
+                    <td className="p-2"><span className="text-[9px] font-mono bg-gold/10 text-gold px-1.5 py-0.5 rounded">{c.stage}</span></td>
+                    <td className="p-2">{c.desc}</td>
+                    <td className="p-2">{c.rev}</td>
+                    <td className="p-2">{c.evidence}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-inventory-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory — What Exists (2 of 2)</h2>
+          </div>
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full border-collapse text-[10px]">
+              <thead>
+                <tr className="border-b-2 border-gold/40">
+                  <th className="text-left p-2 text-cream/80 font-medium min-w-[110px]">AI Capability</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Stage</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Description</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Revenue Model</th>
+                  <th className="text-left p-2 text-cream/80 font-medium">Key Evidence</th>
+                </tr>
+              </thead>
+              <tbody className="text-cream/70">
+                {[
                   { cap: 'Risk-Based Reporting', stage: 'Active Dev', desc: 'Structured + unstructured data overlay. Heat maps, exec summaries, recommended actions.', rev: 'Independent SKU', evidence: 'Built on 7.2M monthly workflows' },
                   { cap: 'Operational Audit Trails', stage: 'Deployed (Free)', desc: 'AI-enhanced consumption of audit trail data. Launched late 2025 as free feature. First AI feature shipped.', rev: 'Free (adoption driver)', evidence: '$0 AI revenue by design; all new AI products priced as independent SKUs' },
                   { cap: 'AIDLC (Internal)', stage: 'Deployed', desc: 'Claude Code (primary, standardizing), GitHub Copilot, Cursor across 53 devs. Vercel for PM prototyping. AI for QA functionalization.', rev: 'N/A (internal productivity)', evidence: 'Organization-wide adoption; Kapil drove adoption' },
