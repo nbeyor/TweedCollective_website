@@ -5,7 +5,7 @@
  * This file contains NO React components or JSX.
  *
  * Updated: March 22, 2026 per MKG_AI_Assessment_EDIT_GUIDE
- * 55 slides total (split dense slides for letter landscape fit)
+ * 54 slides total (split dense slides for letter landscape fit)
  *
  * SLIDE SIZING RULE: Each slide must fit within letter landscape
  * (10in × 7.5in, ~6in usable content height after header).
@@ -378,25 +378,48 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 6a: DIFFUSION (1 of 2) — High-Potential Products
+  // SLIDE 6a: DIFFUSION (1 of 3) — First 2 products
   // ================================================================
   {
     id: 'diffusion-1',
-    title: 'AI Initiatives — Client-Facing (DIFFUSION) (1 of 2)',
+    title: 'DIFFUSION (1 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'DIFFUSION — Client-Facing AI Products (1 of 2)',
+        heading: 'DIFFUSION (1 of 3)',
         subtitle: 'Tier 4: High-potential revenue-generating products',
-        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 4: Client-Facing / DIFFUSION Products',
             rows: [
               { name: 'Pantheon', description: 'HCP search / profiling (subscription).', valueSource: 'Pricing Power + Speed-to-Close', valuePotential: 'High', rationale: 'Subscription model shifts 81qd to recurring revenue. Defensible when anchored in proprietary engagement data, not just commercial claims.' },
               { name: 'Plexus', description: 'Influence mapping and network analytics.', valueSource: 'Pricing Power', valuePotential: 'High', rationale: 'Most defensible analytics asset. Influence network modeling on proprietary engagement data cannot be purchased externally.' },
+            ],
+          },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 6b: DIFFUSION (2 of 3) — Next 2 products
+  // ================================================================
+  {
+    id: 'diffusion-2',
+    title: 'DIFFUSION (2 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'DIFFUSION (2 of 3)',
+        subtitle: 'Tier 4: High-potential revenue-generating products (continued)',
+        sections: [
+          {
+            title: 'Tier 4: Client-Facing / DIFFUSION Products',
+            rows: [
               { name: 'PerspectivX', description: 'Concept scoring via HCP persona simulation.', valueSource: 'Pricing Power + Speed-to-Close', valuePotential: 'High', rationale: 'Differentiated if personas are built on real MKG research data. Displacement risk rises if personas are generic LLM approximations.' },
               { name: 'Verba', description: 'Advisory board synthesis.', valueSource: 'Speed + Productivity', valuePotential: 'Moderate', rationale: 'Core functionality (transcript-to-summary) is increasingly commoditized. Defensibility requires integration with proprietary longitudinal data.' },
             ],
@@ -407,18 +430,19 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 6b: DIFFUSION (2 of 2) — Emerging & Moderate-Potential Products
+  // SLIDE 6c: DIFFUSION (3 of 3) — Emerging & Moderate-Potential Products
   // ================================================================
   {
-    id: 'diffusion-2',
-    title: 'AI Initiatives — Client-Facing (DIFFUSION) (2 of 2)',
+    id: 'diffusion-3',
+    title: 'DIFFUSION (3 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'DIFFUSION — Client-Facing AI Products (2 of 2)',
+        heading: 'DIFFUSION (3 of 3)',
         subtitle: 'Tier 4: Emerging and moderate-potential products',
+        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 4: Client-Facing / DIFFUSION Products (continued)',
@@ -435,17 +459,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 7: DIFFERENTIATING ASSETS & MOAT (Section 4)
+  // SLIDE 7a: DIFFERENTIATING ASSETS (1 of 2) — Moat Chart
   // ================================================================
   {
-    id: 'differentiating-assets',
-    title: 'Differentiating Assets & Moat',
+    id: 'differentiating-assets-1',
+    title: 'Differentiating Assets (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'DifferentiatingAssetsSlide',
       props: {
-        heading: 'Differentiating Assets & Moat Assessment',
+        heading: 'Differentiating Assets (1 of 2)',
         subtitle: 'Moat Strength scores assess: "How difficult would it be for a well-funded competitor or foundation model to replicate this?" 9–10 = generated by MKG operations, cannot be purchased. 6–8 = valuable but partially replicable. 2–5 = commercially available or commoditizing.',
         moatChart: {
           chartType: 'HorizontalBarChart',
@@ -461,6 +485,22 @@ export const slides: SlideData[] = [
           maxValue: 10,
           height: 260,
         },
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 7b: DIFFERENTIATING ASSETS (2 of 2) — Data Flow & Insight
+  // ================================================================
+  {
+    id: 'differentiating-assets-2',
+    title: 'Differentiating Assets (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'DifferentiatingAssetsSlide',
+      props: {
+        heading: 'Differentiating Assets (2 of 2)',
         dataFlow: {
           componentId: 'DataFlowDiagram',
           title: 'ION-Powered Products',
@@ -475,17 +515,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 8: ION DATA LAKE DEEP DIVE (NEW)
+  // SLIDE 8a: ION DATA LAKE (1 of 2) — Acquisition, Analytics, Activation
   // ================================================================
   {
-    id: 'ion-data-lake',
-    title: 'The ION Data Lake',
+    id: 'ion-data-lake-1',
+    title: 'The ION Data Lake (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'IonDataLakeSlide',
       props: {
-        heading: 'The ION Data Lake',
+        heading: 'The ION Data Lake (1 of 2)',
         acquisition: {
           publicData: [
             'Open claims, closed claims, EHR data, social determinants of health (2016–present)',
@@ -516,6 +556,22 @@ export const slides: SlideData[] = [
           'AI-powered client deliverables across all DIFFUSION products (Pantheon, Plexus, PerspectivX, Verba, MagpAI, BloomLab, Orion, InfluenceLink)',
           'Internal workflow acceleration across KINETICS tools',
         ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 8b: ION DATA LAKE — Requirements (2 of 2)
+  // ================================================================
+  {
+    id: 'ion-data-lake-2',
+    title: 'The ION Data Lake — Requirements (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'IonDataLakeSlide',
+      props: {
+        heading: 'The ION Data Lake — Requirements (2 of 2)',
         requirements: [
           { requirement: 'Organized', description: 'Data must follow consistent schemas across sources. HCP identifiers, therapeutic area taxonomies, and engagement event types need to resolve to a common ontology. Without this, AI models produce inconsistent outputs across products.' },
           { requirement: 'Mastered', description: 'Entity resolution must be reliable — one HCP record per actual person, reconciled across NPI, institutional, engagement, and publication data. Duplicate or conflicting records degrade every downstream analytics product.' },
@@ -527,17 +583,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 9a: SUPER PRODUCT VISION (1 of 2) — Opportunities & Pipeline
+  // SLIDE 9a: SUPER PRODUCT VISION (1 of 4) — Opportunities
   // ================================================================
   {
     id: 'super-product-1',
-    title: 'AI Editorial Platform Vision (1 of 2)',
+    title: 'Super Product Vision (1 of 4)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'SuperProductSlide',
       props: {
-        heading: 'Super Product Vision: The AI Editorial Platform (1 of 2)',
+        heading: 'Super Product Vision (1 of 4)',
         opportunities: [
           { opportunity: 'End-to-end content lifecycle for customers', impact: 'One onboarding, one integration, one training cycle. Pharma brand teams get a platform that handles "brief to MLR-ready" instead of four modular tools. Fundamentally different sales conversation.' },
           { opportunity: 'Faster cycle times through eliminated handoffs', impact: 'Content flows through all four stages without manual export/import. Target: reduce content-to-MLR from ~14 days to ~8 days on pilot projects.' },
@@ -546,6 +602,22 @@ export const slides: SlideData[] = [
           { opportunity: 'Unified brand knowledge base', impact: 'Brand rules, style guides, and past MLR decisions loaded once and available to all stages \u2014 today each tool manages this independently.' },
           { opportunity: 'Stronger competitive positioning', impact: 'One AI-powered editorial backbone for pharma content > a collection of helper tools. Platform becomes infrastructure, not an optional add-on.' },
         ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 9b: SUPER PRODUCT VISION (2 of 4) — Pipeline Stages
+  // ================================================================
+  {
+    id: 'super-product-2',
+    title: 'Super Product Vision (2 of 4)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'SuperProductSlide',
+      props: {
+        heading: 'Super Product Vision (2 of 4)',
         stages: [
           { name: 'Stage 1: Create', component: 'DynAImic Content', description: 'AI-assisted content drafting from briefs across channels' },
           { name: 'Stage 2: Annotate', component: 'Annotation Activation', description: 'Automated citation linking and reference quality scoring' },
@@ -557,17 +629,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 9b: SUPER PRODUCT VISION (2 of 2) — Features, Efficiencies & Value
+  // SLIDE 9c: SUPER PRODUCT VISION — Features (3 of 4)
   // ================================================================
   {
-    id: 'super-product-2',
-    title: 'AI Editorial Platform Vision (2 of 2)',
+    id: 'super-product-3',
+    title: 'Super Product Vision — Features (3 of 4)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'SuperProductSlide',
       props: {
-        heading: 'Super Product Vision: The AI Editorial Platform (2 of 2)',
+        heading: 'Super Product Vision — Features (3 of 4)',
         features: [
           { feature: 'AI content drafting', source: 'DynAImic', description: 'MLR-ready content from briefs across channels' },
           { feature: 'Multi-channel adaptation', source: 'DynAImic', description: 'Emails, banners, social, leave-behinds' },
@@ -578,6 +650,22 @@ export const slides: SlideData[] = [
           { feature: 'Shared document model', source: 'Combined', description: 'Content, annotations, flags, and QA results in one data structure' },
           { feature: 'Single LLM orchestration', source: 'Combined', description: 'One routing system through ION' },
         ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 9d: SUPER PRODUCT VISION — Value (4 of 4)
+  // ================================================================
+  {
+    id: 'super-product-4',
+    title: 'Super Product Vision — Value (4 of 4)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'SuperProductSlide',
+      props: {
+        heading: 'Super Product Vision — Value (4 of 4)',
         efficiencies: [
           { title: 'Single LLM orchestration', description: 'One routing system managing model selection, context, and prompts' },
           { title: 'Shared document model', description: 'Content, annotations, flags, and QA results in one data structure' },
@@ -596,23 +684,39 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 10: AI VALUE FRAMEWORK (Section 5)
+  // SLIDE 10a: AI VALUE FRAMEWORK — Internal (1 of 2)
   // ================================================================
   {
-    id: 'value-framework',
-    title: 'AI Value Framework',
+    id: 'value-framework-1',
+    title: 'AI Value Framework — Internal (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'ValueFrameworkSlide',
       props: {
-        heading: 'AI Value Framework',
+        heading: 'AI Value Framework — Internal (1 of 2)',
         description: 'MKG\'s AI initiatives create value through seven distinct channels, organized into internal (cost/efficiency) and external (revenue/growth) buckets. Every product value story maps to one or more of these buckets.',
         internalBuckets: [
           { bucket: 'Cost', definition: 'Reduce labor cost per deliverable. AI eliminates rework, catches errors earlier, and reduces hours per output.', kpis: 'Hours per project; cost per completed deliverable; external vendor spend reduction' },
           { bucket: 'Speed', definition: 'Reduce cycle time from draft to delivery. AI compresses the timeline by automating sequential steps.', kpis: 'Days from brief to final; rounds of revision; time to first client response' },
           { bucket: 'Productivity', definition: 'Enable more output per FTE. Existing staff handle higher volume without proportional headcount growth.', kpis: 'Deliverables per employee per month; concurrent projects per team' },
         ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 10b: AI VALUE FRAMEWORK — External (2 of 2)
+  // ================================================================
+  {
+    id: 'value-framework-2',
+    title: 'AI Value Framework — External (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'ValueFrameworkSlide',
+      props: {
+        heading: 'AI Value Framework — External (2 of 2)',
         externalBuckets: [
           { bucket: 'Pricing Power', definition: 'Command premium pricing via AI-differentiated capabilities. When AI makes the offering faster, more accurate, or analytically richer, MKG can charge more.', kpis: 'Price per engagement vs. prior year; willingness to pay vs. alternatives; margin' },
           { bucket: 'Speed-to-Close', definition: 'Reduce time from prospect interest to signed engagement. AI-powered tools that deliver faster results shorten the sales cycle.', kpis: 'Proposal-to-signed-deal days; trial start-up time; site activation timeline' },
@@ -624,17 +728,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 11a: LEADING INDICATORS (1 of 2) — Indicator Table
+  // SLIDE 11a: LEADING INDICATORS (1 of 3) — First 5 indicators
   // ================================================================
   {
     id: 'leading-indicators-1',
-    title: 'Leading Indicators & Measurement (1 of 2)',
+    title: 'Leading Indicators (1 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'LeadingIndicatorsSlide',
       props: {
-        heading: 'Leading Indicators & Measurement (1 of 2)',
+        heading: 'Leading Indicators (1 of 3)',
         coreArgument: 'MKG\'s current measurement is almost entirely lagging \u2014 revenue, margin, EBITDA. For early-stage AI initiatives, these will show nothing for 6\u201312 months. AI initiatives need leading indicators that show whether adoption is working before it shows up in financials.',
         leadingIndicators: [
           { category: 'Adoption', indicator: 'Daily/weekly active users per tool', sourceSlides: 'All products', howToMeasure: 'Instrument usage logging in ION platform. Pull weekly automated reports \u2014 no manual data collection.' },
@@ -642,6 +746,24 @@ export const slides: SlideData[] = [
           { category: 'Cycle Time', indicator: 'Days from brief to MLR submission', sourceSlides: 'DynAImic Content, Annotation Activation, Compliance Core, Route Reagent', howToMeasure: 'Timestamp brief receipt and MLR submission in workflow system. Calculate elapsed days automatically.' },
           { category: 'Cycle Time', indicator: 'Rounds of revision before approval', sourceSlides: 'Annotation, Route Reagent', howToMeasure: 'Count revision submissions per asset in the editorial tracking system.' },
           { category: 'Quality', indicator: 'First-pass MLR acceptance rate', sourceSlides: 'Compliance Core', howToMeasure: 'Track accept/reject/revise decisions at MLR. Compare AI-screened vs. unscreened submissions.' },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 11b: LEADING INDICATORS (2 of 3) — Remaining 4 indicators
+  // ================================================================
+  {
+    id: 'leading-indicators-2',
+    title: 'Leading Indicators (2 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'LeadingIndicatorsSlide',
+      props: {
+        heading: 'Leading Indicators (2 of 3)',
+        leadingIndicators: [
           { category: 'Quality', indicator: 'Annotation error rate', sourceSlides: 'Annotation Activation', howToMeasure: 'Sample-audit AI-generated citations quarterly. Measure % incorrect or missing references.' },
           { category: 'Client Signal', indicator: 'Proposal win rate on AI-featured pitches', sourceSlides: 'Pantheon, Plexus, PerspectivX', howToMeasure: 'Flag proposals that feature AI capabilities in CRM. Compare win rates vs. non-AI proposals.' },
           { category: 'Client Signal', indicator: 'Client NPS on AI-enhanced deliverables', sourceSlides: 'Verba, BloomLab', howToMeasure: 'Add a 1-question NPS survey to post-engagement follow-up on AI-enhanced projects.' },
@@ -652,17 +774,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 11b: LEADING INDICATORS (2 of 2) — Making Measurement Work
+  // SLIDE 11c: LEADING INDICATORS (3 of 3) — Making Measurement Work
   // ================================================================
   {
-    id: 'leading-indicators-2',
-    title: 'Leading Indicators & Measurement (2 of 2)',
+    id: 'leading-indicators-3',
+    title: 'Leading Indicators — Measurement (3 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'LeadingIndicatorsSlide',
       props: {
-        heading: 'Leading Indicators & Measurement (2 of 2)',
+        heading: 'Leading Indicators — Measurement (3 of 3)',
         coreArgument: 'Assign named owners, automate data pulls, keep it simple, and communicate steadily through existing meetings.',
         leadingIndicators: [],
         makingMeasurementWork: [
