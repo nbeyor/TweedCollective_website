@@ -59,8 +59,9 @@ export const slides: SlideData[] = [
   { id: 'what-they-would-build', title: 'What the Disruptor Would Build', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'what-they-would-build' } } },
   { id: 'what-must-change', title: 'What Must Change for Disruption to Be True', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'what-must-change' } } },
   { id: 'build-it-today', title: '"Build-It-Today" Replicability', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'build-it-today' } } },
-  { id: 'dd-veeva-consolidation-1', title: 'Veeva — Long-Term Platform Consolidation Threat (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation-1' } } },
-  { id: 'dd-veeva-consolidation-2', title: 'Veeva — Long-Term Platform Consolidation Threat (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation-2' } } },
+  { id: 'dd-veeva-consolidation-1', title: 'Veeva — Long-Term Platform Consolidation Threat (1 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation-1' } } },
+  { id: 'dd-veeva-consolidation-2', title: 'Veeva — Long-Term Platform Consolidation Threat (2 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation-2' } } },
+  { id: 'dd-veeva-consolidation-3', title: 'Veeva — Long-Term Platform Consolidation Threat (3 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-veeva-consolidation-3' } } },
   { id: 'dd-econsent-landscape-1', title: 'eICF & eConsent — Competitive Landscape (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-econsent-landscape-1' } } },
   { id: 'dd-econsent-landscape-2', title: 'eICF & eConsent — Competitive Landscape (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-econsent-landscape-2' } } },
   { id: 'ai-assessment-exec', title: 'AI Assessment — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-assessment-exec' } } },
@@ -86,8 +87,9 @@ export const slides: SlideData[] = [
   { id: 'operating-model-maturity-2', title: 'Operating Model Maturity (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'operating-model-maturity-2' } } },
   { id: 'dd-data-rights-1', title: 'Data Rights — Content vs. Metadata (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-rights-1' } } },
   { id: 'dd-data-rights-2', title: 'Data Rights — Content vs. Metadata (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-rights-2' } } },
-  { id: 'dd-data-architecture-1', title: 'Data Architecture Gap Assessment & Modernization Cost (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture-1' } } },
-  { id: 'dd-data-architecture-2', title: 'Data Architecture Gap Assessment & Modernization Cost (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture-2' } } },
+  { id: 'dd-data-architecture-1', title: 'Data Architecture Gap Assessment & Modernization Cost (1 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture-1' } } },
+  { id: 'dd-data-architecture-2', title: 'Data Architecture Gap Assessment & Modernization Cost (2 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture-2' } } },
+  { id: 'dd-data-architecture-3', title: 'Data Architecture Gap Assessment & Modernization Cost (3 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'dd-data-architecture-3' } } },
 
   // Phase 4 — ROI Quantification & Synergy Roadmap
   { id: 'synergies-exec', title: 'Phase 4: Buyer ↔ Target Synergies — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'synergies-exec' } } },
@@ -101,9 +103,10 @@ export const slides: SlideData[] = [
   { id: 'priority-initiatives-2', title: 'Priority Initiatives — Assumptions + Uplift (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'priority-initiatives-2' } } },
   { id: 'sensitivity-1', title: 'Sensitivity: Impact on Growth Curve (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'sensitivity-1' } } },
   { id: 'sensitivity-2', title: 'Sensitivity: Impact on Growth Curve (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'sensitivity-2' } } },
-  { id: 'ai-impact-summary-1', title: 'AI Opportunity — Quantified Impact (1 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-1' } } },
-  { id: 'ai-impact-summary-2', title: 'AI Opportunity — Quantified Impact (2 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-2' } } },
-  { id: 'ai-impact-summary-3', title: 'AI Opportunity — Quantified Impact (3 of 3)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-3' } } },
+  { id: 'ai-impact-summary-1', title: 'AI Opportunity — Quantified Impact (1 of 4)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-1' } } },
+  { id: 'ai-impact-summary-2', title: 'AI Opportunity — Quantified Impact (2 of 4)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-2' } } },
+  { id: 'ai-impact-summary-3', title: 'AI Opportunity — Quantified Impact (3 of 4)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-3' } } },
+  { id: 'ai-impact-summary-4', title: 'AI Opportunity — Quantified Impact (4 of 4)', type: 'custom', content: { type: 'custom', componentId: 'ApolloDiligenceSlide', props: { slideId: 'ai-impact-summary-4' } } },
 ]
 
 export default slides
