@@ -356,14 +356,15 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
   sectionLabel?: string
   heading: string
   subtitle: string
-  moatChart: { title: string; items: Array<{ label: string; value: number; rationale?: string }>; suffix: string; maxValue: number; height: number }
-  dataFlow: { title: string; sources: string[]; nonProprietarySources?: string[]; outputs: string[] }
-  insightText: string
+  moatChart?: { title: string; items: Array<{ label: string; value: number; rationale?: string }>; suffix: string; maxValue: number; height: number }
+  dataFlow?: { title: string; sources: string[]; nonProprietarySources?: string[]; outputs: string[] }
+  insightText?: string
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
       <div className="grid md:grid-cols-2 gap-6">
+        {moatChart && moatChart.items.length > 0 && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Brain className="w-4 h-4 text-sage-bright" />
@@ -392,16 +393,21 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
             ))}
           </div>
         </div>
+        )}
+        {dataFlow && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-4 flex items-center gap-2">
             <Database className="w-4 h-4 text-helix-cyan" />
             {dataFlow.title}
           </h3>
           <DataFlowDiagram sources={dataFlow.sources} nonProprietarySources={dataFlow.nonProprietarySources} outputs={dataFlow.outputs} />
+          {insightText && (
           <div className="mt-4 p-3 bg-sage/5 border border-sage/15 rounded-lg">
             <p className="text-[10px] text-cream/60 leading-relaxed">{insightText}</p>
           </div>
+          )}
         </div>
+        )}
       </div>
     </div>
   )
@@ -1065,8 +1071,8 @@ export function ValueFrameworkSlide({ sectionLabel, heading, description, intern
   sectionLabel?: string
   heading: string
   description: string
-  internalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
-  externalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
+  internalBuckets?: Array<{ bucket: string; definition: string; kpis: string }>
+  externalBuckets?: Array<{ bucket: string; definition: string; kpis: string }>
 }) {
   return (
     <div className="space-y-6 px-4">
@@ -1074,6 +1080,7 @@ export function ValueFrameworkSlide({ sectionLabel, heading, description, intern
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <p className="text-sm text-cream/80 leading-relaxed">{description}</p>
       </div>
+      {internalBuckets && internalBuckets.length > 0 && (
       <div className="space-y-4">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <Layers className="w-4 h-4 text-sage-bright" /> Internal Value Buckets
@@ -1090,6 +1097,8 @@ export function ValueFrameworkSlide({ sectionLabel, heading, description, intern
           ))}
         </div>
       </div>
+      )}
+      {externalBuckets && externalBuckets.length > 0 && (
       <div className="space-y-4">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-gold" /> External Value Buckets
@@ -1106,6 +1115,7 @@ export function ValueFrameworkSlide({ sectionLabel, heading, description, intern
           ))}
         </div>
       </div>
+      )}
     </div>
   )
 }
@@ -1706,9 +1716,9 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
   sectionLabel?: string
   heading: string
   acquisition: { publicData: string[]; proprietaryData: string[] }
-  analytics: string[]
-  activation: string[]
-  requirements: Array<{ requirement: string; description: string }>
+  analytics?: string[]
+  activation?: string[]
+  requirements?: Array<{ requirement: string; description: string }>
 }) {
   return (
     <div className="space-y-6 px-4">
@@ -1742,6 +1752,7 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
           </div>
         </div>
 
+        {analytics && analytics.length > 0 && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Brain className="w-4 h-4 text-helix-cyan" /> AI Analytics
@@ -1754,7 +1765,9 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
             ))}
           </ul>
         </div>
+        )}
 
+        {activation && activation.length > 0 && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Zap className="w-4 h-4 text-gold" /> Activation
@@ -1767,8 +1780,10 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
             ))}
           </ul>
         </div>
+        )}
       </div>
 
+      {requirements && requirements.length > 0 && (
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
           <Server className="w-4 h-4 text-sage-bright" /> Technical Requirements for AI Viability
@@ -1792,6 +1807,7 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
           </table>
         </div>
       </div>
+      )}
     </div>
   )
 }
