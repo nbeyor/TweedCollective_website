@@ -4,8 +4,8 @@
  * Pure data representation of slide content.
  * This file contains NO React components or JSX.
  *
- * Updated: March 20, 2026 per MKG_AI_Assessment_EDIT_GUIDE
- * 42 slides total (split dense slides for letter landscape fit)
+ * Updated: March 22, 2026 per MKG_AI_Assessment_EDIT_GUIDE
+ * 55 slides total (split dense slides for letter landscape fit)
  *
  * SLIDE SIZING RULE: Each slide must fit within letter landscape
  * (10in × 7.5in, ~6in usable content height after header).
@@ -119,17 +119,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 4a: BUSINESS CONTEXT (1 of 2) — Revenue Mix & Cost Structure
+  // SLIDE 4a: BUSINESS CONTEXT (1 of 3) — Revenue Mix
   // ================================================================
   {
     id: 'business-context-1',
-    title: 'Business Context & Competitive Landscape (1 of 2)',
+    title: 'Business Context (1 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'BusinessDriversSlide',
       props: {
-        heading: 'Business Context & Competitive Landscape (1 of 2)',
+        heading: 'Business Context (1 of 3)',
         revenueMix: {
           chartType: 'HorizontalBarChart',
           title: 'Revenue Mix (~$180M)',
@@ -149,6 +149,23 @@ export const slides: SlideData[] = [
           maxValue: 25,
           height: 280,
         },
+        revenueMixSource: 'Sources: MKG management presentations (Nov 2025, Feb 2026); revenue percentages are approximate and based on disclosed segment reporting.',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 4b: BUSINESS CONTEXT (2 of 3) — Cost Structure
+  // ================================================================
+  {
+    id: 'business-context-2',
+    title: 'Business Context (2 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'BusinessDriversSlide',
+      props: {
+        heading: 'Business Context (2 of 3)',
         costStructure: {
           chartType: 'PieChart',
           title: 'Cost Structure',
@@ -161,24 +178,23 @@ export const slides: SlideData[] = [
           ],
           height: 250,
         },
-        revenueMixSource: 'Sources: MKG management presentations (Nov 2025, Feb 2026); revenue percentages are approximate and based on disclosed segment reporting.',
         costStructureSource: 'Sources: MKG internal financials as provided to Novo Holdings; compensation benchmarks from Glassdoor, AMWA 2024 Compensation Report, and Salary.com, adjusted for MKG seniority mix and NYC metro location.',
       },
     },
   },
 
   // ================================================================
-  // SLIDE 4b: BUSINESS CONTEXT (2 of 2) — Economic Sensitivities
+  // SLIDE 4c: BUSINESS CONTEXT (3 of 3) — Economic Sensitivities
   // ================================================================
   {
-    id: 'business-context-2',
-    title: 'Business Context & Competitive Landscape (2 of 2)',
+    id: 'business-context-3',
+    title: 'Business Context (3 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'BusinessDriversSlide',
       props: {
-        heading: 'Business Context & Competitive Landscape (2 of 2)',
+        heading: 'Business Context (3 of 3)',
         economicSensitivities: {
           title: 'Economic Sensitivities',
           headers: ['Area', 'AI Impact', 'EBITDA Sensitivity'],
@@ -195,17 +211,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 5a: KINETICS — Tier 1 (1 of 3)
+  // SLIDE 5a: KINETICS — Tier 1 (1 of 6)
   // ================================================================
   {
     id: 'kinetics-1',
-    title: 'AI Initiatives — Internal (KINETICS) (1 of 3)',
+    title: 'KINETICS — Tier 1 (1 of 6)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'AI Initiative Inventory — KINETICS (1 of 3)',
+        heading: 'KINETICS — Tier 1 (1 of 6)',
         subtitle: 'Tier 1: Editorial Pipeline — Core Value Drivers',
         callout: 'The four Tier 1 tools touch the same content creation and review pipeline. The Super Product Vision slide presents the case for unifying them into a single integrated platform.',
         valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
@@ -215,6 +231,30 @@ export const slides: SlideData[] = [
             rows: [
               { name: 'DynAImic Content', description: 'AI-assisted draft generation across marketing channels from content briefs.', valueSource: 'Cost + Speed', valuePotential: 'High', rationale: 'Addresses ~80 medical writers ($120K avg comp). Content generation is the highest-volume step in the editorial pipeline and directly compresses cycle time from brief to first draft.' },
               { name: 'Annotation Activation', description: 'Auto-links claims to supporting literature for MLR preparation.', valueSource: 'Speed + Productivity', valuePotential: 'High', rationale: 'Automates the most tedious step in MLR preparation. Directly reduces rounds of revision and time-to-submission for ~30 editorial/QA staff.' },
+            ],
+          },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 5b: KINETICS — Tier 1 (2 of 6)
+  // ================================================================
+  {
+    id: 'kinetics-2',
+    title: 'KINETICS — Tier 1 (2 of 6)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'KINETICS — Tier 1 (2 of 6)',
+        subtitle: 'Tier 1: Editorial Pipeline — Core Value Drivers (continued)',
+        sections: [
+          {
+            title: 'Tier 1: Editorial Pipeline (Core Value Drivers)',
+            rows: [
               { name: 'Compliance Core', description: 'Flags FDA compliance risks — off-label language, fair balance, guideline adherence.', valueSource: 'Cost + Speed', valuePotential: 'High', rationale: 'Pre-screening for regulatory flags prevents costly late-stage MLR rejections. Addresses ~20 compliance reviewers and reduces the rework multiplier across the full pipeline.' },
               { name: 'Route Reagent', description: 'Validates content against brand style rules and routing comments during editorial review.', valueSource: 'Speed + Productivity', valuePotential: 'High', rationale: 'Closest to production among the pipeline tools. Already embedded in real editorial workflows. Catches style and brand errors before human review, reducing per-project QA hours.' },
             ],
@@ -231,17 +271,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 5b: KINETICS — Tier 2 (2 of 3)
+  // SLIDE 5c: KINETICS — Tier 2 (3 of 6)
   // ================================================================
   {
-    id: 'kinetics-2',
-    title: 'AI Initiatives — Internal (KINETICS) (2 of 3)',
+    id: 'kinetics-3',
+    title: 'KINETICS — Tier 2 (3 of 6)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'AI Initiative Inventory — KINETICS (2 of 3)',
+        heading: 'KINETICS — Tier 2 (3 of 6)',
         subtitle: 'Tier 2: Insight & Knowledge Tools',
         sections: [
           {
@@ -250,6 +290,30 @@ export const slides: SlideData[] = [
               { name: 'Practice Master', description: 'Harmonizes data sources to map HCP affiliations and resolve conflicting records.', valueSource: 'Speed + Productivity', valuePotential: 'Moderate', rationale: 'Useful but addresses a narrower analyst pool (~25 FTEs). Underlying NPI/affiliation data is commercially available; value is in the harmonization layer, not the data itself.' },
               { name: 'Sentiment Tracker', description: 'NLP-based tracking of HCP belief and sentiment shifts from MKG engagement data.', valueSource: 'Pricing Power', valuePotential: 'Moderate', rationale: 'High strategic value when applied to proprietary engagement data, but indirect revenue mechanism (share-of-wallet lift) is harder to measure in Year 1.' },
               { name: 'Undermind', description: 'Deep scientific literature search and research surrogate.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Literature search is useful but increasingly commoditized by general AI tools. Value depends on integration with MKG\'s proprietary datasets.' },
+            ],
+          },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 5d: KINETICS — Tier 2 (4 of 6)
+  // ================================================================
+  {
+    id: 'kinetics-4',
+    title: 'KINETICS — Tier 2 (4 of 6)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'KINETICS — Tier 2 (4 of 6)',
+        subtitle: 'Tier 2: Insight & Knowledge Tools (continued)',
+        sections: [
+          {
+            title: 'Tier 2: Insight & Knowledge Tools',
+            rows: [
               { name: 'Brand Bonds', description: 'Brand-trained AI assistant that synthesizes cross-functional team knowledge.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Internal knowledge tool with productivity value but limited external revenue impact. Adoption depends on data quality of the underlying brand knowledge bases.' },
               { name: 'Conversation Centrifuge', description: 'Structures and summarizes expert interviews and advisory board discussions.', valueSource: 'Speed', valuePotential: 'Moderate', rationale: 'Overlaps with Verba\'s advisory board synthesis. Value is real but may be consolidated into the Verba product over time.' },
             ],
@@ -260,17 +324,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 5c: KINETICS — Tier 3 (3 of 3)
+  // SLIDE 5e: KINETICS — Tier 3 (5 of 6)
   // ================================================================
   {
-    id: 'kinetics-3',
-    title: 'AI Initiatives — Internal (KINETICS) (3 of 3)',
+    id: 'kinetics-5',
+    title: 'KINETICS — Tier 3 (5 of 6)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'AI Initiative Inventory — KINETICS (3 of 3)',
+        heading: 'KINETICS — Tier 3 (5 of 6)',
         subtitle: 'Tier 3: General Productivity & Workflow Tools',
         sections: [
           {
@@ -279,6 +343,30 @@ export const slides: SlideData[] = [
               { name: 'ION Portal', description: 'Central AI infrastructure and data access layer.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Infrastructure layer, not a value driver itself. Enables other tools but has no standalone business impact unless it becomes the gateway to proprietary data.' },
               { name: 'ChatMKG / Secure LLM', description: 'Enterprise AI interface with SSO, transcription, web search.', valueSource: 'Productivity', valuePotential: 'Moderate', rationale: 'Every feature is available in off-the-shelf enterprise AI. Defensibility requires connection to ION Data Lake and brand knowledge bases — without that, there is no reason to use it over consumer tools.' },
               { name: 'Case Catalyst', description: 'Searches and retrieves relevant past case studies.', valueSource: 'Productivity', valuePotential: 'Low\u2013Moderate', rationale: 'Narrow use case (past case studies). Value depends on quality and coverage of the knowledge base.' },
+            ],
+          },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 5f: KINETICS — Tier 3 (6 of 6)
+  // ================================================================
+  {
+    id: 'kinetics-6',
+    title: 'KINETICS — Tier 3 (6 of 6)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'KINETICS — Tier 3 (6 of 6)',
+        subtitle: 'Tier 3: General Productivity & Workflow Tools (continued)',
+        sections: [
+          {
+            title: 'Tier 3: General Productivity & Workflow Tools',
+            rows: [
               { name: 'Meeting Nucleus', description: 'Meeting transcription and summarization.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Transcription and summarization is fully commoditized. Zoom, Granola, and other tools do this natively.' },
               { name: 'Strategic Brief', description: 'AI-assisted strategic brief generation.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Helpful but limited addressable impact. Unlikely to be measurable at the P&L level.' },
               { name: 'Strategic Synthesis', description: 'Cross-document strategic synthesis and analysis.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Same as Strategic Brief \u2014 incremental productivity on a narrow workflow.' },
@@ -592,20 +680,38 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 12a: INTERNAL PRODUCTIVITY VALUE (1 of 2) — First 4 rows
+  // SLIDE 12a: INTERNAL PRODUCTIVITY VALUE (1 of 3) — First 2 rows
   // ================================================================
   {
     id: 'internal-productivity-value-1',
-    title: 'Internal Productivity Value Summary (1 of 2)',
+    title: 'Internal Productivity Value (1 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'InternalProductivityValueSlide',
       props: {
-        heading: 'Internal Productivity Value Summary (1 of 2)',
+        heading: 'Internal Productivity Value (1 of 3)',
         rows: [
           { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '5%', lowValue: '$480K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
           { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 12b: INTERNAL PRODUCTIVITY VALUE (2 of 3) — Next 2 rows
+  // ================================================================
+  {
+    id: 'internal-productivity-value-2',
+    title: 'Internal Productivity Value (2 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'InternalProductivityValueSlide',
+      props: {
+        heading: 'Internal Productivity Value (2 of 3)',
+        rows: [
           { initiative: 'Compliance Core', primaryValueDriver: 'Risk prevention: MLR rejections avoided', ftes: '20', comp: '$140K', lowUplift: '5%', lowValue: '$140K', highUplift: '15%', highValue: '$420K', rationale: 'Each prevented rejection avoids 3\u20135 days of rework cascading across writers, editors, and compliance staff.' },
           { initiative: 'Pantheon + Practice Master', primaryValueDriver: 'Research speed: HCP profiling time', ftes: '25', comp: '$105K', lowUplift: '10%', lowValue: '$263K', highUplift: '20%', highValue: '$525K', rationale: 'Automated search and affiliation harmonization replaces manual profiling that currently takes weeks per project.' },
         ],
@@ -614,17 +720,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 12b: INTERNAL PRODUCTIVITY VALUE (2 of 2) — Last 3 rows + totals
+  // SLIDE 12c: INTERNAL PRODUCTIVITY VALUE (3 of 3) — Last 3 rows + totals
   // ================================================================
   {
-    id: 'internal-productivity-value-2',
-    title: 'Internal Productivity Value Summary (2 of 2)',
+    id: 'internal-productivity-value-3',
+    title: 'Internal Productivity Value (3 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'InternalProductivityValueSlide',
       props: {
-        heading: 'Internal Productivity Value Summary (2 of 2)',
+        heading: 'Internal Productivity Value (3 of 3)',
         rows: [
           { initiative: 'Plexus', primaryValueDriver: 'Analysis depth: influence mapping automation', ftes: '15', comp: '$130K', lowUplift: '5%', lowValue: '$98K', highUplift: '15%', highValue: '$293K', rationale: 'AI-enhanced network modeling produces richer outputs in less time than manual analysis.' },
           { initiative: 'Verba + BloomLab + PerspectivX', primaryValueDriver: 'Synthesis speed: research to deliverable', ftes: '40', comp: '$115K', lowUplift: '10%', lowValue: '$460K', highUplift: '20%', highValue: '$920K', rationale: 'AI-assisted summarization and concept scoring compress the research-to-insight cycle.' },
