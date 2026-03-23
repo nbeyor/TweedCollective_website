@@ -417,9 +417,11 @@ export function DataFlowDiagram({ sources, nonProprietarySources, outputs }: { s
         <div className="text-cream/20 text-lg">&rarr;</div>
       </div>
       <div className="flex flex-col items-center gap-1 flex-shrink-0">
-        <div className="px-4 py-3 bg-sage/20 border-2 border-sage/40 rounded-xl text-sm text-cream font-semibold flex items-center gap-2">
+        <div className="px-3 py-3 bg-sage/20 border-2 border-sage/40 rounded-xl text-sm text-cream font-semibold flex flex-col items-center gap-1 text-center">
           <Database className="w-4 h-4 text-sage-bright" />
-          ION Data Lake
+          <span>ION</span>
+          <span>Data</span>
+          <span>Lake</span>
         </div>
       </div>
       <div className="flex flex-col items-center gap-1 flex-shrink-0">
