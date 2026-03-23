@@ -216,7 +216,6 @@ export const slides: SlideData[] = [
       props: {
         heading: 'AI Initiative Inventory — KINETICS (2 of 3)',
         subtitle: 'Tier 2: Insight & Knowledge Tools',
-        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 2: Insight & Knowledge Tools',
@@ -246,7 +245,6 @@ export const slides: SlideData[] = [
       props: {
         heading: 'AI Initiative Inventory — KINETICS (3 of 3)',
         subtitle: 'Tier 3: General Productivity & Workflow Tools',
-        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 3: General Productivity & Workflow Tools',
@@ -277,7 +275,6 @@ export const slides: SlideData[] = [
       props: {
         heading: 'DIFFUSION — Client-Facing AI Products',
         subtitle: 'Tier 4: Revenue-generating and differentiating AI offerings',
-        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
           {
             title: 'Tier 4: Client-Facing / DIFFUSION Products',
@@ -526,7 +523,6 @@ export const slides: SlideData[] = [
       componentId: 'InternalProductivityValueSlide',
       props: {
         heading: 'Internal Productivity Value Summary',
-        calloutText: 'AI Editorial Platform: $1.4–2.6M in value',
         rows: [
           { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '5%', lowValue: '$480K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
           { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
