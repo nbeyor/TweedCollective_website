@@ -937,6 +937,24 @@ export default async function DocumentExportPage({
           padding: 0.375rem !important;
         }
 
+        /* Force responsive grid layouts to apply in print
+           (Tailwind md: breakpoint doesn't fire at print viewport width) */
+        .export-custom-slide .grid {
+          display: grid !important;
+        }
+
+        .export-custom-slide [class*="md\\:grid-cols-2"] {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+
+        .export-custom-slide [class*="md\\:grid-cols-3"] {
+          grid-template-columns: repeat(3, 1fr) !important;
+        }
+
+        .export-custom-slide [class*="md\\:grid-cols-4"] {
+          grid-template-columns: repeat(4, 1fr) !important;
+        }
+
         /* Reduce spacing for print density */
         .export-custom-slide [class*="gap-"] {
           gap: 0.5rem !important;
