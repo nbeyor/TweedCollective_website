@@ -2062,7 +2062,7 @@ function buildSlideContentMap() {
           {/* Header */}
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (1 of 3)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (1 of 4)</h2>
           </div>
 
           {/* Top Strip — Framing Statement */}
@@ -2118,8 +2118,29 @@ function buildSlideContentMap() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-cream/10" />
+          {/* Status legend */}
+          <div className="flex items-center gap-4 mt-1">
+            {[
+              { color: 'bg-green-400', label: 'Confirmed / in-market' },
+              { color: 'bg-yellow-400', label: 'In development' },
+              { color: 'bg-gray-400', label: 'Speculative' },
+            ].map((s) => (
+              <div key={s.label} className="flex items-center gap-1">
+                <div className={`w-1.5 h-1.5 rounded-full ${s.color}`} />
+                <span className="text-[8px] text-cream/40">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-impact-summary-2'] = (
+        <div className="space-y-3 px-4">
+          {/* Header */}
+          <div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (2 of 4)</h2>
+          </div>
 
           {/* WCG Synergies Section */}
           <div>
@@ -2192,12 +2213,12 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-impact-summary-2'] = (
+  slideContentMap['ai-impact-summary-3'] = (
         <div className="space-y-4 px-4">
           {/* Header */}
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (2 of 3)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (3 of 4)</h2>
           </div>
 
           {/* 3 Assumption Cards */}
@@ -2226,12 +2247,12 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-impact-summary-3'] = (
+  slideContentMap['ai-impact-summary-4'] = (
         <div className="space-y-4 px-4">
           {/* Header */}
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (3 of 3)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (4 of 4)</h2>
           </div>
 
           {/* Bottom Strip — Management Anchor */}
@@ -2260,7 +2281,7 @@ function buildSlideContentMap() {
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (1 of 3)</h2>
             <p className="text-cream/50 text-sm">As Veeva expands into a full-stack clinical platform, could sponsors consolidate spend onto Veeva and displace Apollo&apos;s US market share over a 3&ndash;5 year horizon?</p>
           </div>
 
@@ -2290,6 +2311,15 @@ function buildSlideContentMap() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-veeva-consolidation-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (2 of 3)</h2>
           </div>
 
           {/* Table 2: Sponsor-Facing Products */}
@@ -2332,11 +2362,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['dd-veeva-consolidation-2'] = (
+  slideContentMap['dd-veeva-consolidation-3'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (2 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (3 of 3)</h2>
           </div>
 
           {/* Key Facts */}
@@ -2565,7 +2595,7 @@ function buildSlideContentMap() {
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (1 of 3)</h2>
             <p className="text-cream/50 text-sm">Apollo&apos;s infrastructure manages <em>documents</em> but lacks a <em>data architecture</em> for operational metrics needed to support AI products and premium analytics.</p>
           </div>
 
@@ -2605,7 +2635,7 @@ function buildSlideContentMap() {
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (2 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (2 of 3)</h2>
           </div>
 
           {/* Investment Tiers */}
@@ -2648,6 +2678,15 @@ function buildSlideContentMap() {
                 </tr>
               </tfoot>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-data-architecture-3'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (3 of 3)</h2>
           </div>
 
           {/* Inferences */}
