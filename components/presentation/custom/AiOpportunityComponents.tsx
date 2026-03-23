@@ -105,9 +105,9 @@ export function ExecutiveSummarySlide({ sectionLabel, heading, summaryText, rada
 export function BusinessDriversSlide({ sectionLabel, heading, revenueMix, costStructure, economicSensitivities, revenueMixSource, costStructureSource, economicSensitivityRationale }: {
   sectionLabel?: string
   heading: string
-  revenueMix: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
-  costStructure: { title: string; segments: Array<{ label: string; value: number; color: string }>; height: number }
-  economicSensitivities: { title: string; headers: string[]; rows: Array<{ area: string; impact: string; ebitda: string }> }
+  revenueMix?: { title: string; items: Array<{ label: string; value: number }>; suffix: string; maxValue: number; height: number }
+  costStructure?: { title: string; segments: Array<{ label: string; value: number; color: string }>; height: number }
+  economicSensitivities?: { title: string; headers: string[]; rows: Array<{ area: string; impact: string; ebitda: string }> }
   revenueMixSource?: string
   costStructureSource?: string
   economicSensitivityRationale?: string
@@ -115,54 +115,62 @@ export function BusinessDriversSlide({ sectionLabel, heading, revenueMix, costSt
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-sage-bright" />
-            {revenueMix.title}
-          </h3>
-          <HorizontalBarChart items={revenueMix.items} suffix={revenueMix.suffix} maxValue={revenueMix.maxValue} height={revenueMix.height} />
-          {revenueMixSource && (
-            <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{revenueMixSource}</p>
+      {(revenueMix || costStructure) && (
+        <div className="grid md:grid-cols-2 gap-6">
+          {revenueMix && (
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-sage-bright" />
+                {revenueMix.title}
+              </h3>
+              <HorizontalBarChart items={revenueMix.items} suffix={revenueMix.suffix} maxValue={revenueMix.maxValue} height={revenueMix.height} />
+              {revenueMixSource && (
+                <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{revenueMixSource}</p>
+              )}
+            </div>
+          )}
+          {costStructure && (
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-sage-bright" />
+                {costStructure.title}
+              </h3>
+              <PieChart segments={costStructure.segments} height={costStructure.height} />
+              {costStructureSource && (
+                <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{costStructureSource}</p>
+              )}
+            </div>
           )}
         </div>
+      )}
+      {economicSensitivities && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-          <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-sage-bright" />
-            {costStructure.title}
-          </h3>
-          <PieChart segments={costStructure.segments} height={costStructure.height} />
-          {costStructureSource && (
-            <p className="mt-2 text-[10px] text-cream/50 italic leading-relaxed">{costStructureSource}</p>
-          )}
-        </div>
-      </div>
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <h3 className="text-sm font-semibold text-cream mb-3">{economicSensitivities.title}</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-cream/10">
-                {economicSensitivities.headers.map((h, i) => (
-                  <th key={i} className="text-left py-2 pr-4 text-cream/50 font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {economicSensitivities.rows.map((row, i) => (
-                <tr key={i} className="border-b border-cream/5">
-                  <td className="py-2 pr-4 text-cream/80 font-medium">{row.area}</td>
-                  <td className="py-2 pr-4"><RatingBadge rating={row.impact} /></td>
-                  <td className="py-2"><RatingBadge rating={row.ebitda} /></td>
+          <h3 className="text-sm font-semibold text-cream mb-3">{economicSensitivities.title}</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-cream/10">
+                  {economicSensitivities.headers.map((h, i) => (
+                    <th key={i} className="text-left py-2 pr-4 text-cream/50 font-medium">{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {economicSensitivities.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-cream/5">
+                    <td className="py-2 pr-4 text-cream/80 font-medium">{row.area}</td>
+                    <td className="py-2 pr-4"><RatingBadge rating={row.impact} /></td>
+                    <td className="py-2"><RatingBadge rating={row.ebitda} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {economicSensitivityRationale && (
+            <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{economicSensitivityRationale}</p>
+          )}
         </div>
-        {economicSensitivityRationale && (
-          <p className="mt-3 text-[10px] text-cream/50 italic leading-relaxed">{economicSensitivityRationale}</p>
-        )}
-      </div>
+      )}
     </div>
   )
 }
@@ -204,11 +212,16 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
   const hasRationale = sections.some(s => s.rows.some(r => r.rationale))
   const hasDisplacementRisk = sections.some(s => s.rows.some(r => r.displacementRisk))
   return (
-    <div className="space-y-6 px-4">
+    <div className="space-y-4 px-4">
       <SectionHeader section={sectionLabel} title={heading} subtitle={subtitle} />
       {callout && (
         <div className="p-3 bg-sage/10 border border-sage/30 rounded-xl">
           <p className="text-xs text-cream/90 italic leading-relaxed">{callout}</p>
+        </div>
+      )}
+      {valuePotentialFootnote && (
+        <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
+          <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
         </div>
       )}
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -216,12 +229,12 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-cream/10">
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Initiative</th>
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Description</th>
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Source</th>
-                <th className="text-left py-2 pr-4 text-cream/50 font-medium">Value Potential</th>
-                {hasDisplacementRisk && <th className="text-left py-2 pr-4 text-cream/50 font-medium">Displacement Risk</th>}
-                {hasRationale && <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>}
+                <th className="text-left py-1.5 pr-4 text-cream/50 font-medium">Initiative</th>
+                <th className="text-left py-1.5 pr-4 text-cream/50 font-medium">Description</th>
+                <th className="text-left py-1.5 pr-4 text-cream/50 font-medium">Value Source</th>
+                <th className="text-left py-1.5 pr-4 text-cream/50 font-medium">Value Potential</th>
+                {hasDisplacementRisk && <th className="text-left py-1.5 pr-4 text-cream/50 font-medium">Displacement Risk</th>}
+                {hasRationale && <th className="text-left py-1.5 text-cream/50 font-medium">Rationale</th>}
               </tr>
             </thead>
             <tbody>
@@ -253,11 +266,6 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           </table>
         </div>
       </div>
-      {valuePotentialFootnote && (
-        <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
-          <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
-        </div>
-      )}
       {cards && cards.length > 0 && (
         <div className="grid md:grid-cols-4 gap-3">
           {cards.map(card => (
@@ -1046,16 +1054,18 @@ export function ProductValueStoryCompactSlide({ sectionLabel, heading, products 
 export function ValueFrameworkSlide({ sectionLabel, heading, description, internalBuckets, externalBuckets }: {
   sectionLabel?: string
   heading: string
-  description: string
+  description?: string
   internalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
   externalBuckets: Array<{ bucket: string; definition: string; kpis: string }>
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
-      <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-        <p className="text-sm text-cream/80 leading-relaxed">{description}</p>
-      </div>
+      {description && (
+        <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+          <p className="text-sm text-cream/80 leading-relaxed">{description}</p>
+        </div>
+      )}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <Layers className="w-4 h-4 text-sage-bright" /> Internal Value Buckets
@@ -1099,12 +1109,12 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
   heading: string
   opportunities?: Array<{ opportunity: string; impact: string }>
   problems?: string[]
-  stages: Array<{ name: string; component: string; description: string }>
-  features: Array<{ feature: string; source: string; description: string }>
-  efficiencies: Array<{ title: string; description: string }>
-  valueTable: Array<{ area: string; ftes: string; lowValue: string; highValue: string; target: string }>
-  totalLow: string
-  totalHigh: string
+  stages?: Array<{ name: string; component: string; description: string }>
+  features?: Array<{ feature: string; source: string; description: string }>
+  efficiencies?: Array<{ title: string; description: string }>
+  valueTable?: Array<{ area: string; ftes: string; lowValue: string; highValue: string; target: string }>
+  totalLow?: string
+  totalHigh?: string
 }) {
   const opps = opportunities ?? (problems?.map(p => {
     const dash = p.indexOf(' — ')
@@ -1114,6 +1124,7 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       {/* Pipeline visualization */}
+      {stages && stages.length > 0 && (
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-sage-bright" /> Integrated Pipeline
@@ -1136,7 +1147,9 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
           ))}
         </div>
       </div>
+      )}
       {/* Opportunities (reframed from problems per edit guide) */}
+      {opps.length > 0 && (
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-cream flex items-center gap-2">
           <Lightbulb className="w-4 h-4 text-sage-bright" /> Opportunities
@@ -1160,12 +1173,13 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
           </table>
         </div>
       </div>
+      )}
     </div>
   )
 }
 
 // ---- Section 16a: Internal Productivity Value Summary (p22) ----
-export function InternalProductivityValueSlide({ sectionLabel, heading, rows, totalLow, totalHigh }: {
+export function InternalProductivityValueSlide({ sectionLabel, heading, rows, totalLow, totalHigh, calloutText }: {
   sectionLabel?: string
   heading: string
   rows: Array<{
@@ -1181,11 +1195,17 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
   }>
   totalLow: string
   totalHigh: string
+  calloutText?: string
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       <p className="text-xs text-cream/60 italic">Outside in estimates to indicate directional value potential based on simple assumptions</p>
+      {calloutText && (
+        <div className="flex justify-end">
+          <span className="text-[10px] text-gold font-semibold">{calloutText}</span>
+        </div>
+      )}
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-[10px]">
@@ -1200,7 +1220,6 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                 <th className="text-right py-2 pr-2 text-cream/50 font-medium">High Uplift</th>
                 <th className="text-right py-2 pr-2 text-cream/50 font-medium">High Value</th>
                 <th className="text-left py-2 text-cream/50 font-medium">Rationale</th>
-                <th className="w-8" />
               </tr>
             </thead>
             <tbody className="font-mono">
@@ -1215,19 +1234,6 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                   <td className="py-2 pr-2 text-right text-cream/60">{row.highUplift}</td>
                   <td className="py-2 pr-2 text-right text-cream/60">{row.highValue}</td>
                   <td className="py-2 text-cream/60 font-sans leading-relaxed">{row.rationale}</td>
-                  {i === 0 && (
-                    <td rowSpan={3} className="relative align-middle">
-                      <div className="absolute inset-y-0 left-0 flex items-center">
-                        <svg width="20" height="100%" viewBox="0 0 20 100" preserveAspectRatio="none" className="h-full">
-                          <path d="M2,2 C10,2 10,48 18,50 C10,52 10,98 2,98" fill="none" stroke="rgba(200,180,130,0.6)" strokeWidth="2" />
-                        </svg>
-                      </div>
-                      <div className="pl-6 text-[9px] text-gold font-sans font-semibold whitespace-nowrap leading-tight">
-                        AI Editorial<br />Platform<br />$1.4–2.6M<br />in value
-                      </div>
-                    </td>
-                  )}
-                  {i >= 1 && i <= 2 && <td />}
                 </tr>
               ))}
               <tr className="border-t-2 border-cream/20">
@@ -1235,7 +1241,6 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
                 <td className="py-2.5 pr-2 text-right text-gold font-bold">{totalLow}</td>
                 <td className="py-2.5 pr-2" />
                 <td className="py-2.5 pr-2 text-right text-gold font-bold">{totalHigh}</td>
-                <td />
                 <td />
               </tr>
             </tbody>
@@ -1432,7 +1437,7 @@ export function ValueQuantificationSlide({ sectionLabel, heading, subtitle, inte
 export function LeadingIndicatorsSlide({ sectionLabel, heading, coreArgument, leadingIndicators, makingMeasurementWork, recommendation }: {
   sectionLabel?: string
   heading: string
-  coreArgument: string
+  coreArgument?: string
   leadingIndicators: Array<{ category: string; indicator: string; sourceSlides: string; howToMeasure: string }>
   makingMeasurementWork?: string[]
   recommendation?: string
@@ -1441,12 +1446,14 @@ export function LeadingIndicatorsSlide({ sectionLabel, heading, coreArgument, le
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       {/* Core argument callout */}
-      <div className="p-4 bg-sage/10 border border-sage/30 rounded-xl">
-        <p className="text-sm text-cream/90 leading-relaxed flex items-start gap-2">
-          <Lightbulb className="w-4 h-4 text-sage-bright flex-shrink-0 mt-0.5" />
-          {coreArgument}
-        </p>
-      </div>
+      {coreArgument && (
+        <div className="p-4 bg-sage/10 border border-sage/30 rounded-xl">
+          <p className="text-sm text-cream/90 leading-relaxed flex items-start gap-2">
+            <Lightbulb className="w-4 h-4 text-sage-bright flex-shrink-0 mt-0.5" />
+            {coreArgument}
+          </p>
+        </div>
+      )}
       {/* Leading indicators table — full width */}
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
@@ -1509,18 +1516,19 @@ const phasedVariantStyles: Record<string, { border: string; badge: string; line:
 export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }: {
   sectionLabel?: string
   heading: string
-  phases: Array<{
+  phases?: Array<{
     phase: string
     title: string
     items: string[]
     variant: string
   }>
-  fourCards: Array<{ num: string; title: string; description: string; variant: string }>
+  fourCards?: Array<{ num: string; title: string; description: string; variant: string }>
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       {/* Four recommendation cards */}
+      {fourCards && fourCards.length > 0 && (
       <div className="grid md:grid-cols-2 gap-4">
         {fourCards.map(card => {
           const styles = recommendationVariantStyles[card.variant] || recommendationVariantStyles.sage
@@ -1533,7 +1541,9 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
           )
         })}
       </div>
+      )}
       {/* Phased timeline */}
+      {phases && phases.length > 0 && (
       <div className="space-y-3">
         {phases.map((phase, i) => {
           const styles = phasedVariantStyles[phase.variant] || phasedVariantStyles.sage
@@ -1563,6 +1573,7 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
           )
         })}
       </div>
+      )}
     </div>
   )
 }
@@ -1571,15 +1582,17 @@ export function RoadmapPhasedSlide({ sectionLabel, heading, phases, fourCards }:
 export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics, activation, requirements }: {
   sectionLabel?: string
   heading: string
-  acquisition: { publicData: string[]; proprietaryData: string[] }
-  analytics: string[]
-  activation: string[]
-  requirements: Array<{ requirement: string; description: string }>
+  acquisition?: { publicData: string[]; proprietaryData: string[] }
+  analytics?: string[]
+  activation?: string[]
+  requirements?: Array<{ requirement: string; description: string }>
 }) {
   return (
     <div className="space-y-6 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
+      {(acquisition || analytics || activation) && (
       <div className="grid md:grid-cols-3 gap-4">
+        {acquisition && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Database className="w-4 h-4 text-sage-bright" /> Acquisition
@@ -1607,7 +1620,9 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
             </div>
           </div>
         </div>
+        )}
 
+        {analytics && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Brain className="w-4 h-4 text-helix-cyan" /> AI Analytics
@@ -1620,7 +1635,9 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
             ))}
           </ul>
         </div>
+        )}
 
+        {activation && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
             <Zap className="w-4 h-4 text-gold" /> Activation
@@ -1633,8 +1650,11 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
             ))}
           </ul>
         </div>
+        )}
       </div>
+      )}
 
+      {requirements && (
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
           <Server className="w-4 h-4 text-sage-bright" /> Technical Requirements for AI Viability
@@ -1658,6 +1678,7 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
           </table>
         </div>
       </div>
+      )}
     </div>
   )
 }
