@@ -402,34 +402,28 @@ export function DifferentiatingAssetsSlide({ sectionLabel, heading, subtitle, mo
 // Data flow diagram sub-component
 export function DataFlowDiagram({ sources, nonProprietarySources, outputs }: { sources: string[]; nonProprietarySources?: string[]; outputs: string[] }) {
   return (
-    <div className="flex items-center justify-center gap-2 md:gap-4">
-      <div className="space-y-1.5 flex-shrink-0">
+    <div className="flex items-center justify-center gap-1.5 md:gap-2">
+      <div className="space-y-1.5">
         {sources.map(s => (
-          <div key={s} className="px-2.5 py-1.5 bg-taupe/15 border border-taupe/25 rounded text-[10px] md:text-xs text-cream/70 text-right whitespace-nowrap">{s}</div>
+          <div key={s} className="px-2 py-1 bg-taupe/15 border border-taupe/25 rounded text-[10px] text-cream/70 text-right whitespace-nowrap">{s}</div>
         ))}
         {nonProprietarySources?.map(s => (
-          <div key={s} className="px-2.5 py-1.5 bg-gray-500/20 border border-gray-500/30 rounded text-[10px] md:text-xs text-cream/40 text-right whitespace-nowrap">
+          <div key={s} className="px-2 py-1 bg-gray-500/20 border border-gray-500/30 rounded text-[10px] text-cream/40 text-right whitespace-nowrap">
             {s} <span className="text-[8px] text-cream/30 italic ml-1">not proprietary</span>
           </div>
         ))}
       </div>
-      <div className="flex flex-col items-center gap-1 flex-shrink-0">
-        <div className="text-cream/20 text-lg">&rarr;</div>
+      <div className="text-cream/20 text-sm">&rarr;</div>
+      <div className="px-2 py-2 bg-sage/20 border-2 border-sage/40 rounded-xl text-xs text-cream font-semibold flex flex-col items-center gap-0.5 text-center leading-tight">
+        <Database className="w-3.5 h-3.5 text-sage-bright" />
+        <span>ION</span>
+        <span>Data</span>
+        <span>Lake</span>
       </div>
-      <div className="flex flex-col items-center gap-1 flex-shrink-0">
-        <div className="px-3 py-3 bg-sage/20 border-2 border-sage/40 rounded-xl text-sm text-cream font-semibold flex flex-col items-center gap-1 text-center">
-          <Database className="w-4 h-4 text-sage-bright" />
-          <span>ION</span>
-          <span>Data</span>
-          <span>Lake</span>
-        </div>
-      </div>
-      <div className="flex flex-col items-center gap-1 flex-shrink-0">
-        <div className="text-cream/20 text-lg">&rarr;</div>
-      </div>
-      <div className="space-y-1.5 flex-shrink-0">
+      <div className="text-cream/20 text-sm">&rarr;</div>
+      <div className="space-y-1.5">
         {outputs.map(o => (
-          <div key={o} className="px-2.5 py-1.5 bg-sage/10 border border-sage/20 rounded text-[10px] md:text-xs text-cream/70 whitespace-nowrap">{o}</div>
+          <div key={o} className="px-2 py-1 bg-sage/10 border border-sage/20 rounded text-[10px] text-cream/70 whitespace-nowrap">{o}</div>
         ))}
       </div>
     </div>
