@@ -14,8 +14,6 @@ import { spacing, typography, colors } from '@/lib/slideTemplates'
 import PrintButton from './PrintButton'
 import ExportCustomSlide from './ExportCustomSlide'
 
-// Export adapters for custom slide pagination (server-safe metadata only)
-import { getCustomSlidePageInfo } from './adapters'
 
 // Design system values for CSS (extracted for inline styles)
 const exportStyles = {
@@ -1039,6 +1037,37 @@ export default async function DocumentExportPage({
             transform: none !important;
           }
         }
+
+        /* Dev-time overflow warning: screen-only indicator for slides that exceed page height */
+        @media screen {
+          .export-slide[data-overflow="true"] {
+            outline: 3px solid #dc2626;
+          }
+          .export-slide[data-overflow="true"]::after {
+            content: 'Content exceeds page — split this slide';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            z-index: 10;
+          }
+        }
+      `}} />
+
+      {/* Client-side overflow detection script (screen preview only) */}
+      <script dangerouslySetInnerHTML={{__html: `
+        if (typeof window !== 'undefined' && !window.matchMedia('print').matches) {
+          requestAnimationFrame(function checkOverflow() {
+            document.querySelectorAll('.export-slide').forEach(function(slide) {
+              slide.setAttribute('data-overflow',
+                slide.scrollHeight > slide.clientHeight ? 'true' : 'false'
+              );
+            });
+          });
+        }
       `}} />
 
       {/* Print instruction header (hidden on print) */}
@@ -1118,38 +1147,6 @@ function buildExportPages(slides: any[]): ExportPage[] {
     const content = slide.content
     const isTitleSlide = content?.type === 'title'
     const slideNumber = si + 1
-
-    // --- Custom slide with pagination adapter? ---
-    if (content?.type === 'custom' && content.componentId) {
-      const pageInfo = getCustomSlidePageInfo(
-        content.componentId,
-        content.props || {}
-      )
-
-      if (pageInfo) {
-        for (let pi = 0; pi < pageInfo.pageCount; pi++) {
-          const range = pageInfo.pageRanges[pi]
-          pages.push({
-            key: `${slide.id}-adapted-${pi}`,
-            slideId: slide.id,
-            slideTitle: slide.title,
-            slideNumber,
-            totalSlides: slides.length,
-            pageIndex: pi,
-            pageCount: pageInfo.pageCount,
-            isTitleSlide: false,
-            render: () => (
-              <ExportCustomSlide
-                componentId={content.componentId}
-                props={content.props || {}}
-                sectionRange={range}
-              />
-            ),
-          })
-        }
-        continue
-      }
-    }
 
     // --- Standard type chunking ---
     const chunking = getStandardChunking(slide)

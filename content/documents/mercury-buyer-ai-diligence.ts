@@ -9,7 +9,12 @@
  * component for now due to the complexity of the 40-slide document.
  * Future refactor: progressively extract text/data into this file's props.
  *
- * Structure: Front Matter → Phase 1–4 (39 slides)
+ * Structure: Front Matter → Phase 1–4 (65 slides)
+ *
+ * SLIDE SIZING RULE: Each slide must fit within letter landscape
+ * (10in × 7.5in, ~6in usable content height after header).
+ * If content exceeds this, split into multiple slides with
+ * "(1 of N)" / "(2 of N)" title suffixes.
  */
 
 import { SlideData } from '@/lib/types'
@@ -84,27 +89,42 @@ export const slides: SlideData[] = [
 
   // ── Phase 3 — Team, Assets & Defensibility (slides 20–29) ──────────
   { id: 'asset-value-exec', title: 'Phase 3: Underlying Asset Value — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'asset-value-exec' } } },
-  { id: 'product-asset', title: 'Product Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'product-asset' } } },
-  { id: 'budget-deep-dive', title: 'Budget Product Deep Dive', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive' } } },
+  { id: 'product-asset-1', title: 'Product Asset Strength (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'product-asset-1' } } },
+  { id: 'product-asset-2', title: 'Product Asset Strength (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'product-asset-2' } } },
+  { id: 'budget-deep-dive-1', title: 'Budget Product Deep Dive (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive-1' } } },
+  { id: 'budget-deep-dive-2', title: 'Budget Product Deep Dive (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive-2' } } },
   { id: 'data-asset', title: 'Data Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-asset' } } },
   { id: 'channel-asset', title: 'Channel Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'channel-asset' } } },
   { id: 'relationship-asset', title: 'Relationship Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'relationship-asset' } } },
-  { id: 'team-ops-exec', title: 'Team + Operating Model — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'team-ops-exec' } } },
-  { id: 'people-roles', title: 'People & Roles', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'people-roles' } } },
-  { id: 'functional-coverage', title: 'Functional Coverage & Resourcing', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'functional-coverage' } } },
+  { id: 'team-ops-exec-1', title: 'Team + Operating Model — Executive Summary (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'team-ops-exec-1' } } },
+  { id: 'team-ops-exec-2', title: 'Team + Operating Model — Executive Summary (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'team-ops-exec-2' } } },
+  { id: 'people-roles-1', title: 'People & Roles (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'people-roles-1' } } },
+  { id: 'people-roles-2', title: 'People & Roles (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'people-roles-2' } } },
+  { id: 'functional-coverage-1', title: 'Functional Coverage & Resourcing (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'functional-coverage-1' } } },
+  { id: 'functional-coverage-2', title: 'Functional Coverage & Resourcing (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'functional-coverage-2' } } },
   { id: 'operating-model-maturity', title: 'Operating Model Maturity', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'operating-model-maturity' } } },
 
   // ── Phase 4 — ROI Quantification & Synergy Roadmap (slides 30–39) ──
   { id: 'synergies-exec', title: 'Phase 4: Buyer ↔ Target Synergies — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergies-exec' } } },
-  { id: 'synergy-detail', title: 'Synergy Detail (Selected Connections)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-detail' } } },
-  { id: 'ctms-synergy', title: 'CTMS Synergy — Mercury as the Missing ClinSphere Module', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ctms-synergy' } } },
-  { id: 'synergy-waves', title: 'Synergy Pathways (3 Waves)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-waves' } } },
-  { id: 'internal-transformation', title: 'Internal WCG Transformation Opportunity', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'internal-transformation' } } },
-  { id: 'build-vs-buy', title: 'Build vs. Buy — Cost to Replicate', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'build-vs-buy' } } },
-  { id: 'data-flywheel', title: 'WCG Data Flywheel', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-flywheel' } } },
-  { id: 'priority-initiatives', title: 'Priority Initiatives — Assumptions + Uplift', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives' } } },
-  { id: 'sensitivity', title: 'Sensitivity: Impact on Growth Curve', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity' } } },
-  { id: 'ai-quantified-impact', title: 'AI Opportunity — Quantified Impact', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-quantified-impact' } } },
+  { id: 'synergy-detail-1', title: 'Synergy Detail (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-detail-1' } } },
+  { id: 'synergy-detail-2', title: 'Synergy Detail (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-detail-2' } } },
+  { id: 'ctms-synergy-1', title: 'CTMS Synergy (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ctms-synergy-1' } } },
+  { id: 'ctms-synergy-2', title: 'CTMS Synergy (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ctms-synergy-2' } } },
+  { id: 'synergy-waves-1', title: 'Synergy Pathways (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-waves-1' } } },
+  { id: 'synergy-waves-2', title: 'Synergy Pathways (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'synergy-waves-2' } } },
+  { id: 'internal-transformation-1', title: 'Internal WCG Transformation (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'internal-transformation-1' } } },
+  { id: 'internal-transformation-2', title: 'Internal WCG Transformation (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'internal-transformation-2' } } },
+  { id: 'build-vs-buy-1', title: 'Build vs. Buy (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'build-vs-buy-1' } } },
+  { id: 'build-vs-buy-2', title: 'Build vs. Buy (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'build-vs-buy-2' } } },
+  { id: 'data-flywheel-1', title: 'WCG Data Flywheel (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-flywheel-1' } } },
+  { id: 'data-flywheel-2', title: 'WCG Data Flywheel (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-flywheel-2' } } },
+  { id: 'priority-initiatives-1', title: 'Priority Initiatives (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives-1' } } },
+  { id: 'priority-initiatives-2', title: 'Priority Initiatives (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'priority-initiatives-2' } } },
+  { id: 'sensitivity-1', title: 'Sensitivity: Impact on Growth Curve (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity-1' } } },
+  { id: 'sensitivity-2', title: 'Sensitivity: Impact on Growth Curve (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'sensitivity-2' } } },
+  { id: 'ai-quantified-impact-1', title: 'AI Opportunity — Quantified Impact (1 of 3)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-quantified-impact-1' } } },
+  { id: 'ai-quantified-impact-2', title: 'AI Opportunity — Quantified Impact (2 of 3)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-quantified-impact-2' } } },
+  { id: 'ai-quantified-impact-3', title: 'AI Opportunity — Quantified Impact (3 of 3)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'ai-quantified-impact-3' } } },
 ]
 
 export default slides
