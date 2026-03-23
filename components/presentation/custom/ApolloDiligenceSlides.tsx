@@ -346,12 +346,12 @@ function buildSlideContentMap() {
   )
 
   slideContentMap['ai-roadmap-fit'] = (
-        <div className="space-y-6 px-4">
+        <div className="space-y-4 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis</h2>
           </div>
-          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-6 items-start">
+          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-4 items-start">
             {/* Left: AI Roadmap Themes */}
             <div className="space-y-3">
               <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-2">AI Roadmap Themes</h3>
@@ -397,7 +397,7 @@ function buildSlideContentMap() {
               ))}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
+          <div className="p-3 rounded-xl bg-sage-500/10 border-l-4 border-sage-500">
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Additional Opportunities</div>
             <p className="text-xs text-cream/70 mb-2">Strong product basis with underlying data &mdash; additional opportunities in:</p>
             <ul className="text-xs text-cream/70 space-y-1">
