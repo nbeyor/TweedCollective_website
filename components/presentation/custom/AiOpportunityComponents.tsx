@@ -219,11 +219,6 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           <p className="text-xs text-cream/90 italic leading-relaxed">{callout}</p>
         </div>
       )}
-      {valuePotentialFootnote && (
-        <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
-          <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
-        </div>
-      )}
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
@@ -266,6 +261,11 @@ export function AssessmentTableSlide({ sectionLabel, heading, subtitle, callout,
           </table>
         </div>
       </div>
+      {valuePotentialFootnote && (
+        <div className="p-3 bg-cream/5 border border-cream/10 rounded-xl">
+          <p className="text-[10px] text-cream/60 italic leading-relaxed">{valuePotentialFootnote}</p>
+        </div>
+      )}
       {cards && cards.length > 0 && (
         <div className="grid md:grid-cols-4 gap-3">
           {cards.map(card => (
@@ -1179,7 +1179,7 @@ export function SuperProductSlide({ sectionLabel, heading, opportunities, proble
 }
 
 // ---- Section 16a: Internal Productivity Value Summary (p22) ----
-export function InternalProductivityValueSlide({ sectionLabel, heading, rows, totalLow, totalHigh, calloutText }: {
+export function InternalProductivityValueSlide({ sectionLabel, heading, rows, totalLow, totalHigh }: {
   sectionLabel?: string
   heading: string
   rows: Array<{
@@ -1195,17 +1195,11 @@ export function InternalProductivityValueSlide({ sectionLabel, heading, rows, to
   }>
   totalLow: string
   totalHigh: string
-  calloutText?: string
 }) {
   return (
-    <div className="space-y-6 px-4">
+    <div className="space-y-4 px-4">
       <SectionHeader section={sectionLabel} title={heading} />
       <p className="text-xs text-cream/60 italic">Outside in estimates to indicate directional value potential based on simple assumptions</p>
-      {calloutText && (
-        <div className="flex justify-end">
-          <span className="text-[10px] text-gold font-semibold">{calloutText}</span>
-        </div>
-      )}
       <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-[10px]">
@@ -1589,9 +1583,12 @@ export function IonDataLakeSlide({ sectionLabel, heading, acquisition, analytics
 }) {
   return (
     <div className="space-y-6 px-4">
-      <SectionHeader section={sectionLabel} title={heading} />
+      <div>
+        {sectionLabel && <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{sectionLabel}</div>}
+        <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2 max-w-[280px]">{heading}</h2>
+      </div>
       {(acquisition || analytics || activation) && (
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-4 max-w-4xl">
         {acquisition && (
         <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
           <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2">
