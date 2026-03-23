@@ -270,13 +270,13 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['growth-thesis-exec-1'] = (
+  slideContentMap['growth-thesis-exec'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <TrendingUp className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Macro Growth Drivers</h3>
@@ -302,17 +302,6 @@ function buildSlideContentMap() {
                 <li>• <span className="text-cream/90 font-medium">CEO background:</span> third AI-powered contract company — e-discovery co. (2004–2018), Apogee/Seal Software → DocuSign (May 2020)</li>
               </ul>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['growth-thesis-exec-2'] = (
-        <div className="space-y-6 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (2 of 2)</h2>
-          </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Target className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Alignment</h3>
@@ -333,72 +322,65 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['growth-projections-1'] = (
+  slideContentMap['growth-projections'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions</h2>
           </div>
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Funding & Key Metrics</h3>
-            <div className="h-36 mb-4">
-              <Bar data={fundingData} options={fundingOptions} />
+          <div className="grid md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-sage-300" /> Funding & Key Metrics</h3>
+              <div className="h-36 mb-4">
+                <Bar data={fundingData} options={fundingOptions} />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Seed Funding', val: '$8M', sub: 'Aug 2023' },
+                  { label: 'Lead Investor', val: 'Tusk Ventures', sub: 'Regulated industries' },
+                  { label: 'Founded', val: '2021', sub: 'Stealth; public May 2023' },
+                  { label: 'Key Client', val: 'Mayo Clinic', sub: 'Co-development partner' },
+                  { label: 'Time Reduction (Mgmt)', val: '50–80%', sub: 'Mercury claim' },
+                  { label: 'Time Reduction (Tweed Adj.)', val: '15–18%', sub: 'Client support data' },
+                  { label: 'ARR (est.)', val: '~$700K', sub: 'Per transcripts' },
+                ].map((m) => (
+                  <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
+                    <div className="text-sm font-serif text-sage-300">{m.val}</div>
+                    <div className="text-[10px] text-cream/50">{m.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {[
-                { label: 'Seed Funding', val: '$8M', sub: 'Aug 2023' },
-                { label: 'Lead Investor', val: 'Tusk Ventures', sub: 'Regulated industries' },
-                { label: 'Founded', val: '2021', sub: 'Stealth; public May 2023' },
-                { label: 'Key Client', val: 'Mayo Clinic', sub: 'Co-development partner' },
-                { label: 'Time Reduction (Mgmt)', val: '50–80%', sub: 'Mercury claim' },
-                { label: 'Time Reduction (Tweed Adj.)', val: '15–18%', sub: 'Client support data' },
-                { label: 'ARR (est.)', val: '~$700K', sub: 'Per transcripts' },
-              ].map((m) => (
-                <div key={m.label} className="p-2 bg-white/5 border border-cream/10 rounded-lg">
-                  <div className="text-sm font-serif text-sage-300">{m.val}</div>
-                  <div className="text-[10px] text-cream/50">{m.label}</div>
-                </div>
-              ))}
+            <div>
+              <div className="p-2 bg-sage-500/10 border border-sage-500/20 rounded-lg mb-3">
+                <p className="text-[10px] text-cream/60"><span className="text-sage-300 font-medium">Projection Sources:</span> All metrics labeled <span className="text-cream/80">(Mgmt)</span> = Mercury management claims. <span className="text-cream/80">(Tweed Adj.)</span> = Tweed-adjusted based on client support data. <span className="text-cream/80">(+ WCG Synergy)</span> projections in Phase 4 reflect buyer-enhanced scenarios.</p>
+              </div>
+              <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
+              <div className="space-y-3">
+                {[
+                  'Mercury cannot be disrupted by a single frontier/general model (e.g., Claude) — differentiation must remain meaningful beyond what off-the-shelf LLMs provide',
+                  'Product is sticky and differentiated enough to drive adoption and sustained use across sites and sponsors',
+                  'AI pipelines are high-quality and materially differentiated vs. off-the-shelf LLM use — pipeline complexity is real, not marketing',
+                  'Differentiation is visible and necessary to customers — they choose Mercury over generic tools because outcomes are measurably better',
+                  'Revenue model supports both site-side and sponsor-side monetization',
+                  'Network effects emerge: sponsors prefer sites on Mercury, and vice versa',
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
+                    <ArrowRight className="w-3 h-3 text-sage-300 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
   )
 
-  slideContentMap['growth-projections-2'] = (
-        <div className="space-y-6 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Projections — Snapshot + Assumptions (2 of 2)</h2>
-          </div>
-          <div className="mt-6">
-            <div className="p-2 bg-sage-500/10 border border-sage-500/20 rounded-lg mb-3">
-              <p className="text-[10px] text-cream/60"><span className="text-sage-300 font-medium">Projection Sources:</span> All metrics labeled <span className="text-cream/80">(Mgmt)</span> = Mercury management claims. <span className="text-cream/80">(Tweed Adj.)</span> = Tweed-adjusted based on client support data. <span className="text-cream/80">(+ WCG Synergy)</span> projections in Phase 4 reflect buyer-enhanced scenarios.</p>
-            </div>
-            <h3 className="text-sm font-semibold text-cream mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-sage-300" /> &quot;What Has to Be True&quot; for Growth</h3>
-            <div className="space-y-3">
-              {[
-                'Mercury cannot be disrupted by a single frontier/general model (e.g., Claude) — differentiation must remain meaningful beyond what off-the-shelf LLMs provide',
-                'Product is sticky and differentiated enough to drive adoption and sustained use across sites and sponsors',
-                'AI pipelines are high-quality and materially differentiated vs. off-the-shelf LLM use — pipeline complexity is real, not marketing',
-                'Differentiation is visible and necessary to customers — they choose Mercury over generic tools because outcomes are measurably better',
-                'Revenue model supports both site-side and sponsor-side monetization',
-                'Network effects emerge: sponsors prefer sites on Mercury, and vice versa',
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs text-cream/70">
-                  <ArrowRight className="w-3 h-3 text-sage-300 mt-0.5 flex-shrink-0" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['offering-ai-growth-matrix-1'] = (
+  slideContentMap['offering-ai-growth-matrix'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers</h2>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[11px]">
@@ -437,31 +419,6 @@ function buildSlideContentMap() {
                   <td className="p-2"><span className="text-yellow-300 font-medium">Partial</span>: sponsor-side expansion once sites adopted</td>
                   <td className="p-2"><span className="text-green-300 font-medium">Strong</span>: richer data unlocks benchmarking tier</td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  )
-
-  slideContentMap['offering-ai-growth-matrix-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Offering + AI Initiatives ↔ Growth Drivers (2 of 2)</h2>
-          </div>
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full border-collapse text-[11px]">
-              <thead>
-                <tr className="border-b-2 border-sage/40">
-                  <th className="text-left p-2 text-cream/80 font-medium min-w-[100px]">Growth Driver</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">CTA AI Markup</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">Contract Comparison</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">Playbook Compliance</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">Multi-party Platform</th>
-                  <th className="text-left p-2 text-cream/80 font-medium">Metagreement™ Data</th>
-                </tr>
-              </thead>
-              <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-cream/90">Retention</td>
                   <td className="p-2"><span className="text-green-300 font-medium">Strong</span>: switching cost</td>
@@ -493,11 +450,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-roadmap-fit-1'] = (
+  slideContentMap['ai-roadmap-fit'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis</h2>
           </div>
           <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-6 items-start">
             <div className="space-y-3">
@@ -545,16 +502,6 @@ function buildSlideContentMap() {
               ))}
             </div>
           </div>
-        </div>
-  )
-
-  slideContentMap['ai-roadmap-fit-2'] = (
-        <div className="space-y-6 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis (2 of 2)</h2>
-            <p className="text-sm text-cream/50 italic">Continued — Mismatches & Missing Bets</p>
-          </div>
           <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
             <div className="text-xs uppercase tracking-wider text-red-300 mb-1">Mismatches / Missing Bets</div>
             <ul className="text-xs text-cream/70 space-y-1">
@@ -566,13 +513,13 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['scenarios-1'] = (
+  slideContentMap['scenarios'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios for Growth & Disruption Outcomes (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios (2–3) for Outcomes</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <div className="grid md:grid-cols-3 gap-4 mt-6">
             <div className="p-5 bg-green-500/5 border border-green-500/20 rounded-xl">
               <Rocket className="w-6 h-6 text-green-400 mb-2" />
               <div className="flex items-center justify-between mb-2">
@@ -597,18 +544,6 @@ function buildSlideContentMap() {
                 <div><span className="text-cream/50 font-medium">Implications:</span> Deepen site-side value; consider white-label/OEM for sponsors; strengthen partnership channel</div>
               </div>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['scenarios-2'] = (
-        <div className="space-y-6 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Scenarios for Growth & Disruption Outcomes (2 of 2)</h2>
-            <p className="text-sm text-cream/50 italic">Continued — Downside Scenario</p>
-          </div>
-          <div className="grid md:grid-cols-1 gap-4 mt-6 max-w-2xl">
             <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-xl">
               <AlertTriangle className="w-6 h-6 text-red-400 mb-2" />
               <div className="flex items-center justify-between mb-2">
@@ -664,11 +599,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['who-could-disrupt-1'] = (
+  slideContentMap['who-could-disrupt'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt</h2>
           </div>
           <div className="space-y-4 mt-4">
             {[
@@ -689,32 +624,6 @@ function buildSlideContentMap() {
                   { name: 'Ironclad / Agiloft / DocuSign CLM', rtw: 'Established CLM platforms with AI', must: 'Need CTA-specific domain, multi-party architecture, regulatory compliance for clinical research' },
                 ]
               },
-            ].map((section) => (
-              <div key={section.mode} className={`p-4 bg-white/5 border-l-4 ${section.color} rounded-r-lg`}>
-                <h3 className="text-sm font-semibold text-cream mb-3">{section.mode}</h3>
-                <div className="space-y-3">
-                  {section.items.map((item) => (
-                    <div key={item.name} className="grid md:grid-cols-[1fr_1fr_1fr] gap-3 text-xs">
-                      <div className="font-medium text-cream/90">{item.name}</div>
-                      <div className="text-cream/60"><span className="text-cream/40 font-medium">Right to win:</span> {item.rtw}</div>
-                      <div className="text-cream/60"><span className="text-cream/40 font-medium">Must be true:</span> {item.must}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['who-could-disrupt-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt (2 of 2)</h2>
-          </div>
-          <div className="space-y-4 mt-4">
-            {[
               {
                 mode: 'Niche / Lightweight',
                 color: 'border-cream/20',
@@ -741,11 +650,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['what-they-would-build-1'] = (
+  slideContentMap['what-they-would-build'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build</h2>
           </div>
           <div className="space-y-4 mt-4">
             {[
@@ -769,31 +678,6 @@ function buildSlideContentMap() {
                 timeline: '6–12 months to announce; 12–18 months to production (Veeva AI Agents roadmap targets 2026)',
                 cantReplicate: 'Mercury\u2019s neutrality positioning — Veeva is sponsor-aligned; domain-specific CTA playbooks co-developed with Mayo Clinic'
               },
-            ].map((row) => (
-              <div key={row.mode} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-                <h3 className="text-sm font-semibold text-cream mb-3">{row.mode}</h3>
-                <div className="grid md:grid-cols-3 gap-3 text-xs">
-                  <div><span className="text-cream/40 font-medium">Product concept:</span> <span className="text-cream/70">{row.concept}</span></div>
-                  <div><span className="text-cream/40 font-medium">Core functions:</span> <span className="text-cream/70">{row.functions}</span></div>
-                  <div><span className="text-cream/40 font-medium">Specific stack:</span> <span className="text-cream/70">{row.stack}</span></div>
-                  <div><span className="text-cream/40 font-medium">Build timeline &amp; cost:</span> <span className="text-cream/70">{row.timeline}</span></div>
-                  <div><span className="text-cream/40 font-medium">Why &quot;good enough&quot;:</span> <span className="text-cream/70">{row.why}</span></div>
-                  <div><span className="text-red-300/60 font-medium">Cannot easily replicate:</span> <span className="text-cream/70">{row.cantReplicate}</span></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['what-they-would-build-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">What the Disruptor Would Build (2 of 2)</h2>
-          </div>
-          <div className="space-y-4 mt-4">
-            {[
               {
                 mode: 'Niche (CRO Internal)',
                 concept: 'Internal AI contract review tool trained on thousands of historical CTAs',
@@ -872,11 +756,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['build-it-today-1'] = (
+  slideContentMap['build-it-today'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability</h2>
           </div>
           <div className="mt-6 mb-2">
             <div className="flex items-center gap-0">
@@ -926,15 +810,6 @@ function buildSlideContentMap() {
                 <li>• Mayo Clinic collaboration and endorsement — cannot be replicated</li>
               </ul>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['build-it-today-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">&quot;Build-It-Today&quot; Replicability (2 of 2)</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[11px] mb-4">
@@ -1022,11 +897,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['product-asset-1'] = (
+  slideContentMap['product-asset'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1051,18 +926,7 @@ function buildSlideContentMap() {
                 <li>• CTO&apos;s research focused on transparency, market dynamics, volatility reduction</li>
               </ul>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['product-asset-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Product Asset Strength (2 of 2)</h2>
-          </div>
-          <div className="grid md:grid-cols-1 gap-4 mt-4">
-            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl md:col-span-2">
               <Lock className="w-5 h-5 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Switching Friction / Stickiness</h3>
               <div className="grid md:grid-cols-2 gap-3 text-xs text-cream/70">
@@ -1236,11 +1100,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['team-ops-exec-1'] = (
+  slideContentMap['team-ops-exec'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary</h2>
             <p className="text-xs text-cream/50">Per management: ~15 people across four functional teams (development, product, support, analytics)</p>
           </div>
           <div className="space-y-3 mt-6">
@@ -1259,15 +1123,6 @@ function buildSlideContentMap() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['team-ops-exec-2'] = (
-        <div className="space-y-6 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Team + Operating Model — Executive Summary (2 of 2)</h2>
           </div>
           <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
             <div className="text-xs uppercase tracking-wider text-red-300 mb-2">Key Person Retention — WCG Integration Priority</div>
@@ -1294,11 +1149,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['people-roles-1'] = (
+  slideContentMap['people-roles'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles</h2>
             <p className="text-xs text-cream/50">Accountability map updated with org chart shared during diligence</p>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1327,16 +1182,6 @@ function buildSlideContentMap() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-  )
-
-  slideContentMap['people-roles-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (2 of 2)</h2>
-            <p className="text-xs text-cream/50">R&amp;D allocation and key observations</p>
           </div>
           <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
             <h3 className="text-xs uppercase tracking-wider text-taupe-300 mb-2">R&amp;D Allocation Model (per management)</h3>
@@ -1368,11 +1213,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['functional-coverage-1'] = (
+  slideContentMap['functional-coverage'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Functional Coverage &amp; Resourcing (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Functional Coverage &amp; Resourcing</h2>
             <p className="text-xs text-cream/50">Headcount allocation per org chart shared during diligence</p>
           </div>
           <div className="overflow-x-auto mt-4">
@@ -1410,16 +1255,6 @@ function buildSlideContentMap() {
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-  )
-
-  slideContentMap['functional-coverage-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Functional Coverage &amp; Resourcing (2 of 2)</h2>
-            <p className="text-xs text-cream/50">Assessment and concentration risks</p>
           </div>
           <div className="grid md:grid-cols-3 gap-3">
             <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
@@ -1502,11 +1337,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-inventory-1'] = (
+  slideContentMap['ai-inventory'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists) (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists)</h2>
             <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-cream/50">
@@ -1574,21 +1409,6 @@ function buildSlideContentMap() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['ai-inventory-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Inventory (What Exists) (2 of 2)</h2>
-            <p className="text-xs text-cream/50">Updated with management interview details from diligence calls</p>
-          </div>
-          <div className="flex items-center gap-4 text-[10px] text-cream/50">
-            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400" /> Shipped &amp; revenue-generating</span>
-            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400" /> Shipped, pre-revenue / in development</span>
-            <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-red-400" /> Conceptual / planned</span>
           </div>
           {/* Data & Analytics */}
           <div>
@@ -1691,62 +1511,54 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-value-framework-1'] = (
+  slideContentMap['ai-value-framework'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework (1 of 2)</h2>
-            <p className="text-sm text-cream/50">Internal Value Buckets</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework</h2>
+            <p className="text-sm text-cream/50">Internal vs External Value Buckets</p>
           </div>
-          <div className="mt-4">
-            <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-3">Internal Value Buckets</h3>
-            <div className="space-y-3">
-              {[
-                { bucket: 'Cost', def: 'Reduce labor cost per agreement', kpis: 'Hours per CTA; cost per completed negotiation; external counsel spend', proof: 'Before/after comparisons; FTE equivalents' },
-                { bucket: 'Speed', def: 'Reduce cycle time from draft to execution', kpis: 'Days to signed CTA; rounds of negotiation; time to first response', proof: 'Time-series data; benchmarking' },
-                { bucket: 'Productivity', def: 'Enable more agreements per FTE', kpis: 'CTAs per specialist/month; concurrent negotiations handled', proof: 'Throughput metrics; capacity utilization' },
-              ].map((b) => (
-                <div key={b.bucket} className="p-3 bg-sage-500/5 border border-sage-500/20 rounded-lg">
-                  <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
-                  <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
-                  <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
-                </div>
-              ))}
+          <div className="grid md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-3">Internal Value Buckets</h3>
+              <div className="space-y-3">
+                {[
+                  { bucket: 'Cost', def: 'Reduce labor cost per agreement', kpis: 'Hours per CTA; cost per completed negotiation; external counsel spend', proof: 'Before/after comparisons; FTE equivalents' },
+                  { bucket: 'Speed', def: 'Reduce cycle time from draft to execution', kpis: 'Days to signed CTA; rounds of negotiation; time to first response', proof: 'Time-series data; benchmarking' },
+                  { bucket: 'Productivity', def: 'Enable more agreements per FTE', kpis: 'CTAs per specialist/month; concurrent negotiations handled', proof: 'Throughput metrics; capacity utilization' },
+                ].map((b) => (
+                  <div key={b.bucket} className="p-3 bg-sage-500/5 border border-sage-500/20 rounded-lg">
+                    <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
+                    <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
+                    <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs uppercase tracking-wider text-purple-300 mb-3">External Value Buckets</h3>
+              <div className="space-y-3">
+                {[
+                  { bucket: 'Pricing Power', def: 'Premium pricing via AI-differentiated capabilities', kpis: 'Price per seat/agreement; willingness to pay vs. alternatives; margin', proof: 'Pricing studies; competitive benchmarking' },
+                  { bucket: 'Speed-to-Close', def: 'Reduce time from prospect interest to signed deal', kpis: 'Trial start-up time (CTA portion); site activation timeline', proof: 'Customer case studies; industry benchmarks' },
+                ].map((b) => (
+                  <div key={b.bucket} className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
+                    <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
+                    <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
+                    <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
   )
 
-  slideContentMap['ai-value-framework-2'] = (
+  slideContentMap['ai-value-proof'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value Framework (2 of 2)</h2>
-            <p className="text-sm text-cream/50">External Value Buckets</p>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xs uppercase tracking-wider text-purple-300 mb-3">External Value Buckets</h3>
-            <div className="space-y-3">
-              {[
-                { bucket: 'Pricing Power', def: 'Premium pricing via AI-differentiated capabilities', kpis: 'Price per seat/agreement; willingness to pay vs. alternatives; margin', proof: 'Pricing studies; competitive benchmarking' },
-                { bucket: 'Speed-to-Close', def: 'Reduce time from prospect interest to signed deal', kpis: 'Trial start-up time (CTA portion); site activation timeline', proof: 'Customer case studies; industry benchmarks' },
-              ].map((b) => (
-                <div key={b.bucket} className="p-3 bg-purple-500/5 border border-purple-500/20 rounded-lg">
-                  <h4 className="text-xs font-semibold text-cream mb-1">{b.bucket}</h4>
-                  <p className="text-[10px] text-cream/60 mb-1">{b.def}</p>
-                  <p className="text-[10px] text-cream/40"><span className="font-medium">KPIs:</span> {b.kpis}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['ai-value-proof-1'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples</h2>
             <p className="text-xs text-cream/50">These are product capabilities that generate external (revenue-driving) value</p>
           </div>
           <div className="space-y-4 mt-4">
@@ -1769,52 +1581,6 @@ function buildSlideContentMap() {
                 comparables: 'No direct comparable in CTA-specific structured data',
                 mercuryPosition: 'Ahead — no competitor has CTA-specific structured data at clause level. Luminance has general contract analytics but not clinical trial domain depth.'
               },
-            ].map((ex) => (
-              <div key={ex.title} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-                <h3 className="text-sm font-semibold text-cream mb-1">{ex.title}</h3>
-                <p className="text-[10px] text-purple-300 font-medium mb-3">{ex.classification}</p>
-                <div className="grid md:grid-cols-2 gap-3 text-[11px]">
-                  <div>
-                    <span className="text-cream/40 font-medium">Value drivers:</span>
-                    <p className="text-cream/70 mt-0.5">{ex.valueDrivers}</p>
-                  </div>
-                  <div>
-                    <span className="text-cream/40 font-medium">Proof:</span>
-                    <p className="text-yellow-300/70 mt-0.5">{ex.proof}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-cream/40">Replicability:</span>
-                    <RatingBadge rating={ex.replicability} />
-                  </div>
-                  <div className="flex-1 h-1.5 bg-cream/10 rounded-full overflow-hidden max-w-[120px]">
-                    <div className={`h-full rounded-full ${
-                      ex.replicability === 'MEDIUM-HIGH' ? 'bg-red-400 w-[70%]' :
-                      ex.replicability === 'MEDIUM' ? 'bg-yellow-400 w-[55%]' :
-                      ex.replicability === 'LOW' ? 'bg-green-400 w-[20%]' :
-                      'bg-yellow-400 w-[55%]'
-                    }`} />
-                  </div>
-                  <span className="text-[10px] text-cream/50">{ex.replicabilityNote}</span>
-                </div>
-                <p className="text-[10px] text-cream/40 mt-1">Comparables: {ex.comparables}</p>
-                <p className="text-[10px] text-purple-300/80 mt-1"><span className="font-medium">Mercury vs. benchmark:</span> {ex.mercuryPosition}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['ai-value-proof-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">External Value Examples (2 of 2)</h2>
-            <p className="text-xs text-cream/50">These are product capabilities that generate external (revenue-driving) value</p>
-          </div>
-          <div className="space-y-4 mt-4">
-            {[
               {
                 title: 'Multi-Party Negotiation with AI Compliance',
                 classification: 'EXTERNAL value — speed-to-close',
@@ -1861,11 +1627,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['internal-value-proofs-1'] = (
+  slideContentMap['internal-value-proofs'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs</h2>
             <p className="text-xs text-cream/50">Cost, Speed, Productivity — tied to CI/CD and AI-enabled engineering model</p>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -1896,16 +1662,6 @@ function buildSlideContentMap() {
               </ul>
             </div>
           </div>
-        </div>
-  )
-
-  slideContentMap['internal-value-proofs-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Internal Value Proofs (2 of 2)</h2>
-            <p className="text-xs text-cream/50">Quantified proof points and CI/CD integration</p>
-          </div>
           <div className="p-3 rounded-xl bg-green-500/10 border-l-4 border-green-500/50 mb-2">
             <div className="text-xs uppercase tracking-wider text-green-300 mb-1">Quantified Internal Proof Points</div>
             <div className="grid md:grid-cols-3 gap-3 text-xs text-cream/70">
@@ -1920,12 +1676,12 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-quantified-impact-1'] = (
+  slideContentMap['ai-quantified-impact'] = (
         <div className="space-y-3 px-4">
           {/* Header */}
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (1 of 3)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact</h2>
           </div>
 
           {/* Top strip — Framing statement */}
@@ -1949,158 +1705,146 @@ function buildSlideContentMap() {
             </div>
           </div>
 
-          {/* Section: Mercury AI Revenue */}
-          <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mt-1">Mercury AI Revenue</div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[10px]">
-              <thead>
-                <tr className="border-b border-sage/30">
-                  <th className="text-left py-1 px-2 text-cream/60 font-medium">Initiative</th>
-                  <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">Low</th>
-                  <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">High</th>
-                  <th className="text-left py-1 px-2 text-cream/60 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="text-cream/70">
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">Site Platform Licenses ($45K/site)</td>
-                  <td className="py-1 px-2 text-right text-cream">$900K</td>
-                  <td className="py-1 px-2 text-right text-cream">$1,170K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">26 customers confirmed</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">Budget Module Add-on ($35K/site)</td>
-                  <td className="py-1 px-2 text-right text-cream">$280K</td>
-                  <td className="py-1 px-2 text-right text-cream">$525K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Pricing confirmed; attach TBD</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">Sponsor — Project ($175K)</td>
-                  <td className="py-1 px-2 text-right text-cream">$0</td>
-                  <td className="py-1 px-2 text-right text-cream">$175K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">1 in pipeline</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/70">Sponsor — Enterprise ($1–4.5M)</td>
-                  <td className="py-1 px-2 text-right text-cream/40">$0</td>
-                  <td className="py-1 px-2 text-right text-cream/40">$0</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">2029+ thesis</span></td>
-                </tr>
-                <tr className="border-t border-sage/30 bg-sage/5">
-                  <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — Mercury AI</td>
-                  <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,180K</td>
-                  <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,870K</td>
-                  <td className="py-1.5 px-2"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  )
+          {/* Main content — Chart (left 60%) + Assumption cards (right 40%) */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+            {/* Left column — Data tables + Chart */}
+            <div className="lg:col-span-3 space-y-2">
+              {/* Section: Mercury AI Revenue */}
+              <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mt-1">Mercury AI Revenue</div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <thead>
+                    <tr className="border-b border-sage/30">
+                      <th className="text-left py-1 px-2 text-cream/60 font-medium">Initiative</th>
+                      <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">Low</th>
+                      <th className="text-right py-1 px-2 text-cream/60 font-medium w-16">High</th>
+                      <th className="text-left py-1 px-2 text-cream/60 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-cream/70">
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Site Platform Licenses ($45K/site)</td>
+                      <td className="py-1 px-2 text-right text-cream">$900K</td>
+                      <td className="py-1 px-2 text-right text-cream">$1,170K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">26 customers confirmed</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Budget Module Add-on ($35K/site)</td>
+                      <td className="py-1 px-2 text-right text-cream">$280K</td>
+                      <td className="py-1 px-2 text-right text-cream">$525K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Pricing confirmed; attach TBD</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Sponsor — Project ($175K)</td>
+                      <td className="py-1 px-2 text-right text-cream">$0</td>
+                      <td className="py-1 px-2 text-right text-cream">$175K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">1 in pipeline</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/70">Sponsor — Enterprise ($1–4.5M)</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">2029+ thesis</span></td>
+                    </tr>
+                    <tr className="border-t border-sage/30 bg-sage/5">
+                      <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — Mercury AI</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,180K</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,870K</td>
+                      <td className="py-1.5 px-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-  slideContentMap['ai-quantified-impact-2'] = (
-        <div className="space-y-3 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (2 of 3)</h2>
-          </div>
+              {/* Section: WCG Synergies */}
+              <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mt-2">WCG Synergies</div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <tbody className="text-cream/70">
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Channel Cross-Sell (→ WCG sponsors)</td>
+                      <td className="py-1 px-2 text-right text-cream w-16">$350K</td>
+                      <td className="py-1 px-2 text-right text-cream w-16">$1,000K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Needs sales enablement</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">ClinSphere Integration Value</td>
+                      <td className="py-1 px-2 text-right text-cream">$0</td>
+                      <td className="py-1 px-2 text-right text-cream">$250K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/50">12–18 mo integration</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/90">Internal WCG Transformation</td>
+                      <td className="py-1 px-2 text-right text-cream">$10K</td>
+                      <td className="py-1 px-2 text-right text-cream">$80K</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">WCG controls adoption</span></td>
+                    </tr>
+                    <tr className="border-b border-cream/5">
+                      <td className="py-1 px-2 text-cream/70">Data Flywheel — First Turn</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2 text-right text-cream/40">$0</td>
+                      <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">Strategic; no Yr 1 rev</span></td>
+                    </tr>
+                    <tr className="border-t border-blue-400/30 bg-blue-500/5">
+                      <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — WCG Synergies</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$360K</td>
+                      <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,330K</td>
+                      <td className="py-1.5 px-2"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-          {/* Section: WCG Synergies */}
-          <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mt-2">WCG Synergies</div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[10px]">
-              <tbody className="text-cream/70">
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">Channel Cross-Sell (→ WCG sponsors)</td>
-                  <td className="py-1 px-2 text-right text-cream w-16">$350K</td>
-                  <td className="py-1 px-2 text-right text-cream w-16">$1,000K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1"></span><span className="text-cream/50">Needs sales enablement</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">ClinSphere Integration Value</td>
-                  <td className="py-1 px-2 text-right text-cream">$0</td>
-                  <td className="py-1 px-2 text-right text-cream">$250K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/50">12–18 mo integration</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/90">Internal WCG Transformation</td>
-                  <td className="py-1 px-2 text-right text-cream">$10K</td>
-                  <td className="py-1 px-2 text-right text-cream">$80K</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-1"></span><span className="text-cream/50">WCG controls adoption</span></td>
-                </tr>
-                <tr className="border-b border-cream/5">
-                  <td className="py-1 px-2 text-cream/70">Data Flywheel — First Turn</td>
-                  <td className="py-1 px-2 text-right text-cream/40">$0</td>
-                  <td className="py-1 px-2 text-right text-cream/40">$0</td>
-                  <td className="py-1 px-2"><span className="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span><span className="text-cream/40">Strategic; no Yr 1 rev</span></td>
-                </tr>
-                <tr className="border-t border-blue-400/30 bg-blue-500/5">
-                  <td className="py-1.5 px-2 font-semibold text-cream">Subtotal — WCG Synergies</td>
-                  <td className="py-1.5 px-2 text-right font-semibold text-cream">$360K</td>
-                  <td className="py-1.5 px-2 text-right font-semibold text-cream">$1,330K</td>
-                  <td className="py-1.5 px-2"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              {/* Total row */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-cream/5 border border-cream/10 mt-1">
+                <span className="text-xs font-bold text-cream">TOTAL</span>
+                <div className="flex items-center gap-6">
+                  <span className="text-xs font-bold text-cream">$1,540K</span>
+                  <span className="text-[10px] text-cream/40">to</span>
+                  <span className="text-xs font-bold text-sage">$3,200K</span>
+                </div>
+              </div>
 
-          {/* Total row */}
-          <div className="flex items-center justify-between p-2 rounded-lg bg-cream/5 border border-cream/10 mt-1">
-            <span className="text-xs font-bold text-cream">TOTAL</span>
-            <div className="flex items-center gap-6">
-              <span className="text-xs font-bold text-cream">$1,540K</span>
-              <span className="text-[10px] text-cream/40">to</span>
-              <span className="text-xs font-bold text-sage">$3,200K</span>
-            </div>
-          </div>
-
-          {/* Stacked bar chart */}
-          <div className="h-40 mt-1">
-            <Bar data={aiImpactData} options={aiImpactOptions} />
-          </div>
-        </div>
-  )
-
-  slideContentMap['ai-quantified-impact-3'] = (
-        <div className="space-y-3 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact (3 of 3)</h2>
-          </div>
-
-          {/* 3 Assumption cards */}
-          <div className="space-y-2">
-            {/* Card 1 */}
-            <div className="p-3 rounded-xl border border-sage/30 bg-sage/5">
-              <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mb-1">1 — Site Licenses Are the Floor. Budget Attach Is the Swing.</div>
-              <p className="text-[10px] text-cream/70 leading-relaxed">
-                Site platform licenses ($45K) represent 63–76% of Mercury&apos;s Year 1 AI revenue. That base is relatively de-risked with 26 confirmed customers. The Budget module add-on ($35K) is the primary swing variable: at 30% attach ($280K) vs. 58% attach ($525K), it&apos;s a <span className="text-cream font-medium">$245K delta</span>.
-              </p>
-              <p className="text-[10px] text-cream/50 mt-1 italic">
-                Key question: is Budget the real product and the platform is the wedge — or is Budget a nice-to-have?
-              </p>
+              {/* Stacked bar chart */}
+              <div className="h-40 mt-1">
+                <Bar data={aiImpactData} options={aiImpactOptions} />
+              </div>
             </div>
 
-            {/* Card 2 */}
-            <div className="p-3 rounded-xl border border-blue-400/30 bg-blue-500/5">
-              <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mb-1">2 — WCG Channel Cross-Sell Is the Biggest Synergy Lever</div>
-              <p className="text-[10px] text-cream/70 leading-relaxed">
-                Cross-sell through WCG&apos;s sponsor relationships accounts for $350K–$1M — roughly 75–97% of Year 1 synergy value. The range depends on WCG execution: account team training, comp alignment on Mercury deals, and sponsor product readiness.
-              </p>
-              <p className="text-[10px] text-cream/50 mt-1 italic">
-                This synergy needs a named owner and a 90-day plan on Day 1 post-close.
-              </p>
-            </div>
+            {/* Right column — 3 Assumption cards */}
+            <div className="lg:col-span-2 space-y-2">
+              {/* Card 1 */}
+              <div className="p-3 rounded-xl border border-sage/30 bg-sage/5">
+                <div className="text-[10px] uppercase tracking-wider text-sage font-semibold mb-1">1 — Site Licenses Are the Floor. Budget Attach Is the Swing.</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  Site platform licenses ($45K) represent 63–76% of Mercury&apos;s Year 1 AI revenue. That base is relatively de-risked with 26 confirmed customers. The Budget module add-on ($35K) is the primary swing variable: at 30% attach ($280K) vs. 58% attach ($525K), it&apos;s a <span className="text-cream font-medium">$245K delta</span>.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  Key question: is Budget the real product and the platform is the wedge — or is Budget a nice-to-have?
+                </p>
+              </div>
 
-            {/* Card 3 */}
-            <div className="p-3 rounded-xl border border-cream/15 bg-cream/5">
-              <div className="text-[10px] uppercase tracking-wider text-cream/60 font-semibold mb-1">3 — ClinSphere + Data Flywheel Are the Deal Thesis — Not Year 1 Revenue</div>
-              <p className="text-[10px] text-cream/70 leading-relaxed">
-                The strategic rationale — Mercury as the missing ClinSphere module, WCG data powering Mercury&apos;s AI — contributes <span className="text-cream font-medium">$0–$250K in Year 1</span>. Both require 12–18 months of integration. This is fine as long as the IC prices them as Year 2+ optionality, not Year 1 cash.
-              </p>
-              <p className="text-[10px] text-cream/50 mt-1 italic">
-                If the flywheel never turns, the AI premium in the acquisition price is not justified.
-              </p>
+              {/* Card 2 */}
+              <div className="p-3 rounded-xl border border-blue-400/30 bg-blue-500/5">
+                <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold mb-1">2 — WCG Channel Cross-Sell Is the Biggest Synergy Lever</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  Cross-sell through WCG&apos;s sponsor relationships accounts for $350K–$1M — roughly 75–97% of Year 1 synergy value. The range depends on WCG execution: account team training, comp alignment on Mercury deals, and sponsor product readiness.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  This synergy needs a named owner and a 90-day plan on Day 1 post-close.
+                </p>
+              </div>
+
+              {/* Card 3 */}
+              <div className="p-3 rounded-xl border border-cream/15 bg-cream/5">
+                <div className="text-[10px] uppercase tracking-wider text-cream/60 font-semibold mb-1">3 — ClinSphere + Data Flywheel Are the Deal Thesis — Not Year 1 Revenue</div>
+                <p className="text-[10px] text-cream/70 leading-relaxed">
+                  The strategic rationale — Mercury as the missing ClinSphere module, WCG data powering Mercury&apos;s AI — contributes <span className="text-cream font-medium">$0–$250K in Year 1</span>. Both require 12–18 months of integration. This is fine as long as the IC prices them as Year 2+ optionality, not Year 1 cash.
+                </p>
+                <p className="text-[10px] text-cream/50 mt-1 italic">
+                  If the flywheel never turns, the AI premium in the acquisition price is not justified.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -2161,11 +1905,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['synergy-detail-1'] = (
+  slideContentMap['synergy-detail'] = (
         <div className="space-y-4 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Detail (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Detail (Selected Connections)</h2>
           </div>
           <div className="space-y-3 mt-4">
             {[
@@ -2187,31 +1931,6 @@ function buildSlideContentMap() {
                 prereq: 'Data schema alignment; privacy/compliance review; ML model development',
                 constraint: 'Mercury data volume insufficient initially; requires significant adoption first'
               },
-            ].map((conn) => (
-              <div key={conn.num} className="p-3 bg-white/5 border border-cream/10 rounded-xl">
-                <div className="flex items-start gap-2 mb-2">
-                  <span className="text-xs font-mono text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded flex-shrink-0">{conn.num}</span>
-                  <h3 className="text-xs font-semibold text-cream">{conn.title}</h3>
-                </div>
-                <div className="grid md:grid-cols-3 gap-2 text-[10px]">
-                  <div><span className="text-green-300/60 font-medium">Value:</span> <span className="text-cream/60">{conn.value}</span></div>
-                  <div><span className="text-cream/40 font-medium">Prerequisites:</span> <span className="text-cream/60">{conn.prereq}</span></div>
-                  <div><span className="text-red-300/60 font-medium">Constraint:</span> <span className="text-cream/60">{conn.constraint}</span></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['synergy-detail-2'] = (
-        <div className="space-y-4 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Synergy Detail (2 of 2)</h2>
-          </div>
-          <div className="space-y-3 mt-4">
-            {[
               {
                 num: '4', title: 'WCG Sponsor Relationships → Mercury Sponsor-Side Adoption',
                 value: 'If sponsors adopt Mercury through WCG, both sides negotiate on one platform — unlocking highest-value feature.',
@@ -2241,11 +1960,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['synergy-waves-1'] = (
+  slideContentMap['synergy-waves'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (3 Waves)</h2>
           </div>
           <div className="flex items-center gap-0 mt-4 mb-2">
             {[
@@ -2288,15 +2007,6 @@ function buildSlideContentMap() {
               </ul>
             </div>
           </div>
-        </div>
-  )
-
-  slideContentMap['synergy-waves-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Synergy Pathways (2 of 2)</h2>
-          </div>
           <div className="p-3 rounded-xl bg-blue-500/10 border-l-4 border-blue-500/50">
             <div className="text-xs uppercase tracking-wider text-blue-300 mb-1">Wave Transition Gates</div>
             <p className="text-[10px] text-cream/50 mb-2 italic">Waves transition on milestone gates, not time gates — if a gate isn&apos;t met, the wave doesn&apos;t advance regardless of calendar.</p>
@@ -2309,11 +2019,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['priority-initiatives-1'] = (
+  slideContentMap['priority-initiatives'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift</h2>
           </div>
           <div className="space-y-4 mt-4">
             {[
@@ -2339,51 +2049,6 @@ function buildSlideContentMap() {
                 assumptions: ['% of Buyer sites paying for enablement', 'Mercury pricing per site/year', 'Adoption rate %'],
                 output: 'Incremental ARR from Mercury cross-sell; net revenue retention improvement'
               },
-            ].map((init) => (
-              <div key={init.num} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-sm font-mono text-red-300 bg-red-500/10 px-2 py-0.5 rounded flex-shrink-0">{init.num}</span>
-                  <div>
-                    <h3 className="text-sm font-medium text-cream">{init.title}</h3>
-                    <span className="text-[10px] font-mono text-cream/40">Value buckets: {init.buckets}</span>
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-4 gap-3">
-                  <div>
-                    <span className="text-[10px] text-cream/40 font-medium">Est. Cost:</span>
-                    <p className="text-[10px] text-cream/70 mt-0.5">{init.estCost}</p>
-                    <span className="text-[10px] text-cream/40 font-medium mt-1 block">Timeline to Value:</span>
-                    <p className="text-[10px] text-cream/70 mt-0.5">{init.timeline}</p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-cream/40 font-medium">Uplift (Low):</span>
-                    <p className="text-[10px] text-cream/70 mt-0.5">{init.upliftLow}</p>
-                    <span className="text-[10px] text-cream/40 font-medium mt-1 block">Uplift (High):</span>
-                    <p className="text-[10px] text-cream/70 mt-0.5">{init.upliftHigh}</p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-red-300/60 font-medium">What Needs to Be True:</span>
-                    <p className="text-[10px] text-cream/60 mt-0.5">{init.whatMustBeTrue}</p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-cream/40 font-medium">Output Metric:</span>
-                    <p className="text-[10px] text-cream/70 mt-0.5">{init.output}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-  )
-
-  slideContentMap['priority-initiatives-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives (2 of 2)</h2>
-          </div>
-          <div className="space-y-4 mt-4">
-            {[
               {
                 num: '3', title: 'Launch Contract Intelligence Data Product',
                 buckets: 'Pricing Power, Speed',
@@ -2435,11 +2100,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['sensitivity-1'] = (
+  slideContentMap['sensitivity'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Sensitivity: Impact on Growth Curve (1 of 2)</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Sensitivity: Impact on Growth Curve</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-4">
             <div className="p-4 bg-green-500/5 border border-green-500/20 rounded-xl">
@@ -2502,29 +2167,6 @@ function buildSlideContentMap() {
                   <td className="p-2 text-yellow-300">Entry-level sponsor deal closes; enterprise remains distant</td>
                   <td className="p-2 text-red-300">Sponsor pipeline stalls; growth thesis is deferred</td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  )
-
-  slideContentMap['sensitivity-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Sensitivity: Impact on Growth Curve (2 of 2)</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs">
-              <thead>
-                <tr className="border-b-2 border-cream/20">
-                  <th className="text-left p-2 text-cream/80 font-medium">Sensitivity Axis</th>
-                  <th className="text-left p-2 text-green-300 font-medium">Optimistic</th>
-                  <th className="text-left p-2 text-yellow-300 font-medium">Base</th>
-                  <th className="text-left p-2 text-red-300 font-medium">Pessimistic</th>
-                </tr>
-              </thead>
-              <tbody className="text-cream/70">
                 <tr className="border-b border-cream/5">
                   <td className="p-2 font-medium text-cream/90">WCG channel activation<br /><span className="text-[10px] text-cream/40">(the synergy unlock)</span></td>
                   <td className="p-2 text-green-300">WCG account teams actively bundle Mercury into sponsor conversations</td>
@@ -2567,11 +2209,11 @@ function buildSlideContentMap() {
      Former appendix slides — now inlined within Phases 3 & 4
      ─────────────────────────────────────────────────────────────────── */
 
-  slideContentMap['ctms-synergy-1'] = (
+  slideContentMap['ctms-synergy'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">CTMS Synergy (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">CTMS Synergy — Mercury as the Missing ClinSphere Module</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Would Mercury help the WCG CTMS offering?</p>
           </div>
 
@@ -2600,15 +2242,6 @@ function buildSlideContentMap() {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['ctms-synergy-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">CTMS Synergy (2 of 2)</h2>
           </div>
 
           <div>
@@ -2658,11 +2291,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['budget-deep-dive-1'] = (
+  slideContentMap['budget-deep-dive'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> Deeper dive on the new budget product from Mercury.</p>
             <p className="text-[10px] text-cream/40 mt-1 italic">Budget receives a dedicated deep dive because it is Mercury&apos;s largest near-term revenue expansion vector and the primary synergy point with WCG&apos;s ClinSphere Study Start-Up Services, which currently delivers budget development manually with a 5-day SLA.</p>
           </div>
@@ -2699,15 +2332,6 @@ function buildSlideContentMap() {
               </div>
             </div>
           </div>
-        </div>
-  )
-
-  slideContentMap['budget-deep-dive-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive (2 of 2)</h2>
-          </div>
 
           <div>
             <h3 className="text-sm font-semibold text-cream mb-3">Contracts Roadmap (Maturity Reference)</h3>
@@ -2741,11 +2365,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['internal-transformation-1'] = (
+  slideContentMap['internal-transformation'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Internal WCG Transformation (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Internal WCG Transformation Opportunity</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How could Mercury&apos;s technology help transform WCG&apos;s internal operations?</p>
           </div>
 
@@ -2774,15 +2398,6 @@ function buildSlideContentMap() {
               </table>
             </div>
             <p className="text-[10px] text-cream/40 mt-2 italic">Per management: WCG has &quot;an entire business dedicated to negotiating contracts and budgets and abstracting protocols — all manual.&quot; The CEO characterized this business as one that &quot;will be disrupted massively.&quot;</p>
-          </div>
-        </div>
-  )
-
-  slideContentMap['internal-transformation-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Internal WCG Transformation (2 of 2)</h2>
           </div>
 
           <div>
@@ -2837,11 +2452,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['build-vs-buy-1'] = (
+  slideContentMap['build-vs-buy'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Build vs. Buy (1 of 2)</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Build vs. Buy — Cost to Replicate</h2>
             <p className="text-xs text-cream/50"><span className="text-cream/70 font-medium">Question:</span> How long would it take to hire the Mercury team, and what would it cost?</p>
           </div>
 
@@ -2887,15 +2502,6 @@ function buildSlideContentMap() {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-  )
-
-  slideContentMap['build-vs-buy-2'] = (
-        <div className="space-y-5 px-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Build vs. Buy (2 of 2)</h2>
           </div>
 
           <div>
@@ -3054,19 +2660,9 @@ function buildSlideContentMap() {
     </div>,
   ]
 
-  slideContentMap['data-flywheel-1'] = (
+  slideContentMap['data-flywheel'] = (
     <div className="space-y-5 px-4">
-      {_dataFlywheelSections.slice(0, 3)}
-    </div>
-  )
-
-  slideContentMap['data-flywheel-2'] = (
-    <div className="space-y-5 px-4">
-      <div>
-        <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-        <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">WCG Data Flywheel (2 of 2)</h2>
-      </div>
-      {_dataFlywheelSections.slice(3)}
+      {_dataFlywheelSections}
     </div>
   )
 }
@@ -3080,6 +2676,39 @@ function getSlideContent(slideId: string): React.ReactNode {
       <p className="text-cream/40">Slide &quot;{slideId}&quot; not found</p>
     </div>
   )
+}
+
+/**
+ * Get export sections for slides that need pagination.
+ * For data-flywheel, returns pre-built manually curated sections.
+ * For other slides, generically extracts top-level children from the
+ * wrapper div as semantic sections (each child = one section).
+ * Returns null only if the slide doesn't exist.
+ */
+export function getMercuryExportSections(slideId: string): React.ReactNode[] | null {
+  // Ensure content is built
+  if (Object.keys(slideContentMap).length === 0) {
+    buildSlideContentMap()
+  }
+
+  // Pre-built sections for manually curated slides
+  if (slideId === 'data-flywheel') {
+    return _dataFlywheelSections
+  }
+
+  // Generic: extract top-level children from any slide's wrapper div
+  const content = slideContentMap[slideId]
+  if (!content) return null
+
+  const element = content as React.ReactElement
+  if (element?.props?.children) {
+    const children = React.Children.toArray(element.props.children)
+    if (children.length >= 2) {
+      return children as React.ReactNode[]
+    }
+  }
+
+  return null
 }
 
 export function MercuryDiligenceSlide({ slideId }: { slideId: string }) {
