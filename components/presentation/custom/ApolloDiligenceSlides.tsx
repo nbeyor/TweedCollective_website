@@ -151,13 +151,13 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['growth-thesis-exec'] = (
+  slideContentMap['growth-thesis-exec-1'] = (
         <div className="space-y-6 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (1 of 2)</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <TrendingUp className="w-6 h-6 text-sage-300 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Drivers of Growth</h3>
@@ -182,6 +182,17 @@ function buildSlideContentMap() {
                 <li>• FlowBot &mdash; AI assistant embedded in eBinders for role-based onboarding</li>
               </ul>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['growth-thesis-exec-2'] = (
+        <div className="space-y-6 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Growth Thesis Alignment — Executive Summary (2 of 2)</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4 mt-6">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <Target className="w-6 h-6 text-green-400 mb-2" />
               <h3 className="text-sm font-semibold text-cream mb-2">Alignment</h3>
@@ -481,7 +492,7 @@ function buildSlideContentMap() {
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Who Could Disrupt</h2>
           </div>
-          <div className="space-y-4 mt-4">
+          <div className="space-y-2 mt-4">
             {[
               {
                 mode: 'Frontier / Platform',
@@ -519,7 +530,7 @@ function buildSlideContentMap() {
                 <h3 className="text-sm font-semibold text-cream mb-3">{section.mode}</h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
-                    <div key={item.name} className="grid md:grid-cols-[1fr_1fr_1fr] gap-3 text-xs">
+                    <div key={item.name} className="grid md:grid-cols-[0.6fr_1fr_1fr] gap-3 text-xs">
                       <div className="font-medium text-cream/90">{item.name}</div>
                       <div className="text-cream/60"><span className="text-cream/40 font-medium">Right to win:</span> {item.rtw}</div>
                       <div className="text-cream/60"><span className="text-cream/40 font-medium">Must be true:</span> {item.must}</div>
@@ -776,11 +787,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['data-asset'] = (
+  slideContentMap['data-asset-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength (1 of 2)</h2>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[11px]">
@@ -838,6 +849,15 @@ function buildSlideContentMap() {
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['data-asset-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Data Asset Strength (2 of 2)</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -985,11 +1005,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['people-roles'] = (
+  slideContentMap['people-roles-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (1 of 2)</h2>
           </div>
           <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse text-[11px]">
@@ -1023,6 +1043,15 @@ function buildSlideContentMap() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['people-roles-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">People &amp; Roles (2 of 2)</h2>
           </div>
           <div className="p-3 rounded-lg bg-sage-500/10 border border-sage-500/20">
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-1">Organizational Layers</div>
@@ -1099,17 +1128,45 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['operating-model-maturity'] = (
+  slideContentMap['operating-model-maturity-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Operating Model Maturity</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Operating Model Maturity (1 of 2)</h2>
           </div>
           <div className="space-y-4 mt-6">
             {[
               { dim: 'SDLC Process + AI-Augmented Development', score: 4, label: 'Strong', obs: 'Fully CI/CD via GitHub Actions (migrating eBinders from Semaphore). 4 environments: build → QA → UAT → prod; adding performance + pre-prod in Q2. API test coverage ~90%; app automation ~70%. Feature flags via Schematic. Blue-green and canary deployments. Beta → GA for established; LA with ~10 customers for new. AIDLC with Claude Code (primary), Copilot, Cursor.' },
               { dim: 'Product', score: 4, label: 'Strong', obs: 'Requirements centralized in Aha (CS, support, CABs, ideas board). CABs twice/yr — summer (sponsor-focused), fall (combined at customer show). Biweekly stakeholder calls. Pendo for feature usage. 3 co-development partners: NHS (TrialFlow), Lily (SiteLink + feasibility), Merck (Doc QC AI).' },
               { dim: 'Engineering', score: 4, label: 'Strong', obs: 'Jellyfish for velocity, DORA metrics, AI adoption tracking. Story pointing for sprint measurement. Scrum teams by animal names (Bear = eBinders, Shark = SiteLink). When POC viable, new scrum team raised with standard governance.' },
+            ].map((row) => (
+              <div key={row.dim} className="flex items-center gap-4">
+                <div className="w-48 flex-shrink-0">
+                  <p className="text-xs font-medium text-cream">{row.dim}</p>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="flex-1 h-2 bg-cream/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-taupe to-sage rounded-full transition-all" style={{ width: `${(row.score / 5) * 100}%` }} />
+                    </div>
+                    <span className="text-[10px] font-mono text-cream/50 w-16">{row.score}/5 {row.label}</span>
+                  </div>
+                  <p className="text-[10px] text-cream/50">{row.obs}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['operating-model-maturity-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Operating Model Maturity (2 of 2)</h2>
+          </div>
+          <div className="space-y-4 mt-6">
+            {[
               { dim: 'DevOps / Infrastructure', score: 4, label: 'Strong', obs: 'Centralized DevOps CoE under Nicola. 100% AWS; 51 microservices on ECS Fargate. Orcus → AWS Step Functions (end of Q1). RabbitMQ → Kafka. New Relic APM + CloudWatch + CloudTrail. PagerDuty for incidents. Terraform for IaC. 99.95% uptime target. Auto-scaling in place.' },
               { dim: 'Data Infrastructure', score: 3, label: 'Developing', obs: 'MongoDB + PostgreSQL/RDS. Snowflake (US East) with Fivetran + dbt; 15-min refresh cycle. Tamr for data mastering (just starting). Kafka migration underway (4-5 mo) for real-time streaming. Data quality: ~75% clean, ~25% messy. 50M production docs, 20K/day ingest. Neo4j in POC only.' },
               { dim: 'Security & Compliance', score: 4, label: 'Strong', obs: 'SOC 2 Type 2, 21 CFR Part 11, GDPR, HIPAA, Annex 11, ICH E6 R3. AWS architecture-approved partner. 6-person regulatory team + QA partnership. Ketrix for compliance (integrated with Jira). Wiz for cloud security. Mimecast for web security. Auth0 for auth.' },
@@ -1220,22 +1277,19 @@ function buildSlideContentMap() {
           <div className="p-3 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500/50 mb-2">
             <p className="text-xs text-cream/70"><span className="text-yellow-300 font-medium">Overarching Assessment:</span> Many AI initiatives appear to lack a clear monetization/value path; tighten to a smaller set with explicit value capture logic.</p>
           </div>
-          <div className="p-3 rounded-xl bg-cream/5 border border-cream/10 mb-2">
-            <p className="text-xs text-cream/70"><span className="text-gold font-medium">AI Architecture:</span> All AI via AWS Bedrock with Claude Sonnet 3 (confirmed — not OpenAI). HITL for GxP. Deliberate deterministic-first approach: pursue deterministic processing wherever possible before resorting to LLMs as a cost management strategy. No fine-tuned or custom models disclosed.</p>
-          </div>
         </div>
   )
 
-  slideContentMap['architecture-readiness'] = (
+  slideContentMap['architecture-readiness-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness (1 of 2)</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 mt-4">
-            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-              <Database className="w-5 h-5 text-gold mb-2" />
-              <h3 className="text-sm font-semibold text-cream mb-2">Application Architecture</h3>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl mt-4">
+            <Database className="w-5 h-5 text-gold mb-2" />
+            <h3 className="text-sm font-semibold text-cream mb-2">Application Architecture</h3>
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-[10px]">
                   <tbody className="text-cream/70">
@@ -1253,6 +1307,19 @@ function buildSlideContentMap() {
                       ['AI/LLM', 'AWS Bedrock + Claude Sonnet 3 (not OpenAI)'],
                       ['OCR', 'Tesseract (deterministic-first approach)'],
                       ['Auth', 'Auth0'],
+                    ].map((row, i) => (
+                      <tr key={i} className="border-b border-cream/5">
+                        <td className="p-1.5 font-medium text-cream/90 w-28">{row[0]}</td>
+                        <td className="p-1.5">{row[1]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <tbody className="text-cream/70">
+                    {[
                       ['Data Warehouse', 'Snowflake (US East) + Fivetran + dbt'],
                       ['Data Mastering', 'Tamr (site + study data; just starting)'],
                       ['CI/CD', 'GitHub Actions (migrating eBinders from Semaphore)'],
@@ -1276,37 +1343,46 @@ function buildSlideContentMap() {
                 </table>
               </div>
             </div>
-            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
-              <h3 className="text-sm font-semibold text-cream mb-3">AI Readiness Assessment</h3>
-              <div className="space-y-2">
-                {[
-                  { area: 'Cloud-native', status: 'ready' as const, note: '100% AWS; 51 microservices on ECS Fargate; Bedrock + Claude Sonnet 3 for AI; 99.95% uptime target per region' },
-                  { area: 'Data Availability', status: 'ready' as const, note: '50M production docs (20K/day ingest), 7.2M workflows/mo, 5.8M monitoring activities. 80% load on US East.' },
-                  { area: 'Data Quality', status: 'developing' as const, note: '~75% clean (40K sponsor-provisioned sites = very clean; ~half of 25K site-originated = clean); ~25% messy (legacy). Tamr addressing.' },
-                  { area: 'Data Pipeline', status: 'developing' as const, note: 'Snowflake refreshes every 15 min (batch); Kafka migration in progress (4-5 mo) for real-time streaming + replaces RabbitMQ' },
-                  { area: 'Observability', status: 'developing' as const, note: 'New Relic APM + CloudWatch logs + CloudTrail audit; DORA metrics via Jellyfish; no AI-specific monitoring yet' },
-                  { area: 'Compliance Readiness', status: 'ready' as const, note: 'Strong GxP infra (Ketrix, regulatory team, tagged unit tests). Feature flags via Schematic for rollout control.' },
-                  { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway. Auto-scaling in place (e.g., eBinders: 20 instances peak, 10 off-peak).' },
-                ].map((r) => (
-                  <div key={r.area} className="flex items-start gap-2 text-xs">
-                    <ReadinessIcon status={r.status} />
-                    <div>
-                      <span className="text-cream/90 font-medium">{r.area}:</span>{' '}
-                      <span className="text-cream/60">{r.note}</span>
-                    </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['architecture-readiness-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">Architecture Snapshot + Readiness (2 of 2)</h2>
+          </div>
+          <div className="p-4 bg-white/5 border border-cream/10 rounded-xl mt-4">
+            <h3 className="text-sm font-semibold text-cream mb-3">AI Readiness Assessment</h3>
+            <div className="space-y-2">
+              {[
+                { area: 'Cloud-native', status: 'ready' as const, note: '100% AWS; 51 microservices on ECS Fargate; Bedrock + Claude Sonnet 3 for AI; 99.95% uptime target per region' },
+                { area: 'Data Availability', status: 'ready' as const, note: '50M production docs (20K/day ingest), 7.2M workflows/mo, 5.8M monitoring activities. 80% load on US East.' },
+                { area: 'Data Quality', status: 'developing' as const, note: '~75% clean (40K sponsor-provisioned sites = very clean; ~half of 25K site-originated = clean); ~25% messy (legacy). Tamr addressing.' },
+                { area: 'Data Pipeline', status: 'developing' as const, note: 'Snowflake refreshes every 15 min (batch); Kafka migration in progress (4-5 mo) for real-time streaming + replaces RabbitMQ' },
+                { area: 'Observability', status: 'developing' as const, note: 'New Relic APM + CloudWatch logs + CloudTrail audit; DORA metrics via Jellyfish; no AI-specific monitoring yet' },
+                { area: 'Compliance Readiness', status: 'ready' as const, note: 'Strong GxP infra (Ketrix, regulatory team, tagged unit tests). Feature flags via Schematic for rollout control.' },
+                { area: 'Integration Architecture', status: 'developing' as const, note: 'Point-to-point currently. Middleware bus project underway. Auto-scaling in place (e.g., eBinders: 20 instances peak, 10 off-peak).' },
+              ].map((r) => (
+                <div key={r.area} className="flex items-start gap-2 text-xs">
+                  <ReadinessIcon status={r.status} />
+                  <div>
+                    <span className="text-cream/90 font-medium">{r.area}:</span>{' '}
+                    <span className="text-cream/60">{r.note}</span>
                   </div>
-                ))}
-              </div>
-              <div className="mt-3 pt-3 border-t border-cream/10">
-                <div className="text-[10px] uppercase tracking-wider text-red-300 mb-1">Architecture Debt / Risk</div>
-                <ul className="text-[10px] text-cream/60 space-y-0.5">
-                  <li>&bull; Angular version fragmentation (v14 legacy vs v21 newer) may slow unified AI feature deployment</li>
-                  <li>&bull; Orchestration migration (Orcus &rarr; Step Functions) in-flight, targeting end of Q1</li>
-                  <li>&bull; eBinders monolith decomposition to microservices underway — significant architectural debt item</li>
-                  <li>&bull; DR upgrade from AZ-level to multi-region cross-region replication targeted for Q1</li>
-                  <li>&bull; MongoDB may challenge relational queries needed by AI analytics; PostgreSQL/RDS used for newer products</li>
-                </ul>
-              </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 pt-3 border-t border-cream/10">
+              <div className="text-[10px] uppercase tracking-wider text-red-300 mb-1">Architecture Debt / Risk</div>
+              <ul className="text-[10px] text-cream/60 space-y-0.5">
+                <li>&bull; Angular version fragmentation (v14 legacy vs v21 newer) may slow unified AI feature deployment</li>
+                <li>&bull; Orchestration migration (Orcus &rarr; Step Functions) in-flight, targeting end of Q1</li>
+                <li>&bull; eBinders monolith decomposition to microservices underway — significant architectural debt item</li>
+                <li>&bull; DR upgrade from AZ-level to multi-region cross-region replication targeted for Q1</li>
+                <li>&bull; MongoDB may challenge relational queries needed by AI analytics; PostgreSQL/RDS used for newer products</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1386,11 +1462,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['ai-value-proof'] = (
+  slideContentMap['ai-value-proof-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value &amp; Proof — Examples</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value &amp; Proof — Examples (1 of 2)</h2>
             <p className="text-xs text-cream/40 italic">These are examples; not comprehensive.</p>
           </div>
           <div className="space-y-4 mt-4">
@@ -1442,6 +1518,17 @@ function buildSlideContentMap() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['ai-value-proof-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Value &amp; Proof — Examples (2 of 2)</h2>
+          </div>
+          <div className="space-y-4 mt-4">
             <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-mono text-gold bg-gold/10 px-2 py-0.5 rounded">3</span>
@@ -1679,11 +1766,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['priority-initiatives'] = (
+  slideContentMap['priority-initiatives-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift (1 of 2)</h2>
             <p className="text-xs text-cream/50">Illustrative models using diligence data points. NOT projections &mdash; frameworks for discussion requiring validation with data room financials.</p>
           </div>
           <div className="space-y-4 mt-4">
@@ -1701,13 +1788,6 @@ function buildSlideContentMap() {
                 assumptions: ['2026 target: $3M total AI ARR', 'Merck validated 5K hrs/month pain point', 'Consumption-based pricing under consideration', 'If 20 large sponsors adopt at $100K–$500K/yr each = $2M–$10M ARR range'],
                 output: 'AI-specific ARR from Doc QC through WCG channel',
                 confidence: 'Low — product not yet GA, pricing TBD'
-              },
-              {
-                num: '3', title: 'Site Network Expansion via WCG Channel',
-                buckets: 'Network Growth, Site Revenue',
-                assumptions: ['Current peak: 500 sites/week via sponsors', 'WCG has 3,500+ sponsor relationships', '5% of non-Apollo WCG sponsors adopt in Year 1', 'Each sponsor averages 50 sites/study × 3 studies/yr at ~$1,500/site'],
-                output: 'Incremental site-level ARR from WCG-driven deployments',
-                confidence: 'Medium — channel mechanism validated, conversion rate speculative'
               },
             ].map((init) => (
               <div key={init.num} className="p-4 bg-white/5 border border-cream/10 rounded-xl">
@@ -1738,6 +1818,44 @@ function buildSlideContentMap() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+  )
+
+  slideContentMap['priority-initiatives-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Priority Initiatives — Assumptions + Uplift (2 of 2)</h2>
+          </div>
+          <div className="space-y-4 mt-4">
+            <div className="p-4 bg-white/5 border border-cream/10 rounded-xl">
+              <div className="flex items-start gap-3 mb-3">
+                <span className="text-sm font-mono text-red-300 bg-red-500/10 px-2 py-0.5 rounded flex-shrink-0">3</span>
+                <div>
+                  <h3 className="text-sm font-medium text-cream">Site Network Expansion via WCG Channel</h3>
+                  <span className="text-[10px] font-mono text-cream/40">Value buckets: Network Growth, Site Revenue</span>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-3">
+                <div>
+                  <span className="text-[10px] text-cream/40 font-medium">Key Assumptions:</span>
+                  <ul className="mt-1 space-y-0.5">
+                    {['Current peak: 500 sites/week via sponsors', 'WCG has 3,500+ sponsor relationships', '5% of non-Apollo WCG sponsors adopt in Year 1', 'Each sponsor averages 50 sites/study × 3 studies/yr at ~$1,500/site'].map((a, i) => (
+                      <li key={i} className="text-[10px] text-cream/60 flex items-start gap-1">
+                        <span className="text-cream/30 mt-px">&bull;</span> {a}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <span className="text-[10px] text-cream/40 font-medium">Output Metric:</span>
+                  <p className="text-xs text-cream/70 mt-1">Incremental site-level ARR from WCG-driven deployments</p>
+                  <span className="text-[10px] text-cream/40 font-medium mt-2 block">Confidence:</span>
+                  <p className="text-[10px] text-cream/50">Medium — channel mechanism validated, conversion rate speculative</p>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="p-3 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
             <p className="text-xs text-cream/70"><span className="text-red-300 font-medium">Key Sensitivity Variables:</span> (1) Apollo&apos;s actual current ARR (not disclosed), (2) WCG channel conversion rate for Apollo products, (3) Doc QC pricing and LLM cost structure, (4) Integration timeline and execution risk, (5) Veeva competitive response timing.</p>
@@ -1814,13 +1932,6 @@ function buildSlideContentMap() {
           <div>
             <div className="text-xs uppercase tracking-wider text-blue-400 mb-2">Phase 4 — ROI Quantification & Synergy Roadmap</div>
             <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">AI Opportunity — Quantified Impact</h2>
-          </div>
-
-          {/* Top Strip — Framing Statement */}
-          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-400/30">
-            <p className="text-xs text-cream/90 leading-relaxed">
-              Year 1 AI + synergy opportunity ranges from <span className="text-blue-300 font-semibold">$8M to $77M</span>, with Apollo standalone AI revenue of <span className="text-blue-300 font-semibold">$6.5M–$42M</span> bracketing management&apos;s $3M target. Customer value delivered is 10–20× Apollo&apos;s revenue capture, indicating significant pricing power headroom.
-            </p>
           </div>
 
           {/* Main Two-Column Layout */}
@@ -1987,7 +2098,7 @@ function buildSlideContentMap() {
 
           {/* Source Notes */}
           <div className="pt-1 border-t border-cream/5">
-            <div className="text-[8px] text-cream/30 space-y-0.5">
+            <div className="text-[6px] text-cream/30 space-y-0.5">
               <p>Sources: Doc QC sizing from Merck case study (5,000 hrs/month, &ldquo;low seven figures&rdquo; per Ryan Jones) &bull; Feasibility pricing (&ldquo;$500, something like that&rdquo; — Ryan Jones) &bull; &ldquo;3 on 3&rdquo; target (Shankar Jagannathan) &bull; IRB integration (&ldquo;already completed several&rdquo; — Shankar) &bull; All [GAP] items noted in AI Opportunity Model spreadsheet</p>
             </div>
           </div>
@@ -1999,11 +2110,11 @@ function buildSlideContentMap() {
    * Follow-up deep dive slides addressing questions from diligence review
    * ============================================================ */
 
-  slideContentMap['dd-veeva-consolidation'] = (
+  slideContentMap['dd-veeva-consolidation-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (1 of 2)</h2>
             <p className="text-cream/50 text-sm">As Veeva expands into a full-stack clinical platform, could sponsors consolidate spend onto Veeva and displace Apollo&apos;s US market share over a 3&ndash;5 year horizon?</p>
           </div>
 
@@ -2073,6 +2184,16 @@ function buildSlideContentMap() {
             </p>
           </div>
 
+        </div>
+  )
+
+  slideContentMap['dd-veeva-consolidation-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Veeva — Long-Term Platform Consolidation Threat (2 of 2)</h2>
+          </div>
+
           {/* Key Facts */}
           <div className="p-4 rounded-xl bg-orange-500/10 border-l-4 border-orange-500/50">
             <div className="text-xs uppercase tracking-wider text-orange-300 mb-2">Key Facts</div>
@@ -2124,11 +2245,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['dd-econsent-landscape'] = (
+  slideContentMap['dd-econsent-landscape-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">eICF &amp; eConsent — Competitive Landscape</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">eICF &amp; eConsent — Competitive Landscape (1 of 2)</h2>
             <p className="text-cream/50 text-sm">Market ~$430M (2023), ~11% CAGR. 100% of top 10 pharma have implemented eConsent. Apollo&apos;s product is ~2 years old — &ldquo;like a DocuSign&rdquo; for clinical consent.</p>
           </div>
 
@@ -2163,6 +2284,15 @@ function buildSlideContentMap() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-econsent-landscape-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-purple-300 mb-2">Phase 2 — AI Initiatives & Disruption Risk</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">eICF &amp; eConsent — Competitive Landscape (2 of 2)</h2>
           </div>
 
           {/* Positioning Assessment */}
@@ -2202,11 +2332,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['dd-data-rights'] = (
+  slideContentMap['dd-data-rights-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Rights — Content vs. Metadata</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Rights — Content vs. Metadata (1 of 2)</h2>
             <p className="text-cream/50 text-sm">The data <em>in</em> documents vs. the data <em>about</em> documents carry very different rights profiles and commercial potential.</p>
           </div>
 
@@ -2252,6 +2382,15 @@ function buildSlideContentMap() {
               ))}
             </div>
           </div>
+        </div>
+  )
+
+  slideContentMap['dd-data-rights-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Rights — Content vs. Metadata (2 of 2)</h2>
+          </div>
 
           {/* WCG Implications */}
           <div className="p-4 rounded-xl bg-purple-500/10 border-l-4 border-purple-500/50">
@@ -2277,11 +2416,11 @@ function buildSlideContentMap() {
         </div>
   )
 
-  slideContentMap['dd-data-architecture'] = (
+  slideContentMap['dd-data-architecture-1'] = (
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (1 of 2)</h2>
             <p className="text-cream/50 text-sm">Apollo&apos;s infrastructure manages <em>documents</em> but lacks a <em>data architecture</em> for operational metrics needed to support AI products and premium analytics.</p>
           </div>
 
@@ -2313,6 +2452,15 @@ function buildSlideContentMap() {
                 <li>&bull; Self-service analytics layer for customers or internal teams</li>
               </ul>
             </div>
+          </div>
+        </div>
+  )
+
+  slideContentMap['dd-data-architecture-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-2">Data Architecture Gap Assessment &amp; Modernization Cost (2 of 2)</h2>
           </div>
 
           {/* Investment Tiers */}
