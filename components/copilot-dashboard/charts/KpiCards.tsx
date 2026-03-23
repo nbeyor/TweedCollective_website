@@ -90,6 +90,19 @@ export function KpiCards({ data }: Props) {
     })
   }
 
+  if (data.copilotPrCorrelation) {
+    const corr = data.copilotPrCorrelation
+    const liftPositive = corr.assistedProductivity >= corr.nonAssistedProductivity
+    cards.push({
+      label: 'Copilot Impact on Productivity',
+      value: corr.productivityLift,
+      delta: `${corr.assistedTickets} assisted / ${corr.nonAssistedTickets} non-assisted`,
+      context: `${corr.assistedProductivity.toFixed(3)} vs ${corr.nonAssistedProductivity.toFixed(3)} tix/FTE-day`,
+      accent: liftPositive ? COPILOT_ACCENT : '#d97706',
+      accentBg: liftPositive ? COPILOT_BG : '#fef3c7',
+    })
+  }
+
   return (
     <div className="grid grid-cols-3 gap-4 mb-8">
       {cards.map((card) => (

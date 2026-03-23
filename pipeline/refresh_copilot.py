@@ -45,6 +45,7 @@ EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
 
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
+AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
 
 
 def find_latest_xlsx() -> Path:
@@ -62,6 +63,23 @@ def find_pull_sheet(xl) -> str | None:
     return names[0] if names else None
 
 
+def find_copilot_sheet(xl) -> tuple[str, str] | None:
+    """Find the best Copilot/AI sheet in an Excel file.
+
+    Returns (sheet_name, format) where format is 'new' (AuthorUUID-based)
+    or 'legacy' (GithubUserId-based), or None if no match.
+    Prefers the new AI All format over legacy Copilot_All.
+    """
+    names = [str(n).strip() for n in xl.sheet_names]
+    # Prefer new format (AI All MM_DD_YY) — has AuthorUUID for PR correlation
+    for name in names:
+        if AI_ALL_PATTERN.match(name):
+            return (name, 'new')
+    if 'Copilot_All' in names:
+        return ('Copilot_All', 'legacy')
+    return None
+
+
 def find_copilot_file() -> Path | None:
     """Auto-detect copilot data file in uploads or exports."""
     search_dirs = [
@@ -74,7 +92,7 @@ def find_copilot_file() -> Path | None:
         for f in sorted(d.glob("*.xlsx"), key=os.path.getmtime, reverse=True):
             try:
                 xl = pd.ExcelFile(f)
-                if 'Copilot_All' in xl.sheet_names:
+                if find_copilot_sheet(xl) is not None:
                     return f
             except Exception:
                 continue
@@ -250,56 +268,247 @@ def compute_size_complexity(tickets):
     return buckets
 
 
+def _load_copilot_df(copilot_path):
+    """Load and normalize the Copilot/AI telemetry DataFrame.
+
+    Returns (df, format) where format is 'new' or 'legacy', or (None, None).
+    The returned df always has canonical columns: user_id, EventDay,
+    suggestions, acceptances, loc_added.
+    """
+    xl = pd.ExcelFile(copilot_path)
+    result = find_copilot_sheet(xl)
+    if result is None:
+        return None, None
+
+    sheet_name, fmt = result
+    copilot = pd.read_excel(xl, sheet_name=sheet_name)
+    copilot['EventDay'] = pd.to_datetime(copilot['EventDay']).dt.normalize()
+
+    if fmt == 'new':
+        copilot = copilot.rename(columns={
+            'AuthorUUID': 'user_id',
+            'suggestionCount': 'suggestions',
+            'acceptedSuggestionCount': 'acceptances',
+            'LineCountAdded': 'loc_added',
+            'LineCountDeleted': 'loc_deleted',
+            'SuggestedLineCountAdd': 'suggested_loc_add',
+            'SuggestedLineCountDelete': 'suggested_loc_delete',
+        })
+    else:
+        copilot = copilot.rename(columns={
+            'GithubUserId': 'user_id',
+            'CodeGenerationActivityCount': 'suggestions',
+            'CodeAcceptanceActivityCount': 'acceptances',
+            'LocAddedSum': 'loc_added',
+            'LocDeletedSum': 'loc_deleted',
+        })
+
+    # Fill NaN with 0 for numeric columns
+    for col in ['suggestions', 'acceptances', 'loc_added']:
+        if col in copilot.columns:
+            copilot[col] = copilot[col].fillna(0)
+
+    copilot['week'] = copilot['EventDay'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    return copilot, fmt
+
+
 def compute_copilot_adoption(copilot_path):
     """Compute weekly Copilot adoption metrics from GitHub telemetry."""
-    xl = pd.ExcelFile(copilot_path)
-    if 'Copilot_All' not in xl.sheet_names:
-        return None
+    copilot, fmt = _load_copilot_df(copilot_path)
+    if copilot is None:
+        return None, None, None
 
-    copilot = pd.read_excel(xl, sheet_name='Copilot_All')
-    copilot['EventDay'] = pd.to_datetime(copilot['EventDay']).dt.normalize()
-    copilot['week'] = copilot['EventDay'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
-
-    total_users = copilot['GithubUserId'].nunique()
+    total_users = copilot['user_id'].nunique()
 
     # User tiers
-    user_days = copilot.groupby('GithubUserId')['EventDay'].nunique()
+    user_days = copilot.groupby('user_id')['EventDay'].nunique()
     heavy = int((user_days >= 30).sum())
     medium = int(((user_days >= 10) & (user_days < 30)).sum())
     light = int((user_days < 10).sum())
 
+    has_agent = 'UsedAgent' in copilot.columns
+    has_chat = 'UsedChat' in copilot.columns
+
     # Weekly aggregation
     weekly_rows = []
     for week, grp in copilot.groupby('week'):
-        active = grp['GithubUserId'].nunique()
+        active = grp['user_id'].nunique()
+        agent_users = int((grp.groupby('user_id')['UsedAgent'].sum() > 0).sum()) if has_agent else 0
+        chat_users = int((grp.groupby('user_id')['UsedChat'].sum() > 0).sum()) if has_chat else 0
         weekly_rows.append({
             'week': pd.Timestamp(week).strftime('%Y-%m-%d'),
             'activeUsers': int(active),
             'copilotPct': round(active / total_users * 100, 1),
-            'totalCodeGen': int(grp['CodeGenerationActivityCount'].sum()),
-            'totalCodeAccept': int(grp['CodeAcceptanceActivityCount'].sum()),
-            'agentUsers': int((grp.groupby('GithubUserId')['UsedAgent'].sum() > 0).sum()),
-            'chatUsers': int((grp.groupby('GithubUserId')['UsedChat'].sum() > 0).sum()),
-            'locAdded': int(grp['LocAddedSum'].sum()),
+            'totalCodeGen': int(grp['suggestions'].sum()),
+            'totalCodeAccept': int(grp['acceptances'].sum()),
+            'agentUsers': agent_users,
+            'chatUsers': chat_users,
+            'locAdded': int(grp['loc_added'].sum()),
         })
 
     # Monthly trend for summary
     copilot['month'] = copilot['EventDay'].dt.to_period('M')
-    monthly = copilot.groupby('month')['GithubUserId'].nunique()
+    monthly = copilot.groupby('month')['user_id'].nunique()
     first_month_users = monthly.iloc[0] if len(monthly) > 0 else 0
     last_month_users = monthly.iloc[-1] if len(monthly) > 0 else 0
 
     # Recent avg daily users (last 4 weeks of data)
     recent_weeks = sorted(copilot['week'].unique())[-4:]
     recent = copilot[copilot['week'].isin(recent_weeks)]
-    avg_daily = recent.groupby('EventDay')['GithubUserId'].nunique().mean() if len(recent) > 0 else 0
+    avg_daily = recent.groupby('EventDay')['user_id'].nunique().mean() if len(recent) > 0 else 0
 
-    return {
+    adoption = {
         'totalCopilotUsers': int(total_users),
         'userTiers': {'heavy': heavy, 'medium': medium, 'light': light},
         'avgDailyUsersRecent': round(float(avg_daily), 1),
         'adoptionTrend': f"{first_month_users} → {last_month_users} monthly users",
         'weekly': weekly_rows,
+    }
+    return adoption, copilot, fmt
+
+
+def compute_copilot_pr_correlation(prs, copilot_df):
+    """Correlate Copilot usage with specific PRs using AuthorUUID + week overlap.
+
+    For each PR, checks if the author had Copilot activity during the same week
+    as the PR's completion (PREnd). Week-level matching is used because PRs often
+    span only 1-2 days and strict day-range overlap misses most usage.
+    Also sums copilot suggestions for the author during the PR's week.
+    """
+    mature_start_ts = pd.Timestamp(MATURE_START)
+
+    prs = prs.copy()
+    prs['PREnd'] = pd.to_datetime(prs['PREnd']).dt.normalize()
+    prs['WeekEnding'] = prs['PREnd'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+
+    # Build set of (AuthorUUID, WeekEnding) pairs with copilot activity
+    copilot_weekly = copilot_df.groupby(['user_id', 'week']).agg(
+        suggestions=('suggestions', 'sum'),
+        acceptances=('acceptances', 'sum'),
+    ).reset_index()
+
+    # Merge PRs with copilot weekly data on AuthorUUID + week
+    merged = prs.merge(
+        copilot_weekly,
+        left_on=['AuthorUUID', 'WeekEnding'],
+        right_on=['user_id', 'week'],
+        how='left',
+        suffixes=('', '_copilot'),
+    )
+    prs['copilot_suggestions'] = merged['suggestions'].fillna(0)
+    prs['copilot_acceptances'] = merged['acceptances'].fillna(0)
+    prs['copilot_assisted'] = (prs['copilot_suggestions'] > 0).astype(int)
+
+    # Aggregate to ticket level
+    def agg_ticket(g):
+        return pd.Series({
+            'PREnd': g['PREnd'].max(),
+            'AuthorUUIDs': ','.join(g['AuthorUUID'].unique().astype(str)),
+            'TotalLines': g['PRLines'].sum(),
+            'MaxFiles': g['PRFiles'].max(),
+            'TotalQAChurnLines': g['QAChurnLines'].sum() if 'QAChurnLines' in g.columns else 0,
+            'CopilotAssisted': int(g['copilot_assisted'].any()),
+            'TotalSuggestions': g['copilot_suggestions'].sum(),
+            'TotalAcceptances': g['copilot_acceptances'].sum(),
+        })
+
+    tickets = prs.groupby('JiraTicket').apply(agg_ticket).reset_index()
+    tickets['PREndDate'] = pd.to_datetime(tickets['PREnd']).dt.normalize()
+    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
+
+    # Focus on mature period for the comparison
+    mature = tickets[tickets['PREndDate'] >= mature_start_ts]
+    assisted = mature[mature['CopilotAssisted'] == 1]
+    non_assisted = mature[mature['CopilotAssisted'] == 0]
+
+    # Weekly comparison
+    all_weeks = sorted(mature['WeekEnding'].unique())
+    weekly_comparison = []
+    for week in all_weeks:
+        wk = mature[mature['WeekEnding'] == week]
+        wk_a = wk[wk['CopilotAssisted'] == 1]
+        wk_na = wk[wk['CopilotAssisted'] == 0]
+
+        a_authors = set()
+        for uuids_str in wk_a['AuthorUUIDs']:
+            a_authors.update(str(uuids_str).split(','))
+        na_authors = set()
+        for uuids_str in wk_na['AuthorUUIDs']:
+            na_authors.update(str(uuids_str).split(','))
+
+        a_prod = len(wk_a) / (max(len(a_authors), 1) * WORKDAYS_PER_WEEK) if len(wk_a) > 0 else None
+        na_prod = len(wk_na) / (max(len(na_authors), 1) * WORKDAYS_PER_WEEK) if len(wk_na) > 0 else None
+        a_qa = wk_a['HasQAChurn'].sum() / len(wk_a) if len(wk_a) > 0 else None
+        na_qa = wk_na['HasQAChurn'].sum() / len(wk_na) if len(wk_na) > 0 else None
+
+        weekly_comparison.append({
+            'week': pd.Timestamp(week).strftime('%Y-%m-%d'),
+            'assistedTickets': int(len(wk_a)),
+            'nonAssistedTickets': int(len(wk_na)),
+            'assistedProductivity': a_prod,
+            'nonAssistedProductivity': na_prod,
+            'assistedQARate': a_qa,
+            'nonAssistedQARate': na_qa,
+        })
+
+    # Overall summary for mature period
+    # Use mean-of-weekly productivity (consistent with other metrics)
+    valid_weeks_a = [w for w in weekly_comparison if w['assistedProductivity'] is not None]
+    valid_weeks_na = [w for w in weekly_comparison if w['nonAssistedProductivity'] is not None]
+    avg_a_prod = sum(w['assistedProductivity'] for w in valid_weeks_a) / len(valid_weeks_a) if valid_weeks_a else 0
+    avg_na_prod = sum(w['nonAssistedProductivity'] for w in valid_weeks_na) / len(valid_weeks_na) if valid_weeks_na else 0
+
+    a_qa_overall = assisted['HasQAChurn'].sum() / len(assisted) if len(assisted) > 0 else 0
+    na_qa_overall = non_assisted['HasQAChurn'].sum() / len(non_assisted) if len(non_assisted) > 0 else 0
+
+    prod_lift = ((avg_a_prod - avg_na_prod) / avg_na_prod * 100) if avg_na_prod > 0 else 0
+    qa_delta = ((a_qa_overall - na_qa_overall) / na_qa_overall * 100) if na_qa_overall > 0 else 0
+
+    # Copilot intensity buckets (by total suggestions on the ticket)
+    def intensity_bucket(row):
+        s = row['TotalSuggestions']
+        if s == 0:
+            return 'none'
+        elif s <= 10:
+            return 'low'
+        elif s <= 50:
+            return 'medium'
+        else:
+            return 'high'
+
+    mature = mature.copy()
+    mature['IntensityBucket'] = mature.apply(intensity_bucket, axis=1)
+    intensity = {}
+    for bucket in ['low', 'medium', 'high']:
+        b = mature[mature['IntensityBucket'] == bucket]
+        if len(b) > 0:
+            b_authors = set()
+            for uuids_str in b['AuthorUUIDs']:
+                b_authors.update(str(uuids_str).split(','))
+            b_weeks = len(b['WeekEnding'].unique())
+            b_fte_days = max(len(b_authors), 1) * max(b_weeks, 1) * WORKDAYS_PER_WEEK
+            intensity[bucket] = {
+                'tickets': int(len(b)),
+                'productivity': round(len(b) / b_fte_days, 4) if b_fte_days > 0 else 0,
+                'qaChurn': round(b['HasQAChurn'].sum() / len(b), 4),
+                'avgSuggestions': round(b['TotalSuggestions'].mean(), 1),
+            }
+        else:
+            intensity[bucket] = {'tickets': 0, 'productivity': 0, 'qaChurn': 0, 'avgSuggestions': 0}
+
+    return {
+        'totalTickets': int(len(mature)),
+        'assistedTickets': int(len(assisted)),
+        'nonAssistedTickets': int(len(non_assisted)),
+        'assistedProductivity': round(avg_a_prod, 4),
+        'nonAssistedProductivity': round(avg_na_prod, 4),
+        'productivityLift': f"{'+' if prod_lift >= 0 else ''}{prod_lift:.1f}%",
+        'assistedQAChurn': round(a_qa_overall, 4),
+        'nonAssistedQAChurn': round(na_qa_overall, 4),
+        'qaChurnDelta': f"{'+' if qa_delta >= 0 else ''}{qa_delta:.1f}%",
+        'weeklyComparison': weekly_comparison,
+        'copilotIntensity': intensity,
     }
 
 
@@ -353,11 +562,18 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
 
     # Copilot adoption data
     copilot_data = None
+    copilot_df = None
+    copilot_fmt = None
     if copilot_path:
-        copilot_data = compute_copilot_adoption(copilot_path)
+        copilot_data, copilot_df, copilot_fmt = compute_copilot_adoption(copilot_path)
         if copilot_data:
             summary['copilot_users'] = copilot_data['totalCopilotUsers']
             summary['copilot_adoption_current'] = copilot_data['weekly'][-1]['copilotPct'] if copilot_data['weekly'] else 0
+
+    # Copilot-PR correlation (only possible with new AuthorUUID-based format)
+    pr_correlation = None
+    if copilot_df is not None and copilot_fmt == 'new':
+        pr_correlation = compute_copilot_pr_correlation(prs, copilot_df)
 
     # Unique authors across all data
     all_authors = set()
@@ -451,6 +667,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'sizeComplexity': size_complexity,
         'availability': availability,
         'copilotAdoption': copilot_data,
+        'copilotPrCorrelation': pr_correlation,
     }
 
 
@@ -493,7 +710,7 @@ def main():
         if copilot_path:
             print(f"Auto-detected copilot data: {copilot_path}")
         else:
-            print("Warning: No Copilot_All data found. Dashboard will show team metrics without copilot overlay.")
+            print("Warning: No Copilot/AI telemetry data found. Dashboard will show team metrics without copilot overlay.")
 
     data = build_dashboard_data(path, pull_sheet, copilot_path)
     data = _sanitize_for_json(data)
