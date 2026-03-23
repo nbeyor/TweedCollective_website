@@ -955,6 +955,28 @@ export default async function DocumentExportPage({
           grid-template-columns: repeat(4, 1fr) !important;
         }
 
+        /* Custom bracket grid patterns (used by Apollo & Mercury roadmap slides) */
+        .export-custom-slide [class*="md\\:grid-cols-\\[1fr_auto_1fr\\]"] {
+          grid-template-columns: 1fr auto 1fr !important;
+        }
+        .export-custom-slide [class*="md\\:grid-cols-\\[1fr_1fr_1fr\\]"] {
+          grid-template-columns: 1fr 1fr 1fr !important;
+        }
+        .export-custom-slide [class*="md\\:grid-cols-\\[0\\.6fr_1fr_1fr\\]"] {
+          grid-template-columns: 0.6fr 1fr 1fr !important;
+        }
+
+        /* Elements hidden on mobile but shown at md: breakpoint should be visible in export/print */
+        .export-custom-slide .hidden[class*="md\\:flex"] {
+          display: flex !important;
+        }
+        .export-custom-slide .hidden[class*="md\\:block"] {
+          display: block !important;
+        }
+        .export-custom-slide .hidden[class*="md\\:grid"] {
+          display: grid !important;
+        }
+
         /* Reduce spacing for print density */
         .export-custom-slide [class*="gap-"] {
           gap: 0.5rem !important;
