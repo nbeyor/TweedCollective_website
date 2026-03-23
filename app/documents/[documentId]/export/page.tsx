@@ -795,6 +795,12 @@ export default async function DocumentExportPage({
           margin-top: 0.5rem;
         }
 
+        /* Hide SectionHeader (first child div containing h2) in export custom slides
+           since the title is already shown in .slide-header above */
+        .export-custom-slide > div > div:first-child:has(> h2) {
+          display: none;
+        }
+
         /* B&W overrides for custom slide components (diligence, etc.) */
         .export-custom-slide {
           color: #000;
@@ -1164,7 +1170,7 @@ function buildExportPages(slides: any[]): ExportPage[] {
         pages.push({
           key: `${slide.id}-chunk-${pi}`,
           slideId: slide.id,
-          slideTitle: slide.title,
+          slideTitle: content?.props?.heading || slide.title,
           slideNumber,
           totalSlides: slides.length,
           pageIndex: pi,
@@ -1204,7 +1210,7 @@ function buildExportPages(slides: any[]): ExportPage[] {
       pages.push({
         key: `${slide.id}-custom`,
         slideId: slide.id,
-        slideTitle: slide.title,
+        slideTitle: content.props?.heading || slide.title,
         slideNumber,
         totalSlides: slides.length,
         pageIndex: 0,
