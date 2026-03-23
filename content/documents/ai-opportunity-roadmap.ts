@@ -5,7 +5,7 @@
  * This file contains NO React components or JSX.
  *
  * Updated: March 13, 2026 per MKG_AI_Assessment_EDIT_GUIDE
- * 30 slides total
+ * 36 slides total
  */
 
 import { SlideData } from '@/lib/types'
@@ -98,17 +98,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 4: BUSINESS CONTEXT & COMPETITIVE LANDSCAPE (Section 2)
+  // SLIDE 4: BUSINESS CONTEXT (1 of 2)
   // ================================================================
   {
-    id: 'business-context',
-    title: 'Business Context & Competitive Landscape',
+    id: 'business-context-1',
+    title: 'Business Context (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'BusinessDriversSlide',
       props: {
-        heading: 'Business Context & Competitive Landscape',
+        heading: 'Business Context (1 of 2)',
         revenueMix: {
           chartType: 'HorizontalBarChart',
           title: 'Revenue Mix (~$180M)',
@@ -140,6 +140,24 @@ export const slides: SlideData[] = [
           ],
           height: 250,
         },
+        revenueMixSource: 'Sources: MKG management presentations (Nov 2025, Feb 2026); revenue percentages are approximate and based on disclosed segment reporting.',
+        costStructureSource: 'Sources: MKG internal financials as provided to Novo Holdings; compensation benchmarks from Glassdoor, AMWA 2024 Compensation Report, and Salary.com, adjusted for MKG seniority mix and NYC metro location.',
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 5: BUSINESS CONTEXT (2 of 2)
+  // ================================================================
+  {
+    id: 'business-context-2',
+    title: 'Business Context (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'BusinessDriversSlide',
+      props: {
+        heading: 'Business Context (2 of 2)',
         economicSensitivities: {
           title: 'Economic Sensitivities',
           headers: ['Area', 'AI Impact', 'EBITDA Sensitivity'],
@@ -150,26 +168,24 @@ export const slides: SlideData[] = [
             { area: 'Creative Automation', impact: 'Moderate', ebitda: 'Low' },
           ],
         },
-        revenueMixSource: 'Sources: MKG management presentations (Nov 2025, Feb 2026); revenue percentages are approximate and based on disclosed segment reporting.',
-        costStructureSource: 'Sources: MKG internal financials as provided to Novo Holdings; compensation benchmarks from Glassdoor, AMWA 2024 Compensation Report, and Salary.com, adjusted for MKG seniority mix and NYC metro location.',
         economicSensitivityRationale: 'Sensitivity scoring reflects two dimensions: (1) AI Impact Potential measures how directly AI tools can change the workflow — "High" means the workflow is primarily information processing that AI excels at; "Moderate" means AI augments human judgment but cannot replace it. (2) EBITDA Sensitivity measures the P&L weight of the area — "High" means the workflow represents a large share of labor cost or revenue; "Low" means the area is a smaller contributor. For example, Editorial Workflow scores Moderate/High because AI augments (not replaces) the medical writing process but the labor pool is large (~130 FTEs across writers, editors, and compliance reviewers). Predictive Analytics scores High/High because the workflow is well-suited to AI automation and the 81qd unit\'s shift to subscription revenue would materially improve margins.',
       },
     },
   },
 
   // ================================================================
-  // SLIDE 5: AI INITIATIVE INVENTORY — KINETICS (Tiers 1–3)
+  // SLIDE 5: AI INITIATIVE INVENTORY — KINETICS (1 of 3)
   // ================================================================
   {
-    id: 'kinetics',
-    title: 'AI Initiatives — Internal (KINETICS)',
+    id: 'kinetics-1',
+    title: 'AI Initiatives — Internal KINETICS (1 of 3)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'AssessmentTableSlide',
       props: {
-        heading: 'AI Initiative Inventory — KINETICS',
-        subtitle: 'Internal tools organized by tier — editorial pipeline, insight & knowledge, and general productivity',
+        heading: 'AI Initiative Inventory — KINETICS (1 of 3)',
+        subtitle: 'Tier 1: Editorial Pipeline — core value drivers',
         callout: 'The four Tier 1 tools touch the same content creation and review pipeline. The Super Product Vision slide presents the case for unifying them into a single integrated platform.',
         valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
         sections: [
@@ -182,6 +198,26 @@ export const slides: SlideData[] = [
               { name: 'Route Reagent', description: 'Validates content against brand style rules and routing comments during editorial review.', valueSource: 'Speed + Productivity', valuePotential: 'High', rationale: 'Closest to production among the pipeline tools. Already embedded in real editorial workflows. Catches style and brand errors before human review, reducing per-project QA hours.' },
             ],
           },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 6: AI INITIATIVE INVENTORY — KINETICS (2 of 3)
+  // ================================================================
+  {
+    id: 'kinetics-2',
+    title: 'AI Initiatives — Internal KINETICS (2 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'AI Initiative Inventory — KINETICS (2 of 3)',
+        subtitle: 'Tier 2: Insight & Knowledge Tools',
+        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
+        sections: [
           {
             title: 'Tier 2: Insight & Knowledge Tools',
             rows: [
@@ -192,6 +228,26 @@ export const slides: SlideData[] = [
               { name: 'Conversation Centrifuge', description: 'Structures and summarizes expert interviews and advisory board discussions.', valueSource: 'Speed', valuePotential: 'Moderate', rationale: 'Overlaps with Verba\'s advisory board synthesis. Value is real but may be consolidated into the Verba product over time.' },
             ],
           },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 7: AI INITIATIVE INVENTORY — KINETICS (3 of 3)
+  // ================================================================
+  {
+    id: 'kinetics-3',
+    title: 'AI Initiatives — Internal KINETICS (3 of 3)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'AssessmentTableSlide',
+      props: {
+        heading: 'AI Initiative Inventory — KINETICS (3 of 3)',
+        subtitle: 'Tier 3: General Productivity & Workflow Tools',
+        valuePotentialFootnote: 'Value Potential reflects a qualitative assessment of each initiative\'s ability to create measurable business impact within 12 months, considering: (1) addressable labor pool or revenue base, (2) current maturity and adoption readiness, (3) defensibility of the AI-enhanced output versus foundation model displacement. "High" = large addressable base, production-ready or near-ready, defensible through proprietary data or workflow integration. "Moderate" = meaningful but narrower impact, or earlier-stage maturity. "Low" = limited addressable base or high displacement risk.',
+        sections: [
           {
             title: 'Tier 3: General Productivity & Workflow Tools',
             rows: [
@@ -203,12 +259,6 @@ export const slides: SlideData[] = [
               { name: 'Strategic Synthesis', description: 'Cross-document strategic synthesis and analysis.', valueSource: 'Productivity', valuePotential: 'Low', rationale: 'Same as Strategic Brief — incremental productivity on a narrow workflow.' },
             ],
           },
-        ],
-        cards: [
-          { name: 'DynAImic Content', description: 'AI-assisted draft generation across channels', icon: 'Rocket', highlight: true },
-          { name: 'Annotation Activation', description: 'Auto-citation and reference linking for MLR', icon: 'Layers', highlight: true },
-          { name: 'Compliance Core', description: 'Regulatory flag detection + MLR readiness', icon: 'AlertCircle', highlight: true },
-          { name: 'Route Reagent', description: 'Brand/style validation + QA pre-check', icon: 'Brain', highlight: true },
         ],
       },
     },
@@ -288,17 +338,17 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 8: ION DATA LAKE DEEP DIVE (NEW)
+  // SLIDE 8: ION DATA LAKE (1 of 2)
   // ================================================================
   {
-    id: 'ion-data-lake',
-    title: 'The ION Data Lake',
+    id: 'ion-data-lake-1',
+    title: 'The ION Data Lake (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'IonDataLakeSlide',
       props: {
-        heading: 'The ION Data Lake',
+        heading: 'The ION Data Lake (1 of 2)',
         acquisition: {
           publicData: [
             'Open claims, closed claims, EHR data, social determinants of health (2016–present)',
@@ -329,6 +379,22 @@ export const slides: SlideData[] = [
           'AI-powered client deliverables across all DIFFUSION products (Pantheon, Plexus, PerspectivX, Verba, MagpAI, BloomLab, Orion, InfluenceLink)',
           'Internal workflow acceleration across KINETICS tools',
         ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 9: ION DATA LAKE (2 of 2)
+  // ================================================================
+  {
+    id: 'ion-data-lake-2',
+    title: 'The ION Data Lake (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'IonDataLakeSlide',
+      props: {
+        heading: 'The ION Data Lake (2 of 2)',
         requirements: [
           { requirement: 'Organized', description: 'Data must follow consistent schemas across sources. HCP identifiers, therapeutic area taxonomies, and engagement event types need to resolve to a common ontology. Without this, AI models produce inconsistent outputs across products.' },
           { requirement: 'Mastered', description: 'Entity resolution must be reliable — one HCP record per actual person, reconciled across NPI, institutional, engagement, and publication data. Duplicate or conflicting records degrade every downstream analytics product.' },
@@ -340,17 +406,39 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 9: SUPER PRODUCT VISION
+  // SLIDE 9: SUPER PRODUCT VISION (1 of 2)
   // ================================================================
   {
-    id: 'super-product',
-    title: 'AI Editorial Platform Vision',
+    id: 'super-product-1',
+    title: 'Super Product Vision (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'SuperProductSlide',
       props: {
-        heading: 'Super Product Vision: The AI Editorial Platform',
+        heading: 'Super Product Vision: The AI Editorial Platform (1 of 2)',
+        stages: [
+          { name: 'Stage 1: Create', component: 'DynAImic Content', description: 'AI-assisted content drafting from briefs across channels' },
+          { name: 'Stage 2: Annotate', component: 'Annotation Activation', description: 'Automated citation linking and reference quality scoring' },
+          { name: 'Stage 3: Check', component: 'Compliance Core', description: 'Regulatory flag detection and MLR readiness scoring' },
+          { name: 'Stage 4: Validate', component: 'Route Reagent', description: 'Brand/style validation and routing comment verification' },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 10: SUPER PRODUCT VISION (2 of 2)
+  // ================================================================
+  {
+    id: 'super-product-2',
+    title: 'Super Product Vision (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'SuperProductSlide',
+      props: {
+        heading: 'Super Product Vision: The AI Editorial Platform (2 of 2)',
         opportunities: [
           { opportunity: 'End-to-end content lifecycle for customers', impact: 'One onboarding, one integration, one training cycle. Pharma brand teams get a platform that handles "brief to MLR-ready" instead of four modular tools. Fundamentally different sales conversation.' },
           { opportunity: 'Faster cycle times through eliminated handoffs', impact: 'Content flows through all four stages without manual export/import. Target: reduce content-to-MLR from ~14 days to ~8 days on pilot projects.' },
@@ -359,35 +447,6 @@ export const slides: SlideData[] = [
           { opportunity: 'Unified brand knowledge base', impact: 'Brand rules, style guides, and past MLR decisions loaded once and available to all stages — today each tool manages this independently.' },
           { opportunity: 'Stronger competitive positioning', impact: 'One AI-powered editorial backbone for pharma content > a collection of helper tools. Platform becomes infrastructure, not an optional add-on.' },
         ],
-        stages: [
-          { name: 'Stage 1: Create', component: 'DynAImic Content', description: 'AI-assisted content drafting from briefs across channels' },
-          { name: 'Stage 2: Annotate', component: 'Annotation Activation', description: 'Automated citation linking and reference quality scoring' },
-          { name: 'Stage 3: Check', component: 'Compliance Core', description: 'Regulatory flag detection and MLR readiness scoring' },
-          { name: 'Stage 4: Validate', component: 'Route Reagent', description: 'Brand/style validation and routing comment verification' },
-        ],
-        features: [
-          { feature: 'AI content drafting', source: 'DynAImic', description: 'MLR-ready content from briefs across channels' },
-          { feature: 'Multi-channel adaptation', source: 'DynAImic', description: 'Emails, banners, social, leave-behinds' },
-          { feature: 'Citation linking', source: 'Annotation', description: 'Auto-links claims to supporting references with quality scoring' },
-          { feature: 'Regulatory flags', source: 'Compliance', description: 'FDA compliance, off-label, fair balance detection' },
-          { feature: 'Style validation', source: 'Route Reagent', description: 'AMA, brand guidelines, routing comment verification' },
-          { feature: 'Customer guardrails', source: 'Combined', description: 'Client MLR standards, past review decisions, brand rules as configurable rulesets' },
-          { feature: 'Shared document model', source: 'Combined', description: 'Content, annotations, flags, and QA results in one data structure' },
-          { feature: 'Single LLM orchestration', source: 'Combined', description: 'One routing system through ION' },
-        ],
-        efficiencies: [
-          { title: 'Single LLM orchestration', description: 'One routing system managing model selection, context, and prompts' },
-          { title: 'Shared document model', description: 'Content, annotations, flags, and QA results in one data structure' },
-          { title: 'Unified brand knowledge', description: 'Brand rules loaded once, available to all stages' },
-          { title: 'One integration surface', description: 'One API, one UI — reduces onboarding and support burden' },
-        ],
-        valueTable: [
-          { area: 'Medical Writers', ftes: '80', lowValue: '$480K', highValue: '$1,440K', target: 'DynAImic Content' },
-          { area: 'Editorial / QA', ftes: '30', lowValue: '$495K', highValue: '$825K', target: 'Route Reagent + Annotation' },
-          { area: 'Regulatory / Compliance', ftes: '20', lowValue: '$140K', highValue: '$420K', target: 'Compliance Core' },
-        ],
-        totalLow: '$1,115K',
-        totalHigh: '$2,685K',
       },
     },
   },
@@ -404,7 +463,6 @@ export const slides: SlideData[] = [
       componentId: 'ValueFrameworkSlide',
       props: {
         heading: 'AI Value Framework',
-        description: 'MKG\'s AI initiatives create value through seven distinct channels, organized into internal (cost/efficiency) and external (revenue/growth) buckets. Every product value story maps to one or more of these buckets.',
         internalBuckets: [
           { bucket: 'Cost', definition: 'Reduce labor cost per deliverable. AI eliminates rework, catches errors earlier, and reduces hours per output.', kpis: 'Hours per project; cost per completed deliverable; external vendor spend reduction' },
           { bucket: 'Speed', definition: 'Reduce cycle time from draft to delivery. AI compresses the timeline by automating sequential steps.', kpis: 'Days from brief to final; rounds of revision; time to first client response' },
@@ -432,7 +490,6 @@ export const slides: SlideData[] = [
       componentId: 'LeadingIndicatorsSlide',
       props: {
         heading: 'Leading Indicators & Measurement',
-        coreArgument: 'MKG\'s current measurement is almost entirely lagging — revenue, margin, EBITDA. For early-stage AI initiatives, these will show nothing for 6–12 months. AI initiatives need leading indicators that show whether adoption is working before it shows up in financials. Assign named owners, automate data pulls, keep it simple, and communicate steadily through existing meetings.',
         leadingIndicators: [
           { category: 'Adoption', indicator: 'Daily/weekly active users per tool', sourceSlides: 'All products', howToMeasure: 'Instrument usage logging in ION platform. Pull weekly automated reports — no manual data collection.' },
           { category: 'Adoption', indicator: '% of eligible projects using AI-assisted workflow', sourceSlides: 'DynAImic, Route Reagent, Annotation', howToMeasure: 'Tag projects in the project management system as AI-assisted vs. manual. Compare volumes monthly.' },
@@ -453,7 +510,6 @@ export const slides: SlideData[] = [
           'Create venues at all levels for reflection. Front-line teams need space to talk about how AI is changing their work, what\'s working, what\'s frustrating, and what they\'d change. This isn\'t just a leadership exercise — the people using the tools daily have the most important feedback.',
           'Expect people to need time to choose how work will change. AI adoption is a change management challenge, not a technology deployment. People need to see, try, reflect, and decide — not be told their workflow changed overnight.',
         ],
-        recommendation: 'Build an enterprise AI KPI dashboard tracking leading indicators weekly. Review in existing Monthly Senior Leadership meeting.',
       },
     },
   },
@@ -470,6 +526,7 @@ export const slides: SlideData[] = [
       componentId: 'InternalProductivityValueSlide',
       props: {
         heading: 'Internal Productivity Value Summary',
+        calloutText: 'AI Editorial Platform: $1.4–2.6M in value',
         rows: [
           { initiative: 'DynAImic Content', primaryValueDriver: 'Cycle time: brief to first draft', ftes: '80', comp: '$120K', lowUplift: '5%', lowValue: '$480K', highUplift: '15%', highValue: '$1,440K', rationale: 'Medical writers spend 60%+ of project time on first drafts. AI-assisted generation compresses the highest-volume step.' },
           { initiative: 'Route Reagent + Annotation Activation', primaryValueDriver: 'QA pre-check: errors caught before human review', ftes: '30', comp: '$110K', lowUplift: '15%', lowValue: '$495K', highUplift: '25%', highValue: '$825K', rationale: 'Automated style, citation, and routing checks eliminate the lowest-value portion of editorial review.' },
@@ -586,17 +643,39 @@ export const slides: SlideData[] = [
   },
 
   // ================================================================
-  // SLIDE 16: EXECUTION ROADMAP (Section 19)
+  // SLIDE 16: EXECUTION ROADMAP (1 of 2)
   // ================================================================
   {
-    id: 'roadmap',
-    title: 'Execution Roadmap',
+    id: 'roadmap-1',
+    title: 'Execution Roadmap (1 of 2)',
     type: 'custom',
     content: {
       type: 'custom',
       componentId: 'RoadmapPhasedSlide',
       props: {
-        heading: 'Execution Roadmap',
+        heading: 'Execution Roadmap (1 of 2)',
+        fourCards: [
+          { num: '01', title: 'Differentiate Through Data + Expertise', description: 'Business Value — The moat is proprietary engagement data, two decades of medical judgment, and integrated commercialization services — not AI capability.', variant: 'green' },
+          { num: '02', title: 'Rationalize the Portfolio', description: 'Initiatives — Consolidate adjacent products. Stop building net-new until overlap is addressed. One strong platform beats nine mediocre tools.', variant: 'sage' },
+          { num: '03', title: 'Instrument ROI with Leading Indicators', description: 'ROI Quantification — Close the loop between product usage → outcomes → willingness to pay. Sunset tools that haven\'t hit 20% adoption by Month 6.', variant: 'gold' },
+          { num: '04', title: 'Operationalize with Product-Led Ownership', description: 'Roadmap — Product-led prioritization with clear ownership, a single intake process, and 90-day milestones. Scale Pantheon to 15–25 customers. Roll out editorial platform speed improvements.', variant: 'cyan' },
+        ],
+      },
+    },
+  },
+
+  // ================================================================
+  // SLIDE 17: EXECUTION ROADMAP (2 of 2)
+  // ================================================================
+  {
+    id: 'roadmap-2',
+    title: 'Execution Roadmap (2 of 2)',
+    type: 'custom',
+    content: {
+      type: 'custom',
+      componentId: 'RoadmapPhasedSlide',
+      props: {
+        heading: 'Execution Roadmap (2 of 2)',
         phases: [
           {
             phase: 'Month 1',
@@ -628,12 +707,6 @@ export const slides: SlideData[] = [
               'PerspectivX validation study (retrospective correlation analysis).',
             ],
           },
-        ],
-        fourCards: [
-          { num: '01', title: 'Differentiate Through Data + Expertise', description: 'Business Value — The moat is proprietary engagement data, two decades of medical judgment, and integrated commercialization services — not AI capability.', variant: 'green' },
-          { num: '02', title: 'Rationalize the Portfolio', description: 'Initiatives — Consolidate adjacent products. Stop building net-new until overlap is addressed. One strong platform beats nine mediocre tools.', variant: 'sage' },
-          { num: '03', title: 'Instrument ROI with Leading Indicators', description: 'ROI Quantification — Close the loop between product usage → outcomes → willingness to pay. Sunset tools that haven\'t hit 20% adoption by Month 6.', variant: 'gold' },
-          { num: '04', title: 'Operationalize with Product-Led Ownership', description: 'Roadmap — Product-led prioritization with clear ownership, a single intake process, and 90-day milestones. Scale Pantheon to 15–25 customers. Roll out editorial platform speed improvements.', variant: 'cyan' },
         ],
       },
     },
