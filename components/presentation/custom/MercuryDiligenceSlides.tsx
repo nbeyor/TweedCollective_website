@@ -451,12 +451,12 @@ function buildSlideContentMap() {
   )
 
   slideContentMap['ai-roadmap-fit'] = (
-        <div className="space-y-4 px-4">
+        <div className="space-y-3 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-sage-300 mb-2">Phase 1 — Business Value & Growth Thesis</div>
             <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-2">AI Roadmap Fit to Growth Thesis</h2>
           </div>
-          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mt-6 items-start">
+          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-3 mt-4 items-start">
             <div className="space-y-3">
               <h3 className="text-xs uppercase tracking-wider text-sage-300 mb-2">AI Roadmap Themes</h3>
               {[
@@ -467,7 +467,7 @@ function buildSlideContentMap() {
                 { id: 'T5', title: 'Market Intelligence', desc: 'Benchmarking from network data' },
                 { id: 'T6', title: 'Responsible AI Framework', desc: 'Guardrails, transparency, neutrality' },
               ].map((t) => (
-                <div key={t.id} className="p-3 bg-sage-500/10 border border-sage-500/30 rounded-lg">
+                <div key={t.id} className="p-2 bg-sage-500/10 border border-sage-500/30 rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-mono text-sage-300">{t.id}</span>
                     <span className="text-sm font-medium text-cream">{t.title}</span>
@@ -492,7 +492,7 @@ function buildSlideContentMap() {
                 { id: 'D', title: 'Network effects per participant', desc: 'Value compounds with adoption' },
                 { id: 'E', title: 'Data assets for premium pricing', desc: 'Benchmarking & intelligence' },
               ].map((r) => (
-                <div key={r.id} className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <div key={r.id} className="p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-mono text-purple-300">{r.id}</span>
                     <span className="text-sm font-medium text-cream">{r.title}</span>
@@ -502,7 +502,7 @@ function buildSlideContentMap() {
               ))}
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
+          <div className="p-3 rounded-xl bg-red-500/10 border-l-4 border-red-500/50">
             <div className="text-xs uppercase tracking-wider text-red-300 mb-1">Mismatches / Missing Bets</div>
             <ul className="text-xs text-cream/70 space-y-1">
               <li>• Not yet demonstrated: predictive analytics (e.g., predicting contentious clauses)</li>
@@ -2365,7 +2365,7 @@ function buildSlideContentMap() {
         <div className="space-y-5 px-4">
           <div>
             <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
-            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive</h2>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive (1 of 2)</h2>
           </div>
 
           <div className="p-4 bg-amber-500/10 border-l-4 border-amber-500/50 rounded-r-lg">
@@ -2399,6 +2399,16 @@ function buildSlideContentMap() {
                 </ul>
               </div>
             </div>
+          </div>
+
+        </div>
+  )
+
+  slideContentMap['budget-deep-dive-2'] = (
+        <div className="space-y-5 px-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-green-400 mb-2">Phase 3 — Team, Assets & Defensibility</div>
+            <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-1">Budget Product Deep Dive (2 of 2)</h2>
           </div>
 
           <div>

@@ -9,7 +9,7 @@
  * component for now due to the complexity of the 40-slide document.
  * Future refactor: progressively extract text/data into this file's props.
  *
- * Structure: Front Matter → Phase 1–4 (50 slides)
+ * Structure: Front Matter → Phase 1–4 (51 slides)
  */
 
 import { SlideData } from '@/lib/types'
@@ -32,10 +32,6 @@ export const slides: SlideData[] = [
         { value: 'Tweed Collective', label: 'Prepared by' },
         { value: 'March 2026', label: 'Date' },
       ],
-      insightBox: {
-        label: 'Confidential',
-        text: 'Public Sources + Diligence Call Materials',
-      },
     },
   },
   {
@@ -77,7 +73,8 @@ export const slides: SlideData[] = [
   // ── Phase 3 — Team, Assets & Defensibility (slides 20–29) ──────────
   { id: 'asset-value-exec', title: 'Phase 3: Underlying Asset Value — Executive Summary', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'asset-value-exec' } } },
   { id: 'product-asset', title: 'Product Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'product-asset' } } },
-  { id: 'budget-deep-dive', title: 'Budget Product Deep Dive', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive' } } },
+  { id: 'budget-deep-dive', title: 'Budget Product Deep Dive (1 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive' } } },
+  { id: 'budget-deep-dive-2', title: 'Budget Product Deep Dive (2 of 2)', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'budget-deep-dive-2' } } },
   { id: 'data-asset', title: 'Data Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'data-asset' } } },
   { id: 'channel-asset', title: 'Channel Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'channel-asset' } } },
   { id: 'relationship-asset', title: 'Relationship Asset Strength', type: 'custom', content: { type: 'custom', componentId: 'MercuryDiligenceSlide', props: { slideId: 'relationship-asset' } } },
