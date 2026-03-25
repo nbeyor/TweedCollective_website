@@ -52,7 +52,7 @@ EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "dashboard-data.json"
 
 # Sheet names (auto-detect)
-DASHBOARD_SHEET_ALTS = ("Current dashboard data", "PRJira metrics", "PR Jira metrics")
+DASHBOARD_SHEET_ALTS = ("Current dashboard data", "PRJira metrics", "PR Jira metrics", "Pull Requests")
 SURVEY_SHEET_ALTS = ("Current survey data", "developer survey results", "Developer survey results")
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 
