@@ -57,6 +57,8 @@ def find_latest_xlsx() -> Path:
 
 def find_pull_sheet(xl) -> str | None:
     names = [str(n).strip() for n in xl.sheet_names]
+    if 'Pull Requests' in names:
+        return 'Pull Requests'
     for name in names:
         if PULL_PATTERN.match(name):
             return name
@@ -75,6 +77,9 @@ def find_copilot_sheet(xl) -> tuple[str, str] | None:
     for name in names:
         if AI_ALL_PATTERN.match(name):
             return (name, 'new')
+    # Also accept "AI Usage" as new format
+    if 'AI Usage' in names:
+        return ('AI Usage', 'new')
     if 'Copilot_All' in names:
         return ('Copilot_All', 'legacy')
     return None
