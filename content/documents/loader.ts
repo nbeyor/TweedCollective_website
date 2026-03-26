@@ -21,7 +21,6 @@ const contentLoaders: Record<string, () => Promise<ContentModule>> = {
   'apollo-wcg-ai-diligence': () => import('./apollo-wcg-ai-diligence') as Promise<ContentModule>,
   'mercury-buyer-ai-diligence': () => import('./mercury-buyer-ai-diligence') as Promise<ContentModule>,
   'ai-opportunity-roadmap': () => import('./ai-opportunity-roadmap') as Promise<ContentModule>,
-  'ai-innovation-strategy': () => import('./ai-innovation-strategy') as Promise<ContentModule>,
 }
 
 /**
