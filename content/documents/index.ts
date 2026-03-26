@@ -114,6 +114,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'innovation-ai-era-hardened',
+    title: 'Innovation in the AI Era',
+    shortTitle: 'Innovation in the AI Era',
+    description: 'A product-led, continuous-improvement operating framework for enterprise innovation in the AI era.',
+    category: 'Executive Briefing',
+    icon: 'Compass',
+    date: '2026-03',
+    readTime: '30 min',
+    visibility: 'public',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',
