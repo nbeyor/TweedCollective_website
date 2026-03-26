@@ -65,8 +65,10 @@ Use this table to map outline slides to the best-fit type. For full interface sh
 
 Before starting, count slides and custom components:
 
-- **Single-pass** (8 or fewer slides AND 2 or fewer custom components): Generate everything in one pass using the standard workflow below.
-- **Phased generation** (more than 8 slides OR more than 2 custom components): Use the Large Document Handling workflow further below.
+- **Single-pass** (6 or fewer slides AND 2 or fewer custom components): Generate everything in one pass using the standard workflow below.
+- **Phased generation** (more than 6 slides OR more than 2 custom components): Use the Large Document Handling workflow further below.
+
+> **Note:** For large documents, exit plan mode before invoking this skill. The skill's Phase 1 serves as its own planning phase — running inside plan mode adds unnecessary context overhead.
 
 ---
 
@@ -194,21 +196,29 @@ export function {ComponentName}({ slideId, ...props }: {ComponentName}Props) {
 
 ### Large Document Handling (Phased Generation)
 
-When the outline has **more than 8 slides** OR requires **more than 2 custom components**, generate in phases. **Write each file to disk before starting the next phase.** Do not attempt to generate all output in a single response.
+When the outline has **more than 6 slides** OR requires **more than 2 custom components**, generate in phases. **Write each file to disk before starting the next phase.** Do not attempt to generate all output in a single response.
+
+> **Why phased?** A single Write call containing 400+ lines of TypeScript can exceed the per-turn output token limit and cause a timeout. Batching slides into groups of 6 keeps each turn well within limits.
 
 #### Phase 1: Analyze & Plan
 
 1. Read the user's outline and any referenced uploads.
 2. Map each slide to a type (standard or custom).
 3. Output a brief plan listing: document ID, total slide count, which slides use standard types vs. custom, and the custom component names needed.
-4. This phase produces only analysis — no file writes.
+4. Determine batch boundaries: split slides into groups of **6 or fewer**.
+5. This phase produces only analysis — no file writes.
 
-#### Phase 2: Generate Content File (Standard Slides First)
+#### Phase 2: Generate Content File in Batches
+
+Content files are generated in batches to avoid output token exhaustion.
+
+**Phase 2a — First batch (slides 1–6):**
 
 1. Read `.claude/skills/document-generation/SLIDE_TYPE_REFERENCE.md` for interface shapes.
 2. Create the content file (`content/documents/{document-id}.ts`) with:
-   - All standard-type slides **fully populated** with content from the outline
-   - For each custom slide, write a **placeholder entry**:
+   - File boilerplate (imports, `DOCUMENT_ID`, opening `export const slides: SlideData[] = [`)
+   - Slides 1 through 6, **fully populated** with content from the outline
+   - For any custom slides in this batch, write a **placeholder entry**:
      ```typescript
      {
        id: '{slide-id}',
@@ -221,8 +231,20 @@ When the outline has **more than 8 slides** OR requires **more than 2 custom com
        },
      },
      ```
-3. Register the document in `content/documents/index.ts` and `content/documents/loader.ts`.
-4. **Write all files to disk before proceeding.**
+   - Closing `]` and `export default slides`
+3. **Write the file to disk before proceeding.**
+
+**Phase 2b — Subsequent batches (slides 7+):**
+
+1. Read the content file back from disk.
+2. Using the **Edit tool**, insert the next batch of slides (up to 6) immediately before the closing `]` and `export default slides` line.
+3. **Write to disk before proceeding to the next batch.** Repeat Phase 2b if more than 12 slides.
+
+**Phase 2c — Register the document:**
+
+1. Add entry to `content/documents/index.ts`.
+2. Add dynamic import to `content/documents/loader.ts`.
+3. **Write both files to disk before proceeding.**
 
 #### Phase 3: Generate Custom Components
 
