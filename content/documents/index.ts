@@ -125,6 +125,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'public',
   },
   {
+    id: 'ai-adoption-by-function-health-tech',
+    title: 'AI Adoption by Function in Health Tech',
+    shortTitle: 'AI Adoption by Function',
+    description: 'A practical framework for making function-level AI operating decisions in health tech companies.',
+    category: 'Framework',
+    icon: 'Compass',
+    date: '2026-03',
+    readTime: '25 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',
