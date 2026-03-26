@@ -14,7 +14,7 @@
  */
 
 import { DocumentConfig, DocumentMeta, DocumentVisibility } from '@/lib/types'
-import { BarChart3, Code2, Compass, Dna, FileText, Settings, Shield, LucideIcon } from 'lucide-react'
+import { BarChart3, Code2, Compass, Dna, FileText, Lightbulb, Settings, Shield, LucideIcon } from 'lucide-react'
 
 // ============================================
 // Document Configurations
@@ -92,6 +92,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'ai-innovation-strategy',
+    title: 'Innovation in the AI Era',
+    shortTitle: 'AI Innovation Strategy',
+    description: 'How large companies should govern, fund, build, buy, partner, and invest when technology markets move faster than internal planning cycles.',
+    category: 'Executive Briefing',
+    icon: 'Lightbulb',
+    date: '2026-03',
+    readTime: '15 min',
+    visibility: 'public',
+  },
+  {
     id: 'ai-integration-framework',
     title: 'AI Integration Framework',
     shortTitle: 'AI Integration Framework',
@@ -139,6 +150,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Compass,
   Dna,
   FileText,
+  Lightbulb,
   Settings,
   Shield,
 }
