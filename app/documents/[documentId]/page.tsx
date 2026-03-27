@@ -26,13 +26,19 @@ export default function DocumentPage() {
     loadDocumentContent(documentId)
       .then((slideData: SlideData[] | null) => {
         if (!slideData) {
-          setError('Document content not found')
+          setError(`Document content not found for "${documentId}"`)
           return
         }
-        setSlides(renderSlides(slideData, customComponentRegistry))
+        try {
+          setSlides(renderSlides(slideData, customComponentRegistry))
+        } catch (renderErr) {
+          console.error('[document] Render error:', renderErr)
+          setError(`Render error: ${renderErr instanceof Error ? renderErr.message : String(renderErr)}`)
+        }
       })
       .catch((e: Error) => {
-        setError(e.message)
+        console.error('[document] Load error:', e)
+        setError(`Load error: ${e.message}`)
       })
   }, [documentId])
 

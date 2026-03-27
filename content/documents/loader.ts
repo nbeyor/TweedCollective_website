@@ -31,8 +31,17 @@ const contentLoaders: Record<string, () => Promise<ContentModule>> = {
 export async function loadDocumentContent(documentId: string): Promise<SlideData[] | null> {
   const loader = contentLoaders[documentId]
   if (!loader) return null
-  const mod = await loader()
-  return mod.slides || mod.default
+  try {
+    const mod = await loader()
+    const slides = mod.slides || mod.default
+    if (!slides) {
+      console.error(`[loader] Module loaded for "${documentId}" but no slides export found. Keys:`, Object.keys(mod))
+    }
+    return slides
+  } catch (err) {
+    console.error(`[loader] Failed to load content for "${documentId}":`, err)
+    throw err
+  }
 }
 
 /**
