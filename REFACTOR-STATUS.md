@@ -24,7 +24,6 @@ The objective was to reorganize the document/presentation system from **static p
 ### Files Deleted (7 old static pages, ~7,200 lines removed)
 | File | Status |
 |------|--------|
-| `app/documents/apollo-wcg-ai-diligence/page.tsx` | DELETED |
 | `app/documents/mercury-buyer-ai-diligence/page.tsx` | DELETED |
 | `app/documents/ai-opportunity-roadmap/page.tsx` | DELETED |
 | `app/documents/health-tech-market-2024/page.tsx` | DELETED |
@@ -43,7 +42,6 @@ The objective was to reorganize the document/presentation system from **static p
 #### Content (Pure Data, No JSX)
 | File | Purpose | Status |
 |------|---------|--------|
-| `content/documents/apollo-wcg-ai-diligence.ts` | Apollo slide data | COMPLETE |
 | `content/documents/mercury-buyer-ai-diligence.ts` | Mercury slide data | COMPLETE |
 | `content/documents/ai-opportunity-roadmap.ts` | AI Opportunity Roadmap slide data (554 lines) | COMPLETE |
 | `content/documents/loader.ts` | Dynamic import loader for content files | COMPLETE |
@@ -61,7 +59,6 @@ The objective was to reorganize the document/presentation system from **static p
 |------|-----------|--------|
 | `components/presentation/custom/index.ts` | Component registry mapping IDs → React components | COMPLETE |
 | `custom/AiOpportunityComponents.tsx` | 12 custom slide types (ExecutiveSummary, DiffusionQuadrant, Roadmap, etc.) | COMPLETE |
-| `custom/ApolloDiligenceSlides.tsx` | ApolloDiligenceSlide (31 slides, transitional architecture) | COMPLETE |
 | `custom/MercuryDiligenceSlides.tsx` | MercuryDiligenceSlide (31 slides, transitional architecture) | COMPLETE |
 | `custom/HealthTechComponents.tsx` | StageSlide, SegmentSlide | COMPLETE |
 | `custom/SalmonComponents.tsx` | RegulatoryMapSlide | COMPLETE |
@@ -106,10 +103,10 @@ The objective was to reorganize the document/presentation system from **static p
 
 ## Architecture Note: Transitional vs. Fully Data-Driven
 
-Two documents — **Apollo** and **Mercury** (the diligence decks) — use a **transitional architecture**:
-- Their content files (`apollo-wcg-ai-diligence.ts`, `mercury-buyer-ai-diligence.ts`) contain only minimal metadata
-- Their custom component files (`ApolloDiligenceSlides.tsx`, `MercuryDiligenceSlides.tsx`) still contain all 31 slides as JSX
-- This is intentional: these are the most complex documents with highly custom layouts that would require significant effort to decompose into pure `SlideData[]`
+The **Mercury** diligence deck uses a **transitional architecture**:
+- Its content file (`mercury-buyer-ai-diligence.ts`) contains only minimal metadata
+- Its custom component file (`MercuryDiligenceSlides.tsx`) still contains all 31 slides as JSX
+- This is intentional: this is a complex document with highly custom layouts that would require significant effort to decompose into pure `SlideData[]`
 
 The other 4 documents (AI Opportunity Roadmap, Vibe Coding, Health Tech, Salmon) are **fully data-driven** — content is pure data, rendering comes from `SlideRenderer` + custom components.
 

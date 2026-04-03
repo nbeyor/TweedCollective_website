@@ -18,7 +18,6 @@ const contentLoaders: Record<string, () => Promise<ContentModule>> = {
   'vibe-coding-in-enterprise-for-pe': () => import('./vibe-coding') as Promise<ContentModule>,
   'health-tech-market-2024': () => import('./health-tech-market') as Promise<ContentModule>,
   'salmon-ai-genomics': () => import('./salmon-ai-genomics') as Promise<ContentModule>,
-  'apollo-wcg-ai-diligence': () => import('./apollo-wcg-ai-diligence') as Promise<ContentModule>,
   'mercury-buyer-ai-diligence': () => import('./mercury-buyer-ai-diligence') as Promise<ContentModule>,
   'ai-opportunity-roadmap': () => import('./ai-opportunity-roadmap') as Promise<ContentModule>,
   'innovation-ai-era-hardened': () => import('./innovation-ai-era-hardened') as Promise<ContentModule>,

@@ -955,7 +955,7 @@ export default async function DocumentExportPage({
           grid-template-columns: repeat(4, 1fr) !important;
         }
 
-        /* Custom bracket grid patterns (used by Apollo & Mercury roadmap slides) */
+        /* Custom bracket grid patterns (used by Mercury roadmap slides) */
         .export-custom-slide [class*="md\\:grid-cols-\\[1fr_auto_1fr\\]"] {
           grid-template-columns: 1fr auto 1fr !important;
         }
