@@ -26,7 +26,6 @@ import {
   IonDataLakeSlide, CombinedValueWaterfallSlide,
 } from './AiOpportunityComponents'
 import { DiligenceChartSlide, DiligenceAssessmentGrid, DiligenceSynergySlide } from './DiligenceComponents'
-import { ApolloDiligenceSlide } from './ApolloDiligenceSlides'
 import { MercuryDiligenceSlide } from './MercuryDiligenceSlides'
 import type { CustomComponentRegistry } from '../SlideRenderer'
 
@@ -68,13 +67,10 @@ export const customComponentRegistry: CustomComponentRegistry = {
   'IonDataLakeSlide': IonDataLakeSlide as React.ComponentType<Record<string, unknown>>,
   'CombinedValueWaterfallSlide': CombinedValueWaterfallSlide as React.ComponentType<Record<string, unknown>>,
 
-  // Shared diligence components (used by apollo, mercury)
+  // Shared diligence components (used by mercury)
   'DiligenceChartSlide': DiligenceChartSlide as React.ComponentType<Record<string, unknown>>,
   'DiligenceAssessmentGrid': DiligenceAssessmentGrid as React.ComponentType<Record<string, unknown>>,
   'DiligenceSynergySlide': DiligenceSynergySlide as React.ComponentType<Record<string, unknown>>,
-
-  // Apollo AI Diligence document
-  'ApolloDiligenceSlide': ApolloDiligenceSlide as React.ComponentType<Record<string, unknown>>,
 
   // Mercury AI Diligence document
   'MercuryDiligenceSlide': MercuryDiligenceSlide as React.ComponentType<Record<string, unknown>>,

@@ -70,17 +70,6 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
-    id: 'apollo-wcg-ai-diligence',
-    title: 'Apollo: AI Diligence — Buyer Acquisition Analysis',
-    shortTitle: 'Apollo AI Diligence',
-    description: 'AI-focused due diligence assessment for the Buyer potential acquisition of Apollo. Includes deep dive supplement on Veeva consolidation threat, eConsent competitive landscape, data rights, and data architecture gap assessment.',
-    category: 'Due Diligence',
-    icon: 'Shield',
-    date: '2026-03',
-    readTime: '55 min',
-    visibility: 'unlisted',
-  },
-  {
     id: 'mercury-buyer-ai-diligence',
     title: 'Mercury: AI Diligence — Buyer Acquisition Analysis',
     shortTitle: 'Mercury AI Diligence',
