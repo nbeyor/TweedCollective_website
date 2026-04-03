@@ -92,17 +92,6 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
-    id: 'ai-integration-framework',
-    title: 'AI Integration Framework',
-    shortTitle: 'AI Integration Framework',
-    description: 'A structured approach to integrating AI capabilities into enterprise workflows.',
-    category: 'Framework',
-    icon: 'Settings',
-    date: '2024-10',
-    readTime: '15 min',
-    visibility: 'unlisted',  // Placeholder for future content
-  },
-  {
     id: 'ai-opportunity-roadmap',
     title: 'MKG: AI Opportunity & Roadmap Assessment',
     shortTitle: 'MKG AI Assessment',
