@@ -1,0 +1,600 @@
+# Actionable Lessons in Corporate Innovation
+
+## Full Production Brief — Slide-by-Slide Specification
+
+**Document ID:** `actionable-lessons-corporate-innovation`
+
+**Design system reference:** Tweed Collective slideTemplates.ts
+
+-----
+
+## Slide 1 — Title
+
+**Template type:** `title`
+
+### Content specification
+
+```
+type: 'title'
+badge: 'Framework'
+headline: 'Actionable Lessons in Corporate Innovation'
+subtitle: 'Hard learned principles through booms of capital and technology in health tech.'
+```
+
+### Visual notes
+
+- Clean centered title layout per `slideTypeTemplates.title`
+- Badge uses sage[100] background with sage[700] text
+- Headline uses `typographyPresets.slideTitle` (48px, bold, tight line height)
+- Subtitle uses `typographyPresets.body` in neutral[600]
+- No insightBox on this slide
+- No metrics section
+- Maximum white space — this slide should breathe
+
+-----
+
+## Slide 2 — Two Booms That Shape These Lessons
+
+**Template type:** `comparison`
+
+### Content specification
+
+```
+type: 'comparison'
+heading: 'Two Booms That Shape These Lessons'
+left:
+  title: 'The Health Tech Boom'
+  variant: 'neutral'
+  items:
+    - 'Massive capital flooded the market. Strong talent entered. Good products got built.'
+    - 'But valuations inflated beyond what the underlying business models could support.'
+    - 'Digital therapeutics had no reimbursement pathway. Value-based care models only addressed cost. AI biotech did not accelerate clinical timelines the way the market expected.'
+    - 'The boom burst not because the technology failed, but because the commercial models had not been worked out.'
+right:
+  title: 'The AI Boom'
+  variant: 'neutral'
+  items:
+    - 'Technology is advancing faster than companies can adopt it.'
+    - 'Entire categories open up and then get consumed by foundation models.'
+    - 'Companies that engage accelerate. Companies on the periphery face compounding uncertainty about where and how to create value.'
+    - 'The defining feature is not the technology — it is the pace, and the gap between what is possible and what organizations can actually absorb.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'Both booms rewarded companies that connected innovation to commercial reality early. Both punished companies that confused technical progress with business value.'
+```
+
+### Visual notes
+
+- Two equal columns using `slideTypeTemplates.comparison.columns` (1fr 1fr grid, spacing[8] gap)
+- Both columns use `neutral` variant (neutral[300] border, neutral[50] background) — these are not positive/negative, they are parallel observations
+- Each item is a separate paragraph within the column, not bulleted
+- insightBox at bottom uses sage[50] background, sage[200] border per `componentPresets.insightBox`
+
+-----
+
+## Slide 3 — The Exponential Trajectory of AI
+
+**Template type:** `timeline`
+
+### Content specification
+
+```
+type: 'timeline'
+heading: 'The Exponential Trajectory of AI'
+description: 'The pace of AI advancement has compressed dramatically. Understanding this trajectory is essential context for why corporate innovation models need to change.'
+items:
+  - date: 'Pre-2017'
+    title: 'Custom builds and narrow applications'
+    description: 'Statistical modeling and classical machine learning. Every application required bespoke development. Long timelines, heavy dependence on internal data science teams, limited reusability across use cases.'
+  - date: '2017–2020'
+    title: 'Reusable models emerge'
+    description: 'Deep learning tools became accessible. Reusable model architectures appeared. The time from research breakthrough to usable tool began compressing. But enterprise adoption still required significant custom engineering.'
+  - date: '2021–2024'
+    title: 'Foundation models change the economics'
+    description: 'General-purpose models became capable enough to handle a wide range of enterprise tasks with prompting and orchestration rather than custom training. The cost of building an AI-enabled workflow dropped by orders of magnitude. Startups flooded the market with vertical and horizontal tools.'
+  - date: '2025+'
+    title: 'Agents, automation, and multimodal AI'
+    description: 'AI systems that can take actions, process multiple input types, and operate semi-autonomously. The question is no longer whether the technology works — it is whether organizations can absorb the change fast enough to capture value before the next wave arrives.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'Software, not hardware, now leads the trajectory. AI model capability is outpacing Moore''s Law. The enterprise implication: the external market is innovating faster than any internal team can.'
+```
+
+### Visual notes
+
+- Vertical timeline layout per `slideTypeTemplates.timeline`
+- Each item uses sage[300] left border (3px), with sage[600] for the most recent era (2025+) to signal current state
+- Date labels use `typographyPresets.badge` in sage[700]
+- Title uses `typographyPresets.cardTitle` in neutral[900]
+- Description uses `typographyPresets.body` in neutral[600]
+- insightBox at bottom per standard component preset
+
+-----
+
+## Slide 4 — What Worked and What Didn’t
+
+**Template type:** `comparison`
+
+### Content specification
+
+```
+type: 'comparison'
+heading: 'What Worked and What Didn''t'
+left:
+  title: 'What Worked'
+  variant: 'positive'
+  items:
+    - 'Direct-to-patient marketing platforms succeeded because they fueled the core business of selling devices and drugs. They adapted consumer digital techniques to medical context and generated value the organization already knew how to measure.'
+    - 'A customer-facing platform in a B2B pharma services business got sustained support because it fed core revenue and let leadership track success in familiar terms. Innovation tied to the existing commercial engine gets oxygen.'
+    - 'Companies that set up external investment structures properly — equity where other investors could participate, value measured on market terms, governance that allowed the venture to operate independently — gave their innovations room to prove themselves and attract outside validation.'
+right:
+  title: 'What Didn''t'
+  variant: 'negative'
+  items:
+    - 'Digital therapeutics went through full clinical development only to find no reimbursement pathway on the other side. Approval did not equal revenue.'
+    - 'Purpose-built health AI platforms got overtaken by general foundation models that improved faster through scale than specialized models could through focus. Narrow moats get eaten.'
+    - 'Companies that built products without data infrastructure to measure them could not prove value and could not justify continued funding. The initiative did not fail — it could not prove it succeeded.'
+    - 'Even in a purpose-built venture studio with separate incentives, equity investments got treated as discounted consulting. Partners avoided equity because the economics favored fees. Structure shapes behavior — always.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'Innovation survives when it connects to the core commercial engine. External investments need external structures to create and measure value.'
+```
+
+### Visual notes
+
+- Two-column comparison per `slideTypeTemplates.comparison`
+- Left column uses `positive` variant: green[300] border, green[50] background
+- Right column uses `negative` variant: red[300] border, red[50] background
+- Each item is a full paragraph, not a short bullet — these are narrative anecdotes
+- Items may need slightly smaller text (`typography.sizes.sm` at 14px) to fit comfortably given paragraph length
+- insightBox at bottom per standard component preset
+
+-----
+
+## Slide 5 — The Lessons
+
+**Template type:** `framework`
+
+### Content specification
+
+```
+type: 'framework'
+heading: 'The Lessons'
+description: 'This is an operations problem with amazing technology at your fingertips and change that needs to happen nonlinearly in order to win.'
+levels:
+  - level: 1
+    title: 'Start with business value and let the case strengthen through evidence'
+  - level: 2
+    title: 'Partner first — there is more good technology outside than you can build inside'
+  - level: 3
+    title: 'Move fast — close the deal, do the work, sort out complex terms while you are making progress'
+  - level: 4
+    title: 'Set up simple KPIs to measure and realize success early — this may cost money, but without evidence you cannot justify continued investment'
+  - level: 5
+    title: 'Run fewer initiatives with faster proof and clearer ownership'
+  - level: 6
+    title: 'Treat external investments with external structures — clear strategic posture, equity where outside investors can participate, independent governance'
+  - level: 7
+    title: 'Do not put P&L leaders on top of innovation that takes years to realize value'
+  - level: 8
+    title: 'Build cross-functional teams with outside talent and shared processes and vocabulary so they can work quickly and effectively'
+  - level: 9
+    title: 'Treat innovation like a lean transformation — continuous improvement, not a one-time win'
+```
+
+### Visual notes
+
+- Framework layout per `slideTypeTemplates.framework`
+- Each level uses the numbered circle (sage[100] background, sage[700] text, 2.5rem) followed by the title
+- No `description` field on individual levels — title only, keeping this slide crisp and scannable
+- The `description` field at the top (the “operations problem” line) renders in `typographyPresets.body` in neutral[600], serving as an orienting statement before the list
+- Level cards use white background, neutral[200] border, 0.75rem border radius per `slideTypeTemplates.framework.level`
+- This slide should feel like a definitive reference page — clean, structured, no clutter
+
+-----
+
+## Slide 6 — Start With Business Value
+
+**Template type:** `list`
+
+### Content specification
+
+```
+type: 'list'
+heading: 'Start With Business Value'
+sectionLabel: 'Lesson 1'
+description: 'The first filter for any initiative should be whether it connects to something the operating leaders already care about.'
+groups:
+  - title: 'What moves the business?'
+    icon: 'metrics'
+    items:
+      - text: 'Revenue, margin, cycle time, quality, risk reduction. Innovation programs get into trouble when they chase technology categories instead of business outcomes. If it requires a paragraph to explain why it matters to the business, it probably does not yet.'
+  - title: 'Where can technology realize impact fastest?'
+    icon: 'rocket'
+    items:
+      - text: 'Start where the workflow already exists and the pain is measurable. The most successful early initiatives tend to be unglamorous — automating a manual step, accelerating a review process, improving data access for a decision that is already being made.'
+      - text: 'These build credibility and organizational muscle for the harder changes later. Companies that start with their boldest vision tend to stall because the organization is not ready to absorb that much change.'
+  - title: 'Can you measure progress in 90 days?'
+    icon: 'timer'
+    items:
+      - text: 'If you cannot establish a baseline and show movement quickly, you will not hold organizational attention long enough to matter. This does not mean the full value has to be realized in 90 days — it means you need a leading indicator that tells you whether you are on track.'
+      - text: 'Measuring might require investment in data infrastructure that does not exist yet. That investment is part of the cost of the initiative, not a separate line item to fight over later.'
+  - title: 'Does the business case need to be perfect or does it need to improve?'
+    icon: 'growth'
+    items:
+      - text: 'Most initial business cases are wrong. The economics of AI-enabled workflows tend to get better over time as adoption increases, workflows get redesigned, and the team learns what actually drives value.'
+      - text: 'The discipline is funding based on evidence of improvement, not precision of prediction. Companies that demand a locked five-year case upfront end up either killing good ideas early or funding bad ideas they have committed to on paper.'
+```
+
+### Visual notes
+
+- List layout per `slideTypeTemplates.grid` adapted as grouped list
+- Section label “Lesson 1” renders in `typographyPresets.sectionLabel` (14px, medium weight, uppercase, sage[700])
+- Each group title is bold with its icon rendered at 2rem from `iconRegistry`
+- Items within groups use `typographyPresets.body` in neutral[600]
+- Groups are visually separated by `layoutSpacing.sectionGap` (32px)
+
+-----
+
+## Slide 7 — Partner First and Move Fast
+
+**Template type:** `grid`
+
+### Content specification
+
+```
+type: 'grid'
+sectionLabel: 'Lessons 2 & 3'
+heading: 'Partner First and Move Fast'
+description: 'The capital booms funded an enormous amount of good technology. It already exists. The default should be to rent access to external capabilities, not build internally.'
+columns: 2
+items:
+  - title: 'Why partner?'
+    icon: 'workflow'
+    description: 'Building should be reserved for areas where proprietary differentiation genuinely matters. For most workflow and tooling needs, the market has already done the R&D.'
+  - title: 'Speed matters more than terms'
+    icon: 'clock'
+    description: 'Large companies routinely take 9–12 months to evaluate and negotiate partnerships. During that time they have lost 9–12 months of possible progress — and the startup they are negotiating with is burning cash waiting. Startups do not operate on a balance sheet. They are literally running out of time while the corporate deliberates.'
+  - title: 'Pay for the work, start learning'
+    icon: 'money'
+    description: 'The cost of an early partnership is incidental to a large company but meaningful to a startup. Pay them like a dev shop. Experiment. Learn whether the technology fits the workflow. If it does not work, walk away. The downside is a rounding error. The upside is a year of progress you would not have had otherwise.'
+  - title: 'Stop agonizing about IP — it is not a molecule'
+    icon: 'lock'
+    description: 'Pharma and medtech have a deep cultural instinct to protect IP because that is core to the drug business model. But technology can be engineered around. The obsession with ownership terms before any work has been done kills partnerships that could have been transformative. Sort out complex IP rights and corporate development questions while you are doing work together and making progress — not before.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'Close the deal and do work. Then sort out more complex deal terms as you are making progress.'
+```
+
+### Visual notes
+
+- 2-column grid per `slideTypeTemplates.grid`
+- Four cards total (2x2 grid)
+- Each card uses white background, neutral[200] border, 0.75rem radius, spacing[6] padding per `slideTypeTemplates.grid.card`
+- Icons render at 2rem per `slideTypeTemplates.grid.cardIcon`
+- Card titles use `typographyPresets.cardTitle` (20px, semibold)
+- Card descriptions use `typographyPresets.body` in neutral[600]
+- insightBox at bottom
+
+-----
+
+## Slide 8 — Set Up Simple KPIs and Invest in Measuring Them
+
+**Template type:** `framework`
+
+### Content specification
+
+```
+type: 'framework'
+sectionLabel: 'Lesson 4'
+heading: 'Set Up Simple KPIs and Invest in Measuring Them'
+description: 'Leaders need to know how well something is working in order to invest appropriately. The obvious miss is continuing to fund something that is not working. The bigger miss is when something is working and nobody sees it — so the company fails to double down, take share, or drive revenue at the moment it matters most.'
+levels:
+  - level: 1
+    title: 'Establish KPIs before you start, not after'
+    description: 'If you wait until the initiative is underway to figure out what success looks like, you will never catch up. Define what you are measuring and why before work begins. This forces clarity on what the initiative is actually supposed to accomplish.'
+  - level: 2
+    title: 'Keep the list short'
+    description: 'Companies routinely define 20+ KPIs for a single initiative. That is not a measurement plan — it is a wish list. Pick three to five metrics that actually matter and commit to them.'
+  - level: 3
+    title: 'Make them relevant to the people doing the work'
+    description: 'A KPI only works if the person looking at it can affect it. Choose metrics that connect activity to outcome at the level where decisions are actually being made. Adoption metrics — like how often people log into a tool — are not value metrics. Usage does not equal impact.'
+  - level: 4
+    title: 'Invest in the infrastructure to measure'
+    description: 'Dashboards do not populate themselves. Real measurement requires data infrastructure — feeds, integrations, possibly paid data sources. This costs money and takes iteration to get right. Treat it as part of the cost of the initiative. Companies that skip this step build products they can never prove worked.'
+  - level: 5
+    title: 'Invest in the process to respond'
+    description: 'The right people need to see the metrics at a regular cadence and have the authority to act on what they see. Measurement without a response loop is just reporting.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'Measurement exists to enable decisive action in both directions — double down on what is working and kill what is not.'
+```
+
+### Visual notes
+
+- Framework layout per `slideTypeTemplates.framework`
+- Numbered circles (1–5) with sage[100] background, sage[700] text
+- Each level has both title and description
+- Level cards: white background, neutral[200] border, spacing[6] padding, spacing[4] bottom margin
+- insightBox at bottom per standard preset
+
+-----
+
+## Slide 9 — Fewer Initiatives, Faster Proof, Clearer Ownership
+
+**Template type:** `list`
+
+### Content specification
+
+```
+type: 'list'
+sectionLabel: 'Lesson 5'
+heading: 'Fewer Initiatives, Faster Proof, Clearer Ownership'
+groups:
+  - title: 'Every company has an AI roadmap. Most have too much on it.'
+    icon: 'chart'
+    items:
+      - text: 'It is table stakes today to have AI in the executive presentation. But when you look underneath, the roadmap is usually a collection of initiatives that accumulated — some top-down, many bottom-up, not all tied to business value. They sound good in a deck but have not been rationalized against each other.'
+  - title: 'Most initiatives are too decentralized to succeed.'
+    icon: 'map'
+    items:
+      - text: 'It is not that nobody owns them — there is usually a name attached. But they sit inside individual teams without the cross-functional structure or governance to create real value. Similar efforts run in parallel across different groups. Nobody is looking across the portfolio to see what should be combined, what is redundant, and what is missing.'
+  - title: 'Rationalize the portfolio ruthlessly.'
+    icon: 'strategy'
+    items:
+      - text: 'Some initiatives need to be combined. Many need to be cut. A few need real investment, cross-functional teams, and executive focus. The discipline is deciding which ones actually connect to business outcomes — and being honest about the rest.'
+  - title: 'Stop running pilots. Start committing to change.'
+    icon: 'rocket'
+    items:
+      - text: 'The concept of a pilot — try something, see if it works, decide later — creates a false sense of progress without real commitment. Companies need to say "we are working in AI now, this is our first step, and we will iterate and build over time." Commitment means the work starts today, even if the direction will adjust.'
+  - title: 'Use measurement to steer, not to justify.'
+    icon: 'metrics'
+    items:
+      - text: 'Once committed, KPIs become the steering mechanism. They tell you whether to stay the course, double down, shift direction, or cut. The portfolio gets sharper through disciplined response to evidence, not better planning upfront.'
+```
+
+### Visual notes
+
+- List layout with grouped sections
+- Section label “Lesson 5” in sectionLabel preset
+- Each group has an icon (2rem) and bold title, followed by body-text items
+- Groups separated by `layoutSpacing.sectionGap`
+- No insightBox — the last group (“Use measurement to steer”) serves as the closing thought
+
+-----
+
+## Slide 10 — External Structures for External Investments
+
+**Template type:** `grid`
+
+### Content specification
+
+```
+type: 'grid'
+sectionLabel: 'Lesson 6'
+heading: 'External Structures for External Investments'
+description: 'The language around corporate investment gets muddied. These are different postures with different structures, incentives, and measures of success. Pick one and build accordingly.'
+columns: 2
+items:
+  - title: 'Invest like a VC'
+    icon: 'growth'
+    description: 'Equity value creation and financial return. This requires venture-grade governance — independent decision-making, portfolio construction discipline, carried interest or equivalent incentives for the team. If the people managing the portfolio are not compensated like investors, they will not act like investors.'
+  - title: 'Invest like a strategic partner'
+    icon: 'briefcase'
+    description: 'Act as a customer with preferred rights and access. The investment supports the relationship, not the other way around. Value is measured by what the partnership delivers to the core business — better capabilities, faster access, commercial advantage. The equity position is secondary.'
+  - title: 'Invest like a strategic acquirer'
+    icon: 'eye'
+    description: 'Create an option to buy with a front-line view. The investment gives you proximity to the team, the technology, and the market trajectory. You are paying for information and optionality, not for near-term returns.'
+  - title: 'Externalize but own'
+    icon: 'unlock'
+    description: 'Create separate governance, teams, and P&L so the venture can operate on the cycles and decision-making speed it needs to win. Revenue should look like something — genuinely new, or even competing directly with the core as a way to transform the market. This is the hardest posture because the parent has to tolerate real independence.'
+  - title: 'Innovate inside the business'
+    icon: 'settings'
+    description: 'This has to feed the core P&L or it will die. Internal innovation without a direct connection to existing revenue streams will lose resources, attention, and talent to the priorities that do. Do not lie to yourself about value creation.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'The failure is almost never picking the wrong posture. It is not picking one clearly — and then applying the governance, incentives, and measurement from a different posture.'
+```
+
+### Visual notes
+
+- 2-column grid, but five items means a 2-2-1 layout — the fifth card (“Innovate inside the business”) should span the full width of the bottom row or be centered
+- Cards use standard grid card styling per `slideTypeTemplates.grid.card`
+- Consider giving the fifth card a slightly different treatment (sage[50] background instead of white) to signal that it is a distinct category — internal rather than external
+- insightBox at bottom
+
+-----
+
+## Slide 11 — Leadership and Resourcing
+
+**Template type:** `list`
+
+### Content specification
+
+```
+type: 'list'
+sectionLabel: 'Lesson 7'
+heading: 'Leadership and Resourcing'
+groups:
+  - title: 'Innovation leaders need appetite for risk and ambition, not just seniority.'
+    icon: 'person'
+    items:
+      - text: 'Too often, senior executives take on innovation roles because they have done well in the core business but do not have a clear path upward. They want to do something new. But they default to familiar politics, processes, and value structures because that is what made them successful.'
+      - text: 'Innovation requires comfort with uncertainty, speed over precision, and willingness to make bets the core business would never approve. If the leader is not wired for that, the program will mirror the culture it is supposed to challenge.'
+  - title: 'The role has to come with real resources or it is designed to fail.'
+    icon: 'briefcase'
+    items:
+      - text: 'The health tech boom produced dozens of VP of Digital Health roles with two direct reports and no meaningful budget. Now the same pattern is repeating with Chief AI Officer titles — sometimes within a function, sometimes nominally in IT reporting to business leaders, sometimes quite senior but with no clear ownership of budget, headcount, or decision rights.'
+      - text: 'These leaders are expected to succeed through influence and pilot-level projects. They do not. And when they fail, they get blamed — but the setup was wrong from the start. If the organization is serious about the mandate, it has to come with budget, team, and authority. Otherwise it is a title, not a role.'
+  - title: 'AI leadership needs a defined lane.'
+    icon: 'map'
+    items:
+      - text: 'When AI leadership sits adjacent to IT without clear boundaries, the result is constant friction over ownership of infrastructure, vendor relationships, and technical decisions. The role needs clarity on what it owns, what it influences, and where IT is the partner versus the gatekeeper.'
+  - title: 'Transformation requires top-down commitment, not just tool distribution.'
+    icon: 'arrow-up'
+    items:
+      - text: 'Rolling out an enterprise AI license and counting logins is not transformation. Leadership has to drive the change — setting direction, allocating resources, removing obstacles, and holding the organization accountable for adoption that creates value, not just activity.'
+```
+
+### Visual notes
+
+- List layout with grouped sections
+- Section label “Lesson 7” in sectionLabel preset
+- Four groups, each with icon and bold title
+- Body items in neutral[600]
+- No insightBox — the fourth group on top-down commitment serves as the closing thought
+
+-----
+
+## Slide 12 — Team Composition
+
+**Template type:** `grid`
+
+### Content specification
+
+```
+type: 'grid'
+sectionLabel: 'Lesson 8'
+heading: 'Team Composition'
+description: 'Innovation that touches technology, operations, commercial strategy, and customer experience cannot be run by a single function.'
+columns: 2
+items:
+  - title: 'Cross-functional is a requirement'
+    icon: 'team'
+    description: 'The team needs perspectives from across the business and often from outside the company entirely.'
+  - title: 'Internal talent alone is usually not enough'
+    icon: 'user'
+    description: 'Long-tenured corporate teams bring organizational knowledge and credibility but often lack the instincts needed for this kind of work. People with startup experience, technical depth, or design thinking approach problems differently — faster iteration, less consensus-seeking, more comfort with ambiguity. Innovation teams need both insiders who know how to navigate the organization and outsiders who know how to build.'
+  - title: 'The right technical talent is expensive'
+    icon: 'money'
+    description: 'AI companies are paying enormous compensation for strong technical people. That is the market. When a large enterprise wants to access the same talent — whether as full-time hires, contractors, or embedded partners — they have to be realistic about what it costs. Underpaying for technical talent results in either not getting it or getting the wrong tier of it, and both outcomes slow everything down.'
+  - title: 'Establish shared vocabulary and processes early'
+    icon: 'message'
+    description: 'Different functions literally use different words and approach problems differently. A designer sees the world differently from a business strategist. An engineer thinks differently from a regulatory lead. Without defined standards for how the team communicates, makes decisions, and moves work forward, people churn on communication instead of making progress.'
+```
+
+### Visual notes
+
+- 2-column grid (2x2), four cards
+- Standard grid card styling
+- Cards should have enough vertical space for the longer descriptions (cards 2 and 3)
+- No insightBox
+
+-----
+
+## Slide 13 — Lean Transformation, Not a One-Time Win
+
+**Template type:** `framework`
+
+### Content specification
+
+```
+type: 'framework'
+sectionLabel: 'Lesson 9'
+heading: 'Lean Transformation, Not a One-Time Win'
+description: 'Companies get starry-eyed about innovation. They need to treat it with the same rigor they would bring to a lean transformation — continuous improvement, understanding the work being done, changing how that work gets done. This is operational discipline applied to extraordinary technology.'
+levels:
+  - level: 1
+    title: 'Commit to a new way of working, not a discrete program'
+    description: 'A pilot has an end date. A transformation does not. Companies that commit to AI adoption as an ongoing operating change — iterating, measuring, reinvesting — will compound improvements over time. Companies that treat it as a bounded initiative will capture a fraction of the value and then stall.'
+  - level: 2
+    title: 'Focus on jobs to be done, not headcount'
+    description: 'The unit of analysis should be the work itself — what is being done, how it is being done, and what changes when better tools are available. Lean transformation thinking focuses on workflow and value creation, not on counting people. This reframes AI from a cost reduction exercise into a capability transformation.'
+  - level: 3
+    title: 'The improvement is nonlinear, but only with continuous reinvestment'
+    description: 'The potential improvement from AI-enabled workflows is not 10 or 20 percent — it is hundreds or thousands of percent. But that only happens through sustained commitment to improving the system over time. Implement, learn, adjust, reinvest. Each cycle compounds on the last. A one-time deployment delivers a one-time slug of improvement. A continuous operating commitment delivers transformation.'
+  - level: 4
+    title: 'This applies to operators and investors alike'
+    description: 'Whether the question comes from a team lead asking about productivity tools or an investor asking about headcount reduction, the answer is the same: the value will evolve over time when done right. It is not a one-time efficiency gain to model in a spreadsheet. It is a commitment to a system that gets better.'
+insightBox:
+  label: 'Bottom Line'
+  text: 'This is not about launching an AI program. It is about committing to a fundamentally different way of working and building the operational discipline to get better at it continuously.'
+```
+
+### Visual notes
+
+- Framework layout with numbered circles (1–4)
+- Level cards with title and description
+- insightBox at bottom
+- This slide should feel like the capstone — visually consistent with the framework slides that preceded it but carrying the weight of a closing argument
+
+-----
+
+## Slide 14 — Signs of Success and Signs of Risk
+
+**Template type:** `comparison`
+
+### Content specification
+
+```
+type: 'comparison'
+heading: 'Signs of Success and Signs of Risk'
+left:
+  title: 'If you hear things like this, it is going well'
+  variant: 'positive'
+  items:
+    - '"We cut the roadmap from 15 initiatives to four — here is why these four connect to pipeline acceleration and margin improvement."'
+    - '"We signed a paid pilot with that computational biology startup six weeks after the first call — legal is sorting out the long-term IP terms while we are already generating data together."'
+    - '"We hired a former startup CTO to run the innovation team alongside our clinical ops lead and commercial strategist — they run weekly stand-ups and make decisions in the room."'
+    - '"Part of our investment strategy was contingent on being the first paying customer — it gave us preferred access to the roadmap and helped them close their next round with outside investors."'
+    - '"Our medical writing tool is in its third iteration — each version handles more document types and we track time savings per submission against the baseline we set on day one."'
+    - '"The team had been pushing hard on two initiatives with disciplined KPI tracking. The data made it clear the fit was not there. We celebrated the learning, moved the talent and budget to initiatives with better traction, and we are already seeing results. That is the system working."'
+    - '"Our startup partner shipped a new feature last week that we asked for — they are moving faster than our internal teams ever could."'
+    - '"Our investment has already doubled in equity value — outside investors came in at a higher mark in the last round. The company is still pre-profitability but that is expected at this stage. We are not holding it to a P&L standard."'
+    - '"We are spending real money on the data infrastructure to measure this — it was not cheap but now we actually know what is working."'
+    - '"We stopped calling them pilots — these are committed operating changes with dedicated teams and quarterly reviews."'
+    - '"Our innovation budget has its own governance — it does not compete with the core P&L for annual approval. The funding cycle matches the innovation lifecycle, not the budget calendar. Some of these will take multiple years to realize full value and we have structured for that."'
+right:
+  title: 'If you hear things like this, something is wrong'
+  variant: 'negative'
+  items:
+    - '"We have a fully documented AI strategy with a roadmap of 20 initiatives and an Excel tracker with owners, timelines, and dependencies for each one."'
+    - '"72% of our employees are using ChatGPT on a weekly basis — we are really seeing strong adoption across the organization."'
+    - '"We are still making progress on the partnership with that clinical trial company — just waiting on MLR review for the last six weeks, not sure where it is at."'
+    - '"We just hired a VP of AI Innovation — still sorting out what their reporting structure will be, but this person seems super connected."'
+    - '"We have got the dashboard but it has not been updated — the person in charge of that rotated out and we have not invested in the automated feeds yet."'
+    - '"We invested in that digital therapeutics company but the terms are complicated — they are having trouble raising their next round."'
+    - '"Three teams are piloting document summarization tools — great to see the enthusiasm."'
+    - '"We set up a venture arm last year — we have made eight investments but I could not tell you which ones are strategic and which ones are financial."'
+    - '"We tried an AI tool for clinical document review but it was not perfect so we went back to the manual process."'
+    - '"Our board wants to see the five-year ROI case before we commit any more funding."'
+    - '"Everyone is excited about AI — we are letting teams experiment and see what bubbles up."'
+insightBox:
+  label: 'Bottom Line'
+  text: 'These patterns are visible in almost every large company running an innovation program. The specifics vary. The structural issues do not.'
+```
+
+### Visual notes
+
+- Two-column comparison layout
+- Left column: `positive` variant — green[300] border, green[50] background
+- Right column: `negative` variant — red[300] border, red[50] background
+- Each item is a quoted statement in italics, styled as a distinct block — consider a left-border accent treatment within each column (thin green or red bar per quote) for visual rhythm
+- Items should be visually scannable — the reader should be able to skim the quotes and pattern-match quickly
+- This slide will likely need to be taller than standard or use a smaller text size (`typography.sizes.sm` at 14px) given the volume of content
+- insightBox at bottom spans full width below both columns
+
+-----
+
+## Implementation Notes
+
+### Slide count
+
+14 slides total. Within the target range of 15–20 when rendered, depending on whether any slides need to split for readability.
+
+### Slides most likely to need splitting
+
+- **Slide 4** (What Worked / What Didn’t) — paragraphs are long for a comparison layout. Consider splitting into two slides: one for What Worked, one for What Didn’t.
+- **Slide 11** (Leadership and Resourcing) — four groups with substantial text. May need to split into Leadership (groups 1–2) and Resourcing/Structure (groups 3–4).
+- **Slide 14** (Signs of Success/Risk) — 11 items per column. Consider splitting into two slides or using a scrollable/paginated treatment if the rendering system supports it.
+
+### Content threading notes
+
+- The adoption-vs-value metric point appears in Slide 8 (KPIs — “usage does not equal impact”) and is echoed in Slide 14 (risk — “72% of employees using ChatGPT”)
+- Top-down commitment appears in Slide 11 (Leadership — “not just tool distribution”) and is echoed in Slide 14 (risk — “we are letting teams experiment and see what bubbles up”)
+- The “not a pilot” theme appears in Slide 9 (Fewer Initiatives) and is echoed in Slide 14 (success — “we stopped calling them pilots”)
+- The continuous improvement / lean theme in Slide 13 connects back to the “does the business case need to improve” question in Slide 6
+
+### Design system references
+
+All template types, color tokens, typography presets, spacing values, icon names, and component presets reference the Tweed Collective `slideTemplates.ts` configuration. No values are invented outside that system.
