@@ -37,7 +37,7 @@ function InsightBox({ label, text }: { label: string; text: string }) {
 // ---- TITLE SLIDE ----
 function renderTitle(content: TitleSlideContent) {
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
+    <div className="flex flex-col items-center justify-center text-center">
       {content.badge && (
         <span className="inline-block px-4 py-1.5 bg-sage/20 text-sage-bright text-sm font-medium rounded-full mb-6">
           {content.badge}
@@ -70,7 +70,7 @@ function renderTitle(content: TitleSlideContent) {
 function renderText(content: TextSlideContent) {
   const bodyArr = Array.isArray(content.body) ? content.body : [content.body]
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center max-w-3xl">
+    <div className="flex flex-col justify-center max-w-3xl">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -92,7 +92,7 @@ function renderGrid(content: GridSlideContent) {
   const isHorizontal = content.layout === 'horizontal-cards'
 
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -147,7 +147,7 @@ function renderComparison(content: ComparisonSlideContent) {
   }
 
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -179,7 +179,7 @@ function renderComparison(content: ComparisonSlideContent) {
 //  This renders a basic static timeline for the standard 'timeline' type.)
 function renderTimeline(content: TimelineSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-8">{content.heading}</h2>
       <div className="space-y-6">
         {content.items.map((item, i) => (
@@ -210,7 +210,7 @@ function renderTimeline(content: TimelineSlideContent) {
 // ---- LIST SLIDE ----
 function renderList(content: ListSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -243,7 +243,7 @@ function renderList(content: ListSlideContent) {
 // ---- FRAMEWORK SLIDE ----
 function renderFramework(content: FrameworkSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -294,7 +294,7 @@ function renderFramework(content: FrameworkSlideContent) {
 // ---- METRICS SLIDE ----
 function renderMetrics(content: MetricsSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -331,7 +331,7 @@ function renderMetrics(content: MetricsSlideContent) {
 // ---- CASE STUDY SLIDE ----
 function renderCaseStudy(content: CaseStudySlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -381,7 +381,7 @@ function renderCaseStudy(content: CaseStudySlideContent) {
 // ---- SOURCES SLIDE ----
 function renderSources(content: SourcesSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -413,7 +413,7 @@ function renderSources(content: SourcesSlideContent) {
 // ---- TABLE SLIDE ----
 function renderTable(content: TableSlideContent) {
   return (
-    <div className="min-h-[50vh] flex flex-col justify-center">
+    <div className="flex flex-col justify-center">
       {content.sectionLabel && (
         <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
       )}
@@ -480,14 +480,14 @@ function renderSlideContent(
         return <Component {...(content.props || {})} />
       }
       return (
-        <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <p className="text-cream/40">Custom component &quot;{content.componentId}&quot; not registered</p>
         </div>
       )
     }
     default:
       return (
-        <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <p className="text-cream/40">Unknown slide type</p>
         </div>
       )

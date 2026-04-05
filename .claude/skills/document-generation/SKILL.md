@@ -59,6 +59,41 @@ Use this table to map outline slides to the best-fit type. For full interface sh
 
 ---
 
+## Content Budget per Slide (MUST follow)
+
+Every slide must fit within a **US Letter landscape page** (10in × 7.5in usable area). The on-screen viewer enforces this with a fixed 4:3 aspect ratio container — content that overflows is clipped. Use these limits as hard maximums:
+
+| Slide Type | Max Items | Per-Item Length | Notes |
+|------------|-----------|-----------------|-------|
+| `title` | 1 headline + 1 subtitle | Headline ~12 words, subtitle ~20 words | Metrics: max 3 cards |
+| `text` | 3 paragraphs | ~40 words each | Keep total body under 120 words |
+| `grid` | 4 cards (2×2) | Title + ~25 word description each | 6 cards (2×3) OK if descriptions are very short (~10 words) |
+| `comparison` | 4 items per column | ~30 words each | Insight box counts against space |
+| `timeline` | 4 entries | Label + ~25 word description each | Metrics pills add height |
+| `list` | 4 groups | 3 items per group, ~25 words each | Icon groups take more space than plain |
+| `framework` | 5 levels | Title + ~20 word description each | Detail boxes (whenToUse/risk/outcome) reduce max to 3 levels |
+| `metrics` | 4 KPIs | Title + metric + 2 targets each | Market anchors add height |
+| `case-study` | 3 metrics + 4 sections | ~25 words per section | Anecdote box counts against space |
+| `table` | 8 rows | Depends on column count | Insight box reduces max to ~6 rows |
+| `sources` | 12 references | 1 line each | Split into 2 slides if more |
+
+**General rule:** When in doubt, less content is better. A slide that breathes is more effective than one that's packed.
+
+### Content Overflow Strategy
+
+When the user's outline contains more content than fits on a single slide, **do NOT silently truncate or overflow**. Instead:
+
+1. **Flag it to the user** — explain which slide(s) have too much content for a single letter-size page.
+2. **Offer three options:**
+   - **Compress:** Reduce font sizes / tighten spacing to fit (use sparingly — readability suffers)
+   - **Edit copy:** Tighten the language to fit within the content budget
+   - **Split slides:** Break the content across multiple slides (e.g., "The Lessons (1 of 2)", "The Lessons (2 of 2)")
+3. **Wait for the user's choice** before proceeding with generation.
+
+This ensures the user is always aware of sizing constraints and makes a conscious decision about how to handle overflow.
+
+---
+
 ## Workflow
 
 ### Sizing Rule: Single-Pass vs. Phased Generation

@@ -236,10 +236,12 @@ export default function PresentationLayout({
         </div>
       </nav>
 
-      {/* Slide Content */}
-      <main className="flex-grow flex items-center justify-center px-6 py-8 relative z-10">
-        <div className="w-full max-w-5xl mx-auto">
-          {slide.content}
+      {/* Slide Content — fixed 4:3 aspect ratio matching US Letter landscape (10in × 7.5in) */}
+      <main className="flex-grow flex items-center justify-center px-6 py-4 relative z-10">
+        <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '10 / 7.5' }}>
+          <div className="w-full h-full overflow-hidden px-6 py-6 flex flex-col justify-center">
+            {slide.content}
+          </div>
         </div>
       </main>
 
