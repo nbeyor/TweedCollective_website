@@ -20,7 +20,6 @@ const contentLoaders: Record<string, () => Promise<ContentModule>> = {
   'salmon-ai-genomics': () => import('./salmon-ai-genomics') as Promise<ContentModule>,
   'mercury-buyer-ai-diligence': () => import('./mercury-buyer-ai-diligence') as Promise<ContentModule>,
   'ai-opportunity-roadmap': () => import('./ai-opportunity-roadmap') as Promise<ContentModule>,
-  'innovation-ai-era-hardened': () => import('./innovation-ai-era-hardened') as Promise<ContentModule>,
   'ai-adoption-by-function-health-tech': () => import('./ai-adoption-by-function-health-tech') as Promise<ContentModule>,
   'actionable-lessons-corporate-innovation': () => import('./actionable-lessons-corporate-innovation') as Promise<ContentModule>,
 }
