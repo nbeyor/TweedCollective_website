@@ -114,6 +114,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'unlisted',
   },
   {
+    id: 'actionable-lessons-corporate-innovation',
+    title: 'Actionable Lessons in Corporate Innovation',
+    shortTitle: 'Actionable Innovation Lessons',
+    description: 'Hard learned principles through booms of capital and technology in health tech.',
+    category: 'Framework',
+    icon: 'Compass',
+    date: '2026-04',
+    readTime: '25 min',
+    visibility: 'public',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',
