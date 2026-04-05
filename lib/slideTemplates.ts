@@ -314,15 +314,6 @@ export const iconRegistry = {
   'cpu': 'Cpu',
   'map': 'Map',
   'lock': 'Lock',
-  'unlock': 'Unlock',
-  'eye': 'Eye',
-  'message': 'MessageSquare',
-  'workflow': 'Workflow',
-
-  // Time & Progress
-  'clock': 'Clock',
-  'timer': 'Timer',
-  'rocket': 'Rocket',
 
   // Navigation & UI
   'arrow-right': 'ArrowRight',

@@ -248,6 +248,7 @@ export interface FrameworkSlideContent {
   heading: string
   description?: string
   levels: FrameworkLevel[]
+  insightBox?: { label: string; text: string }
 }
 
 /**
