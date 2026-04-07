@@ -58,6 +58,11 @@ export type SlideContentType =
   | 'case-study'      // Case study with metrics and insights
   | 'sources'         // Sources/citations list
   | 'table'           // Table with headers and rows
+  | 'funnel'          // Narrowing funnel/filter diagram with labeled stages
+  | 'spectrum'        // Cards arranged on a gradient continuum (light→dark)
+  | 'chart'           // Data visualization (dual-curve, staircase, line charts)
+  | 'venn'            // Overlapping circles with labeled intersection
+  | 'quotes'          // Speech bubble / conversation columns
   | 'custom'          // Custom component (fallback for complex slides)
 
 /**
@@ -338,6 +343,131 @@ export interface TableSlideContent {
 }
 
 /**
+ * Funnel stage for filter/narrowing diagrams
+ */
+export interface FunnelStage {
+  title: string
+  description: string
+  icon?: string
+}
+
+/**
+ * Funnel slide content — narrowing filter diagram with labeled stages
+ */
+export interface FunnelSlideContent {
+  type: 'funnel'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  inputLabel?: string   // Label at the wide top of the funnel
+  outputLabel?: string  // Label at the narrow bottom
+  stages: FunnelStage[]
+  insightBox?: { label: string; text: string }
+}
+
+/**
+ * Spectrum card for continuum/gradient displays
+ */
+export interface SpectrumCard {
+  title: string
+  description: string
+  icon?: string
+}
+
+/**
+ * Spectrum slide content — cards arranged on a gradient continuum
+ */
+export interface SpectrumSlideContent {
+  type: 'spectrum'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  leftLabel?: string    // Label for the left end of the spectrum
+  rightLabel?: string   // Label for the right end of the spectrum
+  cards: SpectrumCard[]
+  insightBox?: { label: string; text: string }
+}
+
+/**
+ * Chart line/series data
+ */
+export interface ChartLine {
+  label: string
+  style: 'exponential' | 'linear' | 'staircase' | 'flat'
+  color?: 'sage' | 'taupe' | 'gold' | 'red' | 'green'
+}
+
+/**
+ * Chart annotation zone along the x-axis
+ */
+export interface ChartZone {
+  label: string
+  sublabel?: string
+  description?: string
+}
+
+/**
+ * Chart slide content — data visualizations (dual-curve, staircase, etc.)
+ */
+export interface ChartSlideContent {
+  type: 'chart'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  xLabel?: string
+  yLabel?: string
+  lines: ChartLine[]
+  zones?: ChartZone[]
+  gapAnnotation?: string  // Annotation for the gap between lines
+  insightBox?: { label: string; text: string }
+}
+
+/**
+ * Venn circle/pool
+ */
+export interface VennCircle {
+  label: string
+  description: string
+  icon?: string
+  color?: 'sage' | 'taupe' | 'gold' | 'purple' | 'green'
+}
+
+/**
+ * Venn slide content — overlapping circles with labeled intersection
+ */
+export interface VennSlideContent {
+  type: 'venn'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  circles: VennCircle[]
+  centerLabel: string   // Label for the intersection center
+  insightBox?: { label: string; text: string }
+}
+
+/**
+ * Quotes column for speech bubble displays
+ */
+export interface QuotesColumn {
+  title: string
+  variant: 'positive' | 'negative' | 'neutral'
+  quotes: string[]
+  headerNote?: string  // e.g., "overheard in the hallway"
+}
+
+/**
+ * Quotes slide content — speech bubble / conversation columns
+ */
+export interface QuotesSlideContent {
+  type: 'quotes'
+  sectionLabel?: string
+  heading: string
+  description?: string
+  columns: QuotesColumn[]
+  insightBox?: { label: string; text: string }
+}
+
+/**
  * Custom slide content (for complex interactive slides)
  */
 export interface CustomSlideContent {
@@ -361,6 +491,11 @@ export type SlideContent =
   | CaseStudySlideContent
   | SourcesSlideContent
   | TableSlideContent
+  | FunnelSlideContent
+  | SpectrumSlideContent
+  | ChartSlideContent
+  | VennSlideContent
+  | QuotesSlideContent
   | CustomSlideContent
 
 /**
