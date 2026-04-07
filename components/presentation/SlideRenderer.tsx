@@ -7,6 +7,8 @@ import type {
   GridSlideContent, ComparisonSlideContent, TimelineSlideContent,
   ListSlideContent, FrameworkSlideContent, MetricsSlideContent,
   CaseStudySlideContent, SourcesSlideContent, TableSlideContent,
+  FunnelSlideContent, SpectrumSlideContent, ChartSlideContent,
+  VennSlideContent, QuotesSlideContent,
   CustomSlideContent, GridItem, MetricCard,
 } from '@/lib/types'
 import * as LucideIcons from 'lucide-react'
@@ -455,6 +457,301 @@ function renderTable(content: TableSlideContent) {
   )
 }
 
+// ---- FUNNEL SLIDE ----
+function renderFunnel(content: FunnelSlideContent) {
+  const totalStages = content.stages.length
+  return (
+    <div className="flex flex-col justify-center">
+      {content.sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-3">{content.heading}</h2>
+      {content.description && <p className="text-cream/60 text-base leading-relaxed mb-6 max-w-3xl">{content.description}</p>}
+      <div className="relative flex flex-col items-center gap-0">
+        {content.inputLabel && (
+          <div className="text-xs uppercase tracking-wider text-cream/40 mb-3">{content.inputLabel}</div>
+        )}
+        {content.stages.map((stage, i) => {
+          const widthPct = 100 - (i * (60 / totalStages))
+          const opacity = 0.08 + (i * 0.04)
+          return (
+            <div key={i} className="relative w-full flex flex-col items-center">
+              {i > 0 && (
+                <div className="w-0.5 h-3 bg-sage/30" />
+              )}
+              <div
+                className="border border-sage/30 rounded-xl p-4 transition-all"
+                style={{
+                  width: `${widthPct}%`,
+                  backgroundColor: `rgba(107, 142, 111, ${opacity})`,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  {stage.icon && <IconComponent name={stage.icon} className="w-5 h-5 text-sage-bright mt-0.5 flex-shrink-0" />}
+                  <div>
+                    <h3 className="text-base font-semibold text-cream">{stage.title}</h3>
+                    <p className="text-sm text-cream/60 mt-1 leading-relaxed">{stage.description}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+        {content.outputLabel && (
+          <>
+            <div className="w-0.5 h-3 bg-sage/30" />
+            <div className="px-4 py-2 bg-sage/20 border border-sage/40 rounded-lg">
+              <span className="text-sm font-semibold text-sage-bright">{content.outputLabel}</span>
+            </div>
+          </>
+        )}
+      </div>
+      {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+    </div>
+  )
+}
+
+// ---- SPECTRUM SLIDE ----
+function renderSpectrum(content: SpectrumSlideContent) {
+  const totalCards = content.cards.length
+  return (
+    <div className="flex flex-col justify-center">
+      {content.sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-3">{content.heading}</h2>
+      {content.description && <p className="text-cream/60 text-base leading-relaxed mb-6 max-w-3xl">{content.description}</p>}
+      {(content.leftLabel || content.rightLabel) && (
+        <div className="flex justify-between items-center mb-3 px-1">
+          <span className="text-xs uppercase tracking-wider text-cream/40">{content.leftLabel}</span>
+          <div className="flex-1 mx-4 h-px bg-gradient-to-r from-cream/10 via-cream/20 to-cream/40" />
+          <span className="text-xs uppercase tracking-wider text-cream/40">{content.rightLabel}</span>
+        </div>
+      )}
+      <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(totalCards, 5)}, 1fr)` }}>
+        {content.cards.map((card, i) => {
+          const intensity = 0.05 + (i * (0.15 / Math.max(totalCards - 1, 1)))
+          const borderIntensity = 0.15 + (i * (0.35 / Math.max(totalCards - 1, 1)))
+          return (
+            <div
+              key={i}
+              className="rounded-xl p-4 transition-all"
+              style={{
+                backgroundColor: `rgba(107, 142, 111, ${intensity})`,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: `rgba(107, 142, 111, ${borderIntensity})`,
+              }}
+            >
+              {card.icon && <IconComponent name={card.icon} className="w-5 h-5 text-sage-bright mb-2" />}
+              <h3 className="text-sm font-semibold text-cream mb-1.5">{card.title}</h3>
+              <p className="text-xs text-cream/60 leading-relaxed">{card.description}</p>
+            </div>
+          )
+        })}
+      </div>
+      {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+    </div>
+  )
+}
+
+// ---- CHART SLIDE ----
+function renderChart(content: ChartSlideContent) {
+  const lineColors: Record<string, string> = {
+    sage: '#6B8E6F',
+    taupe: '#A89685',
+    gold: '#D4AF37',
+    red: '#ef4444',
+    green: '#22c55e',
+  }
+
+  // Generate SVG path based on line style
+  function getPath(style: string, index: number): string {
+    const yBase = index === 0 ? 20 : 50
+    switch (style) {
+      case 'exponential':
+        return `M 40 ${180 - yBase} Q 200 ${175 - yBase} 300 ${160 - yBase} Q 400 ${130 - yBase} 500 ${60 - yBase} Q 550 ${20 - yBase} 580 ${10 - yBase}`
+      case 'staircase':
+        return `M 40 ${180 - yBase} L 120 ${180 - yBase} L 120 ${155 - yBase} L 220 ${155 - yBase} L 220 ${125 - yBase} L 340 ${125 - yBase} L 340 ${85 - yBase} L 460 ${85 - yBase} L 460 ${40 - yBase} L 580 ${40 - yBase}`
+      case 'flat':
+        return `M 40 ${155 - yBase} L 580 ${140 - yBase}`
+      case 'linear':
+        return `M 40 ${180 - yBase} L 580 ${60 - yBase}`
+      default:
+        return `M 40 ${180 - yBase} L 580 ${60 - yBase}`
+    }
+  }
+
+  return (
+    <div className="flex flex-col justify-center">
+      {content.sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-3">{content.heading}</h2>
+      {content.description && <p className="text-cream/60 text-base leading-relaxed mb-4 max-w-3xl">{content.description}</p>}
+      <div className="relative bg-cream/3 border border-cream/10 rounded-2xl p-6">
+        {/* Y-axis label */}
+        {content.yLabel && (
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] text-cream/30 whitespace-nowrap">{content.yLabel}</div>
+        )}
+        {/* SVG Chart */}
+        <svg viewBox="0 0 620 200" className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+          {/* Grid lines */}
+          <line x1="40" y1="180" x2="580" y2="180" stroke="rgba(245,244,240,0.1)" strokeWidth="1" />
+          <line x1="40" y1="130" x2="580" y2="130" stroke="rgba(245,244,240,0.05)" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="40" y1="80" x2="580" y2="80" stroke="rgba(245,244,240,0.05)" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="40" y1="30" x2="580" y2="30" stroke="rgba(245,244,240,0.05)" strokeWidth="1" strokeDasharray="4 4" />
+          {/* Lines */}
+          {content.lines.map((line, i) => (
+            <path
+              key={i}
+              d={getPath(line.style, i)}
+              fill="none"
+              stroke={lineColors[line.color || 'sage']}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity={0.9}
+            />
+          ))}
+          {/* Gap annotation */}
+          {content.gapAnnotation && content.lines.length >= 2 && (
+            <>
+              <line x1="480" y1="45" x2="480" y2="120" stroke="rgba(245,244,240,0.3)" strokeWidth="1" strokeDasharray="3 3" />
+              <text x="490" y="85" fill="rgba(245,244,240,0.5)" fontSize="9" fontStyle="italic">{content.gapAnnotation}</text>
+            </>
+          )}
+        </svg>
+        {/* Legend */}
+        <div className="flex items-center gap-6 mt-3 justify-center">
+          {content.lines.map((line, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <div className="w-4 h-0.5 rounded" style={{ backgroundColor: lineColors[line.color || 'sage'] }} />
+              <span className="text-xs text-cream/50">{line.label}</span>
+            </div>
+          ))}
+        </div>
+        {/* X-axis label */}
+        {content.xLabel && (
+          <div className="text-center mt-2 text-[10px] text-cream/30">{content.xLabel}</div>
+        )}
+        {/* Zone labels */}
+        {content.zones && content.zones.length > 0 && (
+          <div className="grid gap-3 mt-4" style={{ gridTemplateColumns: `repeat(${content.zones.length}, 1fr)` }}>
+            {content.zones.map((zone, i) => (
+              <div key={i} className="text-center">
+                <div className="text-xs font-semibold text-sage-bright">{zone.label}</div>
+                {zone.sublabel && <div className="text-[10px] text-cream/40 mt-0.5">{zone.sublabel}</div>}
+                {zone.description && <div className="text-[10px] text-cream/50 mt-1 leading-relaxed">{zone.description}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+    </div>
+  )
+}
+
+// ---- VENN SLIDE ----
+function renderVenn(content: VennSlideContent) {
+  const circleColors: Record<string, { bg: string; border: string; text: string }> = {
+    sage: { bg: 'rgba(107, 142, 111, 0.15)', border: 'rgba(107, 142, 111, 0.4)', text: 'text-sage-bright' },
+    taupe: { bg: 'rgba(168, 150, 133, 0.15)', border: 'rgba(168, 150, 133, 0.4)', text: 'text-taupe-light' },
+    gold: { bg: 'rgba(212, 175, 55, 0.15)', border: 'rgba(212, 175, 55, 0.4)', text: 'text-gold-light' },
+    purple: { bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)', text: 'text-purple-400' },
+    green: { bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.4)', text: 'text-green-400' },
+  }
+  const defaultColors = ['sage', 'taupe', 'gold', 'purple']
+
+  return (
+    <div className="flex flex-col justify-center">
+      {content.sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-3">{content.heading}</h2>
+      {content.description && <p className="text-cream/60 text-base leading-relaxed mb-6 max-w-3xl">{content.description}</p>}
+      <div className="relative flex items-center justify-center py-6">
+        {/* Visual circles representation */}
+        <div className="relative w-full max-w-lg aspect-square">
+          {content.circles.map((circle, i) => {
+            const colorKey = circle.color || defaultColors[i % defaultColors.length]
+            const colors = circleColors[colorKey] || circleColors.sage
+            const positions = [
+              { top: '5%', left: '15%' },
+              { top: '5%', right: '15%' },
+              { bottom: '5%', left: '15%' },
+              { bottom: '5%', right: '15%' },
+            ]
+            const pos = positions[i % positions.length]
+            return (
+              <div
+                key={i}
+                className="absolute w-[55%] aspect-square rounded-full flex items-center justify-center p-6"
+                style={{
+                  backgroundColor: colors.bg,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: colors.border,
+                  ...pos,
+                }}
+              >
+                <div className="text-center">
+                  {circle.icon && <IconComponent name={circle.icon} className={`w-5 h-5 mx-auto mb-1.5 ${colors.text}`} />}
+                  <div className={`text-xs font-semibold ${colors.text}`}>{circle.label}</div>
+                  <div className="text-[10px] text-cream/50 mt-1 leading-relaxed max-w-[120px]">{circle.description}</div>
+                </div>
+              </div>
+            )
+          })}
+          {/* Center intersection label */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-sage/20 border border-sage/40 rounded-lg px-3 py-2">
+            <span className="text-xs font-semibold text-sage-bright whitespace-nowrap">{content.centerLabel}</span>
+          </div>
+        </div>
+      </div>
+      {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+    </div>
+  )
+}
+
+// ---- QUOTES SLIDE ----
+function renderQuotes(content: QuotesSlideContent) {
+  const variantStyles = {
+    positive: { bubble: 'border-green-500/20 bg-green-500/5', accent: 'text-green-400' },
+    negative: { bubble: 'border-red-500/20 bg-red-500/5', accent: 'text-red-400' },
+    neutral: { bubble: 'border-cream/15 bg-cream/5', accent: 'text-cream/60' },
+  }
+
+  return (
+    <div className="flex flex-col justify-center">
+      {content.sectionLabel && (
+        <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+      )}
+      <h2 className="text-3xl md:text-4xl font-serif font-light text-cream mb-6">{content.heading}</h2>
+      {content.description && <p className="text-cream/60 mb-6">{content.description}</p>}
+      <div className={`grid gap-6 ${content.columns.length === 2 ? 'md:grid-cols-2' : content.columns.length === 3 ? 'md:grid-cols-3' : 'grid-cols-1'}`}>
+        {content.columns.map((col, i) => {
+          const styles = variantStyles[col.variant]
+          return (
+            <div key={i}>
+              <h3 className="text-base font-semibold text-cream mb-1">{col.title}</h3>
+              {col.headerNote && <p className="text-[10px] text-cream/30 italic mb-3">{col.headerNote}</p>}
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                {col.quotes.map((quote, j) => (
+                  <div key={j} className={`rounded-lg border p-3 ${styles.bubble}`}>
+                    <p className="text-xs text-cream/70 leading-relaxed italic">{quote}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+    </div>
+  )
+}
+
 // ---- MAIN: Convert SlideData to Slide ----
 function renderSlideContent(
   slide: SlideData,
@@ -474,6 +771,11 @@ function renderSlideContent(
     case 'case-study': return renderCaseStudy(content)
     case 'sources': return renderSources(content)
     case 'table': return renderTable(content)
+    case 'funnel': return renderFunnel(content)
+    case 'spectrum': return renderSpectrum(content)
+    case 'chart': return renderChart(content)
+    case 'venn': return renderVenn(content)
+    case 'quotes': return renderQuotes(content)
     case 'custom': {
       if (customComponents && content.componentId in customComponents) {
         const Component = customComponents[content.componentId]

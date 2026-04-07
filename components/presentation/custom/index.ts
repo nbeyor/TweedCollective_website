@@ -27,6 +27,7 @@ import {
 } from './AiOpportunityComponents'
 import { DiligenceChartSlide, DiligenceAssessmentGrid, DiligenceSynergySlide } from './DiligenceComponents'
 import { MercuryDiligenceSlide } from './MercuryDiligenceSlides'
+import { ThreeLaneSortSlide, SplitDashboardSlide, PortfolioScatterSlide, RoleAnatomySlide } from './ActionableLessonsComponents'
 import type { CustomComponentRegistry } from '../SlideRenderer'
 
 export const customComponentRegistry: CustomComponentRegistry = {
@@ -74,6 +75,12 @@ export const customComponentRegistry: CustomComponentRegistry = {
 
   // Mercury AI Diligence document
   'MercuryDiligenceSlide': MercuryDiligenceSlide as React.ComponentType<Record<string, unknown>>,
+
+  // Actionable Lessons in Corporate Innovation
+  'ThreeLaneSortSlide': ThreeLaneSortSlide as React.ComponentType<Record<string, unknown>>,
+  'SplitDashboardSlide': SplitDashboardSlide as React.ComponentType<Record<string, unknown>>,
+  'PortfolioScatterSlide': PortfolioScatterSlide as React.ComponentType<Record<string, unknown>>,
+  'RoleAnatomySlide': RoleAnatomySlide as React.ComponentType<Record<string, unknown>>,
 }
 
 export default customComponentRegistry

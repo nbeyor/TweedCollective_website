@@ -640,6 +640,140 @@ export const slideTypeTemplates = {
       color: colors.neutral[900],
     },
   },
+  funnel: {
+    layout: 'centered-vertical',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    stage: {
+      border: `1px solid ${colors.sage[300]}`,
+      borderRadius: '0.75rem',
+      padding: spacing[4],
+      transition: 'all 0.2s ease',
+    },
+    outputLabel: {
+      background: colors.sage[100],
+      border: `1px solid ${colors.sage[300]}`,
+      borderRadius: '0.5rem',
+      padding: `${spacing[2]} ${spacing[4]}`,
+      ...typographyPresets.badge,
+      color: colors.sage[700],
+      fontWeight: typography.weights.semibold,
+    },
+  },
+
+  spectrum: {
+    layout: 'horizontal-gradient',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    card: {
+      borderRadius: '0.75rem',
+      padding: spacing[4],
+      transition: 'all 0.2s ease',
+    },
+    spectrumLine: {
+      height: '1px',
+      background: `linear-gradient(to right, ${colors.neutral[200]}, ${colors.sage[400]})`,
+    },
+  },
+
+  chart: {
+    layout: 'standard',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    chartArea: {
+      background: colors.neutral[50],
+      border: `1px solid ${colors.neutral[200]}`,
+      borderRadius: '0.75rem',
+      padding: spacing[6],
+    },
+    lineColors: {
+      sage: colors.sage[600],
+      taupe: colors.taupe[500],
+      gold: colors.gold[500],
+      red: colors.red[500],
+      green: colors.green[600],
+    },
+  },
+
+  venn: {
+    layout: 'centered',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    circle: {
+      borderRadius: '50%',
+      border: `1px solid`,
+      padding: spacing[6],
+    },
+    centerLabel: {
+      background: colors.sage[100],
+      border: `1px solid ${colors.sage[300]}`,
+      borderRadius: '0.5rem',
+      padding: `${spacing[2]} ${spacing[3]}`,
+      ...typographyPresets.badge,
+      color: colors.sage[700],
+      fontWeight: typography.weights.semibold,
+    },
+  },
+
+  quotes: {
+    layout: 'two-column',
+    sectionLabel: {
+      ...typographyPresets.sectionLabel,
+      color: colors.sage[700],
+    },
+    heading: {
+      ...typographyPresets.slideHeading,
+      color: colors.neutral[900],
+      marginTop: spacing[2],
+    },
+    bubble: {
+      borderRadius: '0.5rem',
+      border: `1px solid`,
+      padding: spacing[3],
+    },
+    bubbleVariants: {
+      positive: {
+        borderColor: colors.green[300],
+        background: colors.green[50],
+      },
+      negative: {
+        borderColor: colors.red[300],
+        background: colors.red[50],
+      },
+      neutral: {
+        borderColor: colors.neutral[300],
+        background: colors.neutral[50],
+      },
+    },
+  },
 } as const
 
 // ============================================
