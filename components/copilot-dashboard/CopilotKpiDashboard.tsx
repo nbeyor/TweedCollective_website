@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -99,6 +100,15 @@ export function CopilotKpiDashboard() {
     <div className="min-h-screen bg-[#fafaf9]">
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
         <DashboardHeader data={filtered} />
+        <div className="mb-6 flex gap-3">
+          <Link
+            href="/documents/ecs-sdlc-dashboard/roi"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
+            style={{ fontFamily: 'DM Sans, sans-serif' }}
+          >
+            View ROI Analysis →
+          </Link>
+        </div>
         <KpiCards data={filtered} />
         <ProductivityChart data={filtered} />
         <QaChurnChart data={filtered} copilotAdoption={filtered.copilotAdoption} />
