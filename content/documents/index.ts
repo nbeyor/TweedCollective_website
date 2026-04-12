@@ -114,6 +114,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'public',
   },
   {
+    id: 'ai-native-delivery',
+    title: 'From AI-Assisted Coding to AI-Native Delivery',
+    shortTitle: 'AI-Native Delivery',
+    description: 'Why coding gains stall at the team level — and how to redesign requirements, testing, and release around AI to unlock system-level delivery.',
+    category: 'Framework',
+    icon: 'Code2',
+    date: '2026-04',
+    readTime: '15 min',
+    visibility: 'public',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',

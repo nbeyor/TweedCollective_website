@@ -22,6 +22,7 @@ const contentLoaders: Record<string, () => Promise<ContentModule>> = {
   'ai-opportunity-roadmap': () => import('./ai-opportunity-roadmap') as Promise<ContentModule>,
   'ai-adoption-by-function-health-tech': () => import('./ai-adoption-by-function-health-tech') as Promise<ContentModule>,
   'actionable-lessons-corporate-innovation': () => import('./actionable-lessons-corporate-innovation') as Promise<ContentModule>,
+  'ai-native-delivery': () => import('./ai-native-delivery') as Promise<ContentModule>,
 }
 
 /**
