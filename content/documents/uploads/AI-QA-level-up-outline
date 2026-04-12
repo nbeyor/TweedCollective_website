@@ -1,0 +1,243 @@
+From AI-Assisted Coding to AI-Native Delivery
+
+⸻
+
+Slide 1 — The Productivity Plateau
+
+Headline
+Most developers now use AI. Most organizations still see only modest delivery gains.
+
+Body copy
+	•	AI coding adoption is already broad: across industry surveys, roughly 75% to 95% of developers report using AI tools in some form.
+	•	But organizational results are much smaller: many teams report only about 10% improvement in end-to-end delivery metrics or business output.
+	•	The gap is structural: developers feel faster because AI reduces cognitive friction, but the constraint often shifts downstream into review, testing, and release.
+
+Bottom line
+Coding is only part of delivery. If coding is roughly 25–35% of the lifecycle, even a dramatic improvement there only produces a limited system-wide gain unless the rest of the workflow changes too.
+
+Visual guidance
+Simple horizontal flow:
+Code → Review → Test → Release
+Show the bottleneck moving from Code to Review / Test / Release.
+
+Speaker note / emphasis line
+You have likely captured the easy gains already. The next step is redesigning delivery around AI, not just adding AI to coding.
+
+⸻
+
+Slide 2 — Three Modes of Adoption
+
+Headline
+Where you apply AI determines what you get. Real gains come from combining all three modes.
+
+Mode	What it is	Value	Limitation
+Better Guardrails	AI-assisted PR review, static analysis, security scanning, smarter CI	Easy to add; low disruption	Mostly reactive
+Better Inputs	Requirements written as testable behaviors before coding starts	Better intent; less rework	Requires Product + Eng process change
+Better Execution	Agents generating tests, automating browser/API validation, running checks continuously	Less manual QA; faster cycles	Brittle if inputs are vague
+
+Callout
+Most teams are in Guardrails today, with some experimentation in Execution. The step-change usually comes from Better Inputs.
+
+Body copy
+Testing each small step creates faster feedback and less rework than validating a large batch at the end. That is especially important for AI agents, which improve when the feedback loop is immediate and unambiguous.
+
+Visual guidance
+Three simple connected blocks in a row:
+Guardrails → Inputs → Execution
+Add one line underneath: Independent gains alone. System gains when connected.
+
+Speaker note / emphasis line
+AI performs best inside a system with clear intent, tight feedback, and controlled release.
+
+⸻
+
+Slide 3 — The System Design
+
+Headline
+The answer is test-driven, small-batch delivery — not “more AI in QA.”
+
+Body copy
+	1.	Define requirements as testable behaviors
+	2.	Build the smallest slice that satisfies one behavior
+	3.	Run automated checks at the right depth
+	4.	Route only high-risk changes to heavier human review
+	5.	Ship small changes behind flags
+	6.	Turn production feedback into the next regression tests
+
+Human vs. machine
+
+Machines own
+	•	Linting, typing, static checks
+	•	Unit and contract test execution
+	•	Regression runs
+	•	Basic PR review
+	•	Security scans
+	•	Release gates on known metrics
+
+Humans own
+	•	Requirement quality
+	•	Architecture and tradeoffs
+	•	High-risk changes
+	•	Ambiguous edge cases
+	•	Sensitive production judgment
+
+Visual guidance
+A simple loop with six numbered steps.
+Use one distinction only: Machine-led vs Human-led.
+
+Speaker note / emphasis line
+The key shift is not automating everything. It is making each step small, testable, and recoverable.
+
+⸻
+
+Slide 4 — The Delivery Discipline
+
+Headline
+Smaller PRs, explicit risk tiers, and right-sized testing.
+
+Body copy
+Analysis across large PR datasets shows a consistent pattern: smaller pull requests are reviewed faster and catch more issues, while very large PRs slow review and reduce defect detection. The practical takeaway is simple: keep changes small enough to understand quickly.
+
+Rules of thumb
+	•	One behavior per PR
+	•	Branch lifetime in hours, not days
+	•	Use flags to ship incomplete work safely
+
+Risk tiers
+
+Low risk
+Copy changes, UI polish, isolated logic
+→ automated review, light testing
+
+Medium risk
+Workflow changes, API updates, multi-file logic
+→ standard suite plus human review
+
+High risk
+Auth, payments, permissions, migrations
+→ full suite, senior review, staged rollout
+
+Test layers
+	•	Unit — logic and edge cases
+	•	Contract — interfaces between services
+	•	Integration — critical multi-component flows
+	•	E2E — highest-value user journeys only
+	•	Release — smoke tests, canary checks, monitoring gates
+
+Visual guidance
+One simple two-part visual:
+Left = small test pyramid
+Right = three risk tiers
+Connect them lightly with labels.
+
+Speaker note / emphasis line
+The goal is not more testing everywhere. It is matching testing depth to change risk.
+
+⸻
+
+Slide 5 — Tool Map
+
+Headline
+The problem is not tool access. The problem is tool orchestration.
+
+Body copy
+Tools should map directly to the delivery workflow:
+
+Author
+Notion AI / Coda AI
+Gherkin / Cucumber
+
+Build
+GitHub Copilot / Cursor
+SonarQube
+Snyk
+
+Validate
+Jest / Vitest
+Pact
+Playwright
+Postman / Bruno
+Percy / Chromatic
+
+Release
+LaunchDarkly
+Argo Rollouts / Flagger
+Datadog / Grafana
+PagerDuty
+
+Learn
+Sentry / Honeycomb
+Linear / Jira
+BuildPulse / Trunk
+Sleuth / Jellyfish
+
+Bottom line
+Point solutions are not the constraint. Connecting them into one operating model is.
+
+Visual guidance
+A single horizontal pipeline with five stops:
+Author → Build → Validate → Release → Learn
+Put tool names under each stop. No extra icons needed.
+
+Speaker note / emphasis line
+This is a workflow design problem, not a shopping problem.
+
+⸻
+
+Slide 6 — Three Waves to Get There
+
+Headline
+Do not rip and replace. Move in three waves.
+
+Wave 1 — Tighten the current model
+Weeks 1–6
+	•	Set PR sizing rules
+	•	Define risk tiers
+	•	Match CI depth to risk
+	•	Add clearer acceptance criteria
+	•	Establish flaky-test policy
+
+Measure
+	•	PR size
+	•	Cycle time
+	•	Flaky test rate
+
+Wave 2 — Push quality upstream
+Months 2–4
+	•	Require testable acceptance criteria in PRDs
+	•	Pilot behavior-first stories on 1–2 teams
+	•	Align PMs and Eng on the smallest releasable slice
+
+Measure
+	•	Escaped defects
+	•	Rework rate
+	•	Review churn
+
+Wave 3 — Automate release safety
+Months 3–6
+	•	Add browser automation for critical journeys
+	•	Introduce feature-flagged delivery
+	•	Tie release gates to production thresholds
+
+Measure
+	•	Deployment frequency
+	•	Rollback rate
+	•	Change failure rate
+
+Final takeaway
+The roadmap is not “buy more QA tools.”
+It is: move from AI-assisted coding to test-driven, small-batch, system-level delivery.
+
+Visual guidance
+Three clean horizontal bars on a timeline.
+Each bar gets only: goal, 3 actions, 3 metrics.
+
+⸻
+
+Slide 7 — One-Line Summary
+
+Headline
+AI changes coding first. It only changes delivery when requirements, testing, and release are redesigned around it.
+
+Visual guidance
+Just the line centered on the page.
