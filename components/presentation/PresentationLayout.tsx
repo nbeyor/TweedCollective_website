@@ -1,8 +1,14 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight, Menu, X, Maximize2, Minimize2, FileDown } from 'lucide-react'
+
+// Native slide canvas dimensions: US Letter landscape (10in × 7.5in @ 96dpi)
+// Slides are authored against this fixed size, then scaled to fit the viewport.
+// This preserves layout fidelity on mobile, desktop, and print — identical to export.
+const SLIDE_NATIVE_WIDTH = 960
+const SLIDE_NATIVE_HEIGHT = 720
 
 export interface Slide {
   id: string
@@ -37,6 +43,26 @@ export default function PresentationLayout({
 
   const totalSlides = slides.length
   const slide = slides[currentSlide]
+
+  // Scale-to-fit: measure the slide frame and compute a transform scale so the
+  // native 960×720 canvas always fits the available container width. Height
+  // follows via the 4:3 aspect ratio wrapper. This is what makes the slide
+  // render identically on mobile, desktop, and print without cutoff.
+  const slideFrameRef = useRef<HTMLDivElement>(null)
+  const [slideScale, setSlideScale] = useState(1)
+
+  useEffect(() => {
+    if (!slideFrameRef.current) return
+    const el = slideFrameRef.current
+    const update = () => {
+      const width = el.clientWidth
+      if (width > 0) setSlideScale(width / SLIDE_NATIVE_WIDTH)
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   // Minimum swipe distance (in px) to trigger slide change
   const minSwipeDistance = 50
@@ -236,10 +262,25 @@ export default function PresentationLayout({
         </div>
       </nav>
 
-      {/* Slide Content — fixed 4:3 aspect ratio matching US Letter landscape (10in × 7.5in) */}
-      <main className="flex-grow flex items-center justify-center px-6 py-4 relative z-10">
-        <div className="w-full max-w-5xl mx-auto" style={{ aspectRatio: '10 / 7.5' }}>
-          <div className="w-full h-full overflow-hidden px-6 py-6 flex flex-col justify-center">
+      {/* Slide Content — native canvas is 960×720 (US Letter landscape, 10in × 7.5in
+          @ 96dpi). We render the slide at its native size and scale-to-fit so the
+          layout matches print export exactly on every device, including mobile. */}
+      <main className="flex-grow flex items-center justify-center px-4 sm:px-6 py-4 relative z-10">
+        <div
+          ref={slideFrameRef}
+          className="w-full max-w-5xl mx-auto relative"
+          style={{ aspectRatio: `${SLIDE_NATIVE_WIDTH} / ${SLIDE_NATIVE_HEIGHT}` }}
+        >
+          <div
+            className="absolute top-0 left-0 overflow-hidden flex flex-col justify-center"
+            style={{
+              width: `${SLIDE_NATIVE_WIDTH}px`,
+              height: `${SLIDE_NATIVE_HEIGHT}px`,
+              padding: '1.5rem',
+              transform: `scale(${slideScale})`,
+              transformOrigin: 'top left',
+            }}
+          >
             {slide.content}
           </div>
         </div>

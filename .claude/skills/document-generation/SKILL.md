@@ -35,6 +35,22 @@ This skill generates complete, working documents (slide deck presentations) for 
 5. **Never create static page files** in `app/documents/` — the dynamic route `[documentId]/page.tsx` handles all documents.
 6. **Use standard slide types first** — only use `type: 'custom'` when no standard type fits the described visual.
 7. **Custom components receive ALL data via props** — no hardcoded content inside rendering components.
+8. **Design for a fixed US Letter landscape canvas** — 10in × 7.5in = **960 × 720 px at 96 dpi** (see Canvas Rules below).
+
+---
+
+## Canvas Rules (MUST follow for all slides and custom components)
+
+Every slide renders inside a **fixed 960 × 720 px canvas** that represents US Letter landscape (10in × 7.5in). The presentation viewer scales this canvas uniformly to fit any container (mobile, desktop, fullscreen, print). That means:
+
+- **The canvas is always 960 × 720 px.** Mobile does not re-layout the slide — it scales the whole canvas down. Design every slide assuming this exact working area.
+- **Usable content area after padding:** the viewer applies `padding: 1.5rem` (24 px), leaving ~**912 × 672 px** for content — matching the print export exactly.
+- **NEVER use viewport-relative units** (`vh`, `vw`, `svh`, `dvh`, `min-h-[50vh]`, etc.) inside slide content. These are measured against the browser viewport — not the slide canvas — and will overflow or clip unpredictably when scaled. Use fixed units (`px`, `rem`), percentages (of the canvas), or `h-full` / `w-full` relative to the canvas.
+- **NEVER set `min-height` based on the viewport.** The slide is already sized by its parent; any vertical centering should come from flex (`justify-center`) on a `h-full` wrapper.
+- **Mobile responsiveness is automatic.** Do not add `md:` / `sm:` breakpoint classes to change layout on mobile — the canvas scales uniformly, so a mobile-only layout would render at a different size than intended. Typography can still use `md:text-*` for desktop-vs-print weighting since the canvas renders at its native 960 px width on all devices, but prefer fixed `text-*` sizes for consistency.
+- **Print export uses the same 960 × 720 canvas.** A slide that fits on screen will fit on paper — there is no separate "mobile" or "print" layout to maintain.
+
+When authoring custom components, size everything to fit inside **912 × 672 px** (the padded content area). If content does not fit, split into multiple slides rather than shrinking fonts below readability.
 
 ---
 
@@ -61,7 +77,7 @@ Use this table to map outline slides to the best-fit type. For full interface sh
 
 ## Content Budget per Slide (MUST follow)
 
-Every slide must fit within a **US Letter landscape page** (10in × 7.5in usable area). The on-screen viewer enforces this with a fixed 4:3 aspect ratio container — content that overflows is clipped. Use these limits as hard maximums:
+Every slide must fit within the **fixed 960 × 720 px canvas** (US Letter landscape, 10in × 7.5in @ 96dpi). The usable content area is **~912 × 672 px** after viewer padding. The viewer scales the whole canvas uniformly to fit mobile, desktop, and print — so a slide that overflows the canvas will clip everywhere, not just on mobile. Use these limits as hard maximums:
 
 | Slide Type | Max Items | Per-Item Length | Notes |
 |------------|-----------|-----------------|-------|
