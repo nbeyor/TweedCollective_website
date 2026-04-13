@@ -92,9 +92,18 @@ Full TypeScript interface shapes for each slide type. Read this file during cont
   sectionLabel?: string,
   heading: string,
   description?: string,
+  layout?: 'vertical' | 'horizontal',  // Default: 'vertical' (stacked). 'horizontal' = left-to-right chevrons (best for 3 short stages)
   levels: FrameworkLevel[],          // { level: number, title, badge?, description, details?: { whenToUse?, risk?, outcome?, characteristics?: string[], messaging?, implications?: string[], caseStudy? } }
+  insightBox?: { label, text },
 }
 ```
+
+**Horizontal chevron layout** (`layout: 'horizontal'`):
+- Renders stages as left-to-right arrow-shaped chevrons in a single row
+- Best for 3 stages (up to 4 if very short); more stages will be cramped
+- Keep each level's `title` short (≤ 5 words), `description` tight (~25 words)
+- Only the `details.outcome` field renders in horizontal mode — `whenToUse` / `risk` are hidden to conserve space
+- Does **not** split across pages in PDF export — the whole row must fit on one page
 
 ## `metrics` — KPI display cards
 ```typescript
