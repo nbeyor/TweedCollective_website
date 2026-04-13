@@ -40,6 +40,7 @@ export interface CopilotDashboardData {
   availability: AvailabilityEntry[]
   copilotAdoption: CopilotAdoption | null
   copilotPrCorrelation: CopilotPrCorrelation | null
+  projects?: ProjectTrackingData | null
   survey?: SurveyData | null
 }
 
@@ -133,4 +134,42 @@ export interface IntensityBucket {
   productivity: number
   qaChurn: number
   avgSuggestions: number
+}
+
+export interface ProjectPeriodSummary {
+  unique_projects: number
+  total_tickets: number
+  tickets_per_project: number
+  avg_projects_per_week: number
+}
+
+export interface ProjectWeeklyEntry {
+  week: string
+  phase: 'baseline' | 'transition' | 'mature'
+  activeProjects: number
+  totalTickets: number
+  ticketsPerProject: number
+}
+
+export interface ProjectRow {
+  project: string
+  baselineTickets: number
+  matureTickets: number
+  baselineWeeksActive: number
+  matureWeeksActive: number
+  baselineVelocity: number
+  matureVelocity: number
+  velocityDelta: string
+}
+
+export interface ProjectTrackingData {
+  baseline: ProjectPeriodSummary
+  mature: ProjectPeriodSummary
+  delta: {
+    projects_vs_baseline: string
+    velocity_vs_baseline: string
+    breadth_vs_baseline: string
+  }
+  weekly: ProjectWeeklyEntry[]
+  topProjects: ProjectRow[]
 }
