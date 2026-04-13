@@ -81,7 +81,7 @@ export default function DocumentPage() {
   }
 
   return (
-    <DocumentAccessWrapper documentId={documentId} documentTitle={config.title}>
+    <DocumentAccessWrapper documentId={documentId} documentTitle={config.title} visibility={config.visibility}>
       <PresentationLayout
         title={config.title}
         subtitle={config.description}

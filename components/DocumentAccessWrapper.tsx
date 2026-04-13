@@ -4,22 +4,26 @@ import React from 'react'
 import { useAuth, useUser, SignUpButton, SignInButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Lock, ArrowLeft, Mail, UserPlus } from 'lucide-react'
+import type { DocumentVisibility } from '@/lib/types'
 
 interface DocumentAccessWrapperProps {
   documentId: string
   documentTitle?: string
+  visibility?: DocumentVisibility
   children: React.ReactNode
 }
 
-export default function DocumentAccessWrapper({ documentId, documentTitle, children }: DocumentAccessWrapperProps) {
+export default function DocumentAccessWrapper({ documentId, documentTitle, visibility, children }: DocumentAccessWrapperProps) {
+  const isPublic = visibility === 'public'
   const { userId, isLoaded } = useAuth()
   const { user } = useUser()
-  const [hasAccess, setHasAccess] = React.useState<boolean | null>(null)
-  const [isChecking, setIsChecking] = React.useState(true)
+  const [hasAccess, setHasAccess] = React.useState<boolean | null>(isPublic ? true : null)
+  const [isChecking, setIsChecking] = React.useState(!isPublic)
   const [adminEmails, setAdminEmails] = React.useState<string[]>([])
 
   // Fetch admin emails for access request mailto link
   React.useEffect(() => {
+    if (isPublic) return
     async function fetchAdminEmails() {
       try {
         const response = await fetch('/api/admin/emails')
@@ -32,12 +36,13 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
       }
     }
     fetchAdminEmails()
-  }, [])
+  }, [isPublic])
 
   React.useEffect(() => {
+    if (isPublic) return
     async function verifyAccess() {
       if (!isLoaded) return
-      
+
       if (!userId) {
         setHasAccess(false)
         setIsChecking(false)
@@ -64,7 +69,7 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, child
     }
 
     verifyAccess()
-  }, [userId, isLoaded, documentId])
+  }, [userId, isLoaded, documentId, isPublic])
 
   if (isChecking) {
     return (
