@@ -117,11 +117,11 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     id: 'ai-native-delivery',
     title: 'From AI-Assisted Coding to AI-Native Delivery',
     shortTitle: 'AI-Native Delivery',
-    description: 'Why coding gains stall at the team level — and how to redesign requirements, testing, and release around AI to unlock system-level delivery.',
+    description: 'Connecting upstream product definition to downstream testing, review, release, and feedback — the shift from point AI tools to one connected delivery process.',
     category: 'Framework',
     icon: 'Code2',
     date: '2026-04',
-    readTime: '15 min',
+    readTime: '10 min',
     visibility: 'public',
   },
   {

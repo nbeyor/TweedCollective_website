@@ -5,24 +5,21 @@ export const DOCUMENT_ID = 'ai-native-delivery'
 
 export const slides: SlideData[] = [
   // ==========================================
-  // Slide 1 — The Productivity Plateau
+  // Slide 1 — Title Page
   // ==========================================
   {
-    id: 'productivity-plateau',
-    title: 'The Productivity Plateau',
-    type: 'text',
+    id: 'title',
+    title: 'Title',
+    type: 'title',
     content: {
-      type: 'text',
-      sectionLabel: 'Section 01',
-      heading: 'Most developers now use AI. Most organizations still see only modest delivery gains.',
-      body: [
-        'AI coding adoption is already broad: across industry surveys, roughly 75% to 95% of developers report using AI tools in some form. But organizational results are much smaller — many teams report only about 10% improvement in end-to-end delivery metrics or business output.',
-        'The gap is structural. Developers feel faster because AI reduces cognitive friction, but the constraint often shifts downstream into review, testing, and release.',
-        'Coding is only part of delivery. If coding is roughly 25–35% of the lifecycle, even a dramatic improvement there only produces a limited system-wide gain unless the rest of the workflow changes too.',
-      ],
+      type: 'title',
+      badge: 'Framework',
+      headline: 'From AI-Assisted Coding to AI-Native Delivery',
+      subtitle:
+        'The next wave is not more point tools. It is one connected process linking upstream product definition to downstream testing, review, release, and feedback.',
       insightBox: {
-        label: 'Bottom Line',
-        text: 'You have likely captured the easy gains already. The next step is redesigning delivery around AI — not just adding AI to coding.',
+        label: 'The Connected Delivery Loop',
+        text: 'Product Definition  →  Code  →  Test / Review  →  Release  →  Feedback. Most companies already use AI for code generation and light review. The bigger opportunity now is to connect the full loop.',
       },
     },
   },
@@ -36,220 +33,222 @@ export const slides: SlideData[] = [
     type: 'table',
     content: {
       type: 'table',
-      sectionLabel: 'Section 02',
-      heading: 'Where you apply AI determines what you get.',
-      description: 'Real gains come from combining all three modes. Most teams are in Guardrails today, with some experimentation in Execution. The step-change usually comes from Better Inputs.',
-      headers: ['Mode', 'What it is', 'Value', 'Limitation'],
+      sectionLabel: 'Section 01',
+      heading: 'The next gains come from improving all three parts of the system.',
+      description:
+        'Point adoption creates local gains. Connected adoption reduces rework, shortens cycle time, and links product, engineering, and quality much more tightly.',
+      headers: ['Mode', 'What it is', 'Value', 'Limitation on its own'],
       rows: [
         [
-          'Better Guardrails',
-          'AI-assisted PR review, static analysis, security scanning, smarter CI',
-          'Easy to add; low disruption',
-          'Mostly reactive',
+          'Review agents',
+          'AI-assisted review of code quality and obvious defects',
+          'Fast to adopt; improves review throughput',
+          'Reactive if feature intent is vague',
         ],
         [
-          'Better Inputs',
-          'Requirements written as testable behaviors before coding starts',
-          'Better intent; less rework',
-          'Requires Product + Eng process change',
+          'Product-defined tests',
+          'Product and quality teams define functional goals and testable acceptance criteria before code is written',
+          'Clearer intent; less rework',
+          'Requires upstream process change',
         ],
         [
-          'Better Execution',
-          'Agents generating tests, automating browser/API validation, running checks continuously',
-          'Less manual QA; faster cycles',
-          'Brittle if inputs are vague',
+          'Automated testing and code execution',
+          'Tools generate code, run tests, and iterate toward passing behavior',
+          'Faster cycles; less manual QA',
+          'Brittle without strong definitions',
         ],
       ],
       highlightFirstColumn: true,
-      columnWidths: ['18%', '37%', '22%', '23%'],
+      columnWidths: ['22%', '36%', '22%', '20%'],
       insightBox: {
         label: 'Emphasis',
-        text: 'AI performs best inside a system with clear intent, tight feedback, and controlled release. Testing each small step creates faster feedback and less rework than validating a large batch at the end.',
+        text: 'Most enterprises started with review agents. The bigger shift comes when product-defined tests and automated execution are added around them. Local gains alone — system gains when connected.',
       },
     },
   },
 
   // ==========================================
-  // Slide 3 — The System Design
+  // Slide 3 — The New Delivery Loop
   // ==========================================
   {
-    id: 'system-design',
-    title: 'The System Design',
+    id: 'delivery-loop',
+    title: 'The New Delivery Loop',
     type: 'comparison',
     content: {
       type: 'comparison',
-      sectionLabel: 'Section 03',
-      heading: 'Test-driven, small-batch delivery — not "more AI in QA."',
-      description: 'The delivery loop: (1) Define requirements as testable behaviors → (2) Build the smallest slice that satisfies one behavior → (3) Run automated checks at the right depth → (4) Route only high-risk changes to heavier human review → (5) Ship small changes behind flags → (6) Turn production feedback into the next regression tests.',
+      sectionLabel: 'Section 02',
+      heading:
+        'The future process is a tighter loop between product intent, code generation, testing, and revision.',
+      description:
+        'The loop: (1) Humans define the functional goal → (2) Humans define the testable behavior → (3) Machines generate or revise code → (4) Machines write and run tests → (5) Humans review exceptions and high-risk changes → (6) Results feed back into the PR until the change is complete.',
       left: {
         title: 'Machines Own',
         variant: 'positive',
         items: [
-          'Linting, typing, static checks',
-          'Unit and contract test execution',
-          'Regression runs',
-          'Basic PR review',
-          'Security scans',
-          'Release gates on known metrics',
+          'Code generation and revision',
+          'Test writing and execution',
+          'Basic code review',
+          'Re-running checks after each change',
         ],
       },
       right: {
         title: 'Humans Own',
         variant: 'positive',
         items: [
-          'Requirement quality',
-          'Architecture and tradeoffs',
-          'High-risk changes',
-          'Ambiguous edge cases',
-          'Sensitive production judgment',
+          'Functional goals',
+          'Acceptance criteria',
+          'High-risk review and judgment',
+          'Final decisions on ambiguous cases',
         ],
       },
       insightBox: {
         label: 'Emphasis',
-        text: 'The key shift is not automating everything. It is making each step small, testable, and recoverable.',
+        text: 'The shift is not that machines replace humans. It is that machines take over more of the iteration while humans stay focused on intent and judgment.',
       },
     },
   },
 
   // ==========================================
-  // Slide 4 — The Delivery Discipline
+  // Slide 4 — Small PRs, Faster Releases
   // ==========================================
   {
-    id: 'delivery-discipline',
-    title: 'The Delivery Discipline',
-    type: 'list',
+    id: 'small-prs',
+    title: 'Small PRs, Faster Releases',
+    type: 'comparison',
     content: {
-      type: 'list',
-      sectionLabel: 'Section 04',
-      heading: 'Smaller PRs, explicit risk tiers, and right-sized testing.',
-      description: 'Smaller pull requests are reviewed faster and catch more issues. Match testing depth to change risk — not more testing everywhere.',
-      groups: [
-        {
-          title: 'PR Rules of Thumb',
-          icon: getIcon('check'),
-          color: 'sage',
-          items: [
-            { text: 'One behavior per PR' },
-            { text: 'Branch lifetime in hours, not days' },
-            { text: 'Use flags to ship incomplete work safely' },
-          ],
-        },
-        {
-          title: 'Risk Tiers',
-          icon: getIcon('shield'),
-          color: 'gold',
-          items: [
-            { text: 'Low: copy, UI polish, isolated logic', subtext: 'Automated review, light testing' },
-            { text: 'Medium: workflow, API, multi-file logic', subtext: 'Standard suite plus human review' },
-            { text: 'High: auth, payments, migrations', subtext: 'Full suite, senior review, staged rollout' },
-          ],
-        },
-        {
-          title: 'Test Layers',
-          icon: getIcon('automation'),
-          color: 'purple',
-          items: [
-            { text: 'Unit — logic and edge cases' },
-            { text: 'Contract — interfaces between services' },
-            { text: 'Integration — critical multi-component flows' },
-            { text: 'E2E — highest-value user journeys only' },
-            { text: 'Release — smoke, canary, monitoring gates' },
-          ],
-        },
-      ],
+      type: 'comparison',
+      sectionLabel: 'Section 03',
+      heading: 'AI-native delivery depends on smaller PRs and faster release cycles.',
+      description:
+        'The core discipline is simple: break work into smaller changes, validate each one quickly, and release more often. That is what makes AI-generated code usable at scale.',
+      left: {
+        title: 'Large PR / Slow Release / Late QA',
+        variant: 'negative',
+        items: [
+          'Branches live for days',
+          'PRs take hours to review',
+          'Bundles many behaviors in one change',
+          'End-of-cycle batch QA validation',
+          'Problems are hard to isolate and fix',
+        ],
+      },
+      right: {
+        title: 'Small PR / Fast Release / Continuous QA',
+        variant: 'positive',
+        items: [
+          'Branches live for hours, not days',
+          'PRs small enough to review in minutes',
+          'One behavior or one narrow change per PR',
+          'Continuous QA inside the PR loop',
+          'Release risk drops as each change shrinks',
+        ],
+      },
+      insightBox: {
+        label: 'Upstream / Downstream Implication',
+        text: 'Product has to define work in smaller, testable slices. QA moves from end-of-cycle batch validation to continuous validation inside the PR loop.',
+      },
     },
   },
 
   // ==========================================
-  // Slide 5 — Tool Map
+  // Slide 5 — The Tool Stack Around Code
   // ==========================================
   {
-    id: 'tool-map',
-    title: 'Tool Map',
+    id: 'tool-stack',
+    title: 'The Tool Stack Around Code',
     type: 'grid',
     content: {
       type: 'grid',
-      sectionLabel: 'Section 05',
-      heading: 'The problem is not tool access. The problem is tool orchestration.',
-      description: 'Tools should map directly to the delivery workflow: Author → Build → Validate → Release → Learn.',
-      columns: 3,
+      sectionLabel: 'Section 04',
+      heading: 'Code sits at the center. The surrounding tools define, test, and govern it.',
+      description:
+        'The right stack is simpler than most tool maps suggest. The goal is not more tools — it is tighter connection around the code workflow.',
+      columns: 2,
       items: [
         {
-          title: 'Author',
+          title: 'Upstream — Define the Feature',
           icon: getIcon('strategy'),
           color: 'sage',
-          items: ['Notion AI / Coda AI', 'Gherkin / Cucumber'],
+          items: [
+            'Notion AI or Coda AI — draft requirements and acceptance criteria',
+            'Gherkin or Cucumber-style specs — express expected behavior in testable form',
+          ],
         },
         {
-          title: 'Build',
+          title: 'Center — Generate and Revise Code',
           icon: getIcon('code'),
           color: 'taupe',
-          items: ['GitHub Copilot / Cursor', 'SonarQube', 'Snyk'],
+          items: ['GitHub Copilot, Cursor, or Claude Code — generate code and revise it against feedback'],
         },
         {
-          title: 'Validate',
+          title: 'Downstream — Test and Validate',
           icon: getIcon('check'),
           color: 'gold',
-          items: ['Jest / Vitest', 'Pact', 'Playwright', 'Postman / Bruno', 'Percy / Chromatic'],
+          items: [
+            'Playwright or Postman — run browser or API tests against expected behavior',
+            'GitHub Actions or a CI harness — run checks automatically on every PR iteration',
+          ],
         },
         {
-          title: 'Release',
+          title: 'Around the Loop — Release and Learn',
           icon: getIcon('rocket'),
           color: 'purple',
-          items: ['LaunchDarkly', 'Argo Rollouts / Flagger', 'Datadog / Grafana', 'PagerDuty'],
-        },
-        {
-          title: 'Learn',
-          icon: getIcon('chart'),
-          color: 'green',
-          items: ['Sentry / Honeycomb', 'Linear / Jira', 'BuildPulse / Trunk', 'Sleuth / Jellyfish'],
+          items: [
+            'LaunchDarkly — ship safely behind flags',
+            'Datadog or Sentry — catch failures and feed learning back into the workflow',
+          ],
         },
       ],
       insightBox: {
         label: 'Bottom Line',
-        text: 'Point solutions are not the constraint. Connecting them into one operating model is. This is a workflow design problem, not a shopping problem.',
+        text: 'Product definition sits upstream, code generation sits at the center, validation sits downstream, and a light control layer wraps the loop.',
       },
     },
   },
 
   // ==========================================
-  // Slide 6 — Three Waves to Get There
+  // Slide 6 — A Practical Enterprise Rollout
   // ==========================================
   {
-    id: 'three-waves',
-    title: 'Three Waves to Get There',
+    id: 'enterprise-rollout',
+    title: 'A Practical Enterprise Rollout',
     type: 'framework',
     content: {
       type: 'framework',
-      sectionLabel: 'Section 06',
-      heading: 'Do not rip and replace. Move in three waves.',
-      description: 'The roadmap is not "buy more QA tools." It is moving from AI-assisted coding to test-driven, small-batch, system-level delivery.',
+      sectionLabel: 'Section 05',
+      heading: 'Build around the coding tools already in place.',
+      description:
+        'Most enterprises already have the starting point: AI-assisted coding plus light automated review. Useful, but incomplete. The next step adds the upstream and downstream discipline that turns coding speed into delivery speed.',
       levels: [
         {
           level: 1,
-          title: 'Tighten the current model',
-          badge: 'Weeks 1–6',
-          description: 'Set PR sizing rules, define risk tiers, match CI depth to risk, add clearer acceptance criteria, establish a flaky-test policy.',
+          title: 'Product and Quality Tool Adoption',
+          badge: 'Add Now',
+          description:
+            'Define features in smaller, testable slices. Write structured acceptance criteria. Use one shared format linking features to expected behavior.',
           details: {
-            outcome: 'Measured by: PR size, cycle time, flaky test rate.',
+            outcome: 'Code generation starts from clearer functional goals.',
           },
         },
         {
           level: 2,
-          title: 'Push quality upstream',
-          badge: 'Months 2–4',
-          description: 'Require testable acceptance criteria in PRDs. Pilot behavior-first stories on 1–2 teams. Align PMs and Eng on the smallest releasable slice.',
+          title: 'Automated TDD and Feedback Loops',
+          badge: 'Add Next',
+          description:
+            'Generate implementation against defined behavior. Run tests automatically on each PR iteration. Feed failed tests back into the PR until the behavior is complete.',
           details: {
-            outcome: 'Measured by: escaped defects, rework rate, review churn.',
+            outcome: 'The PR becomes a live loop of generation, testing, feedback, and correction.',
           },
         },
         {
           level: 3,
-          title: 'Automate release safety',
-          badge: 'Months 3–6',
-          description: 'Add browser automation for critical journeys. Introduce feature-flagged delivery. Tie release gates to production thresholds.',
+          title: 'Release, Security, and Policy Automation',
+          badge: 'Layer In',
+          description:
+            'Add security and policy checks into the same PR loop. Use flags and staged rollout to ship smaller changes safely. Route production failures and regressions back into the backlog and test suite.',
           details: {
-            outcome: 'Measured by: deployment frequency, rollback rate, change failure rate.',
+            outcome:
+              'Small changes move from spec to code to test to release with tighter governance built in — faster without losing control.',
           },
         },
       ],
@@ -257,20 +256,21 @@ export const slides: SlideData[] = [
   },
 
   // ==========================================
-  // Slide 7 — One-Line Summary
+  // Slide 7 — Conclusion
   // ==========================================
   {
-    id: 'summary',
-    title: 'Summary',
+    id: 'conclusion',
+    title: 'Conclusion',
     type: 'title',
     content: {
       type: 'title',
       badge: 'The Takeaway',
-      headline: 'AI changes coding first.',
-      subtitle: 'It only changes delivery when requirements, testing, and release are redesigned around it.',
+      headline: 'The future is not point AI adoption. It is one connected delivery process.',
+      subtitle:
+        'The winners will not just write code faster. They will define features more clearly, validate changes earlier, release in smaller increments, and learn faster from production.',
       insightBox: {
-        label: 'From AI-Assisted Coding',
-        text: 'To AI-Native Delivery — test-driven, small-batch, system-level.',
+        label: 'Closing Takeaway',
+        text: 'AI-native delivery happens when product definition, code generation, testing, and release operate as one system — Product Definition → Code → Test / Review → Release → Feedback — instead of separate handoffs.',
       },
     },
   },
