@@ -46,6 +46,7 @@ JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
 
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
+PROJECT_KEY_PATTERN = re.compile(r"^([A-Za-z][A-Za-z0-9_]+)-\d+")
 
 
 def find_latest_xlsx() -> Path:
@@ -111,6 +112,21 @@ def load_prs(input_path, sheet_name=None):
     return pd.read_csv(p, parse_dates=['FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'])
 
 
+def extract_project_key(jira_ticket):
+    """Extract the Jira project key prefix (part before the first '-') from a ticket ID.
+
+    Examples: 'MYAPP-123' -> 'MYAPP', 'web_ui-42' -> 'WEB_UI', '' -> 'UNKNOWN'.
+    Normalizes to uppercase so case variants collapse to one project.
+    """
+    if jira_ticket is None:
+        return 'UNKNOWN'
+    s = str(jira_ticket).strip()
+    m = PROJECT_KEY_PATTERN.match(s)
+    if m:
+        return m.group(1).upper()
+    return 'UNKNOWN'
+
+
 def aggregate_to_tickets(prs):
     """Aggregate PRs to Jira tickets with team-wide metrics (no pilot/non-pilot split)."""
     prs = prs.copy()
@@ -133,6 +149,7 @@ def aggregate_to_tickets(prs):
     tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
     tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, np.inf], labels=['0-300', '301+'], right=True)
     tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 10, np.inf], labels=['1-10', '11+'], right=True)
+    tickets['Project'] = tickets['JiraTicket'].apply(extract_project_key)
     return tickets
 
 
@@ -271,6 +288,129 @@ def compute_size_complexity(tickets):
                     'baseline_qa_churn': pre_qa,
                 })
     return buckets
+
+
+def _fmt_delta(current, base):
+    """Format a percentage delta vs a baseline value. Returns 'N/A' when baseline is zero."""
+    if base is None or base == 0:
+        return 'N/A'
+    pct = (current - base) / base * 100
+    return f"{'+' if pct >= 0 else ''}{pct:.1f}%"
+
+
+def compute_project_metrics(tickets):
+    """Compute project-level breadth and velocity metrics.
+
+    A "project" is the Jira project key prefix (extracted in aggregate_to_tickets).
+    Compares the pre-AI baseline window (< BASELINE_END) against the mature
+    adoption window (>= MATURE_START):
+
+    - unique_projects:        how many distinct projects saw ticket completion
+    - tickets_per_project:    total tickets / unique projects (overall velocity)
+    - avg_projects_per_week:  mean of weekly distinct-project counts (breadth)
+
+    Also emits weekly series (phase-tagged) and a top-10 per-project comparison.
+    """
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    mature_start_ts = pd.Timestamp(MATURE_START)
+
+    def summarize_period(period_tickets):
+        n = len(period_tickets)
+        if n == 0:
+            return {
+                'unique_projects': 0,
+                'total_tickets': 0,
+                'tickets_per_project': 0.0,
+                'avg_projects_per_week': 0.0,
+            }
+        unique_projects = period_tickets['Project'].nunique()
+        # Per-week tickets/project — time-normalized so it's comparable across
+        # windows of different lengths (baseline vs mature).
+        weekly = period_tickets.groupby('WeekEnding').agg(
+            active=('Project', 'nunique'),
+            total=('Project', 'size'),
+        )
+        weekly = weekly[weekly['active'] > 0]
+        weekly['ratio'] = weekly['total'] / weekly['active']
+        return {
+            'unique_projects': int(unique_projects),
+            'total_tickets': int(n),
+            'tickets_per_project': round(float(weekly['ratio'].mean()), 2) if len(weekly) else 0.0,
+            'avg_projects_per_week': round(float(weekly['active'].mean()), 2) if len(weekly) else 0.0,
+        }
+
+    baseline_tickets = tickets[tickets['PREndDate'] < baseline_end_ts]
+    mature_tickets = tickets[tickets['PREndDate'] >= mature_start_ts]
+    baseline_summary = summarize_period(baseline_tickets)
+    mature_summary = summarize_period(mature_tickets)
+
+    def get_phase(week_ts):
+        if week_ts < baseline_end_ts:
+            return 'baseline'
+        if week_ts < mature_start_ts:
+            return 'transition'
+        return 'mature'
+
+    # Weekly series: unique projects and tickets-per-project each week
+    weekly_rows = []
+    for week, grp in tickets.groupby('WeekEnding'):
+        if pd.isna(week):
+            continue
+        active = int(grp['Project'].nunique())
+        total = int(len(grp))
+        weekly_rows.append({
+            'week': pd.Timestamp(week).strftime('%Y-%m-%d'),
+            'phase': get_phase(pd.Timestamp(week)),
+            'activeProjects': active,
+            'totalTickets': total,
+            'ticketsPerProject': round(total / active, 2) if active else 0.0,
+        })
+    weekly_rows.sort(key=lambda r: r['week'])
+
+    # Per-project: baseline vs mature comparison. Ranked by mature ticket count.
+    def project_period_stats(period_df, project):
+        p = period_df[period_df['Project'] == project]
+        if len(p) == 0:
+            return 0, 0, 0.0
+        weeks_active = p['WeekEnding'].nunique()
+        velocity = round(len(p) / weeks_active, 2) if weeks_active else 0.0
+        return int(len(p)), int(weeks_active), velocity
+
+    all_projects = sorted(set(baseline_tickets['Project'].unique()) | set(mature_tickets['Project'].unique()))
+    project_rows = []
+    for project in all_projects:
+        b_tickets, b_weeks, b_vel = project_period_stats(baseline_tickets, project)
+        m_tickets, m_weeks, m_vel = project_period_stats(mature_tickets, project)
+        # Skip projects with zero activity in both periods (shouldn't happen, but defensive)
+        if b_tickets == 0 and m_tickets == 0:
+            continue
+        project_rows.append({
+            'project': project,
+            'baselineTickets': b_tickets,
+            'matureTickets': m_tickets,
+            'baselineWeeksActive': b_weeks,
+            'matureWeeksActive': m_weeks,
+            'baselineVelocity': b_vel,
+            'matureVelocity': m_vel,
+            'velocityDelta': _fmt_delta(m_vel, b_vel),
+        })
+    # Sort by mature ticket count desc (the "active now" projects), tie-break baseline tickets
+    project_rows.sort(key=lambda r: (r['matureTickets'], r['baselineTickets']), reverse=True)
+    top_projects = project_rows[:10]
+
+    delta = {
+        'projects_vs_baseline': _fmt_delta(mature_summary['unique_projects'], baseline_summary['unique_projects']),
+        'velocity_vs_baseline': _fmt_delta(mature_summary['tickets_per_project'], baseline_summary['tickets_per_project']),
+        'breadth_vs_baseline': _fmt_delta(mature_summary['avg_projects_per_week'], baseline_summary['avg_projects_per_week']),
+    }
+
+    return {
+        'baseline': baseline_summary,
+        'mature': mature_summary,
+        'delta': delta,
+        'weekly': weekly_rows,
+        'topProjects': top_projects,
+    }
 
 
 def _load_copilot_df(copilot_path):
@@ -564,6 +704,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
     size_complexity = compute_size_complexity(tickets)
+    projects = compute_project_metrics(tickets)
 
     # Copilot adoption data
     copilot_data = None
@@ -673,6 +814,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'availability': availability,
         'copilotAdoption': copilot_data,
         'copilotPrCorrelation': pr_correlation,
+        'projects': projects,
     }
 
 
@@ -735,6 +877,15 @@ def main():
     if data['copilotAdoption']:
         print(f"  Copilot Users: {data['copilotAdoption']['totalCopilotUsers']} "
               f"({data['config']['copilotCoveragePct']}% of team)")
+    if data.get('projects'):
+        p = data['projects']
+        print(f"\nProject throughput (mature vs baseline):")
+        print(f"  Unique projects: {p['mature']['unique_projects']} "
+              f"(baseline {p['baseline']['unique_projects']}, {p['delta']['projects_vs_baseline']})")
+        print(f"  Tickets/project: {p['mature']['tickets_per_project']:.2f} "
+              f"(baseline {p['baseline']['tickets_per_project']:.2f}, {p['delta']['velocity_vs_baseline']})")
+        print(f"  Avg projects/week: {p['mature']['avg_projects_per_week']:.2f} "
+              f"(baseline {p['baseline']['avg_projects_per_week']:.2f}, {p['delta']['breadth_vs_baseline']})")
 
 
 if __name__ == '__main__':

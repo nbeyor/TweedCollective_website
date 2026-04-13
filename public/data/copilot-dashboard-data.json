@@ -1,15 +1,15 @@
 {
-  "generated": "2026-04-08 15:43",
-  "dataRange": "2025-07-02 to 2026-04-08",
+  "generated": "2026-04-13 02:44",
+  "dataRange": "2025-07-02 to 2026-03-09",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
   "rollingWindow": 4,
   "minTicketsThreshold": 5,
   "config": {
-    "teamSize": 28,
+    "teamSize": 27,
     "workdaysPerWeek": 5,
     "totalCopilotUsers": 26,
-    "copilotCoveragePct": 93
+    "copilotCoveragePct": 96
   },
   "baseline": {
     "tickets": 240,
@@ -20,13 +20,13 @@
     "date_range": "2025-07-02 to 2025-09-30"
   },
   "summary": {
-    "total_tickets": 292,
-    "team_authors": 24,
-    "team_productivity": 0.4615,
-    "productivity_vs_baseline": "+18.5%",
-    "team_qa_churn": 0.226,
-    "qa_vs_baseline": "-6.5%",
-    "weeks_of_data": 10,
+    "total_tickets": 144,
+    "team_authors": 21,
+    "team_productivity": 0.4219,
+    "productivity_vs_baseline": "+8.4%",
+    "team_qa_churn": 0.2222,
+    "qa_vs_baseline": "-8.1%",
+    "weeks_of_data": 6,
     "copilot_users": 26,
     "copilot_adoption_current": 88.5
   },
@@ -394,10 +394,10 @@
     {
       "week": "2026-01-31",
       "phase": "transition",
-      "totalTickets": 19,
-      "teamAuthors": 12,
-      "teamProductivity": 0.316667,
-      "teamQARate": 0.157895,
+      "totalTickets": 20,
+      "teamAuthors": 13,
+      "teamProductivity": 0.307692,
+      "teamQARate": 0.15,
       "lowConfidence": false,
       "copilotPct": 73.1,
       "copilotActiveUsers": 19,
@@ -418,10 +418,10 @@
     {
       "week": "2026-02-14",
       "phase": "mature",
-      "totalTickets": 31,
+      "totalTickets": 32,
       "teamAuthors": 15,
-      "teamProductivity": 0.413333,
-      "teamQARate": 0.258065,
+      "teamProductivity": 0.426667,
+      "teamQARate": 0.25,
       "lowConfidence": false,
       "copilotPct": 80.8,
       "copilotActiveUsers": 21,
@@ -430,10 +430,10 @@
     {
       "week": "2026-02-21",
       "phase": "mature",
-      "totalTickets": 28,
+      "totalTickets": 29,
       "teamAuthors": 17,
-      "teamProductivity": 0.329412,
-      "teamQARate": 0.392857,
+      "teamProductivity": 0.341176,
+      "teamQARate": 0.37931,
       "lowConfidence": false,
       "copilotPct": 76.9,
       "copilotActiveUsers": 20,
@@ -442,10 +442,10 @@
     {
       "week": "2026-02-28",
       "phase": "mature",
-      "totalTickets": 28,
-      "teamAuthors": 12,
-      "teamProductivity": 0.466667,
-      "teamQARate": 0.178571,
+      "totalTickets": 30,
+      "teamAuthors": 14,
+      "teamProductivity": 0.428571,
+      "teamQARate": 0.166667,
       "lowConfidence": false,
       "copilotPct": 84.6,
       "copilotActiveUsers": 22,
@@ -454,10 +454,10 @@
     {
       "week": "2026-03-07",
       "phase": "mature",
-      "totalTickets": 38,
-      "teamAuthors": 12,
-      "teamProductivity": 0.633333,
-      "teamQARate": 0.105263,
+      "totalTickets": 45,
+      "teamAuthors": 14,
+      "teamProductivity": 0.642857,
+      "teamQARate": 0.133333,
       "lowConfidence": false,
       "copilotPct": 92.3,
       "copilotActiveUsers": 24,
@@ -466,62 +466,14 @@
     {
       "week": "2026-03-14",
       "phase": "mature",
-      "totalTickets": 43,
-      "teamAuthors": 16,
-      "teamProductivity": 0.5375,
-      "teamQARate": 0.209302,
+      "totalTickets": 7,
+      "teamAuthors": 7,
+      "teamProductivity": 0.2,
+      "teamQARate": 0.285714,
       "lowConfidence": false,
       "copilotPct": 88.5,
       "copilotActiveUsers": 23,
       "copilotCodeGen": 2461
-    },
-    {
-      "week": "2026-03-21",
-      "phase": "mature",
-      "totalTickets": 34,
-      "teamAuthors": 14,
-      "teamProductivity": 0.485714,
-      "teamQARate": 0.235294,
-      "lowConfidence": false,
-      "copilotPct": 92.3,
-      "copilotActiveUsers": 24,
-      "copilotCodeGen": 1946
-    },
-    {
-      "week": "2026-03-28",
-      "phase": "mature",
-      "totalTickets": 37,
-      "teamAuthors": 15,
-      "teamProductivity": 0.493333,
-      "teamQARate": 0.432432,
-      "lowConfidence": false,
-      "copilotPct": 88.5,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 2842
-    },
-    {
-      "week": "2026-04-04",
-      "phase": "mature",
-      "totalTickets": 32,
-      "teamAuthors": 16,
-      "teamProductivity": 0.4,
-      "teamQARate": 0.125,
-      "lowConfidence": false,
-      "copilotPct": 84.6,
-      "copilotActiveUsers": 22,
-      "copilotCodeGen": 2909
-    },
-    {
-      "week": "2026-04-11",
-      "phase": "mature",
-      "totalTickets": 20,
-      "teamAuthors": 11,
-      "teamProductivity": 0.363636,
-      "teamQARate": 0.05,
-      "lowConfidence": false,
-      "copilotPct": 88.5,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 1107
     }
   ],
   "baselineWeekly": [
@@ -622,44 +574,44 @@
       "label": "0-300 / 1-10",
       "size": "0-300",
       "complexity": "1-10",
-      "post_tickets": 193,
+      "post_tickets": 83,
       "baseline_tickets": 178,
-      "post_productivity": 0.160833,
+      "post_productivity": 0.131746,
       "baseline_productivity": 0.133835,
-      "post_qa_churn": 0.15544,
+      "post_qa_churn": 0.13253,
       "baseline_qa_churn": 0.207865
     },
     {
       "label": "0-300 / 11+",
       "size": "0-300",
       "complexity": "11+",
-      "post_tickets": 17,
+      "post_tickets": 5,
       "baseline_tickets": 11,
-      "post_productivity": 0.014167,
+      "post_productivity": 0.007937,
       "baseline_productivity": 0.008271,
-      "post_qa_churn": 0.294118,
+      "post_qa_churn": 0.4,
       "baseline_qa_churn": 0.272727
     },
     {
       "label": "301+ / 1-10",
       "size": "301+",
       "complexity": "1-10",
-      "post_tickets": 13,
+      "post_tickets": 4,
       "baseline_tickets": 9,
-      "post_productivity": 0.010833,
+      "post_productivity": 0.006349,
       "baseline_productivity": 0.006767,
-      "post_qa_churn": 0.307692,
+      "post_qa_churn": 0.5,
       "baseline_qa_churn": 0.222222
     },
     {
       "label": "301+ / 11+",
       "size": "301+",
       "complexity": "11+",
-      "post_tickets": 69,
+      "post_tickets": 52,
       "baseline_tickets": 42,
-      "post_productivity": 0.0575,
+      "post_productivity": 0.08254,
       "baseline_productivity": 0.031579,
-      "post_qa_churn": 0.391304,
+      "post_qa_churn": 0.326923,
       "baseline_qa_churn": 0.380952
     }
   ],
@@ -1164,15 +1116,15 @@
     ]
   },
   "copilotPrCorrelation": {
-    "totalTickets": 292,
-    "assistedTickets": 264,
-    "nonAssistedTickets": 28,
-    "assistedProductivity": 0.4175,
-    "nonAssistedProductivity": 0.4208,
-    "productivityLift": "-0.8%",
-    "assistedQAChurn": 0.2311,
-    "nonAssistedQAChurn": 0.1786,
-    "qaChurnDelta": "+29.4%",
+    "totalTickets": 144,
+    "assistedTickets": 126,
+    "nonAssistedTickets": 18,
+    "assistedProductivity": 0.3517,
+    "nonAssistedProductivity": 0.4583,
+    "productivityLift": "-23.3%",
+    "assistedQAChurn": 0.2302,
+    "nonAssistedQAChurn": 0.1667,
+    "qaChurnDelta": "+38.1%",
     "weeklyComparison": [
       {
         "week": "2026-02-07",
@@ -1185,105 +1137,361 @@
       },
       {
         "week": "2026-02-14",
-        "assistedTickets": 28,
+        "assistedTickets": 29,
         "nonAssistedTickets": 3,
-        "assistedProductivity": 0.373333,
+        "assistedProductivity": 0.386667,
         "nonAssistedProductivity": 0.3,
-        "assistedQARate": 0.285714,
+        "assistedQARate": 0.275862,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-02-21",
         "assistedTickets": 24,
-        "nonAssistedTickets": 4,
+        "nonAssistedTickets": 5,
         "assistedProductivity": 0.342857,
-        "nonAssistedProductivity": 0.266667,
+        "nonAssistedProductivity": 0.333333,
         "assistedQARate": 0.333333,
-        "nonAssistedQARate": 0.75
+        "nonAssistedQARate": 0.6
       },
       {
         "week": "2026-02-28",
-        "assistedTickets": 20,
+        "assistedTickets": 22,
         "nonAssistedTickets": 8,
-        "assistedProductivity": 0.4,
+        "assistedProductivity": 0.366667,
         "nonAssistedProductivity": 0.8,
-        "assistedQARate": 0.25,
+        "assistedQARate": 0.227273,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-03-07",
-        "assistedTickets": 36,
+        "assistedTickets": 43,
         "nonAssistedTickets": 2,
-        "assistedProductivity": 0.6,
+        "assistedProductivity": 0.614286,
         "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.111111,
+        "assistedQARate": 0.139535,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-03-14",
-        "assistedTickets": 37,
-        "nonAssistedTickets": 6,
-        "assistedProductivity": 0.493333,
-        "nonAssistedProductivity": 0.6,
-        "assistedQARate": 0.243243,
-        "nonAssistedQARate": 0.0
-      },
-      {
-        "week": "2026-03-21",
-        "assistedTickets": 32,
-        "nonAssistedTickets": 2,
-        "assistedProductivity": 0.492308,
-        "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.1875,
-        "nonAssistedQARate": 1.0
-      },
-      {
-        "week": "2026-03-28",
-        "assistedTickets": 37,
+        "assistedTickets": 7,
         "nonAssistedTickets": 0,
-        "assistedProductivity": 0.493333,
+        "assistedProductivity": 0.2,
         "nonAssistedProductivity": null,
-        "assistedQARate": 0.432432,
+        "assistedQARate": 0.285714,
         "nonAssistedQARate": null
-      },
-      {
-        "week": "2026-04-04",
-        "assistedTickets": 30,
-        "nonAssistedTickets": 2,
-        "assistedProductivity": 0.4,
-        "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.133333,
-        "nonAssistedQARate": 0.0
-      },
-      {
-        "week": "2026-04-11",
-        "assistedTickets": 19,
-        "nonAssistedTickets": 1,
-        "assistedProductivity": 0.38,
-        "nonAssistedProductivity": 0.2,
-        "assistedQARate": 0.052632,
-        "nonAssistedQARate": 0.0
       }
     ],
     "copilotIntensity": {
       "low": {
-        "tickets": 17,
-        "productivity": 0.136,
-        "qaChurn": 0.0588,
-        "avgSuggestions": 3.9
+        "tickets": 12,
+        "productivity": 0.8,
+        "qaChurn": 0.0,
+        "avgSuggestions": 2.8
       },
       "medium": {
-        "tickets": 46,
-        "productivity": 0.0885,
-        "qaChurn": 0.087,
-        "avgSuggestions": 29.7
+        "tickets": 8,
+        "productivity": 0.08,
+        "qaChurn": 0.25,
+        "avgSuggestions": 30.9
       },
       "high": {
-        "tickets": 201,
-        "productivity": 0.1827,
-        "qaChurn": 0.2786,
-        "avgSuggestions": 314.4
+        "tickets": 106,
+        "productivity": 0.1767,
+        "qaChurn": 0.2547,
+        "avgSuggestions": 343.9
       }
     }
+  },
+  "projects": {
+    "baseline": {
+      "unique_projects": 1,
+      "total_tickets": 240,
+      "tickets_per_project": 17.14,
+      "avg_projects_per_week": 1.0
+    },
+    "mature": {
+      "unique_projects": 1,
+      "total_tickets": 144,
+      "tickets_per_project": 24.0,
+      "avg_projects_per_week": 1.0
+    },
+    "delta": {
+      "projects_vs_baseline": "+0.0%",
+      "velocity_vs_baseline": "+40.0%",
+      "breadth_vs_baseline": "+0.0%"
+    },
+    "weekly": [
+      {
+        "week": "2025-07-05",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 2,
+        "ticketsPerProject": 2.0
+      },
+      {
+        "week": "2025-07-12",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 23,
+        "ticketsPerProject": 23.0
+      },
+      {
+        "week": "2025-07-19",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 29,
+        "ticketsPerProject": 29.0
+      },
+      {
+        "week": "2025-07-26",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 14,
+        "ticketsPerProject": 14.0
+      },
+      {
+        "week": "2025-08-02",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 11,
+        "ticketsPerProject": 11.0
+      },
+      {
+        "week": "2025-08-09",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 19,
+        "ticketsPerProject": 19.0
+      },
+      {
+        "week": "2025-08-16",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 20,
+        "ticketsPerProject": 20.0
+      },
+      {
+        "week": "2025-08-23",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 27,
+        "ticketsPerProject": 27.0
+      },
+      {
+        "week": "2025-08-30",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 14,
+        "ticketsPerProject": 14.0
+      },
+      {
+        "week": "2025-09-06",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 15,
+        "ticketsPerProject": 15.0
+      },
+      {
+        "week": "2025-09-13",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 20,
+        "ticketsPerProject": 20.0
+      },
+      {
+        "week": "2025-09-20",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 20,
+        "ticketsPerProject": 20.0
+      },
+      {
+        "week": "2025-09-27",
+        "phase": "baseline",
+        "activeProjects": 1,
+        "totalTickets": 23,
+        "ticketsPerProject": 23.0
+      },
+      {
+        "week": "2025-10-04",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 19,
+        "ticketsPerProject": 19.0
+      },
+      {
+        "week": "2025-10-11",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 20,
+        "ticketsPerProject": 20.0
+      },
+      {
+        "week": "2025-10-18",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 23,
+        "ticketsPerProject": 23.0
+      },
+      {
+        "week": "2025-10-25",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 22,
+        "ticketsPerProject": 22.0
+      },
+      {
+        "week": "2025-11-01",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 24,
+        "ticketsPerProject": 24.0
+      },
+      {
+        "week": "2025-11-08",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 37,
+        "ticketsPerProject": 37.0
+      },
+      {
+        "week": "2025-11-15",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 30,
+        "ticketsPerProject": 30.0
+      },
+      {
+        "week": "2025-11-22",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 26,
+        "ticketsPerProject": 26.0
+      },
+      {
+        "week": "2025-11-29",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 7,
+        "ticketsPerProject": 7.0
+      },
+      {
+        "week": "2025-12-06",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 30,
+        "ticketsPerProject": 30.0
+      },
+      {
+        "week": "2025-12-13",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 30,
+        "ticketsPerProject": 30.0
+      },
+      {
+        "week": "2025-12-20",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 37,
+        "ticketsPerProject": 37.0
+      },
+      {
+        "week": "2025-12-27",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 2,
+        "ticketsPerProject": 2.0
+      },
+      {
+        "week": "2026-01-03",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 2,
+        "ticketsPerProject": 2.0
+      },
+      {
+        "week": "2026-01-10",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 5,
+        "ticketsPerProject": 5.0
+      },
+      {
+        "week": "2026-01-17",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 33,
+        "ticketsPerProject": 33.0
+      },
+      {
+        "week": "2026-01-24",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 19,
+        "ticketsPerProject": 19.0
+      },
+      {
+        "week": "2026-01-31",
+        "phase": "transition",
+        "activeProjects": 1,
+        "totalTickets": 20,
+        "ticketsPerProject": 20.0
+      },
+      {
+        "week": "2026-02-07",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 32,
+        "ticketsPerProject": 32.0
+      },
+      {
+        "week": "2026-02-14",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 32,
+        "ticketsPerProject": 32.0
+      },
+      {
+        "week": "2026-02-21",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 29,
+        "ticketsPerProject": 29.0
+      },
+      {
+        "week": "2026-02-28",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 30,
+        "ticketsPerProject": 30.0
+      },
+      {
+        "week": "2026-03-07",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 45,
+        "ticketsPerProject": 45.0
+      },
+      {
+        "week": "2026-03-14",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 7,
+        "ticketsPerProject": 7.0
+      }
+    ],
+    "topProjects": [
+      {
+        "project": "EL",
+        "baselineTickets": 240,
+        "matureTickets": 144,
+        "baselineWeeksActive": 14,
+        "matureWeeksActive": 6,
+        "baselineVelocity": 17.14,
+        "matureVelocity": 24.0,
+        "velocityDelta": "+40.0%"
+      }
+    ]
   }
 }
