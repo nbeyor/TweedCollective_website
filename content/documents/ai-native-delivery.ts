@@ -161,8 +161,7 @@ export const slides: SlideData[] = [
       type: 'grid',
       sectionLabel: 'Section 04',
       heading: 'Code sits at the center. The surrounding tools define, test, and govern it.',
-      description:
-        'The right stack is simpler than most tool maps suggest. The goal is not more tools — it is tighter connection around the code workflow.',
+      description: 'The goal is not more tools — it is tighter connection around the code workflow.',
       columns: 2,
       items: [
         {
@@ -170,23 +169,23 @@ export const slides: SlideData[] = [
           icon: getIcon('strategy'),
           color: 'sage',
           items: [
-            'Notion AI or Coda AI — draft requirements and acceptance criteria',
-            'Gherkin or Cucumber-style specs — express expected behavior in testable form',
+            'Notion AI / Coda AI — draft requirements and acceptance criteria',
+            'Gherkin / Cucumber-style specs — express expected behavior',
           ],
         },
         {
           title: 'Center — Generate and Revise Code',
           icon: getIcon('code'),
           color: 'taupe',
-          items: ['GitHub Copilot, Cursor, or Claude Code — generate code and revise it against feedback'],
+          items: ['GitHub Copilot, Cursor, or Claude Code — generate and revise against feedback'],
         },
         {
           title: 'Downstream — Test and Validate',
           icon: getIcon('check'),
           color: 'gold',
           items: [
-            'Playwright or Postman — run browser or API tests against expected behavior',
-            'GitHub Actions or a CI harness — run checks automatically on every PR iteration',
+            'Playwright / Postman — run browser or API tests',
+            'GitHub Actions / CI — run checks on every PR iteration',
           ],
         },
         {
@@ -195,7 +194,7 @@ export const slides: SlideData[] = [
           color: 'purple',
           items: [
             'LaunchDarkly — ship safely behind flags',
-            'Datadog or Sentry — catch failures and feed learning back into the workflow',
+            'Datadog / Sentry — catch failures and feed learning back',
           ],
         },
       ],
@@ -218,37 +217,37 @@ export const slides: SlideData[] = [
       sectionLabel: 'Section 05',
       heading: 'Build around the coding tools already in place.',
       description:
-        'Most enterprises already have the starting point: AI-assisted coding plus light automated review. Useful, but incomplete. The next step adds the upstream and downstream discipline that turns coding speed into delivery speed.',
+        'Not a rip-and-replace. Add upstream and downstream discipline around the AI coding layer you already have.',
+      layout: 'horizontal',
       levels: [
         {
           level: 1,
-          title: 'Product and Quality Tool Adoption',
+          title: 'Product & Quality Tool Adoption',
           badge: 'Add Now',
           description:
-            'Define features in smaller, testable slices. Write structured acceptance criteria. Use one shared format linking features to expected behavior.',
+            'Define features in smaller, testable slices. Write structured acceptance criteria in one shared format linking features to expected behavior.',
           details: {
             outcome: 'Code generation starts from clearer functional goals.',
           },
         },
         {
           level: 2,
-          title: 'Automated TDD and Feedback Loops',
+          title: 'Automated TDD & Feedback Loops',
           badge: 'Add Next',
           description:
-            'Generate implementation against defined behavior. Run tests automatically on each PR iteration. Feed failed tests back into the PR until the behavior is complete.',
+            'Generate implementation against defined behavior. Run tests on each PR iteration. Feed failed tests back into the PR until the behavior is complete.',
           details: {
             outcome: 'The PR becomes a live loop of generation, testing, feedback, and correction.',
           },
         },
         {
           level: 3,
-          title: 'Release, Security, and Policy Automation',
+          title: 'Release, Security & Policy Automation',
           badge: 'Layer In',
           description:
-            'Add security and policy checks into the same PR loop. Use flags and staged rollout to ship smaller changes safely. Route production failures and regressions back into the backlog and test suite.',
+            'Add security and policy checks into the same PR loop. Use flags and staged rollout to ship safely. Route production failures back into the backlog and test suite.',
           details: {
-            outcome:
-              'Small changes move from spec to code to test to release with tighter governance built in — faster without losing control.',
+            outcome: 'Small changes move from spec to release with tighter governance built in — faster without losing control.',
           },
         },
       ],

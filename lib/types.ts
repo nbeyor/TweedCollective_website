@@ -246,12 +246,17 @@ export interface FrameworkLevel {
 
 /**
  * Framework slide content
+ *
+ * `layout` controls level orientation:
+ * - `'vertical'` (default): stacked cards, top-to-bottom
+ * - `'horizontal'`: left-to-right chevrons, one row, best for 3 short stages
  */
 export interface FrameworkSlideContent {
   type: 'framework'
   sectionLabel?: string
   heading: string
   description?: string
+  layout?: 'vertical' | 'horizontal'
   levels: FrameworkLevel[]
   insightBox?: { label: string; text: string }
 }

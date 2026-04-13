@@ -478,6 +478,66 @@ export default async function DocumentExportPage({
           gap: 0.625rem;
         }
 
+        .framework-levels.horizontal {
+          flex-direction: row;
+          gap: 0.375rem;
+          align-items: stretch;
+        }
+
+        .framework-levels.horizontal .framework-level {
+          flex: 1 1 0;
+          display: flex;
+          flex-direction: column;
+          background: #eef1e9;
+          border: 1px solid #6b7556;
+          border-radius: 0;
+          padding: 0.625rem 0.75rem;
+          position: relative;
+          min-width: 0;
+        }
+
+        .framework-levels.horizontal .framework-level + .framework-level {
+          margin-left: -14px;
+          padding-left: 1.5rem;
+        }
+
+        .framework-levels.horizontal .framework-level {
+          clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
+        }
+
+        .framework-levels.horizontal .framework-level.first {
+          clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+          padding-left: 0.75rem;
+        }
+
+        .framework-levels.horizontal .framework-level.last {
+          clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
+          padding-right: 0.75rem;
+        }
+
+        .framework-levels.horizontal .framework-level-header {
+          margin-bottom: 0.375rem;
+        }
+
+        .framework-levels.horizontal .framework-level-title {
+          font-size: 0.8125rem;
+        }
+
+        .framework-levels.horizontal .framework-description {
+          font-size: 0.75rem;
+          margin-bottom: 0.375rem;
+        }
+
+        .framework-levels.horizontal .framework-details {
+          margin-top: auto;
+          font-size: 0.6875rem;
+          padding: 0.375rem 0.5rem;
+        }
+
+        .framework-levels.horizontal .framework-detail-item {
+          font-size: 0.6875rem;
+        }
+
         .framework-level {
           border: 1px solid #6b7556;
           border-radius: 0.375rem;
@@ -1305,8 +1365,8 @@ function getStandardChunking(slide: any): { items: any[]; splitAt: number; type:
     return { items: content.props.items, splitAt: 2, type: 'timeline' }
   }
 
-  // Framework levels
-  if (content.type === 'framework' && content.levels && content.levels.length > 2) {
+  // Framework levels — horizontal chevron layout always fits on one page
+  if (content.type === 'framework' && content.layout !== 'horizontal' && content.levels && content.levels.length > 2) {
     return { items: content.levels, splitAt: 2, type: 'framework' }
   }
 
@@ -1591,44 +1651,51 @@ function renderSlideContent(slide: any, startIdx?: number, endIdx?: number) {
       const displayLevels = (startIdx !== undefined && endIdx !== undefined)
         ? frameworkLevels.slice(startIdx, endIdx)
         : frameworkLevels
+      const isHorizontalFramework = content.layout === 'horizontal'
       return (
         <>
           {content.heading && <h3 className="section-heading">{content.heading}</h3>}
+          {content.description && <p className="text-gray-600 mb-3 text-sm">{content.description}</p>}
           {startIdx !== undefined && startIdx > 0 && (
             <div className="text-sm text-gray-500 mb-2">(continued)</div>
           )}
-          <div className="framework-levels">
-            {displayLevels.map((level: any, i: number) => (
-              <div key={i} className="framework-level">
-                <div className="framework-level-header">
-                  <span className="framework-level-number">{level.level}</span>
-                  <div className="framework-level-title-group">
-                    <span className="framework-level-title">{level.title}</span>
-                    {level.badge && <span className="framework-badge">{level.badge}</span>}
+          <div className={`framework-levels${isHorizontalFramework ? ' horizontal' : ''}`}>
+            {displayLevels.map((level: any, i: number) => {
+              const isFirst = i === 0
+              const isLast = i === displayLevels.length - 1
+              const cls = `framework-level${isHorizontalFramework && isFirst ? ' first' : ''}${isHorizontalFramework && isLast ? ' last' : ''}`
+              return (
+                <div key={i} className={cls}>
+                  <div className="framework-level-header">
+                    <span className="framework-level-number">{level.level}</span>
+                    <div className="framework-level-title-group">
+                      <span className="framework-level-title">{level.title}</span>
+                      {level.badge && <span className="framework-badge">{level.badge}</span>}
+                    </div>
                   </div>
+                  <p className="framework-description">{level.description}</p>
+                  {level.details && (
+                    <div className="framework-details">
+                      {level.details.whenToUse && (
+                        <div className="framework-detail-item">
+                          <strong>When to Use:</strong> {level.details.whenToUse}
+                        </div>
+                      )}
+                      {level.details.risk && (
+                        <div className="framework-detail-item">
+                          <strong>Risk:</strong> {level.details.risk}
+                        </div>
+                      )}
+                      {level.details.outcome && (
+                        <div className="framework-detail-item">
+                          <strong>Outcome:</strong> {level.details.outcome}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <p className="framework-description">{level.description}</p>
-                {level.details && (
-                  <div className="framework-details">
-                    {level.details.whenToUse && (
-                      <div className="framework-detail-item">
-                        <strong>When to Use:</strong> {level.details.whenToUse}
-                      </div>
-                    )}
-                    {level.details.risk && (
-                      <div className="framework-detail-item">
-                        <strong>Risk:</strong> {level.details.risk}
-                      </div>
-                    )}
-                    {level.details.outcome && (
-                      <div className="framework-detail-item">
-                        <strong>Outcome:</strong> {level.details.outcome}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </>
       )

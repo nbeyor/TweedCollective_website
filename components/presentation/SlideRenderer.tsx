@@ -244,6 +244,78 @@ function renderList(content: ListSlideContent) {
 
 // ---- FRAMEWORK SLIDE ----
 function renderFramework(content: FrameworkSlideContent) {
+  const isHorizontal = content.layout === 'horizontal'
+
+  if (isHorizontal) {
+    const count = content.levels.length
+    // Chevron clip: flat left for first, indented left for middle/last;
+    // pointed right for all but last; flat right for last.
+    const buildClip = (i: number) => {
+      const isFirst = i === 0
+      const isLast = i === count - 1
+      const indent = 18 // px
+      const left = isFirst ? '0 0' : `${indent}px 0`
+      const topRight = isLast ? 'calc(100% - 0px) 0' : `calc(100% - ${indent}px) 0`
+      const rightMid = isLast ? '100% 50%' : '100% 50%'
+      const bottomRight = isLast ? 'calc(100% - 0px) 100%' : `calc(100% - ${indent}px) 100%`
+      const bottomLeft = isFirst ? '0 100%' : `${indent}px 100%`
+      const leftMid = isFirst ? '0 50%' : `0 50%`
+      return `polygon(${left}, ${topRight}, ${rightMid}, ${bottomRight}, ${bottomLeft}, ${leftMid})`
+    }
+
+    return (
+      <div className="flex flex-col justify-center">
+        {content.sectionLabel && (
+          <div className="text-xs uppercase tracking-wider text-sage-bright mb-2">{content.sectionLabel}</div>
+        )}
+        <h2 className="text-2xl md:text-3xl font-serif font-light text-cream mb-3">{content.heading}</h2>
+        {content.description && <p className="text-cream/60 text-sm mb-5 leading-relaxed">{content.description}</p>}
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
+        >
+          {content.levels.map((level, i) => {
+            const isFirst = i === 0
+            const isLast = i === count - 1
+            return (
+              <div
+                key={i}
+                className="relative bg-sage/10 flex flex-col"
+                style={{
+                  clipPath: buildClip(i),
+                  paddingLeft: isFirst ? '1rem' : '1.75rem',
+                  paddingRight: isLast ? '1rem' : '1.75rem',
+                  paddingTop: '0.875rem',
+                  paddingBottom: '0.875rem',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-6 h-6 rounded-full bg-sage-bright text-void flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    {level.level}
+                  </span>
+                  {level.badge && (
+                    <span className="text-[10px] bg-cream/10 text-sage-bright px-2 py-0.5 rounded-full whitespace-nowrap">
+                      {level.badge}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-sm font-semibold text-cream mb-1.5 leading-tight">{level.title}</h3>
+                <p className="text-xs text-cream/70 leading-relaxed flex-1">{level.description}</p>
+                {level.details?.outcome && (
+                  <div className="mt-2.5 bg-void/30 rounded-md p-2 border-l-2 border-sage-bright">
+                    <span className="text-[10px] font-semibold text-sage-bright uppercase tracking-wide">Outcome</span>
+                    <p className="text-xs text-cream/80 mt-0.5 leading-snug">{level.details.outcome}</p>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        {content.insightBox && <InsightBox label={content.insightBox.label} text={content.insightBox.text} />}
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col justify-center">
       {content.sectionLabel && (
