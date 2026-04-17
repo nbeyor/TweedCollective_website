@@ -125,6 +125,17 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     visibility: 'public',
   },
   {
+    id: 'ecs-sqa-plan',
+    title: 'eCS AI-Enabled Product, Development, and SQA Transformation',
+    shortTitle: 'eCS SQA Transformation Plan',
+    description: 'Target operating model, KPI system, and dual-track roadmap for shifting Product, Development, and SQA to an agent-driven delivery process.',
+    category: 'Framework',
+    icon: 'Shield',
+    date: '2026-04',
+    readTime: '8 min',
+    visibility: 'unlisted',
+  },
+  {
     id: 'internal-access',
     title: 'Internal Tools Access',
     shortTitle: 'Internal Tools Access',
