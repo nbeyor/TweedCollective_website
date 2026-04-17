@@ -28,6 +28,7 @@ import {
 import { DiligenceChartSlide, DiligenceAssessmentGrid, DiligenceSynergySlide } from './DiligenceComponents'
 import { MercuryDiligenceSlide } from './MercuryDiligenceSlides'
 import { ThreeLaneSortSlide, SplitDashboardSlide, PortfolioScatterSlide, RoleAnatomySlide } from './ActionableLessonsComponents'
+import { EcsSqaDeliveryModelSlide, EcsSqaRoadmapSlide } from './EcsSqaPlanComponents'
 import type { CustomComponentRegistry } from '../SlideRenderer'
 
 export const customComponentRegistry: CustomComponentRegistry = {
@@ -81,6 +82,10 @@ export const customComponentRegistry: CustomComponentRegistry = {
   'SplitDashboardSlide': SplitDashboardSlide as React.ComponentType<Record<string, unknown>>,
   'PortfolioScatterSlide': PortfolioScatterSlide as React.ComponentType<Record<string, unknown>>,
   'RoleAnatomySlide': RoleAnatomySlide as React.ComponentType<Record<string, unknown>>,
+
+  // eCS SQA Plan document
+  'EcsSqaDeliveryModelSlide': EcsSqaDeliveryModelSlide as React.ComponentType<Record<string, unknown>>,
+  'EcsSqaRoadmapSlide': EcsSqaRoadmapSlide as React.ComponentType<Record<string, unknown>>,
 }
 
 export default customComponentRegistry
