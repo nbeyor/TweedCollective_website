@@ -108,8 +108,17 @@ def find_copilot_file() -> Path | None:
 def load_prs(input_path, sheet_name=None):
     p = Path(input_path)
     if p.suffix in ('.xlsx', '.xls'):
-        return pd.read_excel(p, sheet_name=sheet_name or 0)
-    return pd.read_csv(p, parse_dates=['FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'])
+        df = pd.read_excel(p, sheet_name=sheet_name or 0)
+    else:
+        df = pd.read_csv(p, parse_dates=['FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'])
+    # Exports that ship only FirstReadyForQADate (no separate FirstActivity column)
+    # still aggregate cleanly by aliasing the two.
+    if 'FirstActivity' not in df.columns and 'FirstReadyForQADate' in df.columns:
+        df['FirstActivity'] = df['FirstReadyForQADate']
+    for col in ('FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'):
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors='coerce')
+    return df
 
 
 def extract_project_key(jira_ticket):
