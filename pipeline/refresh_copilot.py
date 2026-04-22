@@ -299,6 +299,55 @@ def compute_size_complexity(tickets):
     return buckets
 
 
+def compute_size_complexity_weekly(tickets):
+    """Per-week, per-bucket productivity and QA churn for the full timeline.
+
+    Emits one row per (week, size, complexity) combination — including zero
+    rows for weeks where a bucket saw no activity, so the frontend can render
+    a continuous time series without reconstructing missing weeks.
+    """
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    mature_start_ts = pd.Timestamp(MATURE_START)
+
+    def get_phase(week_ts):
+        if week_ts < baseline_end_ts:
+            return 'baseline'
+        if week_ts < mature_start_ts:
+            return 'transition'
+        return 'mature'
+
+    weeks = sorted(pd.DatetimeIndex(tickets['WeekEnding'].dropna().unique()))
+
+    rows = []
+    for week in weeks:
+        wk = tickets[tickets['WeekEnding'] == week]
+        phase = get_phase(pd.Timestamp(week))
+        week_str = pd.Timestamp(week).strftime('%Y-%m-%d')
+        for size in ['0-300', '301+']:
+            for complexity in ['1-10', '11+']:
+                cell = wk[(wk['SizeBucket'] == size) & (wk['ComplexityBucket'] == complexity)]
+                n = int(len(cell))
+                authors = set()
+                for uuids_str in cell['AuthorUUIDs']:
+                    authors.update(str(uuids_str).split(','))
+                n_authors = len(authors)
+                fte_days = max(n_authors, 1) * WORKDAYS_PER_WEEK
+                productivity = n / fte_days if n > 0 else 0.0
+                qa_churn = float(cell['HasQAChurn'].mean()) if n > 0 else None
+                rows.append({
+                    'week': week_str,
+                    'phase': phase,
+                    'size': size,
+                    'complexity': complexity,
+                    'tickets': n,
+                    'authors': n_authors,
+                    'productivity': round(productivity, 6),
+                    'qaChurn': round(qa_churn, 6) if qa_churn is not None else None,
+                    'lowConfidence': bool(n < MIN_TICKETS_THRESHOLD),
+                })
+    return rows
+
+
 def _fmt_delta(current, base):
     """Format a percentage delta vs a baseline value. Returns 'N/A' when baseline is zero."""
     if base is None or base == 0:
@@ -713,6 +762,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
     size_complexity = compute_size_complexity(tickets)
+    size_complexity_weekly = compute_size_complexity_weekly(tickets)
     projects = compute_project_metrics(tickets)
 
     # Copilot adoption data
@@ -820,6 +870,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'weekly': weekly_chart,
         'baselineWeekly': baseline_weekly,
         'sizeComplexity': size_complexity,
+        'sizeComplexityWeekly': size_complexity_weekly,
         'availability': availability,
         'copilotAdoption': copilot_data,
         'copilotPrCorrelation': pr_correlation,

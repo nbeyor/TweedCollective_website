@@ -37,6 +37,7 @@ export interface CopilotDashboardData {
   weekly: WeeklyEntry[]
   baselineWeekly: BaselineWeeklyEntry[]
   sizeComplexity: SizeComplexityEntry[]
+  sizeComplexityWeekly: SizeComplexityWeeklyEntry[]
   availability: AvailabilityEntry[]
   copilotAdoption: CopilotAdoption | null
   copilotPrCorrelation: CopilotPrCorrelation | null
@@ -75,6 +76,18 @@ export interface SizeComplexityEntry {
   baseline_productivity: number
   post_qa_churn?: number
   baseline_qa_churn?: number
+}
+
+export interface SizeComplexityWeeklyEntry {
+  week: string
+  phase: 'baseline' | 'transition' | 'mature'
+  size: string
+  complexity: string
+  tickets: number
+  authors: number
+  productivity: number
+  qaChurn: number | null
+  lowConfidence: boolean
 }
 
 export interface AvailabilityEntry {
