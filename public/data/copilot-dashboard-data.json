@@ -1,15 +1,15 @@
 {
-  "generated": "2026-04-22 19:36",
-  "dataRange": "2025-07-02 to 2026-03-09",
+  "generated": "2026-04-22 20:24",
+  "dataRange": "2025-07-02 to 2026-04-21",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
   "rollingWindow": 4,
   "minTicketsThreshold": 5,
   "config": {
-    "teamSize": 27,
+    "teamSize": 28,
     "workdaysPerWeek": 5,
     "totalCopilotUsers": 30,
-    "copilotCoveragePct": 111
+    "copilotCoveragePct": 107
   },
   "baseline": {
     "tickets": 240,
@@ -20,13 +20,13 @@
     "date_range": "2025-07-02 to 2025-09-30"
   },
   "summary": {
-    "total_tickets": 144,
-    "team_authors": 21,
-    "team_productivity": 0.4219,
-    "productivity_vs_baseline": "+8.4%",
-    "team_qa_churn": 0.2222,
-    "qa_vs_baseline": "-8.1%",
-    "weeks_of_data": 6,
+    "total_tickets": 380,
+    "team_authors": 24,
+    "team_productivity": 0.4829,
+    "productivity_vs_baseline": "+24.0%",
+    "team_qa_churn": 0.2184,
+    "qa_vs_baseline": "-9.6%",
+    "weeks_of_data": 12,
     "copilot_users": 30,
     "copilot_adoption_current": 60.0
   },
@@ -394,10 +394,10 @@
     {
       "week": "2026-01-31",
       "phase": "transition",
-      "totalTickets": 20,
-      "teamAuthors": 13,
-      "teamProductivity": 0.307692,
-      "teamQARate": 0.15,
+      "totalTickets": 19,
+      "teamAuthors": 12,
+      "teamProductivity": 0.316667,
+      "teamQARate": 0.157895,
       "lowConfidence": false,
       "copilotPct": 56.7,
       "copilotActiveUsers": 17,
@@ -418,10 +418,10 @@
     {
       "week": "2026-02-14",
       "phase": "mature",
-      "totalTickets": 32,
+      "totalTickets": 31,
       "teamAuthors": 15,
-      "teamProductivity": 0.426667,
-      "teamQARate": 0.25,
+      "teamProductivity": 0.413333,
+      "teamQARate": 0.258065,
       "lowConfidence": false,
       "copilotPct": 63.3,
       "copilotActiveUsers": 19,
@@ -430,10 +430,10 @@
     {
       "week": "2026-02-21",
       "phase": "mature",
-      "totalTickets": 29,
+      "totalTickets": 28,
       "teamAuthors": 17,
-      "teamProductivity": 0.341176,
-      "teamQARate": 0.37931,
+      "teamProductivity": 0.329412,
+      "teamQARate": 0.392857,
       "lowConfidence": false,
       "copilotPct": 60.0,
       "copilotActiveUsers": 18,
@@ -442,10 +442,10 @@
     {
       "week": "2026-02-28",
       "phase": "mature",
-      "totalTickets": 30,
-      "teamAuthors": 14,
-      "teamProductivity": 0.428571,
-      "teamQARate": 0.166667,
+      "totalTickets": 28,
+      "teamAuthors": 12,
+      "teamProductivity": 0.466667,
+      "teamQARate": 0.178571,
       "lowConfidence": false,
       "copilotPct": 66.7,
       "copilotActiveUsers": 20,
@@ -454,10 +454,10 @@
     {
       "week": "2026-03-07",
       "phase": "mature",
-      "totalTickets": 45,
-      "teamAuthors": 14,
-      "teamProductivity": 0.642857,
-      "teamQARate": 0.133333,
+      "totalTickets": 38,
+      "teamAuthors": 12,
+      "teamProductivity": 0.633333,
+      "teamQARate": 0.105263,
       "lowConfidence": false,
       "copilotPct": 73.3,
       "copilotActiveUsers": 22,
@@ -466,14 +466,86 @@
     {
       "week": "2026-03-14",
       "phase": "mature",
-      "totalTickets": 7,
-      "teamAuthors": 7,
-      "teamProductivity": 0.2,
-      "teamQARate": 0.285714,
+      "totalTickets": 43,
+      "teamAuthors": 16,
+      "teamProductivity": 0.5375,
+      "teamQARate": 0.209302,
       "lowConfidence": false,
       "copilotPct": 70.0,
       "copilotActiveUsers": 21,
       "copilotCodeGen": 2351
+    },
+    {
+      "week": "2026-03-21",
+      "phase": "mature",
+      "totalTickets": 34,
+      "teamAuthors": 14,
+      "teamProductivity": 0.485714,
+      "teamQARate": 0.235294,
+      "lowConfidence": false,
+      "copilotPct": 73.3,
+      "copilotActiveUsers": 22,
+      "copilotCodeGen": 1876
+    },
+    {
+      "week": "2026-03-28",
+      "phase": "mature",
+      "totalTickets": 37,
+      "teamAuthors": 15,
+      "teamProductivity": 0.493333,
+      "teamQARate": 0.432432,
+      "lowConfidence": false,
+      "copilotPct": 70.0,
+      "copilotActiveUsers": 21,
+      "copilotCodeGen": 2719
+    },
+    {
+      "week": "2026-04-04",
+      "phase": "mature",
+      "totalTickets": 28,
+      "teamAuthors": 15,
+      "teamProductivity": 0.373333,
+      "teamQARate": 0.107143,
+      "lowConfidence": false,
+      "copilotPct": 66.7,
+      "copilotActiveUsers": 20,
+      "copilotCodeGen": 2661
+    },
+    {
+      "week": "2026-04-11",
+      "phase": "mature",
+      "totalTickets": 51,
+      "teamAuthors": 17,
+      "teamProductivity": 0.6,
+      "teamQARate": 0.098039,
+      "lowConfidence": false,
+      "copilotPct": 90.0,
+      "copilotActiveUsers": 27,
+      "copilotCodeGen": 4152
+    },
+    {
+      "week": "2026-04-18",
+      "phase": "mature",
+      "totalTickets": 52,
+      "teamAuthors": 20,
+      "teamProductivity": 0.52,
+      "teamQARate": 0.230769,
+      "lowConfidence": false,
+      "copilotPct": 93.3,
+      "copilotActiveUsers": 28,
+      "copilotCodeGen": 2794
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "totalTickets": 9,
+      "teamAuthors": 4,
+      "teamProductivity": 0.45,
+      "teamQARate": 0.222222,
+      "lowConfidence": false,
+      "copilotPct": 60.0,
+      "copilotActiveUsers": 18,
+      "copilotCodeGen": 444
     }
   ],
   "baselineWeekly": [
@@ -574,44 +646,44 @@
       "label": "0-300 / 1-10",
       "size": "0-300",
       "complexity": "1-10",
-      "post_tickets": 83,
+      "post_tickets": 259,
       "baseline_tickets": 178,
-      "post_productivity": 0.131746,
+      "post_productivity": 0.179861,
       "baseline_productivity": 0.133835,
-      "post_qa_churn": 0.13253,
+      "post_qa_churn": 0.150579,
       "baseline_qa_churn": 0.207865
     },
     {
       "label": "0-300 / 11+",
       "size": "0-300",
       "complexity": "11+",
-      "post_tickets": 5,
+      "post_tickets": 20,
       "baseline_tickets": 11,
-      "post_productivity": 0.007937,
+      "post_productivity": 0.013889,
       "baseline_productivity": 0.008271,
-      "post_qa_churn": 0.4,
+      "post_qa_churn": 0.3,
       "baseline_qa_churn": 0.272727
     },
     {
       "label": "301+ / 1-10",
       "size": "301+",
       "complexity": "1-10",
-      "post_tickets": 4,
+      "post_tickets": 21,
       "baseline_tickets": 9,
-      "post_productivity": 0.006349,
+      "post_productivity": 0.014583,
       "baseline_productivity": 0.006767,
-      "post_qa_churn": 0.5,
+      "post_qa_churn": 0.380952,
       "baseline_qa_churn": 0.222222
     },
     {
       "label": "301+ / 11+",
       "size": "301+",
       "complexity": "11+",
-      "post_tickets": 52,
+      "post_tickets": 80,
       "baseline_tickets": 42,
-      "post_productivity": 0.08254,
+      "post_productivity": 0.055556,
       "baseline_productivity": 0.031579,
-      "post_qa_churn": 0.326923,
+      "post_qa_churn": 0.375,
       "baseline_qa_churn": 0.380952
     }
   ],
@@ -1941,10 +2013,10 @@
       "phase": "transition",
       "size": "0-300",
       "complexity": "1-10",
-      "tickets": 13,
-      "authors": 10,
-      "productivity": 0.26,
-      "qaChurn": 0.076923,
+      "tickets": 12,
+      "authors": 9,
+      "productivity": 0.266667,
+      "qaChurn": 0.083333,
       "lowConfidence": false
     },
     {
@@ -2029,10 +2101,10 @@
       "phase": "mature",
       "size": "0-300",
       "complexity": "1-10",
-      "tickets": 19,
+      "tickets": 18,
       "authors": 9,
-      "productivity": 0.422222,
-      "qaChurn": 0.157895,
+      "productivity": 0.4,
+      "qaChurn": 0.166667,
       "lowConfidence": false
     },
     {
@@ -2106,10 +2178,10 @@
       "phase": "mature",
       "size": "301+",
       "complexity": "11+",
-      "tickets": 13,
-      "authors": 12,
-      "productivity": 0.216667,
-      "qaChurn": 0.384615,
+      "tickets": 12,
+      "authors": 11,
+      "productivity": 0.218182,
+      "qaChurn": 0.416667,
       "lowConfidence": false
     },
     {
@@ -2117,10 +2189,10 @@
       "phase": "mature",
       "size": "0-300",
       "complexity": "1-10",
-      "tickets": 18,
-      "authors": 9,
-      "productivity": 0.4,
-      "qaChurn": 0.055556,
+      "tickets": 16,
+      "authors": 7,
+      "productivity": 0.457143,
+      "qaChurn": 0.0625,
       "lowConfidence": false
     },
     {
@@ -2161,10 +2233,10 @@
       "phase": "mature",
       "size": "0-300",
       "complexity": "1-10",
-      "tickets": 26,
+      "tickets": 25,
       "authors": 9,
-      "productivity": 0.577778,
-      "qaChurn": 0.038462,
+      "productivity": 0.555556,
+      "qaChurn": 0.04,
       "lowConfidence": false
     },
     {
@@ -2194,10 +2266,10 @@
       "phase": "mature",
       "size": "301+",
       "complexity": "11+",
-      "tickets": 16,
-      "authors": 11,
-      "productivity": 0.290909,
-      "qaChurn": 0.25,
+      "tickets": 10,
+      "authors": 8,
+      "productivity": 0.25,
+      "qaChurn": 0.2,
       "lowConfidence": false
     },
     {
@@ -2205,21 +2277,21 @@
       "phase": "mature",
       "size": "0-300",
       "complexity": "1-10",
-      "tickets": 4,
-      "authors": 4,
-      "productivity": 0.2,
-      "qaChurn": 0.25,
-      "lowConfidence": true
+      "tickets": 32,
+      "authors": 12,
+      "productivity": 0.533333,
+      "qaChurn": 0.125,
+      "lowConfidence": false
     },
     {
       "week": "2026-03-14",
       "phase": "mature",
       "size": "0-300",
       "complexity": "11+",
-      "tickets": 0,
-      "authors": 0,
-      "productivity": 0.0,
-      "qaChurn": null,
+      "tickets": 2,
+      "authors": 2,
+      "productivity": 0.2,
+      "qaChurn": 0.5,
       "lowConfidence": true
     },
     {
@@ -2238,9 +2310,273 @@
       "phase": "mature",
       "size": "301+",
       "complexity": "11+",
+      "tickets": 9,
+      "authors": 9,
+      "productivity": 0.2,
+      "qaChurn": 0.444444,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-03-21",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 26,
+      "authors": 11,
+      "productivity": 0.472727,
+      "qaChurn": 0.192308,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-03-21",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 1,
+      "authors": 1,
+      "productivity": 0.2,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-03-21",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
+      "tickets": 1,
+      "authors": 1,
+      "productivity": 0.2,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-03-21",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 6,
+      "authors": 5,
+      "productivity": 0.24,
+      "qaChurn": 0.5,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-03-28",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 24,
+      "authors": 12,
+      "productivity": 0.4,
+      "qaChurn": 0.333333,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-03-28",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 5,
+      "authors": 5,
+      "productivity": 0.2,
+      "qaChurn": 0.4,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-03-28",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
+      "tickets": 2,
+      "authors": 3,
+      "productivity": 0.133333,
+      "qaChurn": 0.5,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-03-28",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 6,
+      "authors": 7,
+      "productivity": 0.171429,
+      "qaChurn": 0.833333,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-04",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 20,
+      "authors": 12,
+      "productivity": 0.333333,
+      "qaChurn": 0.1,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-04",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 1,
+      "authors": 1,
+      "productivity": 0.2,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-04",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
       "tickets": 3,
       "authors": 3,
       "productivity": 0.2,
+      "qaChurn": 0.333333,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-04",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 4,
+      "authors": 5,
+      "productivity": 0.16,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-11",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 40,
+      "authors": 17,
+      "productivity": 0.470588,
+      "qaChurn": 0.05,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-11",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 3,
+      "authors": 3,
+      "productivity": 0.2,
+      "qaChurn": 0.333333,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-11",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
+      "tickets": 5,
+      "authors": 4,
+      "productivity": 0.25,
+      "qaChurn": 0.2,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-11",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 3,
+      "authors": 3,
+      "productivity": 0.2,
+      "qaChurn": 0.333333,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-18",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 39,
+      "authors": 16,
+      "productivity": 0.4875,
+      "qaChurn": 0.205128,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-18",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 3,
+      "authors": 2,
+      "productivity": 0.3,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-18",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
+      "tickets": 3,
+      "authors": 2,
+      "productivity": 0.3,
+      "qaChurn": 0.666667,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-18",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 7,
+      "authors": 7,
+      "productivity": 0.2,
+      "qaChurn": 0.285714,
+      "lowConfidence": false
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "1-10",
+      "tickets": 3,
+      "authors": 2,
+      "productivity": 0.3,
+      "qaChurn": 0.0,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "size": "0-300",
+      "complexity": "11+",
+      "tickets": 0,
+      "authors": 0,
+      "productivity": 0.0,
+      "qaChurn": null,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "1-10",
+      "tickets": 3,
+      "authors": 2,
+      "productivity": 0.3,
+      "qaChurn": 0.333333,
+      "lowConfidence": true
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "size": "301+",
+      "complexity": "11+",
+      "tickets": 3,
+      "authors": 2,
+      "productivity": 0.3,
       "qaChurn": 0.333333,
       "lowConfidence": true
     }
@@ -2782,15 +3118,15 @@
     ]
   },
   "copilotPrCorrelation": {
-    "totalTickets": 144,
-    "assistedTickets": 122,
-    "nonAssistedTickets": 22,
-    "assistedProductivity": 0.3534,
-    "nonAssistedProductivity": 0.3733,
-    "productivityLift": "-5.3%",
-    "assistedQAChurn": 0.2377,
-    "nonAssistedQAChurn": 0.1364,
-    "qaChurnDelta": "+74.3%",
+    "totalTickets": 380,
+    "assistedTickets": 337,
+    "nonAssistedTickets": 43,
+    "assistedProductivity": 0.4472,
+    "nonAssistedProductivity": 0.425,
+    "productivityLift": "+5.2%",
+    "assistedQAChurn": 0.2285,
+    "nonAssistedQAChurn": 0.1395,
+    "qaChurnDelta": "+63.7%",
     "weeklyComparison": [
       {
         "week": "2026-02-07",
@@ -2803,68 +3139,122 @@
       },
       {
         "week": "2026-02-14",
-        "assistedTickets": 28,
+        "assistedTickets": 27,
         "nonAssistedTickets": 4,
-        "assistedProductivity": 0.4,
+        "assistedProductivity": 0.385714,
         "nonAssistedProductivity": 0.266667,
-        "assistedQARate": 0.285714,
+        "assistedQARate": 0.296296,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-02-21",
         "assistedTickets": 23,
-        "nonAssistedTickets": 6,
+        "nonAssistedTickets": 5,
         "assistedProductivity": 0.353846,
-        "nonAssistedProductivity": 0.3,
+        "nonAssistedProductivity": 0.25,
         "assistedQARate": 0.347826,
-        "nonAssistedQARate": 0.5
+        "nonAssistedQARate": 0.6
       },
       {
         "week": "2026-02-28",
-        "assistedTickets": 22,
+        "assistedTickets": 20,
         "nonAssistedTickets": 8,
-        "assistedProductivity": 0.366667,
+        "assistedProductivity": 0.4,
         "nonAssistedProductivity": 0.8,
-        "assistedQARate": 0.227273,
+        "assistedQARate": 0.25,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-03-07",
-        "assistedTickets": 42,
+        "assistedTickets": 35,
         "nonAssistedTickets": 3,
-        "assistedProductivity": 0.6,
+        "assistedProductivity": 0.636364,
         "nonAssistedProductivity": 0.3,
-        "assistedQARate": 0.142857,
+        "assistedQARate": 0.114286,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-03-14",
-        "assistedTickets": 6,
-        "nonAssistedTickets": 1,
-        "assistedProductivity": 0.2,
-        "nonAssistedProductivity": 0.2,
-        "assistedQARate": 0.333333,
+        "assistedTickets": 35,
+        "nonAssistedTickets": 8,
+        "assistedProductivity": 0.466667,
+        "nonAssistedProductivity": 0.533333,
+        "assistedQARate": 0.257143,
         "nonAssistedQARate": 0.0
+      },
+      {
+        "week": "2026-03-21",
+        "assistedTickets": 32,
+        "nonAssistedTickets": 2,
+        "assistedProductivity": 0.492308,
+        "nonAssistedProductivity": 0.4,
+        "assistedQARate": 0.1875,
+        "nonAssistedQARate": 1.0
+      },
+      {
+        "week": "2026-03-28",
+        "assistedTickets": 35,
+        "nonAssistedTickets": 2,
+        "assistedProductivity": 0.5,
+        "nonAssistedProductivity": 0.4,
+        "assistedQARate": 0.457143,
+        "nonAssistedQARate": 0.0
+      },
+      {
+        "week": "2026-04-04",
+        "assistedTickets": 25,
+        "nonAssistedTickets": 3,
+        "assistedProductivity": 0.384615,
+        "nonAssistedProductivity": 0.3,
+        "assistedQARate": 0.12,
+        "nonAssistedQARate": 0.0
+      },
+      {
+        "week": "2026-04-11",
+        "assistedTickets": 49,
+        "nonAssistedTickets": 2,
+        "assistedProductivity": 0.6125,
+        "nonAssistedProductivity": 0.4,
+        "assistedQARate": 0.102041,
+        "nonAssistedQARate": 0.0
+      },
+      {
+        "week": "2026-04-18",
+        "assistedTickets": 46,
+        "nonAssistedTickets": 6,
+        "assistedProductivity": 0.484211,
+        "nonAssistedProductivity": 0.6,
+        "assistedQARate": 0.23913,
+        "nonAssistedQARate": 0.166667
+      },
+      {
+        "week": "2026-04-25",
+        "assistedTickets": 9,
+        "nonAssistedTickets": 0,
+        "assistedProductivity": 0.45,
+        "nonAssistedProductivity": null,
+        "assistedQARate": 0.222222,
+        "nonAssistedQARate": null
       }
     ],
     "copilotIntensity": {
       "low": {
-        "tickets": 12,
-        "productivity": 0.8,
+        "tickets": 18,
+        "productivity": 0.12,
         "qaChurn": 0.0,
-        "avgSuggestions": 2.8
+        "avgSuggestions": 4.1
       },
       "medium": {
-        "tickets": 7,
-        "productivity": 0.0875,
-        "qaChurn": 0.2857,
-        "avgSuggestions": 31.9
+        "tickets": 44,
+        "productivity": 0.0978,
+        "qaChurn": 0.1364,
+        "avgSuggestions": 29.2
       },
       "high": {
-        "tickets": 103,
-        "productivity": 0.1717,
-        "qaChurn": 0.2621,
-        "avgSuggestions": 343.9
+        "tickets": 275,
+        "productivity": 0.1993,
+        "qaChurn": 0.2582,
+        "avgSuggestions": 301.2
       }
     }
   },
@@ -2877,13 +3267,13 @@
     },
     "mature": {
       "unique_projects": 1,
-      "total_tickets": 144,
-      "tickets_per_project": 24.0,
+      "total_tickets": 380,
+      "tickets_per_project": 31.67,
       "avg_projects_per_week": 1.0
     },
     "delta": {
       "projects_vs_baseline": "+0.0%",
-      "velocity_vs_baseline": "+40.0%",
+      "velocity_vs_baseline": "+84.8%",
       "breadth_vs_baseline": "+0.0%"
     },
     "weekly": [
@@ -3101,8 +3491,8 @@
         "week": "2026-01-31",
         "phase": "transition",
         "activeProjects": 1,
-        "totalTickets": 20,
-        "ticketsPerProject": 20.0
+        "totalTickets": 19,
+        "ticketsPerProject": 19.0
       },
       {
         "week": "2026-02-07",
@@ -3115,48 +3505,90 @@
         "week": "2026-02-14",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 32,
-        "ticketsPerProject": 32.0
+        "totalTickets": 31,
+        "ticketsPerProject": 31.0
       },
       {
         "week": "2026-02-21",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 29,
-        "ticketsPerProject": 29.0
+        "totalTickets": 28,
+        "ticketsPerProject": 28.0
       },
       {
         "week": "2026-02-28",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 30,
-        "ticketsPerProject": 30.0
+        "totalTickets": 28,
+        "ticketsPerProject": 28.0
       },
       {
         "week": "2026-03-07",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 45,
-        "ticketsPerProject": 45.0
+        "totalTickets": 38,
+        "ticketsPerProject": 38.0
       },
       {
         "week": "2026-03-14",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 7,
-        "ticketsPerProject": 7.0
+        "totalTickets": 43,
+        "ticketsPerProject": 43.0
+      },
+      {
+        "week": "2026-03-21",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 34,
+        "ticketsPerProject": 34.0
+      },
+      {
+        "week": "2026-03-28",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 37,
+        "ticketsPerProject": 37.0
+      },
+      {
+        "week": "2026-04-04",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 28,
+        "ticketsPerProject": 28.0
+      },
+      {
+        "week": "2026-04-11",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 51,
+        "ticketsPerProject": 51.0
+      },
+      {
+        "week": "2026-04-18",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 52,
+        "ticketsPerProject": 52.0
+      },
+      {
+        "week": "2026-04-25",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 9,
+        "ticketsPerProject": 9.0
       }
     ],
     "topProjects": [
       {
         "project": "EL",
         "baselineTickets": 240,
-        "matureTickets": 144,
+        "matureTickets": 380,
         "baselineWeeksActive": 14,
-        "matureWeeksActive": 6,
+        "matureWeeksActive": 12,
         "baselineVelocity": 17.14,
-        "matureVelocity": 24.0,
-        "velocityDelta": "+40.0%"
+        "matureVelocity": 31.67,
+        "velocityDelta": "+84.8%"
       }
     ]
   }
