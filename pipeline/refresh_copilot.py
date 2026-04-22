@@ -43,6 +43,7 @@ PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
+EXCLUDED_USERS_FILE = PIPELINE_DIR / "excluded_users.json"
 
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
@@ -103,6 +104,30 @@ def find_copilot_file() -> Path | None:
             except Exception:
                 continue
     return None
+
+
+def load_excluded_uuids():
+    """Load the set of AuthorUUIDs to drop from PR and Copilot telemetry data.
+
+    Source: pipeline/excluded_users.json. Accepts either a plain list of uuid
+    strings or an object with an "excluded_users" array of {name, uuid} entries.
+    Returns an empty set if the file is missing or malformed.
+    """
+    if not EXCLUDED_USERS_FILE.exists():
+        return set()
+    try:
+        payload = json.loads(EXCLUDED_USERS_FILE.read_text(encoding='utf-8'))
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"Warning: could not parse {EXCLUDED_USERS_FILE}: {e}")
+        return set()
+    items = payload if isinstance(payload, list) else payload.get('excluded_users', [])
+    uuids = set()
+    for item in items:
+        if isinstance(item, str):
+            uuids.add(item.strip())
+        elif isinstance(item, dict) and item.get('uuid'):
+            uuids.add(str(item['uuid']).strip())
+    return {u for u in uuids if u}
 
 
 def load_prs(input_path, sheet_name=None):
@@ -466,11 +491,14 @@ def _load_copilot_df(copilot_path):
     return copilot, fmt
 
 
-def compute_copilot_adoption(copilot_path):
+def compute_copilot_adoption(copilot_path, excluded_uuids=None):
     """Compute weekly Copilot adoption metrics from GitHub telemetry."""
     copilot, fmt = _load_copilot_df(copilot_path)
     if copilot is None:
         return None, None, None
+
+    if excluded_uuids:
+        copilot = copilot[~copilot['user_id'].isin(excluded_uuids)].copy()
 
     total_users = copilot['user_id'].nunique()
 
@@ -708,6 +736,12 @@ def serialize(obj):
 
 def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     prs = load_prs(input_path, sheet_name)
+    excluded_uuids = load_excluded_uuids()
+    if excluded_uuids:
+        before = len(prs)
+        prs = prs[~prs['AuthorUUID'].isin(excluded_uuids)].copy()
+        print(f"Excluded {before - len(prs)} PR rows from {len(excluded_uuids)} "
+              f"user(s): {sorted(excluded_uuids)}")
     tickets = aggregate_to_tickets(prs)
     weekly = compute_weekly_team_metrics(tickets)
     baseline = compute_baseline(tickets, weekly)
@@ -720,7 +754,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     copilot_df = None
     copilot_fmt = None
     if copilot_path:
-        copilot_data, copilot_df, copilot_fmt = compute_copilot_adoption(copilot_path)
+        copilot_data, copilot_df, copilot_fmt = compute_copilot_adoption(copilot_path, excluded_uuids)
         if copilot_data:
             summary['copilot_users'] = copilot_data['totalCopilotUsers']
             summary['copilot_adoption_current'] = copilot_data['weekly'][-1]['copilotPct'] if copilot_data['weekly'] else 0

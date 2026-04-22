@@ -1,0 +1,7 @@
+{
+  "_comment": "AuthorUUIDs excluded from all Copilot dashboard analytics. Both PR rows (pipeline/refresh_copilot.py load_prs) and AI Usage rows (compute_copilot_adoption) are filtered before any metric is computed.",
+  "excluded_users": [
+    { "name": "Sam",   "uuid": "ee3d3313-fcbf-4566-8357-4f4295e60712" },
+    { "name": "David", "uuid": "9e35f162-85db-4f55-be68-448c74334135" }
+  ]
+}
