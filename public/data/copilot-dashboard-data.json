@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-15 19:50",
-  "dataRange": "2025-07-02 to 2026-04-14",
+  "generated": "2026-04-22 16:13",
+  "dataRange": "2025-07-02 to 2026-04-21",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
   "rollingWindow": 4,
@@ -8,8 +8,8 @@
   "config": {
     "teamSize": 28,
     "workdaysPerWeek": 5,
-    "totalCopilotUsers": 28,
-    "copilotCoveragePct": 100
+    "totalCopilotUsers": 30,
+    "copilotCoveragePct": 107
   },
   "baseline": {
     "tickets": 240,
@@ -20,15 +20,15 @@
     "date_range": "2025-07-02 to 2025-09-30"
   },
   "summary": {
-    "total_tickets": 341,
+    "total_tickets": 380,
     "team_authors": 24,
-    "team_productivity": 0.4771,
-    "productivity_vs_baseline": "+22.5%",
-    "team_qa_churn": 0.2199,
-    "qa_vs_baseline": "-9.0%",
-    "weeks_of_data": 11,
-    "copilot_users": 28,
-    "copilot_adoption_current": 82.1
+    "team_productivity": 0.4829,
+    "productivity_vs_baseline": "+24.0%",
+    "team_qa_churn": 0.2184,
+    "qa_vs_baseline": "-9.6%",
+    "weeks_of_data": 12,
+    "copilot_users": 30,
+    "copilot_adoption_current": 60.0
   },
   "weekly": [
     {
@@ -207,9 +207,9 @@
       "teamProductivity": 0.4,
       "teamQARate": 0.35,
       "lowConfidence": false,
-      "copilotPct": 25.0,
-      "copilotActiveUsers": 7,
-      "copilotCodeGen": 513
+      "copilotPct": 20.0,
+      "copilotActiveUsers": 6,
+      "copilotCodeGen": 462
     },
     {
       "week": "2025-10-18",
@@ -219,9 +219,9 @@
       "teamProductivity": 0.383333,
       "teamQARate": 0.130435,
       "lowConfidence": false,
-      "copilotPct": 35.7,
-      "copilotActiveUsers": 10,
-      "copilotCodeGen": 866
+      "copilotPct": 30.0,
+      "copilotActiveUsers": 9,
+      "copilotCodeGen": 839
     },
     {
       "week": "2025-10-25",
@@ -231,9 +231,9 @@
       "teamProductivity": 0.44,
       "teamQARate": 0.045455,
       "lowConfidence": false,
-      "copilotPct": 32.1,
-      "copilotActiveUsers": 9,
-      "copilotCodeGen": 1274
+      "copilotPct": 26.7,
+      "copilotActiveUsers": 8,
+      "copilotCodeGen": 1170
     },
     {
       "week": "2025-11-01",
@@ -243,7 +243,7 @@
       "teamProductivity": 0.48,
       "teamQARate": 0.125,
       "lowConfidence": false,
-      "copilotPct": 25.0,
+      "copilotPct": 23.3,
       "copilotActiveUsers": 7,
       "copilotCodeGen": 1083
     },
@@ -255,9 +255,9 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.378378,
       "lowConfidence": false,
-      "copilotPct": 42.9,
-      "copilotActiveUsers": 12,
-      "copilotCodeGen": 1789
+      "copilotPct": 36.7,
+      "copilotActiveUsers": 11,
+      "copilotCodeGen": 1787
     },
     {
       "week": "2025-11-15",
@@ -267,9 +267,9 @@
       "teamProductivity": 0.461538,
       "teamQARate": 0.3,
       "lowConfidence": false,
-      "copilotPct": 50.0,
-      "copilotActiveUsers": 14,
-      "copilotCodeGen": 1323
+      "copilotPct": 43.3,
+      "copilotActiveUsers": 13,
+      "copilotCodeGen": 1307
     },
     {
       "week": "2025-11-22",
@@ -279,9 +279,9 @@
       "teamProductivity": 0.371429,
       "teamQARate": 0.076923,
       "lowConfidence": false,
-      "copilotPct": 53.6,
-      "copilotActiveUsers": 15,
-      "copilotCodeGen": 1363
+      "copilotPct": 46.7,
+      "copilotActiveUsers": 14,
+      "copilotCodeGen": 1265
     },
     {
       "week": "2025-11-29",
@@ -291,9 +291,9 @@
       "teamProductivity": 0.28,
       "teamQARate": 0.0,
       "lowConfidence": false,
-      "copilotPct": 35.7,
-      "copilotActiveUsers": 10,
-      "copilotCodeGen": 501
+      "copilotPct": 30.0,
+      "copilotActiveUsers": 9,
+      "copilotCodeGen": 426
     },
     {
       "week": "2025-12-06",
@@ -303,9 +303,9 @@
       "teamProductivity": 0.461538,
       "teamQARate": 0.166667,
       "lowConfidence": false,
-      "copilotPct": 60.7,
-      "copilotActiveUsers": 17,
-      "copilotCodeGen": 1800
+      "copilotPct": 50.0,
+      "copilotActiveUsers": 15,
+      "copilotCodeGen": 1215
     },
     {
       "week": "2025-12-13",
@@ -315,9 +315,9 @@
       "teamProductivity": 0.5,
       "teamQARate": 0.2,
       "lowConfidence": false,
-      "copilotPct": 50.0,
-      "copilotActiveUsers": 14,
-      "copilotCodeGen": 1699
+      "copilotPct": 40.0,
+      "copilotActiveUsers": 12,
+      "copilotCodeGen": 1379
     },
     {
       "week": "2025-12-20",
@@ -327,9 +327,9 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.135135,
       "lowConfidence": false,
-      "copilotPct": 60.7,
-      "copilotActiveUsers": 17,
-      "copilotCodeGen": 1416
+      "copilotPct": 46.7,
+      "copilotActiveUsers": 14,
+      "copilotCodeGen": 1157
     },
     {
       "week": "2025-12-27",
@@ -339,9 +339,9 @@
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
       "lowConfidence": true,
-      "copilotPct": 42.9,
-      "copilotActiveUsers": 12,
-      "copilotCodeGen": 737
+      "copilotPct": 33.3,
+      "copilotActiveUsers": 10,
+      "copilotCodeGen": 429
     },
     {
       "week": "2026-01-03",
@@ -351,9 +351,9 @@
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
       "lowConfidence": true,
-      "copilotPct": 46.4,
-      "copilotActiveUsers": 13,
-      "copilotCodeGen": 603
+      "copilotPct": 36.7,
+      "copilotActiveUsers": 11,
+      "copilotCodeGen": 380
     },
     {
       "week": "2026-01-10",
@@ -363,9 +363,9 @@
       "teamProductivity": 0.25,
       "teamQARate": 0.0,
       "lowConfidence": false,
-      "copilotPct": 71.4,
-      "copilotActiveUsers": 20,
-      "copilotCodeGen": 1980
+      "copilotPct": 56.7,
+      "copilotActiveUsers": 17,
+      "copilotCodeGen": 1765
     },
     {
       "week": "2026-01-17",
@@ -375,9 +375,9 @@
       "teamProductivity": 0.4125,
       "teamQARate": 0.212121,
       "lowConfidence": false,
-      "copilotPct": 64.3,
-      "copilotActiveUsers": 18,
-      "copilotCodeGen": 2308
+      "copilotPct": 50.0,
+      "copilotActiveUsers": 15,
+      "copilotCodeGen": 2024
     },
     {
       "week": "2026-01-24",
@@ -387,9 +387,9 @@
       "teamProductivity": 0.422222,
       "teamQARate": 0.052632,
       "lowConfidence": false,
-      "copilotPct": 64.3,
-      "copilotActiveUsers": 18,
-      "copilotCodeGen": 2706
+      "copilotPct": 50.0,
+      "copilotActiveUsers": 15,
+      "copilotCodeGen": 2170
     },
     {
       "week": "2026-01-31",
@@ -399,9 +399,9 @@
       "teamProductivity": 0.316667,
       "teamQARate": 0.157895,
       "lowConfidence": false,
-      "copilotPct": 67.9,
-      "copilotActiveUsers": 19,
-      "copilotCodeGen": 4028
+      "copilotPct": 56.7,
+      "copilotActiveUsers": 17,
+      "copilotCodeGen": 3902
     },
     {
       "week": "2026-02-07",
@@ -411,9 +411,9 @@
       "teamProductivity": 0.492308,
       "teamQARate": 0.15625,
       "lowConfidence": false,
-      "copilotPct": 82.1,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 3903
+      "copilotPct": 70.0,
+      "copilotActiveUsers": 21,
+      "copilotCodeGen": 3839
     },
     {
       "week": "2026-02-14",
@@ -423,9 +423,9 @@
       "teamProductivity": 0.413333,
       "teamQARate": 0.258065,
       "lowConfidence": false,
-      "copilotPct": 75.0,
-      "copilotActiveUsers": 21,
-      "copilotCodeGen": 3348
+      "copilotPct": 63.3,
+      "copilotActiveUsers": 19,
+      "copilotCodeGen": 3101
     },
     {
       "week": "2026-02-21",
@@ -435,9 +435,9 @@
       "teamProductivity": 0.329412,
       "teamQARate": 0.392857,
       "lowConfidence": false,
-      "copilotPct": 71.4,
-      "copilotActiveUsers": 20,
-      "copilotCodeGen": 3190
+      "copilotPct": 60.0,
+      "copilotActiveUsers": 18,
+      "copilotCodeGen": 2969
     },
     {
       "week": "2026-02-28",
@@ -447,9 +447,9 @@
       "teamProductivity": 0.466667,
       "teamQARate": 0.178571,
       "lowConfidence": false,
-      "copilotPct": 78.6,
-      "copilotActiveUsers": 22,
-      "copilotCodeGen": 3777
+      "copilotPct": 66.7,
+      "copilotActiveUsers": 20,
+      "copilotCodeGen": 3666
     },
     {
       "week": "2026-03-07",
@@ -459,9 +459,9 @@
       "teamProductivity": 0.633333,
       "teamQARate": 0.105263,
       "lowConfidence": false,
-      "copilotPct": 85.7,
-      "copilotActiveUsers": 24,
-      "copilotCodeGen": 3854
+      "copilotPct": 73.3,
+      "copilotActiveUsers": 22,
+      "copilotCodeGen": 3752
     },
     {
       "week": "2026-03-14",
@@ -471,9 +471,9 @@
       "teamProductivity": 0.5375,
       "teamQARate": 0.209302,
       "lowConfidence": false,
-      "copilotPct": 82.1,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 2461
+      "copilotPct": 70.0,
+      "copilotActiveUsers": 21,
+      "copilotCodeGen": 2351
     },
     {
       "week": "2026-03-21",
@@ -483,9 +483,9 @@
       "teamProductivity": 0.485714,
       "teamQARate": 0.235294,
       "lowConfidence": false,
-      "copilotPct": 85.7,
-      "copilotActiveUsers": 24,
-      "copilotCodeGen": 1946
+      "copilotPct": 73.3,
+      "copilotActiveUsers": 22,
+      "copilotCodeGen": 1876
     },
     {
       "week": "2026-03-28",
@@ -495,9 +495,9 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.432432,
       "lowConfidence": false,
-      "copilotPct": 82.1,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 2842
+      "copilotPct": 70.0,
+      "copilotActiveUsers": 21,
+      "copilotCodeGen": 2719
     },
     {
       "week": "2026-04-04",
@@ -507,33 +507,45 @@
       "teamProductivity": 0.373333,
       "teamQARate": 0.107143,
       "lowConfidence": false,
-      "copilotPct": 78.6,
-      "copilotActiveUsers": 22,
-      "copilotCodeGen": 2909
+      "copilotPct": 66.7,
+      "copilotActiveUsers": 20,
+      "copilotCodeGen": 2661
     },
     {
       "week": "2026-04-11",
       "phase": "mature",
-      "totalTickets": 53,
+      "totalTickets": 51,
       "teamAuthors": 17,
-      "teamProductivity": 0.623529,
-      "teamQARate": 0.09434,
+      "teamProductivity": 0.6,
+      "teamQARate": 0.098039,
       "lowConfidence": false,
-      "copilotPct": 92.9,
-      "copilotActiveUsers": 26,
-      "copilotCodeGen": 2624
+      "copilotPct": 90.0,
+      "copilotActiveUsers": 27,
+      "copilotCodeGen": 4152
     },
     {
       "week": "2026-04-18",
       "phase": "mature",
-      "totalTickets": 20,
-      "teamAuthors": 10,
-      "teamProductivity": 0.4,
-      "teamQARate": 0.3,
+      "totalTickets": 52,
+      "teamAuthors": 20,
+      "teamProductivity": 0.52,
+      "teamQARate": 0.230769,
       "lowConfidence": false,
-      "copilotPct": 82.1,
-      "copilotActiveUsers": 23,
-      "copilotCodeGen": 886
+      "copilotPct": 93.3,
+      "copilotActiveUsers": 28,
+      "copilotCodeGen": 2794
+    },
+    {
+      "week": "2026-04-25",
+      "phase": "mature",
+      "totalTickets": 9,
+      "teamAuthors": 4,
+      "teamProductivity": 0.45,
+      "teamQARate": 0.222222,
+      "lowConfidence": false,
+      "copilotPct": 60.0,
+      "copilotActiveUsers": 18,
+      "copilotCodeGen": 444
     }
   ],
   "baselineWeekly": [
@@ -634,317 +646,325 @@
       "label": "0-300 / 1-10",
       "size": "0-300",
       "complexity": "1-10",
-      "post_tickets": 236,
+      "post_tickets": 259,
       "baseline_tickets": 178,
-      "post_productivity": 0.178788,
+      "post_productivity": 0.179861,
       "baseline_productivity": 0.133835,
-      "post_qa_churn": 0.15678,
+      "post_qa_churn": 0.150579,
       "baseline_qa_churn": 0.207865
     },
     {
       "label": "0-300 / 11+",
       "size": "0-300",
       "complexity": "11+",
-      "post_tickets": 17,
+      "post_tickets": 20,
       "baseline_tickets": 11,
-      "post_productivity": 0.012879,
+      "post_productivity": 0.013889,
       "baseline_productivity": 0.008271,
-      "post_qa_churn": 0.352941,
+      "post_qa_churn": 0.3,
       "baseline_qa_churn": 0.272727
     },
     {
       "label": "301+ / 1-10",
       "size": "301+",
       "complexity": "1-10",
-      "post_tickets": 17,
+      "post_tickets": 21,
       "baseline_tickets": 9,
-      "post_productivity": 0.012879,
+      "post_productivity": 0.014583,
       "baseline_productivity": 0.006767,
-      "post_qa_churn": 0.294118,
+      "post_qa_churn": 0.380952,
       "baseline_qa_churn": 0.222222
     },
     {
       "label": "301+ / 11+",
       "size": "301+",
       "complexity": "11+",
-      "post_tickets": 71,
+      "post_tickets": 80,
       "baseline_tickets": 42,
-      "post_productivity": 0.053788,
+      "post_productivity": 0.055556,
       "baseline_productivity": 0.031579,
-      "post_qa_churn": 0.380282,
+      "post_qa_churn": 0.375,
       "baseline_qa_churn": 0.380952
     }
   ],
   "availability": [
     {
       "week": "2025-10-11",
-      "copilot_active_users": 7,
-      "copilot_total_users": 28,
-      "copilot_pct": 25.0,
-      "code_gen": 513,
-      "loc_added": 356
+      "copilot_active_users": 6,
+      "copilot_total_users": 30,
+      "copilot_pct": 20.0,
+      "code_gen": 462,
+      "loc_added": 355
     },
     {
       "week": "2025-10-18",
-      "copilot_active_users": 10,
-      "copilot_total_users": 28,
-      "copilot_pct": 35.7,
-      "code_gen": 866,
-      "loc_added": 4228
+      "copilot_active_users": 9,
+      "copilot_total_users": 30,
+      "copilot_pct": 30.0,
+      "code_gen": 839,
+      "loc_added": 4225
     },
     {
       "week": "2025-10-25",
-      "copilot_active_users": 9,
-      "copilot_total_users": 28,
-      "copilot_pct": 32.1,
-      "code_gen": 1274,
-      "loc_added": 5232
+      "copilot_active_users": 8,
+      "copilot_total_users": 30,
+      "copilot_pct": 26.7,
+      "code_gen": 1170,
+      "loc_added": 3969
     },
     {
       "week": "2025-11-01",
       "copilot_active_users": 7,
-      "copilot_total_users": 28,
-      "copilot_pct": 25.0,
+      "copilot_total_users": 30,
+      "copilot_pct": 23.3,
       "code_gen": 1083,
       "loc_added": 7464
     },
     {
       "week": "2025-11-08",
-      "copilot_active_users": 12,
-      "copilot_total_users": 28,
-      "copilot_pct": 42.9,
-      "code_gen": 1789,
+      "copilot_active_users": 11,
+      "copilot_total_users": 30,
+      "copilot_pct": 36.7,
+      "code_gen": 1787,
       "loc_added": 2377
     },
     {
       "week": "2025-11-15",
-      "copilot_active_users": 14,
-      "copilot_total_users": 28,
-      "copilot_pct": 50.0,
-      "code_gen": 1323,
-      "loc_added": 2899
+      "copilot_active_users": 13,
+      "copilot_total_users": 30,
+      "copilot_pct": 43.3,
+      "code_gen": 1307,
+      "loc_added": 2895
     },
     {
       "week": "2025-11-22",
-      "copilot_active_users": 15,
-      "copilot_total_users": 28,
-      "copilot_pct": 53.6,
-      "code_gen": 1363,
-      "loc_added": 6236
+      "copilot_active_users": 14,
+      "copilot_total_users": 30,
+      "copilot_pct": 46.7,
+      "code_gen": 1265,
+      "loc_added": 4402
     },
     {
       "week": "2025-11-29",
-      "copilot_active_users": 10,
-      "copilot_total_users": 28,
-      "copilot_pct": 35.7,
-      "code_gen": 501,
-      "loc_added": 2358
+      "copilot_active_users": 9,
+      "copilot_total_users": 30,
+      "copilot_pct": 30.0,
+      "code_gen": 426,
+      "loc_added": 2281
     },
     {
       "week": "2025-12-06",
-      "copilot_active_users": 17,
-      "copilot_total_users": 28,
-      "copilot_pct": 60.7,
-      "code_gen": 1800,
-      "loc_added": 9478
+      "copilot_active_users": 15,
+      "copilot_total_users": 30,
+      "copilot_pct": 50.0,
+      "code_gen": 1215,
+      "loc_added": 789
     },
     {
       "week": "2025-12-13",
-      "copilot_active_users": 14,
-      "copilot_total_users": 28,
-      "copilot_pct": 50.0,
-      "code_gen": 1699,
-      "loc_added": 4136
+      "copilot_active_users": 12,
+      "copilot_total_users": 30,
+      "copilot_pct": 40.0,
+      "code_gen": 1379,
+      "loc_added": 2582
     },
     {
       "week": "2025-12-20",
-      "copilot_active_users": 17,
-      "copilot_total_users": 28,
-      "copilot_pct": 60.7,
-      "code_gen": 1416,
-      "loc_added": 9331
+      "copilot_active_users": 14,
+      "copilot_total_users": 30,
+      "copilot_pct": 46.7,
+      "code_gen": 1157,
+      "loc_added": 8608
     },
     {
       "week": "2025-12-27",
-      "copilot_active_users": 12,
-      "copilot_total_users": 28,
-      "copilot_pct": 42.9,
-      "code_gen": 737,
-      "loc_added": 7470
+      "copilot_active_users": 10,
+      "copilot_total_users": 30,
+      "copilot_pct": 33.3,
+      "code_gen": 429,
+      "loc_added": 2833
     },
     {
       "week": "2026-01-03",
-      "copilot_active_users": 13,
-      "copilot_total_users": 28,
-      "copilot_pct": 46.4,
-      "code_gen": 603,
-      "loc_added": 13827
+      "copilot_active_users": 11,
+      "copilot_total_users": 30,
+      "copilot_pct": 36.7,
+      "code_gen": 380,
+      "loc_added": 2973
     },
     {
       "week": "2026-01-10",
-      "copilot_active_users": 20,
-      "copilot_total_users": 28,
-      "copilot_pct": 71.4,
-      "code_gen": 1980,
-      "loc_added": 27225
+      "copilot_active_users": 17,
+      "copilot_total_users": 30,
+      "copilot_pct": 56.7,
+      "code_gen": 1765,
+      "loc_added": 23009
     },
     {
       "week": "2026-01-17",
-      "copilot_active_users": 18,
-      "copilot_total_users": 28,
-      "copilot_pct": 64.3,
-      "code_gen": 2308,
-      "loc_added": 31596
+      "copilot_active_users": 15,
+      "copilot_total_users": 30,
+      "copilot_pct": 50.0,
+      "code_gen": 2024,
+      "loc_added": 22141
     },
     {
       "week": "2026-01-24",
-      "copilot_active_users": 18,
-      "copilot_total_users": 28,
-      "copilot_pct": 64.3,
-      "code_gen": 2706,
-      "loc_added": 44954
+      "copilot_active_users": 15,
+      "copilot_total_users": 30,
+      "copilot_pct": 50.0,
+      "code_gen": 2170,
+      "loc_added": 19001
     },
     {
       "week": "2026-01-31",
-      "copilot_active_users": 19,
-      "copilot_total_users": 28,
-      "copilot_pct": 67.9,
-      "code_gen": 4028,
-      "loc_added": 50393
+      "copilot_active_users": 17,
+      "copilot_total_users": 30,
+      "copilot_pct": 56.7,
+      "code_gen": 3902,
+      "loc_added": 49937
     },
     {
       "week": "2026-02-07",
-      "copilot_active_users": 23,
-      "copilot_total_users": 28,
-      "copilot_pct": 82.1,
-      "code_gen": 3903,
-      "loc_added": 22054
+      "copilot_active_users": 21,
+      "copilot_total_users": 30,
+      "copilot_pct": 70.0,
+      "code_gen": 3839,
+      "loc_added": 22018
     },
     {
       "week": "2026-02-14",
-      "copilot_active_users": 21,
-      "copilot_total_users": 28,
-      "copilot_pct": 75.0,
-      "code_gen": 3348,
-      "loc_added": 14268
+      "copilot_active_users": 19,
+      "copilot_total_users": 30,
+      "copilot_pct": 63.3,
+      "code_gen": 3101,
+      "loc_added": 13420
     },
     {
       "week": "2026-02-21",
-      "copilot_active_users": 20,
-      "copilot_total_users": 28,
-      "copilot_pct": 71.4,
-      "code_gen": 3190,
-      "loc_added": 25064
+      "copilot_active_users": 18,
+      "copilot_total_users": 30,
+      "copilot_pct": 60.0,
+      "code_gen": 2969,
+      "loc_added": 20957
     },
     {
       "week": "2026-02-28",
-      "copilot_active_users": 22,
-      "copilot_total_users": 28,
-      "copilot_pct": 78.6,
-      "code_gen": 3777,
-      "loc_added": 25903
+      "copilot_active_users": 20,
+      "copilot_total_users": 30,
+      "copilot_pct": 66.7,
+      "code_gen": 3666,
+      "loc_added": 25749
     },
     {
       "week": "2026-03-07",
-      "copilot_active_users": 24,
-      "copilot_total_users": 28,
-      "copilot_pct": 85.7,
-      "code_gen": 3854,
-      "loc_added": 29391
+      "copilot_active_users": 22,
+      "copilot_total_users": 30,
+      "copilot_pct": 73.3,
+      "code_gen": 3752,
+      "loc_added": 28248
     },
     {
       "week": "2026-03-14",
-      "copilot_active_users": 23,
-      "copilot_total_users": 28,
-      "copilot_pct": 82.1,
-      "code_gen": 2461,
-      "loc_added": 26622
+      "copilot_active_users": 21,
+      "copilot_total_users": 30,
+      "copilot_pct": 70.0,
+      "code_gen": 2351,
+      "loc_added": 26568
     },
     {
       "week": "2026-03-21",
-      "copilot_active_users": 24,
-      "copilot_total_users": 28,
-      "copilot_pct": 85.7,
-      "code_gen": 1946,
-      "loc_added": 35621
+      "copilot_active_users": 22,
+      "copilot_total_users": 30,
+      "copilot_pct": 73.3,
+      "code_gen": 1876,
+      "loc_added": 34343
     },
     {
       "week": "2026-03-28",
-      "copilot_active_users": 23,
-      "copilot_total_users": 28,
-      "copilot_pct": 82.1,
-      "code_gen": 2842,
-      "loc_added": 26819
+      "copilot_active_users": 21,
+      "copilot_total_users": 30,
+      "copilot_pct": 70.0,
+      "code_gen": 2719,
+      "loc_added": 23368
     },
     {
       "week": "2026-04-04",
-      "copilot_active_users": 22,
-      "copilot_total_users": 28,
-      "copilot_pct": 78.6,
-      "code_gen": 2909,
-      "loc_added": 28157
+      "copilot_active_users": 20,
+      "copilot_total_users": 30,
+      "copilot_pct": 66.7,
+      "code_gen": 2661,
+      "loc_added": 25126
     },
     {
       "week": "2026-04-11",
-      "copilot_active_users": 26,
-      "copilot_total_users": 28,
-      "copilot_pct": 92.9,
-      "code_gen": 2624,
-      "loc_added": 28025
+      "copilot_active_users": 27,
+      "copilot_total_users": 30,
+      "copilot_pct": 90.0,
+      "code_gen": 4152,
+      "loc_added": 47542
     },
     {
       "week": "2026-04-18",
-      "copilot_active_users": 23,
-      "copilot_total_users": 28,
-      "copilot_pct": 82.1,
-      "code_gen": 886,
-      "loc_added": 10580
+      "copilot_active_users": 28,
+      "copilot_total_users": 30,
+      "copilot_pct": 93.3,
+      "code_gen": 2794,
+      "loc_added": 38069
+    },
+    {
+      "week": "2026-04-25",
+      "copilot_active_users": 18,
+      "copilot_total_users": 30,
+      "copilot_pct": 60.0,
+      "code_gen": 444,
+      "loc_added": 7145
     }
   ],
   "copilotAdoption": {
-    "totalCopilotUsers": 28,
+    "totalCopilotUsers": 30,
     "userTiers": {
-      "heavy": 21,
-      "medium": 5,
-      "light": 2
+      "heavy": 19,
+      "medium": 6,
+      "light": 5
     },
-    "avgDailyUsersRecent": 14.0,
-    "adoptionTrend": "10 \u2192 27 monthly users",
+    "avgDailyUsersRecent": 13.6,
+    "adoptionTrend": "9 \u2192 29 monthly users",
     "weekly": [
       {
         "week": "2025-10-11",
-        "activeUsers": 7,
-        "copilotPct": 25.0,
-        "totalCodeGen": 513,
-        "totalCodeAccept": 121,
+        "activeUsers": 6,
+        "copilotPct": 20.0,
+        "totalCodeGen": 462,
+        "totalCodeAccept": 120,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 356
+        "locAdded": 355
       },
       {
         "week": "2025-10-18",
-        "activeUsers": 10,
-        "copilotPct": 35.7,
-        "totalCodeGen": 866,
-        "totalCodeAccept": 277,
+        "activeUsers": 9,
+        "copilotPct": 30.0,
+        "totalCodeGen": 839,
+        "totalCodeAccept": 275,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 4228
+        "locAdded": 4225
       },
       {
         "week": "2025-10-25",
-        "activeUsers": 9,
-        "copilotPct": 32.1,
-        "totalCodeGen": 1274,
-        "totalCodeAccept": 433,
+        "activeUsers": 8,
+        "copilotPct": 26.7,
+        "totalCodeGen": 1170,
+        "totalCodeAccept": 429,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 5232
+        "locAdded": 3969
       },
       {
         "week": "2025-11-01",
         "activeUsers": 7,
-        "copilotPct": 25.0,
+        "copilotPct": 23.3,
         "totalCodeGen": 1083,
         "totalCodeAccept": 342,
         "agentUsers": 0,
@@ -953,9 +973,9 @@
       },
       {
         "week": "2025-11-08",
-        "activeUsers": 12,
-        "copilotPct": 42.9,
-        "totalCodeGen": 1789,
+        "activeUsers": 11,
+        "copilotPct": 36.7,
+        "totalCodeGen": 1787,
         "totalCodeAccept": 566,
         "agentUsers": 0,
         "chatUsers": 0,
@@ -963,246 +983,256 @@
       },
       {
         "week": "2025-11-15",
-        "activeUsers": 14,
-        "copilotPct": 50.0,
-        "totalCodeGen": 1323,
-        "totalCodeAccept": 418,
+        "activeUsers": 13,
+        "copilotPct": 43.3,
+        "totalCodeGen": 1307,
+        "totalCodeAccept": 414,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 2899
+        "locAdded": 2895
       },
       {
         "week": "2025-11-22",
-        "activeUsers": 15,
-        "copilotPct": 53.6,
-        "totalCodeGen": 1363,
-        "totalCodeAccept": 329,
+        "activeUsers": 14,
+        "copilotPct": 46.7,
+        "totalCodeGen": 1265,
+        "totalCodeAccept": 300,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 6236
+        "locAdded": 4402
       },
       {
         "week": "2025-11-29",
-        "activeUsers": 10,
-        "copilotPct": 35.7,
-        "totalCodeGen": 501,
-        "totalCodeAccept": 145,
+        "activeUsers": 9,
+        "copilotPct": 30.0,
+        "totalCodeGen": 426,
+        "totalCodeAccept": 115,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 2358
+        "locAdded": 2281
       },
       {
         "week": "2025-12-06",
-        "activeUsers": 17,
-        "copilotPct": 60.7,
-        "totalCodeGen": 1800,
-        "totalCodeAccept": 565,
+        "activeUsers": 15,
+        "copilotPct": 50.0,
+        "totalCodeGen": 1215,
+        "totalCodeAccept": 325,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 9478
+        "locAdded": 789
       },
       {
         "week": "2025-12-13",
-        "activeUsers": 14,
-        "copilotPct": 50.0,
-        "totalCodeGen": 1699,
-        "totalCodeAccept": 385,
+        "activeUsers": 12,
+        "copilotPct": 40.0,
+        "totalCodeGen": 1379,
+        "totalCodeAccept": 350,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 4136
+        "locAdded": 2582
       },
       {
         "week": "2025-12-20",
-        "activeUsers": 17,
-        "copilotPct": 60.7,
-        "totalCodeGen": 1416,
-        "totalCodeAccept": 294,
+        "activeUsers": 14,
+        "copilotPct": 46.7,
+        "totalCodeGen": 1157,
+        "totalCodeAccept": 231,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 9331
+        "locAdded": 8608
       },
       {
         "week": "2025-12-27",
-        "activeUsers": 12,
-        "copilotPct": 42.9,
-        "totalCodeGen": 737,
-        "totalCodeAccept": 165,
+        "activeUsers": 10,
+        "copilotPct": 33.3,
+        "totalCodeGen": 429,
+        "totalCodeAccept": 97,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 7470
+        "locAdded": 2833
       },
       {
         "week": "2026-01-03",
-        "activeUsers": 13,
-        "copilotPct": 46.4,
-        "totalCodeGen": 603,
-        "totalCodeAccept": 219,
+        "activeUsers": 11,
+        "copilotPct": 36.7,
+        "totalCodeGen": 380,
+        "totalCodeAccept": 91,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 13827
+        "locAdded": 2973
       },
       {
         "week": "2026-01-10",
-        "activeUsers": 20,
-        "copilotPct": 71.4,
-        "totalCodeGen": 1980,
-        "totalCodeAccept": 473,
+        "activeUsers": 17,
+        "copilotPct": 56.7,
+        "totalCodeGen": 1765,
+        "totalCodeAccept": 354,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 27225
+        "locAdded": 23009
       },
       {
         "week": "2026-01-17",
-        "activeUsers": 18,
-        "copilotPct": 64.3,
-        "totalCodeGen": 2308,
-        "totalCodeAccept": 592,
+        "activeUsers": 15,
+        "copilotPct": 50.0,
+        "totalCodeGen": 2024,
+        "totalCodeAccept": 366,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 31596
+        "locAdded": 22141
       },
       {
         "week": "2026-01-24",
-        "activeUsers": 18,
-        "copilotPct": 64.3,
-        "totalCodeGen": 2706,
-        "totalCodeAccept": 844,
+        "activeUsers": 15,
+        "copilotPct": 50.0,
+        "totalCodeGen": 2170,
+        "totalCodeAccept": 445,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 44954
+        "locAdded": 19001
       },
       {
         "week": "2026-01-31",
-        "activeUsers": 19,
-        "copilotPct": 67.9,
-        "totalCodeGen": 4028,
-        "totalCodeAccept": 1021,
+        "activeUsers": 17,
+        "copilotPct": 56.7,
+        "totalCodeGen": 3902,
+        "totalCodeAccept": 966,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 50393
+        "locAdded": 49937
       },
       {
         "week": "2026-02-07",
-        "activeUsers": 23,
-        "copilotPct": 82.1,
-        "totalCodeGen": 3903,
-        "totalCodeAccept": 991,
+        "activeUsers": 21,
+        "copilotPct": 70.0,
+        "totalCodeGen": 3839,
+        "totalCodeAccept": 970,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 22054
+        "locAdded": 22018
       },
       {
         "week": "2026-02-14",
-        "activeUsers": 21,
-        "copilotPct": 75.0,
-        "totalCodeGen": 3348,
-        "totalCodeAccept": 1245,
+        "activeUsers": 19,
+        "copilotPct": 63.3,
+        "totalCodeGen": 3101,
+        "totalCodeAccept": 1097,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 14268
+        "locAdded": 13420
       },
       {
         "week": "2026-02-21",
-        "activeUsers": 20,
-        "copilotPct": 71.4,
-        "totalCodeGen": 3190,
-        "totalCodeAccept": 983,
+        "activeUsers": 18,
+        "copilotPct": 60.0,
+        "totalCodeGen": 2969,
+        "totalCodeAccept": 876,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 25064
+        "locAdded": 20957
       },
       {
         "week": "2026-02-28",
-        "activeUsers": 22,
-        "copilotPct": 78.6,
-        "totalCodeGen": 3777,
-        "totalCodeAccept": 825,
+        "activeUsers": 20,
+        "copilotPct": 66.7,
+        "totalCodeGen": 3666,
+        "totalCodeAccept": 774,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 25903
+        "locAdded": 25749
       },
       {
         "week": "2026-03-07",
-        "activeUsers": 24,
-        "copilotPct": 85.7,
-        "totalCodeGen": 3854,
-        "totalCodeAccept": 969,
+        "activeUsers": 22,
+        "copilotPct": 73.3,
+        "totalCodeGen": 3752,
+        "totalCodeAccept": 926,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 29391
+        "locAdded": 28248
       },
       {
         "week": "2026-03-14",
-        "activeUsers": 23,
-        "copilotPct": 82.1,
-        "totalCodeGen": 2461,
-        "totalCodeAccept": 555,
+        "activeUsers": 21,
+        "copilotPct": 70.0,
+        "totalCodeGen": 2351,
+        "totalCodeAccept": 529,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 26622
+        "locAdded": 26568
       },
       {
         "week": "2026-03-21",
-        "activeUsers": 24,
-        "copilotPct": 85.7,
-        "totalCodeGen": 1946,
-        "totalCodeAccept": 460,
+        "activeUsers": 22,
+        "copilotPct": 73.3,
+        "totalCodeGen": 1876,
+        "totalCodeAccept": 424,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 35621
+        "locAdded": 34343
       },
       {
         "week": "2026-03-28",
-        "activeUsers": 23,
-        "copilotPct": 82.1,
-        "totalCodeGen": 2842,
-        "totalCodeAccept": 821,
+        "activeUsers": 21,
+        "copilotPct": 70.0,
+        "totalCodeGen": 2719,
+        "totalCodeAccept": 764,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 26819
+        "locAdded": 23368
       },
       {
         "week": "2026-04-04",
-        "activeUsers": 22,
-        "copilotPct": 78.6,
-        "totalCodeGen": 2909,
-        "totalCodeAccept": 821,
+        "activeUsers": 20,
+        "copilotPct": 66.7,
+        "totalCodeGen": 2661,
+        "totalCodeAccept": 740,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 28157
+        "locAdded": 25126
       },
       {
         "week": "2026-04-11",
-        "activeUsers": 26,
-        "copilotPct": 92.9,
-        "totalCodeGen": 2624,
-        "totalCodeAccept": 846,
+        "activeUsers": 27,
+        "copilotPct": 90.0,
+        "totalCodeGen": 4152,
+        "totalCodeAccept": 1394,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 28025
+        "locAdded": 47542
       },
       {
         "week": "2026-04-18",
-        "activeUsers": 23,
-        "copilotPct": 82.1,
-        "totalCodeGen": 886,
-        "totalCodeAccept": 309,
+        "activeUsers": 28,
+        "copilotPct": 93.3,
+        "totalCodeGen": 2794,
+        "totalCodeAccept": 1003,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 10580
+        "locAdded": 38069
+      },
+      {
+        "week": "2026-04-25",
+        "activeUsers": 18,
+        "copilotPct": 60.0,
+        "totalCodeGen": 444,
+        "totalCodeAccept": 189,
+        "agentUsers": 0,
+        "chatUsers": 0,
+        "locAdded": 7145
       }
     ]
   },
   "copilotPrCorrelation": {
-    "totalTickets": 341,
-    "assistedTickets": 306,
-    "nonAssistedTickets": 35,
-    "assistedProductivity": 0.4322,
-    "nonAssistedProductivity": 0.4407,
-    "productivityLift": "-1.9%",
-    "assistedQAChurn": 0.2255,
-    "nonAssistedQAChurn": 0.1714,
-    "qaChurnDelta": "+31.5%",
+    "totalTickets": 380,
+    "assistedTickets": 337,
+    "nonAssistedTickets": 43,
+    "assistedProductivity": 0.4472,
+    "nonAssistedProductivity": 0.425,
+    "productivityLift": "+5.2%",
+    "assistedQAChurn": 0.2285,
+    "nonAssistedQAChurn": 0.1395,
+    "qaChurnDelta": "+63.7%",
     "weeklyComparison": [
       {
         "week": "2026-02-07",
@@ -1215,21 +1245,21 @@
       },
       {
         "week": "2026-02-14",
-        "assistedTickets": 28,
-        "nonAssistedTickets": 3,
-        "assistedProductivity": 0.373333,
-        "nonAssistedProductivity": 0.3,
-        "assistedQARate": 0.285714,
+        "assistedTickets": 27,
+        "nonAssistedTickets": 4,
+        "assistedProductivity": 0.385714,
+        "nonAssistedProductivity": 0.266667,
+        "assistedQARate": 0.296296,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-02-21",
-        "assistedTickets": 24,
-        "nonAssistedTickets": 4,
-        "assistedProductivity": 0.342857,
-        "nonAssistedProductivity": 0.266667,
-        "assistedQARate": 0.333333,
-        "nonAssistedQARate": 0.75
+        "assistedTickets": 23,
+        "nonAssistedTickets": 5,
+        "assistedProductivity": 0.353846,
+        "nonAssistedProductivity": 0.25,
+        "assistedQARate": 0.347826,
+        "nonAssistedQARate": 0.6
       },
       {
         "week": "2026-02-28",
@@ -1242,20 +1272,20 @@
       },
       {
         "week": "2026-03-07",
-        "assistedTickets": 36,
-        "nonAssistedTickets": 2,
-        "assistedProductivity": 0.6,
-        "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.111111,
+        "assistedTickets": 35,
+        "nonAssistedTickets": 3,
+        "assistedProductivity": 0.636364,
+        "nonAssistedProductivity": 0.3,
+        "assistedQARate": 0.114286,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-03-14",
-        "assistedTickets": 37,
-        "nonAssistedTickets": 6,
-        "assistedProductivity": 0.493333,
-        "nonAssistedProductivity": 0.6,
-        "assistedQARate": 0.243243,
+        "assistedTickets": 35,
+        "nonAssistedTickets": 8,
+        "assistedProductivity": 0.466667,
+        "nonAssistedProductivity": 0.533333,
+        "assistedQARate": 0.257143,
         "nonAssistedQARate": 0.0
       },
       {
@@ -1269,39 +1299,48 @@
       },
       {
         "week": "2026-03-28",
-        "assistedTickets": 37,
-        "nonAssistedTickets": 0,
-        "assistedProductivity": 0.493333,
-        "nonAssistedProductivity": null,
-        "assistedQARate": 0.432432,
-        "nonAssistedQARate": null
+        "assistedTickets": 35,
+        "nonAssistedTickets": 2,
+        "assistedProductivity": 0.5,
+        "nonAssistedProductivity": 0.4,
+        "assistedQARate": 0.457143,
+        "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-04-04",
-        "assistedTickets": 26,
-        "nonAssistedTickets": 2,
-        "assistedProductivity": 0.371429,
-        "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.115385,
+        "assistedTickets": 25,
+        "nonAssistedTickets": 3,
+        "assistedProductivity": 0.384615,
+        "nonAssistedProductivity": 0.3,
+        "assistedQARate": 0.12,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-04-11",
-        "assistedTickets": 51,
+        "assistedTickets": 49,
         "nonAssistedTickets": 2,
-        "assistedProductivity": 0.6375,
+        "assistedProductivity": 0.6125,
         "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.098039,
+        "assistedQARate": 0.102041,
         "nonAssistedQARate": 0.0
       },
       {
         "week": "2026-04-18",
-        "assistedTickets": 14,
+        "assistedTickets": 46,
         "nonAssistedTickets": 6,
-        "assistedProductivity": 0.35,
-        "nonAssistedProductivity": 0.4,
-        "assistedQARate": 0.357143,
+        "assistedProductivity": 0.484211,
+        "nonAssistedProductivity": 0.6,
+        "assistedQARate": 0.23913,
         "nonAssistedQARate": 0.166667
+      },
+      {
+        "week": "2026-04-25",
+        "assistedTickets": 9,
+        "nonAssistedTickets": 0,
+        "assistedProductivity": 0.45,
+        "nonAssistedProductivity": null,
+        "assistedQARate": 0.222222,
+        "nonAssistedQARate": null
       }
     ],
     "copilotIntensity": {
@@ -1309,19 +1348,19 @@
         "tickets": 18,
         "productivity": 0.12,
         "qaChurn": 0.0,
-        "avgSuggestions": 4.4
+        "avgSuggestions": 4.1
       },
       "medium": {
-        "tickets": 55,
-        "productivity": 0.0873,
-        "qaChurn": 0.1091,
-        "avgSuggestions": 30.7
+        "tickets": 44,
+        "productivity": 0.0978,
+        "qaChurn": 0.1364,
+        "avgSuggestions": 29.2
       },
       "high": {
-        "tickets": 233,
-        "productivity": 0.1842,
-        "qaChurn": 0.2704,
-        "avgSuggestions": 300.1
+        "tickets": 275,
+        "productivity": 0.1993,
+        "qaChurn": 0.2582,
+        "avgSuggestions": 301.2
       }
     }
   },
@@ -1334,13 +1373,13 @@
     },
     "mature": {
       "unique_projects": 1,
-      "total_tickets": 341,
-      "tickets_per_project": 31.0,
+      "total_tickets": 380,
+      "tickets_per_project": 31.67,
       "avg_projects_per_week": 1.0
     },
     "delta": {
       "projects_vs_baseline": "+0.0%",
-      "velocity_vs_baseline": "+80.9%",
+      "velocity_vs_baseline": "+84.8%",
       "breadth_vs_baseline": "+0.0%"
     },
     "weekly": [
@@ -1628,27 +1667,34 @@
         "week": "2026-04-11",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 53,
-        "ticketsPerProject": 53.0
+        "totalTickets": 51,
+        "ticketsPerProject": 51.0
       },
       {
         "week": "2026-04-18",
         "phase": "mature",
         "activeProjects": 1,
-        "totalTickets": 20,
-        "ticketsPerProject": 20.0
+        "totalTickets": 52,
+        "ticketsPerProject": 52.0
+      },
+      {
+        "week": "2026-04-25",
+        "phase": "mature",
+        "activeProjects": 1,
+        "totalTickets": 9,
+        "ticketsPerProject": 9.0
       }
     ],
     "topProjects": [
       {
         "project": "EL",
         "baselineTickets": 240,
-        "matureTickets": 341,
+        "matureTickets": 380,
         "baselineWeeksActive": 14,
-        "matureWeeksActive": 11,
+        "matureWeeksActive": 12,
         "baselineVelocity": 17.14,
-        "matureVelocity": 31.0,
-        "velocityDelta": "+80.9%"
+        "matureVelocity": 31.67,
+        "velocityDelta": "+84.8%"
       }
     ]
   }
