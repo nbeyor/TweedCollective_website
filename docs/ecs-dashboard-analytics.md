@@ -112,6 +112,54 @@ All analytics are organized around a three-phase timeline:
 
 ---
 
+## Sub-Pages
+
+The main dashboard links to three drill-down pages. They share the three-phase model and the Saturday-ending week alignment, but compute additional metrics not shown on the main dashboard.
+
+### ROI Analysis — Capacity & Dollar Value (`/documents/ecs-sdlc-dashboard/roi`)
+
+- **Purpose:** Translate the measured productivity uplift into an estimated capacity gain (FTE-equivalent) and dollar value.
+- **Aggregation unit:** Month (`YYYY-MM`), built by grouping confident weekly rows that also have Copilot telemetry. Low-confidence weeks and weeks missing `copilotActiveUsers` / `copilotPct` are dropped before aggregating.
+- **Per-month inputs (computed client-side in `RoiCapacityChart.tsx`):**
+  - `avgProductivity` — mean of that month's weekly `teamProductivity` values.
+  - `avgCopilotUsers` — mean of that month's weekly distinct active Copilot users.
+  - `avgAdoptionPct` — mean of that month's weekly Copilot adoption percentage.
+- **Per-month outputs:**
+  - `upliftPct = max(0, (avgProductivity − baseline.productivity) / baseline.productivity)` — floored at zero so months below baseline don't generate negative "savings."
+  - `fteEquivalent = avgCopilotUsers × upliftPct` — the month's productivity gain expressed in whole-FTE terms.
+  - `dollarValue = fteEquivalent × (fully-loaded annual cost / 12)`.
+  - `cumulativeDollar` — running sum of `dollarValue` across months in chronological order.
+- **Key assumption — hard-coded:** Fully-loaded annual cost per developer = **$150,000** (`RoiCapacityChart.tsx:37`). This is not configurable and is not currently surfaced in the UI. Anyone reading the chart should know the dollar figures scale linearly with this constant.
+- **Chart:** Monthly bars for capacity gain (FTE-equivalent), overlaid with a line for cumulative dollar value.
+
+### Project Throughput (`/documents/ecs-sdlc-dashboard/projects`)
+
+- **Purpose:** Show whether AI adoption is broadening the team's output across *more* projects, not just accelerating a single area.
+- **"Project"** = the Jira project key prefix extracted during ticket aggregation (pipeline `aggregate_to_tickets`).
+- **Period summary (baseline vs mature), per period:**
+  - `unique_projects` — distinct projects that saw any completed ticket.
+  - `total_tickets` — ticket count in the period.
+  - `tickets_per_project` — **mean of weekly ratios**: for each week, `tickets_that_week / distinct_projects_that_week`; then averaged across weeks in the period. This is time-normalized so periods of different length are comparable.
+  - `avg_projects_per_week` — mean of weekly distinct-project counts (a "breadth" measure).
+- **Weekly series:** Per week, emits `activeProjects`, `totalTickets`, `ticketsPerProject` (= `totalTickets / activeProjects`), and `phase` tag.
+- **Rolling velocity line:** 4-week rolling mean of `ticketsPerProject` (client-side in `ProjectThroughputChart.tsx`).
+- **Top-10 table:** Per project, compares baseline vs mature `tickets`, `weeksActive`, and `velocity = tickets / weeksActive` (tickets per active week, not per calendar week). Ranked by mature ticket count (then baseline tickets as tiebreaker). The `velocityDelta` column shows the percentage change vs baseline; `N/A` is shown when baseline velocity is zero.
+
+### Size × Complexity Trends (`/documents/ecs-sdlc-dashboard/size-complexity-trends`)
+
+- **Purpose:** Same 2×2 size/complexity grid as the heatmaps, but as **time series** rather than single-point period comparisons — lets you see *when* the change happened in each bucket.
+- **Per-cell weekly row** (pipeline `compute_size_complexity_weekly`), emitted for every (week × size × complexity) combination including empty buckets:
+  - `tickets` — ticket count in that bucket that week.
+  - `authors` — distinct author UUIDs in that bucket that week (split from the aggregated `AuthorUUIDs` list).
+  - `productivity = tickets / (max(authors, 1) × 5 workdays)` — note the `max(..., 1)` guard prevents divide-by-zero on empty weeks.
+  - `qaChurn` — mean of `HasQAChurn` in the bucket that week, or `null` if no tickets.
+  - `lowConfidence` — `true` when `tickets < 5`.
+  - `phase` — baseline / transition / mature tag.
+- **Rendering:** One small-multiple chart per bucket. User can toggle metric (productivity / QA churn / both) and smoothing (raw vs 4-week rolling mean). A horizontal reference line per bucket shows that bucket's baseline value from the heatmap dataset.
+- **Nuance — different rolling-avg rule:** The rolling mean here emits a value whenever ≥1 data point exists in the window (`SizeComplexityTrends.tsx:49–64`), unlike the main-dashboard rolling averages which require ≥2. This is intentional — per-bucket series are sparse and a ≥2 rule would leave too many gaps — but it means the earliest weeks of a trend line can be based on a single point and should not be read as "stable."
+
+---
+
 ## Key Definitions
 
 | Term | Definition |
@@ -119,10 +167,23 @@ All analytics are organized around a three-phase timeline:
 | **Ticket** | A Jira ticket, which may have one or more associated pull requests. PRs are aggregated to the ticket level. |
 | **Week ending** | Saturday-ending ISO week. PR data and Copilot telemetry share this alignment. |
 | **Confident week** | A week with ≥5 total tickets. Low-confidence weeks are excluded from rolling averages. |
-| **Rolling average** | 4-week sliding window over confident weeks only. Requires ≥2 data points in the window to produce a value. |
+| **Rolling average** | 4-week sliding window over confident weeks only. Requires ≥2 data points in the window to produce a value. (Exception: Size × Complexity Trends requires only ≥1.) |
 | **QA churn** | Any ticket where `qa_churn_lines > 0` across its PRs. Indicates QA rework was needed. |
 | **Size bucket** | Sum of `pr_lines` across all PRs for the ticket: `0–300` or `301+`. |
 | **Complexity bucket** | Maximum `pr_files` from any single PR for the ticket: `1–10` or `11+`. |
-| **User tier** | Copilot usage intensity based on cumulative active days: Heavy (≥30), Medium (10–29), Light (<10). |
+| **User tier** | Copilot usage intensity based on cumulative active days over the entire telemetry dataset (not per-period): Heavy (≥30), Medium (10–29), Light (<10). |
 | **Copilot-assisted** | A ticket whose PR author had Copilot telemetry activity during the same Saturday-ending week as the PR completion. |
 | **FTE-day** | One developer working one day. Productivity denominator = unique authors × 5 workdays per week. |
+| **Project** | The Jira project key prefix of a ticket. Used for breadth/velocity analysis on the Projects page. |
+
+---
+
+## Implementation Notes
+
+A few implementation details that don't affect *what* each metric means, but that a reader reviewing the numbers will want to know:
+
+- **Pipeline vs client-side:** Most metrics (baseline comparisons, per-bucket productivity, weekly series, Copilot correlation) are precomputed in `pipeline/refresh_copilot.py` and written to `/public/data/copilot-dashboard-data.json`. The client only does light derivations: rolling averages, ROI monthly aggregation, and chart styling. If a number looks wrong, check the pipeline first.
+- **Mean-of-weekly vs pooled:** Productivity comparisons (KPI, heatmaps' period productivity, Copilot-assisted vs not) use the **mean-of-weekly** pattern: compute per-week productivity, then average across weeks in the period. QA churn comparisons use the **pooled / overall rate** pattern: `tickets_with_churn / total_tickets` across the whole period. These are intentionally different — the productivity numerator is small and noisy at the weekly level, so mean-of-weekly dampens outliers; QA churn is a simple ratio where pooling is cleaner.
+- **"Current" week:** KPI cards labeled "(current)" or "(this week)" read the most recent Saturday-ending week in the Copilot telemetry. The dashboard also filters out any week ending after the configured data range end, so the final partial week does not appear.
+- **Adoption delta line:** The Copilot Adoption KPI's delta arrow compares **first-month unique users** vs **last-month unique users** (monthly granularity), not week-over-week. That's why it can show a very different direction from the weekly bar chart.
+- **ROI floor:** The ROI page clamps monthly uplift at zero. A month where average productivity dipped below baseline contributes $0, not a negative value. This prevents "negative ROI" artifacts from single noisy months but also means the chart understates variability.
