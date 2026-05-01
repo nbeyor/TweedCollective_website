@@ -62,7 +62,13 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
     if (w.lowConfidence) continue
     if (w.copilotActiveUsers == null || w.copilotPct == null) continue
 
-    const monthKey = w.week.slice(0, 7) // "YYYY-MM"
+    // w.week is the Saturday week-end label. Attribute to the month containing
+    // the week's midpoint (Wednesday = Saturday − 3 days) so boundary weeks land
+    // in the month where the majority of their days fall.
+    const weekEnd = new Date(w.week + 'T00:00:00Z')
+    const midpoint = new Date(weekEnd)
+    midpoint.setUTCDate(midpoint.getUTCDate() - 3)
+    const monthKey = `${midpoint.getUTCFullYear()}-${String(midpoint.getUTCMonth() + 1).padStart(2, '0')}`
     if (!byMonth.has(monthKey)) {
       byMonth.set(monthKey, { prods: [], users: [], pcts: [] })
     }
