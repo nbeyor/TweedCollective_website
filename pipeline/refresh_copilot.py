@@ -43,6 +43,27 @@ PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
+EXCLUDED_AUTHORS_FILE = PIPELINE_DIR / "data" / "excluded_authors.json"
+
+
+def load_excluded_uuids() -> set[str]:
+    """Load the AuthorUUID exclusion list (service accounts, bots, etc.).
+
+    Maintained in pipeline/data/excluded_authors.json so the set can be
+    edited without code changes. Missing/malformed file → empty set.
+    """
+    if not EXCLUDED_AUTHORS_FILE.exists():
+        return set()
+    try:
+        payload = json.loads(EXCLUDED_AUTHORS_FILE.read_text(encoding='utf-8'))
+        entries = payload.get('excluded_authors', [])
+        return {str(e['uuid']).strip() for e in entries if e.get('uuid')}
+    except (json.JSONDecodeError, KeyError, TypeError) as e:
+        print(f"Warning: could not parse {EXCLUDED_AUTHORS_FILE.name}: {e}")
+        return set()
+
+
+EXCLUDED_UUIDS: set[str] = load_excluded_uuids()
 
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
@@ -118,6 +139,12 @@ def load_prs(input_path, sheet_name=None):
     for col in ('FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'):
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], errors='coerce')
+    if EXCLUDED_UUIDS and 'AuthorUUID' in df.columns:
+        before = len(df)
+        df = df[~df['AuthorUUID'].astype(str).isin(EXCLUDED_UUIDS)].copy()
+        dropped = before - len(df)
+        if dropped > 0:
+            print(f"Excluded {dropped} PR rows from {len(EXCLUDED_UUIDS)} blocklisted AuthorUUID(s)")
     return df
 
 
@@ -510,6 +537,13 @@ def _load_copilot_df(copilot_path):
     for col in ['suggestions', 'acceptances', 'loc_added']:
         if col in copilot.columns:
             copilot[col] = copilot[col].fillna(0)
+
+    if EXCLUDED_UUIDS and 'user_id' in copilot.columns:
+        before = len(copilot)
+        copilot = copilot[~copilot['user_id'].astype(str).isin(EXCLUDED_UUIDS)].copy()
+        dropped = before - len(copilot)
+        if dropped > 0:
+            print(f"Excluded {dropped} Copilot rows from {len(EXCLUDED_UUIDS)} blocklisted user_id(s)")
 
     copilot['week'] = copilot['EventDay'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
     return copilot, fmt
