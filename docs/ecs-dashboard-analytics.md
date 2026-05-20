@@ -32,7 +32,7 @@ All analytics are organized around a three-phase timeline:
 ### Copilot Adoption (current)
 
 - **Purpose:** Show the current week's Copilot penetration within the team.
-- **Logic:** `weekly_active_copilot_users / total_users_with_copilot_access × 100` for the most recent week in GitHub Copilot telemetry. The delta line shows the monthly adoption trend (first month unique users → last month unique users).
+- **Logic:** `weekly_active_copilot_users / rolling_4_week_active_users × 100` for the most recent week in GitHub Copilot telemetry. The denominator is the count of distinct users with any Copilot activity in the trailing 4 weeks (including the current week) — not lifetime users, so churned/inactive seats drop out of the denominator and don't suppress the apparent rate. The delta line shows the monthly adoption trend (first month unique users → last month unique users).
 
 ### Weekly Active Users
 
@@ -129,7 +129,7 @@ The main dashboard links to three drill-down pages. They share the three-phase m
   - `fteEquivalent = avgCopilotUsers × upliftPct` — the month's productivity gain expressed in whole-FTE terms.
   - `dollarValue = fteEquivalent × (fully-loaded annual cost / 12)`.
   - `cumulativeDollar` — running sum of `dollarValue` across months in chronological order.
-- **Key assumption — hard-coded:** Fully-loaded annual cost per developer = **$150,000** (`RoiCapacityChart.tsx:37`). This is not configurable and is not currently surfaced in the UI. Anyone reading the chart should know the dollar figures scale linearly with this constant.
+- **Key assumption — hard-coded:** Fully-loaded annual cost per developer = **$230,000** (`RoiCapacityChart.tsx:37`). This is not configurable and is not currently surfaced in the UI. Anyone reading the chart should know the dollar figures scale linearly with this constant.
 - **Chart:** Monthly bars for capacity gain (FTE-equivalent), overlaid with a line for cumulative dollar value.
 
 ### Project Throughput (`/documents/ecs-sdlc-dashboard/projects`)
@@ -173,6 +173,7 @@ The main dashboard links to three drill-down pages. They share the three-phase m
 | **Complexity bucket** | Maximum `pr_files` from any single PR for the ticket: `1–10` or `11+`. |
 | **User tier** | Copilot usage intensity based on cumulative active days over the entire telemetry dataset (not per-period): Heavy (≥30), Medium (10–29), Light (<10). |
 | **Copilot-assisted** | A ticket whose PR author had Copilot telemetry activity during the same Saturday-ending week as the PR completion. |
+| **Partial week** | A week whose Saturday end-date is later than `max(PREnd)` in the input data (i.e., the most recent week is still in progress at export time). Pipeline emits `partial: true` for these rows. Excluded from the Team Productivity mean-of-weekly KPI, from the main productivity chart's rolling average, and from the ROI monthly rollup. Still rendered on the productivity time series as a dimmed dot with a "Partial week" tooltip. |
 | **FTE-day** | One developer working one day. Productivity denominator = unique authors × 5 workdays per week. |
 | **Project** | The Jira project key prefix of a ticket. Used for breadth/velocity analysis on the Projects page. |
 
@@ -187,3 +188,4 @@ A few implementation details that don't affect *what* each metric means, but tha
 - **"Current" week:** KPI cards labeled "(current)" or "(this week)" read the most recent Saturday-ending week in the Copilot telemetry. The dashboard also filters out any week ending after the configured data range end, so the final partial week does not appear.
 - **Adoption delta line:** The Copilot Adoption KPI's delta arrow compares **first-month unique users** vs **last-month unique users** (monthly granularity), not week-over-week. That's why it can show a very different direction from the weekly bar chart.
 - **ROI floor:** The ROI page clamps monthly uplift at zero. A month where average productivity dipped below baseline contributes $0, not a negative value. This prevents "negative ROI" artifacts from single noisy months but also means the chart understates variability.
+- **Partial-week handling:** The pipeline records `dataCutoff` (latest observed `PREnd`) on the JSON and marks any week whose Saturday-end is after the cutoff as `partial: true`. Partial weeks are dropped from the Team Productivity KPI (Python `compute_team_summary`), from the productivity chart's rolling average, and from the ROI monthly aggregation. QA churn, cumulative output, project throughput, and size-complexity trends currently still include partial weeks.

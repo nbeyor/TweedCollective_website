@@ -30,12 +30,14 @@ export function ProductivityChart({ data }: Props) {
     return idx >= 0 ? idx : weekly.length
   }, [weekly])
 
-  // Team rolling average across entire timeline
+  // Team rolling average across entire timeline. Partial weeks (Saturday-end
+  // past the data cutoff) and low-confidence weeks are excluded from the
+  // window so the rolling line doesn't get yanked by half-observed data.
   const teamRolling = useMemo(() => {
     const window = data.rollingWindow
     return weekly.map((_, i) => {
       const windowEntries = weekly.slice(Math.max(0, i - window + 1), i + 1)
-        .filter(e => !e.lowConfidence)
+        .filter(e => !e.lowConfidence && !e.partial)
       if (windowEntries.length < 2) return null
       return windowEntries.reduce((s, e) => s + e.teamProductivity, 0) / windowEntries.length
     })
@@ -61,20 +63,21 @@ export function ProductivityChart({ data }: Props) {
       yAxisID: 'y',
       order: 2,
     },
-    // 2. Team raw dots — color by phase
+    // 2. Team raw dots — color by phase. Partial weeks use the muted
+    // low-confidence treatment so they're visually de-emphasized.
     {
       type: 'line',
       label: 'Team (weekly)',
       data: weekly.map(e => e.teamProductivity),
       borderColor: weekly.map(e =>
-        e.lowConfidence ? MUTED_COLOR :
+        e.lowConfidence || e.partial ? MUTED_COLOR :
         e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
       ),
       backgroundColor: weekly.map(e =>
-        e.lowConfidence ? MUTED_COLOR :
+        e.lowConfidence || e.partial ? MUTED_COLOR :
         e.phase === 'transition' ? '#a8a29e' : TEAM_COLOR
       ),
-      pointRadius: weekly.map(e => e.lowConfidence ? 2.5 : 4),
+      pointRadius: weekly.map(e => e.lowConfidence || e.partial ? 2.5 : 4),
       pointStyle: weekly.map(e => e.phase === 'transition' ? 'rectRot' : 'circle'),
       showLine: false,
       yAxisID: 'y',
@@ -180,6 +183,16 @@ export function ProductivityChart({ data }: Props) {
             if (v == null) return ''
             if (ctx.dataset.label?.includes('Copilot')) return `${ctx.dataset.label}: ${v.toFixed(0)}%`
             return `${ctx.dataset.label}: ${v.toFixed(3)}`
+          },
+          afterBody: (items: { dataIndex: number }[]) => {
+            const idx = items[0]?.dataIndex
+            if (idx == null) return ''
+            const e = weekly[idx]
+            if (e?.partial) {
+              const cutoff = data.dataCutoff ? ` (data through ${formatWeekLabel(data.dataCutoff)})` : ''
+              return `Partial week${cutoff}`
+            }
+            return ''
           },
         },
       },

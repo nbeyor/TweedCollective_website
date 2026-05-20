@@ -34,7 +34,7 @@ ChartJS.register(
   annotationPlugin,
 )
 
-const FULLY_LOADED_ANNUAL = 150_000
+const FULLY_LOADED_ANNUAL = 230_000
 const MONTHLY_COST = FULLY_LOADED_ANNUAL / 12
 
 const GREEN = chartTheme.dashboard.pilot       // #15803d
@@ -60,6 +60,7 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
 
   for (const w of data.weekly) {
     if (w.lowConfidence) continue
+    if (w.partial) continue
     if (w.copilotActiveUsers == null || w.copilotPct == null) continue
 
     // w.week is the Saturday week-end label. Attribute to the month containing
