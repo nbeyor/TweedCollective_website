@@ -5,6 +5,7 @@ export type { SurveyData }
 export interface CopilotDashboardData {
   generated: string
   dataRange: string
+  dataCutoff?: string | null
   baselineEnd: string
   matureStart: string
   rollingWindow: number
@@ -56,6 +57,7 @@ export interface WeeklyEntry {
   copilotActiveUsers: number | null
   copilotCodeGen: number | null
   lowConfidence: boolean
+  partial?: boolean
 }
 
 export interface BaselineWeeklyEntry {

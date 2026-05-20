@@ -162,8 +162,14 @@ def aggregate_to_tickets(prs):
     return tickets
 
 
-def compute_weekly_team_metrics(tickets):
-    """Compute team-wide productivity and QA churn per week."""
+def compute_weekly_team_metrics(tickets, cutoff=None):
+    """Compute team-wide productivity and QA churn per week.
+
+    `cutoff` is the latest fully-observed day in the input data (typically
+    `max(prs['PREnd'])`). Any week whose Saturday-end is later than the
+    cutoff is flagged `Partial=True` — its data is still arriving and
+    shouldn't be averaged in mean-of-weekly metrics.
+    """
     all_weeks = tickets['WeekEnding'].dropna().unique()
     all_weeks = pd.DatetimeIndex(all_weeks).sort_values()
 
@@ -188,6 +194,7 @@ def compute_weekly_team_metrics(tickets):
             'TeamProductivity': team_prod,
             'TeamQAChurnRate': team_qa,
             'LowConfidence': total_tickets < MIN_TICKETS_THRESHOLD,
+            'Partial': bool(cutoff is not None and pd.Timestamp(week) > cutoff),
         })
 
     weekly = pd.DataFrame(rows)
@@ -211,7 +218,11 @@ def compute_baseline(tickets, weekly):
     workdays = len(baseline['WeekEnding'].unique()) * WORKDAYS_PER_WEEK
 
     # Mean of per-week productivity (matching compute_team_summary methodology)
-    baseline_weekly = weekly[(weekly['WeekEnding'] < baseline_end_ts) & ~weekly['LowConfidence']]
+    baseline_weekly = weekly[
+        (weekly['WeekEnding'] < baseline_end_ts)
+        & ~weekly['LowConfidence']
+        & ~weekly['Partial']
+    ]
     productivity = baseline_weekly['TeamProductivity'].mean() if len(baseline_weekly) > 0 else 0
 
     qa_churn_rate = baseline['HasQAChurn'].sum() / total if total > 0 else 0
@@ -232,7 +243,11 @@ def compute_team_summary(tickets, weekly, baseline):
     """Compute overall team summary for mature adoption period (Feb 7+)."""
     mature_start_ts = pd.Timestamp(MATURE_START)
     post_tickets = tickets[tickets['PREndDate'] >= mature_start_ts]
-    post_weekly = weekly[(weekly['WeekEnding'] >= mature_start_ts) & ~weekly['LowConfidence']]
+    post_weekly = weekly[
+        (weekly['WeekEnding'] >= mature_start_ts)
+        & ~weekly['LowConfidence']
+        & ~weekly['Partial']
+    ]
 
     team_prod_avg = post_weekly['TeamProductivity'].mean() if len(post_weekly) > 0 else 0
     team_qa = post_tickets['HasQAChurn'].sum() / len(post_tickets) if len(post_tickets) > 0 else 0
@@ -758,7 +773,12 @@ def serialize(obj):
 def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     prs = load_prs(input_path, sheet_name)
     tickets = aggregate_to_tickets(prs)
-    weekly = compute_weekly_team_metrics(tickets)
+    # Cutoff = latest fully-observed PR end date in the input. Weeks whose
+    # Saturday-end falls beyond this are still in progress and get flagged
+    # `partial` so downstream consumers can drop them from mean-of-weekly
+    # metrics without losing the raw data point.
+    cutoff = pd.to_datetime(prs['PREnd']).dropna().max().normalize() if 'PREnd' in prs.columns else None
+    weekly = compute_weekly_team_metrics(tickets, cutoff=cutoff)
     baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
     size_complexity = compute_size_complexity(tickets)
@@ -809,6 +829,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             'teamProductivity': row['TeamProductivity'],
             'teamQARate': row['TeamQAChurnRate'],
             'lowConfidence': bool(row['LowConfidence']),
+            'partial': bool(row['Partial']),
             'copilotPct': None,
             'copilotActiveUsers': None,
             'copilotCodeGen': None,
@@ -855,6 +876,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     return {
         'generated': datetime.now().strftime('%Y-%m-%d %H:%M'),
         'dataRange': data_range,
+        'dataCutoff': cutoff.strftime('%Y-%m-%d') if cutoff is not None else None,
         'baselineEnd': BASELINE_END,
         'matureStart': MATURE_START,
         'rollingWindow': ROLLING_WINDOW,

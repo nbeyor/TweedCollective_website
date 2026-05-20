@@ -1,6 +1,7 @@
 {
-  "generated": "2026-05-20 20:09",
+  "generated": "2026-05-20 20:34",
   "dataRange": "2025-07-02 to 2026-05-20",
+  "dataCutoff": "2026-05-20",
   "baselineEnd": "2025-10-01",
   "matureStart": "2026-02-07",
   "rollingWindow": 4,
@@ -22,11 +23,11 @@
   "summary": {
     "total_tickets": 502,
     "team_authors": 24,
-    "team_productivity": 0.456,
-    "productivity_vs_baseline": "+17.1%",
+    "team_productivity": 0.4659,
+    "productivity_vs_baseline": "+19.6%",
     "team_qa_churn": 0.2171,
     "qa_vs_baseline": "-10.2%",
-    "weeks_of_data": 16,
+    "weeks_of_data": 15,
     "copilot_users": 40,
     "copilot_adoption_current": 70.0
   },
@@ -39,6 +40,7 @@
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
       "lowConfidence": true,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -51,6 +53,7 @@
       "teamProductivity": 0.511111,
       "teamQARate": 0.130435,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -63,6 +66,7 @@
       "teamProductivity": 0.446154,
       "teamQARate": 0.275862,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -75,6 +79,7 @@
       "teamProductivity": 0.311111,
       "teamQARate": 0.285714,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -87,6 +92,7 @@
       "teamProductivity": 0.366667,
       "teamQARate": 0.363636,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -99,6 +105,7 @@
       "teamProductivity": 0.345455,
       "teamQARate": 0.263158,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -111,6 +118,7 @@
       "teamProductivity": 0.333333,
       "teamQARate": 0.15,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -123,6 +131,7 @@
       "teamProductivity": 0.415385,
       "teamQARate": 0.259259,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -135,6 +144,7 @@
       "teamProductivity": 0.35,
       "teamQARate": 0.142857,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -147,6 +157,7 @@
       "teamProductivity": 0.375,
       "teamQARate": 0.2,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -159,6 +170,7 @@
       "teamProductivity": 0.4,
       "teamQARate": 0.15,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -171,6 +183,7 @@
       "teamProductivity": 0.4,
       "teamQARate": 0.4,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -183,6 +196,7 @@
       "teamProductivity": 0.418182,
       "teamQARate": 0.347826,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -195,6 +209,7 @@
       "teamProductivity": 0.292308,
       "teamQARate": 0.315789,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
@@ -207,6 +222,7 @@
       "teamProductivity": 0.4,
       "teamQARate": 0.35,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 17.5,
       "copilotActiveUsers": 7,
       "copilotCodeGen": 513
@@ -219,6 +235,7 @@
       "teamProductivity": 0.383333,
       "teamQARate": 0.130435,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 25.0,
       "copilotActiveUsers": 10,
       "copilotCodeGen": 866
@@ -231,6 +248,7 @@
       "teamProductivity": 0.44,
       "teamQARate": 0.045455,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 22.5,
       "copilotActiveUsers": 9,
       "copilotCodeGen": 1274
@@ -243,6 +261,7 @@
       "teamProductivity": 0.48,
       "teamQARate": 0.125,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 17.5,
       "copilotActiveUsers": 7,
       "copilotCodeGen": 1083
@@ -255,6 +274,7 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.378378,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 32.5,
       "copilotActiveUsers": 13,
       "copilotCodeGen": 1804
@@ -267,6 +287,7 @@
       "teamProductivity": 0.461538,
       "teamQARate": 0.3,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 37.5,
       "copilotActiveUsers": 15,
       "copilotCodeGen": 1328
@@ -279,6 +300,7 @@
       "teamProductivity": 0.371429,
       "teamQARate": 0.076923,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 37.5,
       "copilotActiveUsers": 15,
       "copilotCodeGen": 1363
@@ -291,6 +313,7 @@
       "teamProductivity": 0.28,
       "teamQARate": 0.0,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 25.0,
       "copilotActiveUsers": 10,
       "copilotCodeGen": 501
@@ -303,6 +326,7 @@
       "teamProductivity": 0.461538,
       "teamQARate": 0.166667,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 42.5,
       "copilotActiveUsers": 17,
       "copilotCodeGen": 1800
@@ -315,6 +339,7 @@
       "teamProductivity": 0.5,
       "teamQARate": 0.2,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 35.0,
       "copilotActiveUsers": 14,
       "copilotCodeGen": 1699
@@ -327,6 +352,7 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.135135,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 42.5,
       "copilotActiveUsers": 17,
       "copilotCodeGen": 1416
@@ -339,6 +365,7 @@
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
       "lowConfidence": true,
+      "partial": false,
       "copilotPct": 30.0,
       "copilotActiveUsers": 12,
       "copilotCodeGen": 737
@@ -351,6 +378,7 @@
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
       "lowConfidence": true,
+      "partial": false,
       "copilotPct": 32.5,
       "copilotActiveUsers": 13,
       "copilotCodeGen": 603
@@ -363,6 +391,7 @@
       "teamProductivity": 0.25,
       "teamQARate": 0.0,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 50.0,
       "copilotActiveUsers": 20,
       "copilotCodeGen": 1980
@@ -375,6 +404,7 @@
       "teamProductivity": 0.4125,
       "teamQARate": 0.212121,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 45.0,
       "copilotActiveUsers": 18,
       "copilotCodeGen": 2308
@@ -387,6 +417,7 @@
       "teamProductivity": 0.422222,
       "teamQARate": 0.052632,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 47.5,
       "copilotActiveUsers": 19,
       "copilotCodeGen": 2752
@@ -399,6 +430,7 @@
       "teamProductivity": 0.316667,
       "teamQARate": 0.157895,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 50.0,
       "copilotActiveUsers": 20,
       "copilotCodeGen": 4063
@@ -411,6 +443,7 @@
       "teamProductivity": 0.492308,
       "teamQARate": 0.15625,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 60.0,
       "copilotActiveUsers": 24,
       "copilotCodeGen": 3946
@@ -423,6 +456,7 @@
       "teamProductivity": 0.413333,
       "teamQARate": 0.258065,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 55.0,
       "copilotActiveUsers": 22,
       "copilotCodeGen": 3394
@@ -435,6 +469,7 @@
       "teamProductivity": 0.329412,
       "teamQARate": 0.392857,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 50.0,
       "copilotActiveUsers": 20,
       "copilotCodeGen": 3190
@@ -447,6 +482,7 @@
       "teamProductivity": 0.466667,
       "teamQARate": 0.178571,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 57.5,
       "copilotActiveUsers": 23,
       "copilotCodeGen": 3870
@@ -459,6 +495,7 @@
       "teamProductivity": 0.633333,
       "teamQARate": 0.105263,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 62.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 3976
@@ -471,6 +508,7 @@
       "teamProductivity": 0.5375,
       "teamQARate": 0.209302,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 62.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 2565
@@ -483,6 +521,7 @@
       "teamProductivity": 0.485714,
       "teamQARate": 0.235294,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 67.5,
       "copilotActiveUsers": 27,
       "copilotCodeGen": 2092
@@ -495,6 +534,7 @@
       "teamProductivity": 0.493333,
       "teamQARate": 0.432432,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 62.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 3010
@@ -507,6 +547,7 @@
       "teamProductivity": 0.346667,
       "teamQARate": 0.115385,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 62.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 2976
@@ -519,6 +560,7 @@
       "teamProductivity": 0.588235,
       "teamQARate": 0.1,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 75.0,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 2845
@@ -531,6 +573,7 @@
       "teamProductivity": 0.511111,
       "teamQARate": 0.23913,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 72.5,
       "copilotActiveUsers": 29,
       "copilotCodeGen": 2029
@@ -543,6 +586,7 @@
       "teamProductivity": 0.422222,
       "teamQARate": 0.315789,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 75.0,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 2204
@@ -555,6 +599,7 @@
       "teamProductivity": 0.425,
       "teamQARate": 0.176471,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 72.5,
       "copilotActiveUsers": 29,
       "copilotCodeGen": 3537
@@ -567,6 +612,7 @@
       "teamProductivity": 0.466667,
       "teamQARate": 0.171429,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 75.0,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 5369
@@ -579,6 +625,7 @@
       "teamProductivity": 0.376471,
       "teamQARate": 0.25,
       "lowConfidence": false,
+      "partial": false,
       "copilotPct": 77.5,
       "copilotActiveUsers": 31,
       "copilotCodeGen": 4058
@@ -591,6 +638,7 @@
       "teamProductivity": 0.307692,
       "teamQARate": 0.15,
       "lowConfidence": false,
+      "partial": true,
       "copilotPct": 70.0,
       "copilotActiveUsers": 28,
       "copilotCodeGen": 1954
