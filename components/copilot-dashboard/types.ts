@@ -112,6 +112,7 @@ export interface CopilotAdoption {
 export interface CopilotWeeklyEntry {
   week: string
   activeUsers: number
+  rollingActiveUsers?: number
   copilotPct: number
   totalCodeGen: number
   totalCodeAccept: number

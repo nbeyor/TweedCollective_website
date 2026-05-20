@@ -547,16 +547,34 @@ def compute_copilot_adoption(copilot_path):
     has_agent = 'UsedAgent' in copilot.columns
     has_chat = 'UsedChat' in copilot.columns
 
-    # Weekly aggregation
+    # Weekly aggregation.
+    #
+    # Denominator note: `copilotPct` uses a rolling 4-week active-user
+    # denominator (distinct users with any Copilot activity in the trailing
+    # 4 weeks including the current week). That's a truer "share of
+    # currently-active developers" than the old lifetime-unique denominator,
+    # which kept churned/inactive seats in the denominator forever and
+    # suppressed the apparent adoption rate.
+    weekly_groups = list(copilot.groupby('week'))
+    weekly_groups.sort(key=lambda kv: kv[0])
+    weeks_in_order = [w for w, _ in weekly_groups]
+    user_sets_by_week = {w: set(g['user_id'].unique()) for w, g in weekly_groups}
+
     weekly_rows = []
-    for week, grp in copilot.groupby('week'):
+    for idx, (week, grp) in enumerate(weekly_groups):
         active = grp['user_id'].nunique()
         agent_users = int((grp.groupby('user_id')['UsedAgent'].sum() > 0).sum()) if has_agent else 0
         chat_users = int((grp.groupby('user_id')['UsedChat'].sum() > 0).sum()) if has_chat else 0
+        window_weeks = weeks_in_order[max(0, idx - 3): idx + 1]
+        rolling_active = set()
+        for w in window_weeks:
+            rolling_active |= user_sets_by_week[w]
+        denom = max(len(rolling_active), 1)
         weekly_rows.append({
             'week': pd.Timestamp(week).strftime('%Y-%m-%d'),
             'activeUsers': int(active),
-            'copilotPct': round(active / total_users * 100, 1),
+            'rollingActiveUsers': int(len(rolling_active)),
+            'copilotPct': round(active / denom * 100, 1),
             'totalCodeGen': int(grp['suggestions'].sum()),
             'totalCodeAccept': int(grp['acceptances'].sum()),
             'agentUsers': agent_users,

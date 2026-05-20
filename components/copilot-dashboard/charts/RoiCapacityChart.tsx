@@ -34,7 +34,7 @@ ChartJS.register(
   annotationPlugin,
 )
 
-const FULLY_LOADED_ANNUAL = 150_000
+const FULLY_LOADED_ANNUAL = 230_000
 const MONTHLY_COST = FULLY_LOADED_ANNUAL / 12
 
 const GREEN = chartTheme.dashboard.pilot       // #15803d

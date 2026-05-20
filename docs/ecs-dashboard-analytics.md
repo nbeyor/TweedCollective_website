@@ -32,7 +32,7 @@ All analytics are organized around a three-phase timeline:
 ### Copilot Adoption (current)
 
 - **Purpose:** Show the current week's Copilot penetration within the team.
-- **Logic:** `weekly_active_copilot_users / total_users_with_copilot_access × 100` for the most recent week in GitHub Copilot telemetry. The delta line shows the monthly adoption trend (first month unique users → last month unique users).
+- **Logic:** `weekly_active_copilot_users / rolling_4_week_active_users × 100` for the most recent week in GitHub Copilot telemetry. The denominator is the count of distinct users with any Copilot activity in the trailing 4 weeks (including the current week) — not lifetime users, so churned/inactive seats drop out of the denominator and don't suppress the apparent rate. The delta line shows the monthly adoption trend (first month unique users → last month unique users).
 
 ### Weekly Active Users
 
@@ -129,7 +129,7 @@ The main dashboard links to three drill-down pages. They share the three-phase m
   - `fteEquivalent = avgCopilotUsers × upliftPct` — the month's productivity gain expressed in whole-FTE terms.
   - `dollarValue = fteEquivalent × (fully-loaded annual cost / 12)`.
   - `cumulativeDollar` — running sum of `dollarValue` across months in chronological order.
-- **Key assumption — hard-coded:** Fully-loaded annual cost per developer = **$150,000** (`RoiCapacityChart.tsx:37`). This is not configurable and is not currently surfaced in the UI. Anyone reading the chart should know the dollar figures scale linearly with this constant.
+- **Key assumption — hard-coded:** Fully-loaded annual cost per developer = **$230,000** (`RoiCapacityChart.tsx:37`). This is not configurable and is not currently surfaced in the UI. Anyone reading the chart should know the dollar figures scale linearly with this constant.
 - **Chart:** Monthly bars for capacity gain (FTE-equivalent), overlaid with a line for cumulative dollar value.
 
 ### Project Throughput (`/documents/ecs-sdlc-dashboard/projects`)
