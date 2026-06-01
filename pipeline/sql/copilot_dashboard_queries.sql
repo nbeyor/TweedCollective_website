@@ -9,6 +9,18 @@
 --   Phase 2 (Transition): Oct 1, 2025 – Feb 6, 2026 — AI rollout, uneven adoption
 --   Phase 3 (Mature):     Feb 7, 2026+ — 80%+ weekly Copilot adoption
 --
+-- Conventions (must match pipeline/refresh_copilot.py):
+--   - Week boundary: Mon 00:00 → Sun 23:59:59 (ISO calendar week).
+--     `week_ending` is the Sunday date.
+--   - Partial trailing week (week_ending > max observed pr_end / event_day)
+--     is hidden entirely from every query result.
+--   - Rolling averages: 4-week calendar-anchored window tailing each
+--     Sunday week_ending. Low-confidence weeks inside the window are
+--     dropped; ≥2 remaining points required or NULL.
+--   - Null-key rows (NULL jira_ticket, author_uuid, pr_end, user_id, or
+--     event_day) MUST be dropped by the loader before insert; the table
+--     DDL below enforces this with NOT NULL as a safety net.
+--
 -- Usage: Run each numbered query independently. The VIEW (v_tickets) must be
 --        created first as it is referenced by queries 1–4 and 7–8.
 -- ============================================================================
@@ -75,23 +87,23 @@ CREATE TABLE IF NOT EXISTS copilot_telemetry (
 -- Groups PRs by jira_ticket. Computes:
 --   - pr_count, max_files, total_lines, total_churn_lines, total_qa_churn_lines
 --   - pr_end_date (latest PR end across all PRs for the ticket)
---   - week_ending (Saturday-ending week of pr_end_date)
+--   - week_ending (Sunday end of the Mon-Sun ISO calendar week)
 --   - has_qa_churn (boolean: any QA churn lines > 0)
 --   - size_bucket ('0-300' or '301+')
 --   - complexity_bucket ('1-10' or '11+')
 --
--- Saturday-ending week logic:
---   pandas: dt.to_period('W-SAT').dt.end_time.dt.normalize()
---   Postgres: Add 2 days so Saturday maps to Monday, truncate to ISO week,
---             then add 5 days to land back on Saturday.
+-- Sunday-ending week logic (Mon-Sun ISO calendar week):
+--   pandas: dt.to_period('W-SUN').dt.end_time.dt.normalize()
+--   Postgres: date_trunc('week', d) already returns the Monday of the
+--             ISO week. Add 6 days to land on Sunday.
 
 CREATE OR REPLACE VIEW v_tickets AS
 SELECT
     jira_ticket,
     COUNT(*)                              AS pr_count,
     MAX(pr_end)::date                     AS pr_end_date,
-    -- Saturday-ending week: shift +2 to align Sat→Mon, truncate, shift +5 back
-    (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date
+    -- Sunday-ending week (Mon-Sun ISO calendar week)
+    (date_trunc('week', MAX(pr_end)::date) + INTERVAL '6 days')::date
                                           AS week_ending,
     MAX(pr_files)                         AS max_files,
     SUM(pr_lines)                         AS total_lines,
@@ -115,17 +127,27 @@ GROUP BY jira_ticket;
 -- ============================================================================
 -- QUERY 1: Weekly Team Metrics
 -- ============================================================================
--- Mirrors: refresh_copilot.py → compute_weekly_team_metrics()
+-- Mirrors: refresh_copilot.py → compute_weekly_team_metrics() and the
+-- rolling logic in components/copilot-dashboard/charts/ProductivityChart.tsx
+-- and QaChurnChart.tsx.
 --
--- Returns one row per week with:
+-- Returns one row per fully-observed Sunday-ending week with:
 --   - total_tickets, team_authors (unique authors that week)
 --   - team_productivity = tickets / (authors × 5 workdays)
 --   - team_qa_churn_rate = tickets with QA churn / total tickets
 --   - low_confidence flag (< 5 tickets)
 --   - phase tag (baseline / transition / mature)
---   - 4-week rolling average of productivity (only over confident weeks, min 2 pts)
+--   - 4-week *calendar-anchored* rolling average of productivity and QA
+--     churn: for each Sunday W, average rows in [W-21d, W] that are not
+--     low-confidence and not partial. Require ≥2 included points or NULL.
+--
+-- Partial trailing weeks (week_ending > max observed pr_end) are hidden
+-- from the result entirely.
 
-WITH weekly_raw AS (
+WITH data_cutoff AS (
+    SELECT MAX(pr_end)::date AS cutoff FROM pr_jira_metrics
+),
+weekly_raw AS (
     SELECT
         t.week_ending,
         COUNT(*)                                     AS total_tickets,
@@ -140,53 +162,26 @@ WITH weekly_raw AS (
 ),
 weekly_metrics AS (
     SELECT
-        week_ending,
-        total_tickets,
-        GREATEST(team_authors, 1)                    AS team_authors,
-        total_tickets::numeric
-            / (GREATEST(team_authors, 1) * current_setting('app.workdays_per_week')::int)
+        wr.week_ending,
+        wr.total_tickets,
+        GREATEST(wr.team_authors, 1)                 AS team_authors,
+        wr.total_tickets::numeric
+            / (GREATEST(wr.team_authors, 1) * current_setting('app.workdays_per_week')::int)
                                                      AS team_productivity,
-        CASE WHEN total_tickets > 0
-             THEN qa_churn_tickets::numeric / total_tickets
+        CASE WHEN wr.total_tickets > 0
+             THEN wr.qa_churn_tickets::numeric / wr.total_tickets
              ELSE NULL
         END                                          AS team_qa_churn_rate,
-        total_tickets < current_setting('app.min_tickets_threshold')::int
+        wr.total_tickets < current_setting('app.min_tickets_threshold')::int
                                                      AS low_confidence,
+        wr.week_ending > (SELECT cutoff FROM data_cutoff)
+                                                     AS partial,
         CASE
-            WHEN week_ending < current_setting('app.baseline_end')::date   THEN 'baseline'
-            WHEN week_ending < current_setting('app.mature_start')::date   THEN 'transition'
+            WHEN wr.week_ending < current_setting('app.baseline_end')::date   THEN 'baseline'
+            WHEN wr.week_ending < current_setting('app.mature_start')::date   THEN 'transition'
             ELSE 'mature'
         END                                          AS phase
-    FROM weekly_raw
-),
--- Rolling averages: 4-week window over confident (non-low-confidence) weeks only.
--- Only emit a rolling value when there are >= 2 data points in the window.
-confident_weeks AS (
-    SELECT
-        week_ending,
-        team_productivity,
-        team_qa_churn_rate,
-        ROW_NUMBER() OVER (ORDER BY week_ending)     AS rn
-    FROM weekly_metrics
-    WHERE NOT low_confidence
-),
-rolling AS (
-    SELECT
-        week_ending,
-        CASE
-            WHEN COUNT(*) OVER w >= 2 THEN AVG(team_productivity)    OVER w
-            ELSE NULL
-        END AS team_productivity_rolling,
-        CASE
-            WHEN COUNT(*) OVER w >= 2 THEN STDDEV(team_productivity) OVER w
-            ELSE NULL
-        END AS team_productivity_std,
-        CASE
-            WHEN COUNT(*) OVER w >= 2 THEN AVG(team_qa_churn_rate)   OVER w
-            ELSE NULL
-        END AS team_qa_churn_rate_rolling
-    FROM confident_weeks
-    WINDOW w AS (ORDER BY week_ending ROWS BETWEEN 3 PRECEDING AND CURRENT ROW)
+    FROM weekly_raw wr
 )
 SELECT
     m.week_ending,
@@ -196,11 +191,29 @@ SELECT
     ROUND(m.team_productivity, 6)                    AS team_productivity,
     ROUND(m.team_qa_churn_rate, 6)                   AS team_qa_churn_rate,
     m.low_confidence,
-    ROUND(r.team_productivity_rolling, 6)            AS team_productivity_rolling,
-    ROUND(r.team_productivity_std, 6)                AS team_productivity_std,
-    ROUND(r.team_qa_churn_rate_rolling, 6)           AS team_qa_churn_rate_rolling
+    -- Calendar-anchored 4-week rolling: average rows in (W-21d .. W] that
+    -- are not low-confidence and not partial. NULL when <2 points qualify.
+    (SELECT CASE WHEN COUNT(*) >= 2 THEN ROUND(AVG(w2.team_productivity), 6) END
+     FROM weekly_metrics w2
+     WHERE w2.week_ending BETWEEN m.week_ending - 21 AND m.week_ending
+       AND NOT w2.low_confidence
+       AND NOT w2.partial
+    )                                                AS team_productivity_rolling,
+    (SELECT CASE WHEN COUNT(*) >= 2 THEN ROUND(STDDEV(w2.team_productivity), 6) END
+     FROM weekly_metrics w2
+     WHERE w2.week_ending BETWEEN m.week_ending - 21 AND m.week_ending
+       AND NOT w2.low_confidence
+       AND NOT w2.partial
+    )                                                AS team_productivity_std,
+    (SELECT CASE WHEN COUNT(*) >= 2 THEN ROUND(AVG(w2.team_qa_churn_rate), 6) END
+     FROM weekly_metrics w2
+     WHERE w2.week_ending BETWEEN m.week_ending - 21 AND m.week_ending
+       AND NOT w2.low_confidence
+       AND NOT w2.partial
+       AND w2.team_qa_churn_rate IS NOT NULL
+    )                                                AS team_qa_churn_rate_rolling
 FROM weekly_metrics m
-LEFT JOIN rolling r USING (week_ending)
+WHERE NOT m.partial   -- hide the trailing partial week from the result entirely
 ORDER BY m.week_ending;
 
 
@@ -293,6 +306,8 @@ baseline_agg AS (
 mature_tickets AS (
     SELECT * FROM v_tickets
     WHERE pr_end_date >= current_setting('app.mature_start')::date
+      -- Hide partial trailing week (week_ending past max observed pr_end)
+      AND week_ending <= (SELECT MAX(pr_end)::date FROM pr_jira_metrics)
 ),
 mature_weekly AS (
     SELECT
@@ -353,7 +368,10 @@ FROM baseline_agg b;
 -- Productivity = ticket_count / (unique_authors × weeks × 5)
 
 WITH post_tickets AS (
-    SELECT * FROM v_tickets WHERE pr_end_date >= current_setting('app.mature_start')::date
+    SELECT * FROM v_tickets
+    WHERE pr_end_date >= current_setting('app.mature_start')::date
+      -- Hide partial trailing week
+      AND week_ending <= (SELECT MAX(pr_end)::date FROM pr_jira_metrics)
 ),
 pre_tickets AS (
     SELECT * FROM v_tickets WHERE pr_end_date < current_setting('app.baseline_end')::date
@@ -429,18 +447,33 @@ ORDER BY g.size_bucket, g.complexity_bucket;
 -- ============================================================================
 -- QUERY 5: Copilot Adoption — Weekly
 -- ============================================================================
--- Mirrors: refresh_copilot.py → compute_copilot_adoption() (weekly portion)
+-- Mirrors: refresh_copilot.py → compute_copilot_adoption() (weekly portion).
 --
--- Weekly active users, code generation/acceptance counts, agent/chat usage,
--- and lines of code added from GitHub Copilot telemetry.
+-- Returns weekly active users, code gen/acceptance counts, agent/chat usage,
+-- LOC added, and the headline `copilot_pct` adoption rate.
+--
+-- Denominator note: `copilot_pct` uses a *rolling 4-week active-user*
+-- denominator (distinct users with any Copilot activity in [W-21d, W]),
+-- not a lifetime-unique count. The lifetime denominator kept churned/
+-- inactive seats in the denominator forever and suppressed the apparent
+-- adoption rate (e.g. ~31% where the rolling denom gives ~90%). Must
+-- match refresh_copilot.py lines 558-578.
+--
+-- Partial trailing week (week_ending > max observed event_day) is hidden
+-- from the result entirely.
 
-WITH total_users AS (
-    SELECT COUNT(DISTINCT user_id) AS total FROM copilot_telemetry
+WITH telemetry_weekly AS (
+    -- Per-user, per-week activity (one row per distinct (user, week))
+    SELECT
+        user_id,
+        (date_trunc('week', event_day) + INTERVAL '6 days')::date AS week_ending
+    FROM copilot_telemetry
+    GROUP BY user_id, (date_trunc('week', event_day) + INTERVAL '6 days')::date
 ),
 weekly_copilot AS (
     SELECT
-        -- Saturday-ending week (same bucketing as PR data)
-        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date  AS week_ending,
+        -- Sunday-ending week (Mon-Sun ISO calendar week)
+        (date_trunc('week', event_day) + INTERVAL '6 days')::date      AS week_ending,
         COUNT(DISTINCT user_id)                                        AS active_users,
         SUM(suggestions)                                               AS total_code_gen,
         SUM(acceptances)                                               AS total_code_accept,
@@ -450,19 +483,31 @@ weekly_copilot AS (
         COUNT(DISTINCT CASE WHEN used_chat  THEN user_id END)          AS chat_users,
         SUM(loc_added)                                                 AS loc_added
     FROM copilot_telemetry
-    GROUP BY (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+    GROUP BY (date_trunc('week', event_day) + INTERVAL '6 days')::date
+),
+data_cutoff_cop AS (
+    SELECT MAX(event_day)::date AS cutoff FROM copilot_telemetry
 )
 SELECT
     w.week_ending,
     w.active_users,
-    ROUND(w.active_users::numeric / NULLIF(tu.total, 0) * 100, 1) AS copilot_pct,
+    -- Rolling 4-week distinct-active-user denominator
+    ROUND(
+        w.active_users::numeric
+        / NULLIF((
+            SELECT COUNT(DISTINCT tw.user_id)
+            FROM telemetry_weekly tw
+            WHERE tw.week_ending BETWEEN w.week_ending - 21 AND w.week_ending
+        ), 0) * 100, 1
+    )                                                                  AS copilot_pct,
     w.total_code_gen,
     w.total_code_accept,
     w.agent_users,
     w.chat_users,
     w.loc_added
 FROM weekly_copilot w
-CROSS JOIN total_users tu
+CROSS JOIN data_cutoff_cop dc
+WHERE w.week_ending <= dc.cutoff   -- hide partial trailing week
 ORDER BY w.week_ending;
 
 
@@ -502,7 +547,7 @@ recent_daily AS (
         FROM copilot_telemetry
         WHERE event_day >= (
             SELECT MIN(week_start) FROM (
-                SELECT DISTINCT (date_trunc('week', event_day + 2))::date AS week_start
+                SELECT DISTINCT (date_trunc('week', event_day))::date AS week_start
                 FROM copilot_telemetry
                 ORDER BY week_start DESC
                 LIMIT 4
@@ -557,11 +602,11 @@ WITH copilot_weekly_by_user AS (
     -- Aggregate copilot telemetry to (user_id, week) level
     SELECT
         user_id,
-        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', event_day) + INTERVAL '6 days')::date AS week_ending,
         SUM(suggestions)  AS suggestions,
         SUM(acceptances)  AS acceptances
     FROM copilot_telemetry
-    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+    GROUP BY user_id, (date_trunc('week', event_day) + INTERVAL '6 days')::date
 ),
 pr_with_copilot AS (
     -- Join each PR with its author's copilot activity for that week
@@ -572,21 +617,21 @@ pr_with_copilot AS (
         p.pr_files,
         p.pr_lines,
         p.qa_churn_lines,
-        (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', p.pr_end::date) + INTERVAL '6 days')::date AS week_ending,
         COALESCE(c.suggestions, 0)  AS copilot_suggestions,
         COALESCE(c.acceptances, 0)  AS copilot_acceptances,
         (COALESCE(c.suggestions, 0) > 0) AS copilot_assisted
     FROM pr_jira_metrics p
     LEFT JOIN copilot_weekly_by_user c
         ON p.author_uuid::text = c.user_id
-        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+        AND (date_trunc('week', p.pr_end::date) + INTERVAL '6 days')::date = c.week_ending
 ),
 corr_tickets AS (
     -- Aggregate to ticket level with copilot flags
     SELECT
         jira_ticket,
         MAX(pr_end)::date AS pr_end_date,
-        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', MAX(pr_end)::date) + INTERVAL '6 days')::date AS week_ending,
         SUM(pr_lines)              AS total_lines,
         MAX(pr_files)              AS max_files,
         SUM(qa_churn_lines)        AS total_qa_churn_lines,
@@ -600,6 +645,8 @@ corr_tickets AS (
 mature_corr AS (
     SELECT * FROM corr_tickets
     WHERE pr_end_date >= current_setting('app.mature_start')::date
+      -- Hide partial trailing week
+      AND week_ending <= (SELECT MAX(pr_end)::date FROM pr_jira_metrics)
 ),
 -- Part A: Weekly comparison
 weekly_assisted AS (
@@ -682,10 +729,10 @@ ORDER BY w.week_ending;
 WITH copilot_weekly_by_user AS (
     SELECT
         user_id,
-        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', event_day) + INTERVAL '6 days')::date AS week_ending,
         SUM(suggestions) AS suggestions
     FROM copilot_telemetry
-    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+    GROUP BY user_id, (date_trunc('week', event_day) + INTERVAL '6 days')::date
 ),
 pr_with_copilot AS (
     SELECT
@@ -697,13 +744,13 @@ pr_with_copilot AS (
     FROM pr_jira_metrics p
     LEFT JOIN copilot_weekly_by_user c
         ON p.author_uuid::text = c.user_id
-        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+        AND (date_trunc('week', p.pr_end::date) + INTERVAL '6 days')::date = c.week_ending
 ),
 corr_tickets AS (
     SELECT
         jira_ticket,
         MAX(pr_end)::date AS pr_end_date,
-        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', MAX(pr_end)::date) + INTERVAL '6 days')::date AS week_ending,
         (SUM(qa_churn_lines) > 0) AS has_qa_churn,
         BOOL_OR(copilot_assisted) AS copilot_assisted
     FROM pr_with_copilot
@@ -712,6 +759,8 @@ corr_tickets AS (
 mature_corr AS (
     SELECT * FROM corr_tickets
     WHERE pr_end_date >= current_setting('app.mature_start')::date
+      -- Hide partial trailing week
+      AND week_ending <= (SELECT MAX(pr_end)::date FROM pr_jira_metrics)
 ),
 -- Weekly productivity per group
 weekly_stats AS (
@@ -781,11 +830,11 @@ FROM
 WITH copilot_weekly_by_user AS (
     SELECT
         user_id,
-        (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', event_day) + INTERVAL '6 days')::date AS week_ending,
         SUM(suggestions) AS suggestions,
         SUM(acceptances) AS acceptances
     FROM copilot_telemetry
-    GROUP BY user_id, (date_trunc('week', event_day + 2) + INTERVAL '5 days')::date
+    GROUP BY user_id, (date_trunc('week', event_day) + INTERVAL '6 days')::date
 ),
 pr_with_copilot AS (
     SELECT
@@ -799,13 +848,13 @@ pr_with_copilot AS (
     FROM pr_jira_metrics p
     LEFT JOIN copilot_weekly_by_user c
         ON p.author_uuid::text = c.user_id
-        AND (date_trunc('week', p.pr_end::date + 2) + INTERVAL '5 days')::date = c.week_ending
+        AND (date_trunc('week', p.pr_end::date) + INTERVAL '6 days')::date = c.week_ending
 ),
 corr_tickets AS (
     SELECT
         jira_ticket,
         MAX(pr_end)::date AS pr_end_date,
-        (date_trunc('week', MAX(pr_end)::date + 2) + INTERVAL '5 days')::date AS week_ending,
+        (date_trunc('week', MAX(pr_end)::date) + INTERVAL '6 days')::date AS week_ending,
         (SUM(qa_churn_lines) > 0) AS has_qa_churn,
         SUM(copilot_suggestions)  AS total_suggestions
     FROM pr_with_copilot
@@ -815,13 +864,17 @@ mature_intensity AS (
     SELECT
         *,
         CASE
-            WHEN total_suggestions = 0  THEN 'none'
             WHEN total_suggestions <= 10 THEN 'low'
             WHEN total_suggestions <= 50 THEN 'medium'
             ELSE 'high'
         END AS intensity_bucket
     FROM corr_tickets
     WHERE pr_end_date >= current_setting('app.mature_start')::date
+      -- Hide partial trailing week
+      AND week_ending <= (SELECT MAX(pr_end)::date FROM pr_jira_metrics)
+      -- Mirror refresh_copilot.py: only low/medium/high buckets are reported;
+      -- tickets with zero Copilot suggestions are excluded.
+      AND total_suggestions > 0
 ),
 -- Per-bucket: authors and weeks for FTE-day normalization
 bucket_context AS (
@@ -849,8 +902,7 @@ SELECT
 FROM bucket_context
 ORDER BY
     CASE intensity_bucket
-        WHEN 'none'   THEN 1
-        WHEN 'low'    THEN 2
-        WHEN 'medium' THEN 3
-        WHEN 'high'   THEN 4
+        WHEN 'low'    THEN 1
+        WHEN 'medium' THEN 2
+        WHEN 'high'   THEN 3
     END;

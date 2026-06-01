@@ -57,7 +57,6 @@ export interface WeeklyEntry {
   copilotActiveUsers: number | null
   copilotCodeGen: number | null
   lowConfidence: boolean
-  partial?: boolean
 }
 
 export interface BaselineWeeklyEntry {
