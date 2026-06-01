@@ -60,12 +60,13 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
 
   for (const w of data.weekly) {
     if (w.lowConfidence) continue
-    if (w.partial) continue
     if (w.copilotActiveUsers == null || w.copilotPct == null) continue
 
-    // w.week is the Saturday week-end label. Attribute to the month containing
-    // the week's midpoint (Wednesday = Saturday − 3 days) so boundary weeks land
-    // in the month where the majority of their days fall.
+    // w.week is the Sunday week-end label (Mon-Sun ISO calendar week).
+    // Attribute to the month containing the week's midpoint (Thursday =
+    // Sunday − 3 days) so boundary weeks land in the month where the
+    // majority of their days fall. (Partial trailing weeks are already
+    // hidden upstream by the pipeline.)
     const weekEnd = new Date(w.week + 'T00:00:00Z')
     const midpoint = new Date(weekEnd)
     midpoint.setUTCDate(midpoint.getUTCDate() - 3)

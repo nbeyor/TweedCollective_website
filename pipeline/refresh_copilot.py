@@ -118,6 +118,14 @@ def load_prs(input_path, sheet_name=None):
     for col in ('FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'):
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], errors='coerce')
+    # Drop rows with null key columns. A null AuthorUUID was previously
+    # stringified to 'nan' and counted as a distinct author, inflating the
+    # productivity denominator.
+    before = len(df)
+    df = df.dropna(subset=['JiraTicket', 'AuthorUUID', 'PREnd']).copy()
+    dropped = before - len(df)
+    if dropped:
+        print(f"load_prs: dropped {dropped} PR rows with null JiraTicket / AuthorUUID / PREnd")
     return df
 
 
@@ -154,7 +162,8 @@ def aggregate_to_tickets(prs):
 
     tickets = prs.groupby('JiraTicket').apply(agg_ticket).reset_index()
     tickets['PREndDate'] = pd.to_datetime(tickets['PREnd']).dt.normalize()
-    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    # Mon-Sun ISO calendar week, indexed by the Sunday end-of-week date.
+    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
     tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
     tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, np.inf], labels=['0-300', '301+'], right=True)
     tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 10, np.inf], labels=['1-10', '11+'], right=True)
@@ -162,13 +171,13 @@ def aggregate_to_tickets(prs):
     return tickets
 
 
-def compute_weekly_team_metrics(tickets, cutoff=None):
+def compute_weekly_team_metrics(tickets):
     """Compute team-wide productivity and QA churn per week.
 
-    `cutoff` is the latest fully-observed day in the input data (typically
-    `max(prs['PREnd'])`). Any week whose Saturday-end is later than the
-    cutoff is flagged `Partial=True` — its data is still arriving and
-    shouldn't be averaged in mean-of-weekly metrics.
+    `tickets` is expected to be pre-filtered by the caller to exclude any
+    partial trailing week (week whose Sunday-end is past the data cutoff).
+    Partial weeks are hidden entirely from the dashboard, so they don't
+    appear here either.
     """
     all_weeks = tickets['WeekEnding'].dropna().unique()
     all_weeks = pd.DatetimeIndex(all_weeks).sort_values()
@@ -194,7 +203,6 @@ def compute_weekly_team_metrics(tickets, cutoff=None):
             'TeamProductivity': team_prod,
             'TeamQAChurnRate': team_qa,
             'LowConfidence': total_tickets < MIN_TICKETS_THRESHOLD,
-            'Partial': bool(cutoff is not None and pd.Timestamp(week) > cutoff),
         })
 
     weekly = pd.DataFrame(rows)
@@ -221,7 +229,6 @@ def compute_baseline(tickets, weekly):
     baseline_weekly = weekly[
         (weekly['WeekEnding'] < baseline_end_ts)
         & ~weekly['LowConfidence']
-        & ~weekly['Partial']
     ]
     productivity = baseline_weekly['TeamProductivity'].mean() if len(baseline_weekly) > 0 else 0
 
@@ -246,7 +253,6 @@ def compute_team_summary(tickets, weekly, baseline):
     post_weekly = weekly[
         (weekly['WeekEnding'] >= mature_start_ts)
         & ~weekly['LowConfidence']
-        & ~weekly['Partial']
     ]
 
     team_prod_avg = post_weekly['TeamProductivity'].mean() if len(post_weekly) > 0 else 0
@@ -500,7 +506,7 @@ def _load_copilot_df(copilot_path):
 
     sheet_name, fmt = result
     copilot = pd.read_excel(xl, sheet_name=sheet_name)
-    copilot['EventDay'] = pd.to_datetime(copilot['EventDay']).dt.normalize()
+    copilot['EventDay'] = pd.to_datetime(copilot['EventDay'], errors='coerce').dt.normalize()
 
     if fmt == 'new':
         copilot = copilot.rename(columns={
@@ -521,12 +527,31 @@ def _load_copilot_df(copilot_path):
             'LocDeletedSum': 'loc_deleted',
         })
 
+    # Drop rows with null user_id / EventDay before any aggregation. Without
+    # this, distinct-user counts and weekly buckets get polluted by nulls.
+    before = len(copilot)
+    copilot = copilot.dropna(subset=['user_id', 'EventDay']).copy()
+    dropped = before - len(copilot)
+    if dropped:
+        print(f"_load_copilot_df: dropped {dropped} rows with null user_id / EventDay")
+
     # Fill NaN with 0 for numeric columns
     for col in ['suggestions', 'acceptances', 'loc_added']:
         if col in copilot.columns:
             copilot[col] = copilot[col].fillna(0)
 
-    copilot['week'] = copilot['EventDay'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    # Mon-Sun ISO calendar week, indexed by the Sunday end-of-week date.
+    copilot['week'] = copilot['EventDay'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
+
+    # Hide the partial trailing week: drop rows whose Sunday-end is past
+    # the observed event-day cutoff. At most one week per pull.
+    cutoff = copilot['EventDay'].max()
+    before = len(copilot)
+    copilot = copilot[copilot['week'] <= cutoff].copy()
+    dropped = before - len(copilot)
+    if dropped:
+        print(f"_load_copilot_df: dropped {dropped} rows in partial trailing week (cutoff {cutoff.strftime('%Y-%m-%d')})")
+
     return copilot, fmt
 
 
@@ -615,7 +640,8 @@ def compute_copilot_pr_correlation(prs, copilot_df):
 
     prs = prs.copy()
     prs['PREnd'] = pd.to_datetime(prs['PREnd']).dt.normalize()
-    prs['WeekEnding'] = prs['PREnd'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    # Mon-Sun ISO calendar week (must match aggregate_to_tickets).
+    prs['WeekEnding'] = prs['PREnd'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
 
     # Build set of (AuthorUUID, WeekEnding) pairs with copilot activity
     copilot_weekly = copilot_df.groupby(['user_id', 'week']).agg(
@@ -650,7 +676,8 @@ def compute_copilot_pr_correlation(prs, copilot_df):
 
     tickets = prs.groupby('JiraTicket').apply(agg_ticket).reset_index()
     tickets['PREndDate'] = pd.to_datetime(tickets['PREnd']).dt.normalize()
-    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SAT').dt.end_time.dt.normalize()
+    # Mon-Sun ISO calendar week, indexed by the Sunday end-of-week date.
+    tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
     tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
 
     # Focus on mature period for the comparison
@@ -790,13 +817,24 @@ def serialize(obj):
 
 def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     prs = load_prs(input_path, sheet_name)
-    tickets = aggregate_to_tickets(prs)
-    # Cutoff = latest fully-observed PR end date in the input. Weeks whose
-    # Saturday-end falls beyond this are still in progress and get flagged
-    # `partial` so downstream consumers can drop them from mean-of-weekly
-    # metrics without losing the raw data point.
+    # Cutoff = latest observed PR end date. Reported in the JSON as
+    # `dataCutoff` for context.
     cutoff = pd.to_datetime(prs['PREnd']).dropna().max().normalize() if 'PREnd' in prs.columns else None
-    weekly = compute_weekly_team_metrics(tickets, cutoff=cutoff)
+
+    # Hide the partial trailing week entirely: drop PRs whose Mon-Sun
+    # week_ending is past the observed cutoff. The trailing partial week
+    # never makes it into the weekly scatter, rolling averages,
+    # baseline/mature means, or the monthly rollup.
+    if cutoff is not None:
+        pr_week_end = pd.to_datetime(prs['PREnd']).dt.to_period('W-SUN').dt.end_time.dt.normalize()
+        partial_mask = pr_week_end > cutoff
+        n_partial = int(partial_mask.sum())
+        if n_partial:
+            print(f"build_dashboard_data: hid {n_partial} PR rows in partial trailing week (cutoff {cutoff.strftime('%Y-%m-%d')})")
+        prs = prs[~partial_mask].copy()
+
+    tickets = aggregate_to_tickets(prs)
+    weekly = compute_weekly_team_metrics(tickets)
     baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
     size_complexity = compute_size_complexity(tickets)
@@ -847,7 +885,6 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             'teamProductivity': row['TeamProductivity'],
             'teamQARate': row['TeamQAChurnRate'],
             'lowConfidence': bool(row['LowConfidence']),
-            'partial': bool(row['Partial']),
             'copilotPct': None,
             'copilotActiveUsers': None,
             'copilotCodeGen': None,
