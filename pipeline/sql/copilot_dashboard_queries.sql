@@ -21,8 +21,31 @@
 --     event_day) MUST be dropped by the loader before insert; the table
 --     DDL below enforces this with NOT NULL as a safety net.
 --
--- Usage: Run each numbered query independently. The VIEW (v_tickets) must be
---        created first as it is referenced by queries 1–4 and 7–8.
+-- Usage: Run the file top-to-bottom to install all tables and views. Once
+--        installed, external consumers (Power BI, Metabase, notebooks) should
+--        bind directly to the named views below — NOT recompute these
+--        aggregates in Power Query / DAX / M. The views bake in:
+--          • partial-week exclusion (week_ending <= MAX observed pr_end / event_day)
+--          • Mon-Sun ISO week boundary (week_ending = Sunday)
+--          • rolling-4-week calendar-anchored windows where applicable
+--          • rolling-4-week active-user denominator for Copilot adoption
+--          • mean-of-weekly productivity (not pooled DIVIDE(SUM, SUM))
+--          • NOT NULL key columns on the underlying tables
+--
+--        Consumer-facing views (defined inline with the numbered queries):
+--          v_tickets                          — PR→ticket aggregation (Query 0)
+--          v_weekly_team_metrics              — Query 1
+--          v_baseline_metrics                 — Query 2
+--          v_mature_summary                   — Query 3
+--          v_size_complexity_heatmap          — Query 4
+--          v_copilot_adoption_weekly          — Query 5
+--          v_copilot_user_tiers               — Query 6
+--          v_copilot_pr_correlation_weekly    — Query 7
+--          v_copilot_pr_correlation_summary   — Query 7b
+--          v_copilot_intensity_buckets        — Query 8
+--
+--        Caller must SET app.* config vars (see CONFIGURATION below) at the
+--        session level before selecting from these views.
 -- ============================================================================
 
 
@@ -144,6 +167,7 @@ GROUP BY jira_ticket;
 -- Partial trailing weeks (week_ending > max observed pr_end) are hidden
 -- from the result entirely.
 
+CREATE OR REPLACE VIEW v_weekly_team_metrics AS
 WITH data_cutoff AS (
     SELECT MAX(pr_end)::date AS cutoff FROM pr_jira_metrics
 ),
@@ -225,6 +249,7 @@ ORDER BY m.week_ending;
 -- Uses mean-of-weekly productivity (same methodology as team summary)
 -- to ensure apples-to-apples comparison with the mature period.
 
+CREATE OR REPLACE VIEW v_baseline_metrics AS
 WITH baseline_tickets AS (
     SELECT * FROM v_tickets
     WHERE pr_end_date < current_setting('app.baseline_end')::date
@@ -279,6 +304,7 @@ FROM weekly_prod;
 --
 -- Computes mature-period productivity/QA and percentage delta vs baseline.
 
+CREATE OR REPLACE VIEW v_mature_summary AS
 WITH baseline_weekly AS (
     -- Baseline: mean-of-weekly productivity for pre-Oct weeks (confident only)
     SELECT
@@ -367,6 +393,7 @@ FROM baseline_agg b;
 --   Complexity: 1-10, 11+
 -- Productivity = ticket_count / (unique_authors × weeks × 5)
 
+CREATE OR REPLACE VIEW v_size_complexity_heatmap AS
 WITH post_tickets AS (
     SELECT * FROM v_tickets
     WHERE pr_end_date >= current_setting('app.mature_start')::date
@@ -462,6 +489,7 @@ ORDER BY g.size_bucket, g.complexity_bucket;
 -- Partial trailing week (week_ending > max observed event_day) is hidden
 -- from the result entirely.
 
+CREATE OR REPLACE VIEW v_copilot_adoption_weekly AS
 WITH telemetry_weekly AS (
     -- Per-user, per-week activity (one row per distinct (user, week))
     SELECT
@@ -521,6 +549,7 @@ ORDER BY w.week_ending;
 --   Medium: 10–29 days
 --   Light:  < 10 days
 
+CREATE OR REPLACE VIEW v_copilot_user_tiers AS
 WITH user_days AS (
     SELECT
         user_id,
@@ -598,6 +627,7 @@ FROM tiers;
 --   Part A: Weekly comparison (assisted vs non-assisted productivity & QA)
 --   Part B: Overall mature-period summary with productivity lift & QA delta
 
+CREATE OR REPLACE VIEW v_copilot_pr_correlation_weekly AS
 WITH copilot_weekly_by_user AS (
     -- Aggregate copilot telemetry to (user_id, week) level
     SELECT
@@ -726,6 +756,7 @@ ORDER BY w.week_ending;
 --
 -- Mean-of-weekly productivity for assisted vs non-assisted, plus deltas.
 
+CREATE OR REPLACE VIEW v_copilot_pr_correlation_summary AS
 WITH copilot_weekly_by_user AS (
     SELECT
         user_id,
@@ -827,6 +858,7 @@ FROM
 --
 -- For each bucket: ticket count, productivity, QA churn rate, avg suggestions.
 
+CREATE OR REPLACE VIEW v_copilot_intensity_buckets AS
 WITH copilot_weekly_by_user AS (
     SELECT
         user_id,
