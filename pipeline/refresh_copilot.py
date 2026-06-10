@@ -38,6 +38,19 @@ WORKDAYS_PER_WEEK = 5
 ROLLING_WINDOW = 4
 MIN_TICKETS_THRESHOLD = 5
 
+# Size × complexity bucketing.
+# Cut-points are data-driven rather than round guesses: on the 2026-06 ticket
+# distribution they sit near the 65th percentile of lines (median 58, very
+# right-skewed) and the 61st percentile of files (median 3). The old 300/10
+# cut left 75%/75% of tickets in the small/simple buckets, so the "large"
+# cells were too thin to read a trend; 150/5 balances the diagonal (≈678/364
+# vs 849/242) and roughly doubles the off-diagonal cells. Kept as constants so
+# bucket labels stay stable across refreshes and comparable to baseline.
+SIZE_CUT = 150        # lines: ≤ SIZE_CUT is "small"
+FILES_CUT = 5         # files: ≤ FILES_CUT is "simple"
+SIZE_LABELS = [f'0-{SIZE_CUT}', f'{SIZE_CUT + 1}+']
+FILES_LABELS = [f'1-{FILES_CUT}', f'{FILES_CUT + 1}+']
+
 # Paths
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
@@ -165,8 +178,8 @@ def aggregate_to_tickets(prs):
     # Mon-Sun ISO calendar week, indexed by the Sunday end-of-week date.
     tickets['WeekEnding'] = tickets['PREndDate'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
     tickets['HasQAChurn'] = (tickets['TotalQAChurnLines'] > 0).astype(int)
-    tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, 300, np.inf], labels=['0-300', '301+'], right=True)
-    tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, 10, np.inf], labels=['1-10', '11+'], right=True)
+    tickets['SizeBucket'] = pd.cut(tickets['TotalLines'], bins=[0, SIZE_CUT, np.inf], labels=SIZE_LABELS, right=True)
+    tickets['ComplexityBucket'] = pd.cut(tickets['MaxFiles'], bins=[0, FILES_CUT, np.inf], labels=FILES_LABELS, right=True)
     tickets['Project'] = tickets['JiraTicket'].apply(extract_project_key)
     return tickets
 
@@ -299,8 +312,8 @@ def compute_size_complexity(tickets):
     pre_fte_days = max(len(pre_authors), 1) * max(pre_weeks, 1) * WORKDAYS_PER_WEEK
 
     buckets = []
-    for size in ['0-300', '301+']:
-        for complexity in ['1-10', '11+']:
+    for size in SIZE_LABELS:
+        for complexity in FILES_LABELS:
             p = post[(post['SizeBucket'] == size) & (post['ComplexityBucket'] == complexity)]
             b = pre[(pre['SizeBucket'] == size) & (pre['ComplexityBucket'] == complexity)]
             if len(p) > 0 or len(b) > 0:
@@ -344,8 +357,8 @@ def compute_size_complexity_weekly(tickets):
         wk = tickets[tickets['WeekEnding'] == week]
         phase = get_phase(pd.Timestamp(week))
         week_str = pd.Timestamp(week).strftime('%Y-%m-%d')
-        for size in ['0-300', '301+']:
-            for complexity in ['1-10', '11+']:
+        for size in SIZE_LABELS:
+            for complexity in FILES_LABELS:
                 cell = wk[(wk['SizeBucket'] == size) & (wk['ComplexityBucket'] == complexity)]
                 n = int(len(cell))
                 authors = set()
@@ -936,6 +949,12 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'matureStart': MATURE_START,
         'rollingWindow': ROLLING_WINDOW,
         'minTicketsThreshold': MIN_TICKETS_THRESHOLD,
+        'bucketing': {
+            'sizeCut': SIZE_CUT,
+            'filesCut': FILES_CUT,
+            'sizeLabels': SIZE_LABELS,
+            'filesLabels': FILES_LABELS,
+        },
         'config': {
             'teamSize': len(all_authors),
             'workdaysPerWeek': WORKDAYS_PER_WEEK,
@@ -1003,6 +1022,16 @@ def main():
     JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUTPUT.write_text(json_str, encoding='utf-8')
     print(f"JSON written to: {JSON_OUTPUT}")
+
+    print(f"\nSize × complexity bucketing (data-driven cuts):")
+    print(f"  Size cut: {SIZE_CUT} lines  | Files cut: {FILES_CUT} files")
+    sc_totals = {}
+    for b in data['sizeComplexity']:
+        sc_totals[b['label']] = b['post_tickets'] + b['baseline_tickets']
+    if sc_totals:
+        tot = sum(sc_totals.values()) or 1
+        for label, n in sc_totals.items():
+            print(f"    {label:14s}: {n:5d} tickets ({n / tot * 100:4.0f}%)")
 
     print(f"\nThree-phase model:")
     print(f"  Baseline: pre-{BASELINE_END} | Transition: {BASELINE_END}–{MATURE_START} | Mature: {MATURE_START}+")

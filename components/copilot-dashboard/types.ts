@@ -10,6 +10,12 @@ export interface CopilotDashboardData {
   matureStart: string
   rollingWindow: number
   minTicketsThreshold: number
+  bucketing?: {
+    sizeCut: number
+    filesCut: number
+    sizeLabels: string[]
+    filesLabels: string[]
+  }
   config: {
     teamSize: number
     workdaysPerWeek: number
