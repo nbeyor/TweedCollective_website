@@ -16,6 +16,7 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation'
 import { Chart } from 'react-chartjs-2'
 import type { CopilotDashboardData, SizeComplexityWeeklyEntry, SizeComplexityEntry } from '../types'
+import { getBuckets } from './buckets'
 
 ChartJS.register(
   CategoryScale,
@@ -29,12 +30,13 @@ ChartJS.register(
   annotationPlugin,
 )
 
-const SIZES = ['0-300', '301+'] as const
-const COMPLEXITIES = ['1-10', '11+'] as const
-
-type Metric = 'productivity' | 'qaChurn'
-type MetricMode = 'productivity' | 'qaChurn' | 'both'
+type Metric = 'productivity' | 'qaChurn' | 'tickets'
+type MetricMode = 'productivity' | 'qaChurn' | 'both' | 'volume'
 type Smoothing = 'rolling' | 'raw'
+
+// Stacked-share colors run small/cheap (green) → large/expensive (red), so a
+// rising red band literally reads as "the team shifted toward bigger work."
+const MIX_COLORS = ['#86efac', '#fcd34d', '#fb923c', '#ef4444']
 
 const GREEN = '#15803d'
 const RED = '#dc2626'
@@ -85,6 +87,7 @@ function baselineFor(
   complexity: string,
   metric: Metric,
 ): number | null {
+  if (metric === 'tickets') return null
   const e = entries.find(x => x.size === size && x.complexity === complexity)
   if (!e) return null
   if (metric === 'productivity') {
@@ -130,6 +133,9 @@ function CellChart({
       if (metric === 'productivity') {
         return b.tickets > 0 ? b.productivity : null
       }
+      if (metric === 'tickets') {
+        return b.tickets
+      }
       return b.qaChurn
     })
   }, [bucket, metric])
@@ -138,7 +144,7 @@ function CellChart({
     return smoothing === 'rolling' ? rollingMean(rawValues, 4) : rawValues
   }, [rawValues, smoothing])
 
-  const lineColor = metric === 'productivity' ? GREEN : RED
+  const lineColor = metric === 'productivity' ? GREEN : metric === 'tickets' ? '#2563eb' : RED
   const baselineLabel = baseline != null
     ? (metric === 'productivity' ? baseline.toFixed(4) : `${(baseline * 100).toFixed(1)}%`)
     : '—'
@@ -250,6 +256,7 @@ function CellChart({
           callback: (v: number | string) => {
             if (typeof v !== 'number') return v
             if (metric === 'qaChurn') return `${(v * 100).toFixed(0)}%`
+            if (metric === 'tickets') return Number.isInteger(v) ? v.toString() : ''
             return v.toFixed(3)
           },
         },
@@ -275,6 +282,8 @@ function CellChart({
             const lines: string[] = []
             if (v == null) {
               lines.push('No data')
+            } else if (metric === 'tickets') {
+              lines.push(`Tickets closed: ${v.toFixed(smoothing === 'rolling' ? 1 : 0)}`)
             } else if (metric === 'productivity') {
               lines.push(`Productivity: ${v.toFixed(4)}`)
               if (baseline && baseline > 0) {
@@ -306,9 +315,11 @@ function CellChart({
         <p className="text-[11px] font-medium text-[#1c1917]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
           {size} lines · {complexity} files
         </p>
-        <p className="text-[10px] text-[#a8a29e]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-          baseline {baselineLabel}
-        </p>
+        {metric !== 'tickets' && (
+          <p className="text-[10px] text-[#a8a29e]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            baseline {baselineLabel}
+          </p>
+        )}
       </div>
       <div style={{ height: 160 }}>
         <Chart
@@ -329,9 +340,11 @@ interface MetricGridProps {
   weeks: string[]
   phaseBoundaries: { baselineLastIdx: number; matureFirstIdx: number }
   smoothing: Smoothing
+  sizes: string[]
+  complexities: string[]
 }
 
-function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smoothing }: MetricGridProps) {
+function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smoothing, sizes, complexities }: MetricGridProps) {
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -341,8 +354,8 @@ function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smo
         {subtitle}
       </p>
       <div className="grid grid-cols-2 gap-3">
-        {SIZES.map(size =>
-          COMPLEXITIES.map(complexity => (
+        {sizes.map(size =>
+          complexities.map(complexity => (
             <CellChart
               key={`${size}|${complexity}`}
               size={size}
@@ -356,6 +369,165 @@ function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smo
             />
           )),
         )}
+      </div>
+    </div>
+  )
+}
+
+interface MixShareChartProps {
+  data: CopilotDashboardData
+  weeks: string[]
+  sizes: string[]
+  complexities: string[]
+  phaseBoundaries: { baselineLastIdx: number; matureFirstIdx: number }
+  smoothing: Smoothing
+}
+
+/**
+ * 100%-stacked area of ticket share by bucket over time. This is the chart that
+ * explains headline productivity moves: tickets/author-day mechanically falls
+ * when the mix shifts toward larger work, so a rising "big" band (red/orange)
+ * under a dipping productivity line means bigger work, not slower work.
+ */
+function MixShareChart({ data, weeks, sizes, complexities, phaseBoundaries, smoothing }: MixShareChartProps) {
+  const { datasets, totals } = useMemo(() => {
+    const counts = new Map<string, number[]>() // bucketKey -> per-week ticket count
+    const buckets: { key: string; label: string }[] = []
+    for (const size of sizes) {
+      for (const complexity of complexities) {
+        const key = `${size}|${complexity}`
+        buckets.push({ key, label: `${size} lines · ${complexity} files` })
+        counts.set(key, weeks.map(() => 0))
+      }
+    }
+    const weekIdx = new Map(weeks.map((w, i) => [w, i]))
+    for (const row of data.sizeComplexityWeekly) {
+      const i = weekIdx.get(row.week)
+      const arr = counts.get(`${row.size}|${row.complexity}`)
+      if (i != null && arr) arr[i] = row.tickets
+    }
+    const totals = weeks.map((_, i) =>
+      buckets.reduce((sum, b) => sum + (counts.get(b.key)![i] ?? 0), 0),
+    )
+    // Smooth the underlying counts before converting to shares so a single-week
+    // spike doesn't whipsaw the bands; shares still sum to ~100 each week.
+    const smoothedTotals = smoothing === 'rolling'
+      ? rollingMean(totals.map(t => t), 4).map(v => v ?? 0)
+      : totals
+    const datasets = buckets.map((b, bi) => {
+      const raw = counts.get(b.key)!
+      const smoothed = smoothing === 'rolling'
+        ? rollingMean(raw.map(v => v), 4).map(v => v ?? 0)
+        : raw
+      const color = MIX_COLORS[bi % MIX_COLORS.length]
+      return {
+        type: 'line' as const,
+        label: b.label,
+        data: smoothed.map((v, i) => (smoothedTotals[i] > 0 ? (v / smoothedTotals[i]) * 100 : 0)),
+        borderColor: color,
+        backgroundColor: `${color}cc`,
+        fill: true,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        borderWidth: 1,
+        tension: 0.25,
+      }
+    })
+    return { datasets, totals }
+  }, [data.sizeComplexityWeekly, weeks, sizes, complexities, smoothing])
+
+  const { baselineLastIdx, matureFirstIdx } = phaseBoundaries
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const annotations: Record<string, any> = {}
+  if (matureFirstIdx < weeks.length) {
+    annotations.matureLine = {
+      type: 'line',
+      xMin: matureFirstIdx - 0.5,
+      xMax: matureFirstIdx - 0.5,
+      borderColor: GREEN,
+      borderWidth: 1,
+      borderDash: [4, 4],
+      label: {
+        display: true,
+        content: 'mature',
+        position: 'start',
+        backgroundColor: 'rgba(255,255,255,0.85)',
+        color: '#15803d',
+        font: { family: 'JetBrains Mono, monospace', size: 9 },
+        padding: 2,
+      },
+    }
+  }
+  if (baselineLastIdx >= 0) {
+    annotations.baselineLine = {
+      type: 'line',
+      xMin: baselineLastIdx + 0.5,
+      xMax: baselineLastIdx + 0.5,
+      borderColor: GREY,
+      borderWidth: 1,
+      borderDash: [4, 4],
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: {
+        ticks: { font: { family: 'JetBrains Mono, monospace', size: 9 }, color: '#a8a29e', maxTicksLimit: 10, autoSkip: true },
+        grid: { display: false },
+      },
+      y: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        ticks: {
+          font: { family: 'JetBrains Mono, monospace', size: 9 },
+          color: '#a8a29e',
+          callback: (v: number | string) => (typeof v === 'number' ? `${v}%` : v),
+        },
+        grid: { color: 'rgba(231, 229, 228, 0.6)' },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: { font: { family: 'DM Sans, sans-serif', size: 10 }, boxWidth: 10, boxHeight: 10, usePointStyle: true },
+      },
+      tooltip: {
+        backgroundColor: DARK,
+        titleFont: { family: 'DM Sans, sans-serif', size: 11 },
+        bodyFont: { family: 'JetBrains Mono, monospace', size: 10 },
+        callbacks: {
+          title: (items: { dataIndex: number }[]) => {
+            const idx = items[0]?.dataIndex
+            if (idx == null) return ''
+            return `${weeks[idx]} · ${totals[idx]} tickets`
+          },
+          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) =>
+            `${ctx.dataset.label}: ${(ctx.parsed.y ?? 0).toFixed(0)}%`,
+        },
+      },
+      annotation: { annotations },
+    },
+  }
+
+  const labels = weeks.map(formatShortDate)
+
+  return (
+    <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
+      <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        Where the work went — ticket mix over time
+      </h2>
+      <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        Share of each week&apos;s closed tickets by size × complexity bucket. When the red/orange (large)
+        bands swell, the team took on bigger chunks of work — which lowers tickets-per-day even at steady effort.
+      </p>
+      <div style={{ height: 280 }}>
+        <Chart type="line" data={{ labels, datasets: datasets as never }} options={options as never} />
       </div>
     </div>
   )
@@ -452,8 +624,10 @@ export function SizeComplexityTrends() {
     )
   }
 
+  const { sizes, complexities } = getBuckets(data)
   const showProductivity = metricMode === 'productivity' || metricMode === 'both'
   const showQaChurn = metricMode === 'qaChurn' || metricMode === 'both'
+  const showVolume = metricMode === 'volume'
 
   const toggleClass = (active: boolean) =>
     `px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
@@ -510,6 +684,13 @@ export function SizeComplexityTrends() {
               >
                 QA churn
               </button>
+              <button
+                className={toggleClass(metricMode === 'volume')}
+                onClick={() => setMetricMode('volume')}
+                style={{ fontFamily: 'DM Sans, sans-serif' }}
+              >
+                Volume
+              </button>
             </div>
           </div>
 
@@ -540,6 +721,29 @@ export function SizeComplexityTrends() {
           </div>
         </div>
 
+        <MixShareChart
+          data={data}
+          weeks={weeks}
+          sizes={sizes}
+          complexities={complexities}
+          phaseBoundaries={phaseBoundaries}
+          smoothing={smoothing}
+        />
+
+        {showVolume && (
+          <MetricGrid
+            title="Ticket volume over time"
+            subtitle="Raw tickets closed inside each bucket, week by week. Read alongside the mix chart above: when small-bucket volume falls and large-bucket volume rises, headline productivity dips on mix alone."
+            metric="tickets"
+            data={data}
+            weeks={weeks}
+            phaseBoundaries={phaseBoundaries}
+            smoothing={smoothing}
+            sizes={sizes}
+            complexities={complexities}
+          />
+        )}
+
         {showProductivity && (
           <MetricGrid
             title="Productivity over time"
@@ -549,6 +753,8 @@ export function SizeComplexityTrends() {
             weeks={weeks}
             phaseBoundaries={phaseBoundaries}
             smoothing={smoothing}
+            sizes={sizes}
+            complexities={complexities}
           />
         )}
 
@@ -561,24 +767,29 @@ export function SizeComplexityTrends() {
             weeks={weeks}
             phaseBoundaries={phaseBoundaries}
             smoothing={smoothing}
+            sizes={sizes}
+            complexities={complexities}
           />
         )}
 
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 text-[11px] text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
           <p className="mb-1">
-            <strong className="text-[#1c1917]">How to read it.</strong> Each cell is one size × complexity bucket —
-            small PRs (0-300 lines) on top, large PRs (301+) on bottom; simple PRs (1-10 files) on the left,
-            complex PRs (11+) on the right.
+            <strong className="text-[#1c1917]">How to read it.</strong> The mix chart up top shows what share of
+            each week&apos;s work fell into each size × complexity bucket. Below, each small cell is one bucket —
+            small PRs ({sizes[0]} lines) on top, large PRs ({sizes[sizes.length - 1]}) on bottom; simple PRs
+            ({complexities[0]} files) on the left, complex PRs ({complexities[complexities.length - 1]}) on the right.
           </p>
           <p className="mb-1">
-            The solid line is the weekly value inside that bucket. The dashed grey line is the bucket's
-            pre-AI baseline — so the distance between them at any week is that bucket's delta vs. baseline,
-            just like the number shown in the heatmap on the main dashboard.
+            <strong className="text-[#1c1917]">Explaining a productivity dip.</strong> Headline productivity is
+            tickets per author-day, so it falls whenever the mix tilts toward larger work — even at constant effort.
+            If the productivity line sags while the large (red/orange) bands in the mix chart swell, the team took on
+            bigger chunks of work; that&apos;s composition, not a slowdown. The <em>Volume</em> tab shows the raw
+            ticket counts behind the mix.
           </p>
           <p>
-            Hollow points mark low-confidence weeks (fewer than {data.minTicketsThreshold} tickets in that
-            bucket that week); treat them skeptically. 4-week rolling smoothing is on by default because
-            weekly bucket-level counts are often thin.
+            For productivity and QA, the dashed grey line is the bucket&apos;s pre-AI baseline. Hollow points mark
+            low-confidence weeks (fewer than {data.minTicketsThreshold} tickets in that bucket that week); treat them
+            skeptically. 4-week rolling smoothing is on by default because weekly bucket-level counts are often thin.
           </p>
         </div>
       </div>

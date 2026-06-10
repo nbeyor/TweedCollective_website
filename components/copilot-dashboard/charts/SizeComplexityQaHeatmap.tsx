@@ -2,13 +2,11 @@
 
 import React, { useMemo } from 'react'
 import type { CopilotDashboardData } from '../types'
+import { getBuckets } from './buckets'
 
 interface Props {
   data: CopilotDashboardData
 }
-
-const SIZES = ['0-300', '301+']
-const COMPLEXITIES = ['1-10', '11+']
 
 // For QA churn, NEGATIVE diff = improvement (lower churn), so flip colors
 function getDiffColor(diff: number): string {
@@ -31,6 +29,7 @@ function getDiffTextColor(diff: number): string {
 }
 
 export function SizeComplexityQaHeatmap({ data }: Props) {
+  const { sizes: SIZES, complexities: COMPLEXITIES } = getBuckets(data)
   const grid = useMemo(() => {
     const lookup: Record<string, typeof data.sizeComplexity[0]> = {}
     for (const entry of data.sizeComplexity) {
