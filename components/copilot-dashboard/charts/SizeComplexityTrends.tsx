@@ -105,6 +105,7 @@ interface CellChartProps {
   weeks: string[]
   phaseBoundaries: { baselineLastIdx: number; matureFirstIdx: number }
   smoothing: Smoothing
+  yMax?: number
 }
 
 function CellChart({
@@ -116,6 +117,7 @@ function CellChart({
   weeks,
   phaseBoundaries,
   smoothing,
+  yMax,
 }: CellChartProps) {
   const bucket = useMemo(() => {
     const byWeek = new Map<string, SizeComplexityWeeklyEntry>()
@@ -250,6 +252,9 @@ function CellChart({
       },
       y: {
         beginAtZero: true,
+        // Shared across all four buckets in the grid so the cells are
+        // visually comparable (a tall line means more, not just a tighter axis).
+        max: yMax,
         ticks: {
           font: { family: 'JetBrains Mono, monospace', size: 9 },
           color: '#a8a29e',
@@ -345,6 +350,32 @@ interface MetricGridProps {
 }
 
 function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smoothing, sizes, complexities }: MetricGridProps) {
+  // One shared y-axis ceiling for all four buckets so they're visually
+  // comparable. Computed from raw weekly values (a rolling mean never exceeds
+  // the raw max, so this caps both smoothing modes safely) plus each bucket's
+  // baseline line, then padded 5% so the peak isn't flush to the top edge.
+  const yMax = useMemo(() => {
+    const weekSet = new Set(weeks)
+    let max = 0
+    for (const size of sizes) {
+      for (const complexity of complexities) {
+        const b = baselineFor(data.sizeComplexity, size, complexity, metric)
+        if (b != null && Number.isFinite(b) && b > max) max = b
+      }
+    }
+    for (const row of data.sizeComplexityWeekly) {
+      if (!weekSet.has(row.week)) continue
+      let v: number | null = null
+      if (metric === 'productivity') v = row.tickets > 0 ? row.productivity : null
+      else if (metric === 'tickets') v = row.tickets
+      else v = row.qaChurn
+      if (v != null && Number.isFinite(v) && v > max) max = v
+    }
+    if (max <= 0) return undefined
+    const padded = max * 1.05
+    return metric === 'qaChurn' ? Math.min(1, padded) : padded
+  }, [data.sizeComplexityWeekly, data.sizeComplexity, metric, weeks, sizes, complexities])
+
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -366,6 +397,7 @@ function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smo
               weeks={weeks}
               phaseBoundaries={phaseBoundaries}
               smoothing={smoothing}
+              yMax={yMax}
             />
           )),
         )}
