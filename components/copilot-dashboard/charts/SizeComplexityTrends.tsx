@@ -105,6 +105,7 @@ interface CellChartProps {
   weeks: string[]
   phaseBoundaries: { baselineLastIdx: number; matureFirstIdx: number }
   smoothing: Smoothing
+  yMax?: number
 }
 
 function CellChart({
@@ -116,6 +117,7 @@ function CellChart({
   weeks,
   phaseBoundaries,
   smoothing,
+  yMax,
 }: CellChartProps) {
   const bucket = useMemo(() => {
     const byWeek = new Map<string, SizeComplexityWeeklyEntry>()
@@ -250,6 +252,9 @@ function CellChart({
       },
       y: {
         beginAtZero: true,
+        // Shared across all four buckets in the grid so the cells are
+        // visually comparable (a tall line means more, not just a tighter axis).
+        max: yMax,
         ticks: {
           font: { family: 'JetBrains Mono, monospace', size: 9 },
           color: '#a8a29e',
@@ -345,6 +350,43 @@ interface MetricGridProps {
 }
 
 function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smoothing, sizes, complexities }: MetricGridProps) {
+  // One shared y-axis ceiling for all four buckets so they're visually
+  // comparable (a taller line means more, not just a tighter axis). The ceiling
+  // is the max of the values actually plotted — so it tracks the current
+  // smoothing mode and never clips a drawn point — across every bucket, plus
+  // each bucket's baseline line, then rounded up to a clean step so all four
+  // grids share identical ticks. Using the plotted (smoothed) series rather
+  // than the raw max keeps the axis tight: a single low-confidence week (e.g. 1
+  // ticket that churned = 100%) no longer blows the QA scale up to 100%.
+  const yMax = useMemo(() => {
+    const step = metric === 'productivity' ? 0.05 : metric === 'qaChurn' ? 0.1 : 5
+    let max = 0
+    for (const size of sizes) {
+      for (const complexity of complexities) {
+        const b = baselineFor(data.sizeComplexity, size, complexity, metric)
+        if (b != null && Number.isFinite(b)) max = Math.max(max, b)
+        const byWeek = new Map<string, SizeComplexityWeeklyEntry>()
+        for (const row of data.sizeComplexityWeekly) {
+          if (row.size === size && row.complexity === complexity) byWeek.set(row.week, row)
+        }
+        const raw = weeks.map(w => {
+          const r = byWeek.get(w)
+          if (!r) return null
+          if (metric === 'productivity') return r.tickets > 0 ? r.productivity : null
+          if (metric === 'tickets') return r.tickets
+          return r.qaChurn
+        })
+        const series = smoothing === 'rolling' ? rollingMean(raw, 4) : raw
+        for (const v of series) {
+          if (v != null && Number.isFinite(v)) max = Math.max(max, v)
+        }
+      }
+    }
+    if (max <= 0) return undefined
+    // Round up to a clean step and strip float artifacts (e.g. 0.7000000001).
+    return Math.round(Math.ceil(max / step) * step * 1000) / 1000
+  }, [data.sizeComplexityWeekly, data.sizeComplexity, metric, weeks, sizes, complexities, smoothing])
+
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
       <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -366,6 +408,7 @@ function MetricGrid({ title, subtitle, metric, data, weeks, phaseBoundaries, smo
               weeks={weeks}
               phaseBoundaries={phaseBoundaries}
               smoothing={smoothing}
+              yMax={yMax}
             />
           )),
         )}

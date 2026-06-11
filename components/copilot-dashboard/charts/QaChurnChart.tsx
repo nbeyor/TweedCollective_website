@@ -159,7 +159,7 @@ export function QaChurnChart({ data, copilotAdoption }: Props) {
         y1: {
           beginAtZero: true,
           position: 'right' as const,
-          max: 100,
+          max: 80,
           title: {
             display: true,
             text: 'Acceptance Rate (%)',
