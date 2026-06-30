@@ -56,6 +56,10 @@ PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
+# Non-served output: the alias->UUID map for per-user drill-down. Deliberately
+# NOT under public/ so UUIDs never reach the browser (see compute_per_user_metrics).
+OUTPUT_DIR = PIPELINE_DIR / "output"
+USER_ID_MAP_OUTPUT = OUTPUT_DIR / "user-id-map.json"
 
 PULL_PATTERN = re.compile(r"^Pull\s+\d{2}_\d{2}_\d{2}$", re.I)
 AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
@@ -788,6 +792,143 @@ def compute_copilot_pr_correlation(prs, copilot_df):
     }
 
 
+def compute_per_user_metrics(prs, copilot_df):
+    """Per-developer productivity + Copilot adoption, keyed by AuthorUUID.
+
+    Returns (per_user, uuid_map):
+      - per_user: list of dicts, each with a BLINDED alias (``Dev-NN``) plus
+        weekly and summary metrics. Contains **no UUIDs** — safe to ship in the
+        public dashboard JSON.
+      - uuid_map: ``{alias: uuid}`` for offline drill-down. Kept out of the
+        public payload; the caller writes it to a non-served file.
+
+    Blinding is the privacy contract: the browser only ever sees ``Dev-NN``.
+    Productivity reuses the team definition (distinct tickets / FTE-day); a
+    ticket touched by N authors is credited to each of them. Adoption reuses the
+    intensity-tier cutoffs from ``compute_copilot_adoption``.
+    """
+    baseline_end_ts = pd.Timestamp(BASELINE_END)
+    mature_start_ts = pd.Timestamp(MATURE_START)
+
+    def get_phase(week_ts):
+        if week_ts < baseline_end_ts:
+            return 'baseline'
+        if week_ts < mature_start_ts:
+            return 'transition'
+        return 'mature'
+
+    # ── Per-user productivity from PRs, aggregated to author-ticket level ──
+    pr = prs.copy()
+    pr['PREnd'] = pd.to_datetime(pr['PREnd']).dt.normalize()
+    pr['week'] = pr['PREnd'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
+    qa_col = 'QAChurnLines' if 'QAChurnLines' in pr.columns else None
+    lines_col = 'PRLines' if 'PRLines' in pr.columns else None
+    author_tickets = pr.groupby(['AuthorUUID', 'JiraTicket']).agg(
+        week=('week', 'max'),
+        lines=(lines_col, 'sum') if lines_col else ('JiraTicket', 'size'),
+        qa=(qa_col, lambda s: int(s.fillna(0).sum() > 0)) if qa_col else ('JiraTicket', lambda s: 0),
+    ).reset_index()
+    auw = author_tickets.groupby(['AuthorUUID', 'week']).agg(
+        tickets=('JiraTicket', 'nunique'),
+        qaTickets=('qa', 'sum'),
+        lines=('lines', 'sum'),
+    ).reset_index()
+
+    # ── Per-user Copilot adoption from telemetry ──
+    if copilot_df is not None and len(copilot_df) > 0:
+        cu = copilot_df.groupby(['user_id', 'week']).agg(
+            suggestions=('suggestions', 'sum'),
+            acceptances=('acceptances', 'sum'),
+            locAdded=('loc_added', 'sum'),
+            activeDays=('EventDay', 'nunique'),
+        ).reset_index()
+        user_days = copilot_df.groupby('user_id')['EventDay'].nunique()
+    else:
+        cu = pd.DataFrame(columns=['user_id', 'week', 'suggestions', 'acceptances', 'locAdded', 'activeDays'])
+        user_days = pd.Series(dtype=int)
+
+    users = sorted(set(auw['AuthorUUID'].astype(str)) | set(cu['user_id'].astype(str)))
+
+    ranking = []
+    for uuid in users:
+        u_prod = auw[auw['AuthorUUID'].astype(str) == uuid].set_index('week')
+        u_cop = cu[cu['user_id'].astype(str) == uuid].set_index('week') if len(cu) else cu
+        weeks = sorted(set(u_prod.index) | (set(u_cop.index) if len(u_cop) else set()))
+
+        weekly = []
+        mature_tickets = baseline_tickets = 0
+        mature_weeks = baseline_weeks = 0
+        sum_sugg = sum_acc = 0
+        cop_active_weeks_mature = mature_present_weeks = 0
+
+        for w in weeks:
+            phase = get_phase(pd.Timestamp(w))
+            tickets = int(u_prod.loc[w, 'tickets']) if w in u_prod.index else 0
+            qa_tix = int(u_prod.loc[w, 'qaTickets']) if w in u_prod.index else 0
+            prod = tickets / WORKDAYS_PER_WEEK
+            in_cop = len(u_cop) and w in u_cop.index
+            sugg = int(u_cop.loc[w, 'suggestions']) if in_cop else 0
+            acc = int(u_cop.loc[w, 'acceptances']) if in_cop else 0
+            loc = int(u_cop.loc[w, 'locAdded']) if in_cop else 0
+            cop_active = 1 if (sugg > 0 or acc > 0 or loc > 0) else 0
+            weekly.append({
+                'week': pd.Timestamp(w).strftime('%Y-%m-%d'),
+                'phase': phase,
+                'tickets': tickets,
+                'productivity': round(prod, 4),
+                'qaTickets': qa_tix,
+                'copilotActive': cop_active,
+                'suggestions': sugg,
+                'acceptances': acc,
+                'acceptanceRate': round(acc / sugg, 4) if sugg > 0 else None,
+                'locAdded': loc,
+            })
+            if phase == 'mature':
+                mature_tickets += tickets
+                sum_sugg += sugg
+                sum_acc += acc
+                if tickets > 0:
+                    mature_weeks += 1
+                if tickets > 0 or cop_active:
+                    mature_present_weeks += 1
+                if cop_active:
+                    cop_active_weeks_mature += 1
+            elif phase == 'baseline':
+                baseline_tickets += tickets
+                if tickets > 0:
+                    baseline_weeks += 1
+
+        mat_prod = round(mature_tickets / (mature_weeks * WORKDAYS_PER_WEEK), 4) if mature_weeks else 0.0
+        base_prod = round(baseline_tickets / (baseline_weeks * WORKDAYS_PER_WEEK), 4) if baseline_weeks else 0.0
+        days = int(user_days.get(uuid, 0))
+        tier = 'heavy' if days >= 30 else 'medium' if days >= 10 else 'light' if days > 0 else 'none'
+        summary = {
+            'matureTickets': mature_tickets,
+            'baselineTickets': baseline_tickets,
+            'matureProductivity': mat_prod,
+            'baselineProductivity': base_prod,
+            'prodVsBaseline': _fmt_delta(mat_prod, base_prod),
+            # Adoption % = share of active mature weeks where the dev used Copilot.
+            'adoptionPct': round(cop_active_weeks_mature / mature_present_weeks * 100, 1) if mature_present_weeks else 0.0,
+            'acceptanceRate': round(sum_acc / sum_sugg * 100, 1) if sum_sugg else None,
+            'activeDays': days,
+            'intensityTier': tier,
+        }
+        ranking.append((uuid, mature_tickets, mature_tickets + baseline_tickets, weekly, summary))
+
+    # Deterministic blinded alias: rank by mature tickets, then total, then UUID,
+    # so labels stay stable across refreshes.
+    ranking.sort(key=lambda r: (-r[1], -r[2], r[0]))
+    per_user = []
+    uuid_map = {}
+    for i, (uuid, _mt, _tt, weekly, summary) in enumerate(ranking, start=1):
+        alias = f"Dev-{i:02d}"
+        uuid_map[alias] = uuid
+        per_user.append({'alias': alias, 'summary': summary, 'weekly': weekly})
+
+    return per_user, uuid_map
+
+
 def _sanitize_for_json(obj):
     """Recursively replace NaN/Inf with None so JSON is valid."""
     if obj is None:
@@ -868,6 +1009,11 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     pr_correlation = None
     if copilot_df is not None and copilot_fmt == 'new':
         pr_correlation = compute_copilot_pr_correlation(prs, copilot_df)
+
+    # Per-user (blinded) productivity + adoption. perUser carries aliases only;
+    # the alias->UUID map is stashed under a private key that main() strips
+    # before writing the public JSON and persists to a non-served file.
+    per_user, user_id_map = compute_per_user_metrics(prs, copilot_df)
 
     # Unique authors across all data
     all_authors = set()
@@ -971,6 +1117,8 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         'copilotAdoption': copilot_data,
         'copilotPrCorrelation': pr_correlation,
         'projects': projects,
+        'perUser': per_user,
+        '_userIdMap': user_id_map,
     }
 
 
@@ -1016,12 +1164,22 @@ def main():
             print("Warning: No Copilot/AI telemetry data found. Dashboard will show team metrics without copilot overlay.")
 
     data = build_dashboard_data(path, pull_sheet, copilot_path)
+
+    # Strip the alias->UUID map before the public write. UUIDs must never reach
+    # the browser; they go only to the non-served drill-down file below.
+    user_id_map = data.pop('_userIdMap', None)
+
     data = _sanitize_for_json(data)
     json_str = json.dumps(data, default=serialize, indent=2)
 
     JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUTPUT.write_text(json_str, encoding='utf-8')
     print(f"JSON written to: {JSON_OUTPUT}")
+
+    if user_id_map:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        USER_ID_MAP_OUTPUT.write_text(json.dumps(user_id_map, indent=2), encoding='utf-8')
+        print(f"User-ID drill-down map ({len(user_id_map)} devs, NOT served) written to: {USER_ID_MAP_OUTPUT}")
 
     print(f"\nSize × complexity bucketing (data-driven cuts):")
     print(f"  Size cut: {SIZE_CUT} lines  | Files cut: {FILES_CUT} files")

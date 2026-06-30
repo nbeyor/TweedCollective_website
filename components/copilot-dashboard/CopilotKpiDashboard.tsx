@@ -122,6 +122,13 @@ export function CopilotKpiDashboard() {
           >
             View Size × Complexity Trends →
           </Link>
+          <Link
+            href="/documents/ecs-sdlc-dashboard/users"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
+            style={{ fontFamily: 'DM Sans, sans-serif' }}
+          >
+            View Per-Developer Breakdown →
+          </Link>
         </div>
         <KpiCards data={filtered} />
         <ProductivityChart data={filtered} />
