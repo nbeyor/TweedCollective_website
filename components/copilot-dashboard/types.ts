@@ -49,7 +49,41 @@ export interface CopilotDashboardData {
   copilotAdoption: CopilotAdoption | null
   copilotPrCorrelation: CopilotPrCorrelation | null
   projects?: ProjectTrackingData | null
+  perUser?: PerUserEntry[] | null
   survey?: SurveyData | null
+}
+
+export interface PerUserWeekly {
+  week: string
+  phase: 'baseline' | 'transition' | 'mature'
+  tickets: number
+  productivity: number
+  qaTickets: number
+  copilotActive: number
+  suggestions: number
+  acceptances: number
+  acceptanceRate: number | null
+  locAdded: number
+}
+
+export interface PerUserSummary {
+  matureTickets: number
+  baselineTickets: number
+  matureProductivity: number
+  baselineProductivity: number
+  prodVsBaseline: string
+  adoptionPct: number
+  acceptanceRate: number | null
+  activeDays: number
+  intensityTier: 'heavy' | 'medium' | 'light' | 'none'
+}
+
+// Blinded per-developer record. `alias` (e.g. "Dev-07") is the only identifier
+// in the browser payload — the alias->UUID map stays server-side for drill-down.
+export interface PerUserEntry {
+  alias: string
+  summary: PerUserSummary
+  weekly: PerUserWeekly[]
 }
 
 export interface WeeklyEntry {

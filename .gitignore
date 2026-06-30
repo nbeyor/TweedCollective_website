@@ -40,6 +40,9 @@ next-env.d.ts
 # clerk configuration (can include secrets)
 /.clerk/
 
+# pipeline drill-down artifacts (alias->UUID map — must never be served/committed)
+/pipeline/output/
+
 # Python
 __pycache__/
 *.pyc
