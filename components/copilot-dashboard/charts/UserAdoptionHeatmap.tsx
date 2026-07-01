@@ -232,6 +232,13 @@ export function UserAdoptionHeatmap() {
     [windowMetric],
   )
 
+  // Index of the first window-inactive developer in the sorted rows — the point
+  // where the dotted divider is drawn to separate active from inactive.
+  const firstInactiveIndex = useMemo(
+    () => rows.findIndex(u => !windowMetric[u.alias].active),
+    [rows, windowMetric],
+  )
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#fafaf9]">
@@ -358,12 +365,26 @@ export function UserAdoptionHeatmap() {
               </tr>
             </thead>
             <tbody>
-              {rows.map(u => {
+              {rows.map((u, i) => {
+                const showDivider = i === firstInactiveIndex && firstInactiveIndex > 0
                 const tier = TIER_STYLE[u.summary.intensityTier] ?? TIER_STYLE.none
                 const wm = windowMetric[u.alias]
                 const summaryVal = wm.value == null ? '—' : `${Math.round(wm.value)}%`
                 return (
-                  <tr key={u.alias}>
+                  <React.Fragment key={u.alias}>
+                  {showDivider && (
+                    <tr aria-hidden>
+                      <td colSpan={3 + periods.length} className="p-0">
+                        <div
+                          className="text-[9px] text-[#a8a29e] uppercase tracking-wider py-1"
+                          style={{ borderTop: '2px dotted #d6d3d1', fontFamily: 'DM Sans, sans-serif' }}
+                        >
+                          No activity {SCOPE_LABEL[scope]} ({perUser.length - activeCount})
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  <tr>
                     <td
                       className="sticky left-0 z-10 bg-white text-[11px] font-semibold p-1 pr-3 whitespace-nowrap"
                       style={{ color: wm.active ? '#1c1917' : '#a8a29e' }}
@@ -418,6 +439,7 @@ export function UserAdoptionHeatmap() {
                       )
                     })}
                   </tr>
+                  </React.Fragment>
                 )
               })}
             </tbody>
@@ -431,7 +453,7 @@ export function UserAdoptionHeatmap() {
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the team&apos;s for that same period (100% = team-typical, green = above, amber = below).</p>
-            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons (last week / last month / overall) rescope the <strong>{metric === 'adoption' ? 'Adopt%' : '% Team'}</strong> summary column to that window and float developers active in the window to the top; developers with no activity in the window are dimmed and sorted to the bottom (nothing is hidden).</p>
+            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons (last week / last month / overall) rescope the <strong>{metric === 'adoption' ? 'Adopt%' : '% Team'}</strong> summary column to that window and float developers active in the window to the top; developers with no activity in the window are dimmed and sorted to the bottom (nothing is hidden). A dotted line marks the boundary — everyone below it had no activity in the selected window, so the &ldquo;active&rdquo; count reflects the window while the full roster stays listed.</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
               Hover any cell for the underlying tickets, Copilot-active weeks, suggestions and acceptance rate. A ticket worked by multiple developers is credited to each contributor.
             </p>
