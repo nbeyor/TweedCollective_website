@@ -6,6 +6,13 @@ import type { CopilotDashboardData, PerUserEntry } from '../types'
 
 type Metric = 'adoption' | 'productivity'
 type Granularity = 'month' | 'week'
+type Scope = 'week' | 'month' | 'overall'
+
+const SCOPE_LABEL: Record<Scope, string> = {
+  week: 'last week',
+  month: 'last month',
+  overall: 'overall',
+}
 
 const DARK = '#1c1917'
 
@@ -43,6 +50,18 @@ function rampColor(intensity: number): { bg: string; fg: string } {
   return { bg: '#15803d', fg: '#ffffff' }
 }
 
+// Diverging ramp for a productivity ratio centered on 1.0 (= team-typical for the
+// period). Below team reads amber, at team reads neutral grey, above team reads green.
+// Kept inside the dashboard's existing amber+green palette.
+function divergingColor(ratio: number): { bg: string; fg: string } {
+  if (ratio < 0.5) return { bg: '#b45309', fg: '#ffffff' }
+  if (ratio < 0.85) return { bg: '#fcd34d', fg: '#78350f' }
+  if (ratio < 1.15) return { bg: '#f5f5f4', fg: '#57534e' }
+  if (ratio < 1.5) return { bg: '#86efac', fg: '#14532d' }
+  if (ratio < 2.0) return { bg: '#22c55e', fg: '#ffffff' }
+  return { bg: '#15803d', fg: '#ffffff' }
+}
+
 const TIER_STYLE: Record<string, { label: string; color: string }> = {
   heavy: { label: 'Heavy', color: '#15803d' },
   medium: { label: 'Medium', color: '#d97706' },
@@ -55,6 +74,7 @@ export function UserAdoptionHeatmap() {
   const [error, setError] = useState<string | null>(null)
   const [metric, setMetric] = useState<Metric>('adoption')
   const [gran, setGran] = useState<Granularity>('month')
+  const [scope, setScope] = useState<Scope>('month')
 
   useEffect(() => {
     fetch('/data/copilot-dashboard-data.json')
@@ -67,6 +87,28 @@ export function UserAdoptionHeatmap() {
   }, [])
 
   const perUser = data?.perUser ?? []
+
+  // Most recent week-ending date across all developers. The scope windows anchor to
+  // the data, not `Date.now()`, since the dataset can end days before "today".
+  const latestWeek = useMemo(() => {
+    let m = ''
+    for (const u of perUser) for (const w of u.weekly) if (w.week > m) m = w.week
+    return m
+  }, [perUser])
+
+  // The set of week-ending dates included in the selected scope window.
+  // week → just the latest week; month → all weeks in the latest month; overall → all.
+  const windowWeeks = useMemo(() => {
+    if (scope === 'overall' || !latestWeek) return null // null = no restriction
+    const set = new Set<string>()
+    const month = latestWeek.slice(0, 7)
+    for (const u of perUser)
+      for (const w of u.weekly) {
+        if (scope === 'week' && w.week === latestWeek) set.add(w.week)
+        if (scope === 'month' && w.week.slice(0, 7) === month) set.add(w.week)
+      }
+    return set
+  }, [perUser, scope, latestWeek])
 
   // Column axis: every period present across all developers, sorted.
   const periods = useMemo(() => {
@@ -110,24 +152,85 @@ export function UserAdoptionHeatmap() {
     return out
   }, [perUser, gran])
 
-  // Productivity normalizer: scale to the busiest cell so colors span the range.
-  const maxProductivity = useMemo(() => {
-    let m = 0
+  // Team productivity per period: mean tickets per active-dev-week across all developers.
+  // Used as the denominator so a cell reads as a % of the team that same period.
+  const teamPeriodProd = useMemo(() => {
+    const tickets: Record<string, number> = {}
+    const weeks: Record<string, number> = {}
     for (const byPeriod of Object.values(grid))
-      for (const c of Object.values(byPeriod)) m = Math.max(m, c.productivity)
-    return m || 1
+      for (const [k, c] of Object.entries(byPeriod)) {
+        tickets[k] = (tickets[k] ?? 0) + c.tickets
+        weeks[k] = (weeks[k] ?? 0) + c.weeksPresent
+      }
+    const out: Record<string, number> = {}
+    for (const k of Object.keys(tickets)) out[k] = weeks[k] > 0 ? tickets[k] / weeks[k] : 0
+    return out
   }, [grid])
 
-  // Rows sorted by the selected metric's summary value, descending.
+  // Per-developer summary scoped to the selected window (last week / month / overall).
+  // productivity → dev tickets/active-week ÷ team tickets/active-week over the window (a %).
+  // adoption    → share of the dev's present weeks in the window that were Copilot-active.
+  // `active`    → whether the dev had any activity in the window at all.
+  const windowMetric = useMemo(() => {
+    // Team totals over the window, for the productivity denominator.
+    let teamTickets = 0
+    let teamWeeks = 0
+    for (const u of perUser)
+      for (const w of u.weekly) {
+        if (windowWeeks && !windowWeeks.has(w.week)) continue
+        const present = w.tickets > 0 || w.copilotActive > 0
+        if (present) {
+          teamTickets += w.tickets
+          teamWeeks += 1
+        }
+      }
+    const teamProd = teamWeeks > 0 ? teamTickets / teamWeeks : 0
+
+    const out: Record<string, { value: number | null; active: boolean }> = {}
+    for (const u of perUser) {
+      let tickets = 0
+      let present = 0
+      let copActive = 0
+      for (const w of u.weekly) {
+        if (windowWeeks && !windowWeeks.has(w.week)) continue
+        if (w.tickets > 0 || w.copilotActive > 0) {
+          present += 1
+          tickets += w.tickets
+          if (w.copilotActive > 0) copActive += 1
+        }
+      }
+      const active = present > 0
+      let value: number | null = null
+      if (active) {
+        value =
+          metric === 'adoption'
+            ? (copActive / present) * 100
+            : teamProd > 0
+            ? (tickets / present / teamProd) * 100
+            : null
+      }
+      out[u.alias] = { value, active }
+    }
+    return out
+  }, [perUser, windowWeeks, metric])
+
+  // Rows sorted so developers active in the selected window float to the top,
+  // ranked by their in-window metric; window-inactive developers sink to the bottom.
   const rows = useMemo(() => {
     const copy = [...perUser]
     copy.sort((a, b) => {
-      const va = metric === 'adoption' ? a.summary.adoptionPct : a.summary.matureProductivity
-      const vb = metric === 'adoption' ? b.summary.adoptionPct : b.summary.matureProductivity
-      return vb - va
+      const ma = windowMetric[a.alias]
+      const mb = windowMetric[b.alias]
+      if (ma.active !== mb.active) return ma.active ? -1 : 1
+      return (mb.value ?? -1) - (ma.value ?? -1)
     })
     return copy
-  }, [perUser, metric])
+  }, [perUser, windowMetric])
+
+  const activeCount = useMemo(
+    () => Object.values(windowMetric).filter(m => m.active).length,
+    [windowMetric],
+  )
 
   if (error) {
     return (
@@ -199,7 +302,10 @@ export function UserAdoptionHeatmap() {
           </h1>
           <p className="text-sm text-[#57534e] max-w-3xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             One row per developer, blinded to a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>).
-            Each cell shows that developer&apos;s <strong>{metricLabel.toLowerCase()}</strong> for the period — greener is higher.
+            Each cell shows that developer&apos;s <strong>{metricLabel.toLowerCase()}</strong> for the period —{' '}
+            {metric === 'adoption'
+              ? 'greener is higher'
+              : 'as a % of the team that period (100% = team-typical; green = above, amber = below)'}.
             Blank cells = no activity that period.
           </p>
           <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-3 inline-block" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -208,7 +314,13 @@ export function UserAdoptionHeatmap() {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-wrap items-center gap-4 mb-4">
+        <div className="flex flex-wrap items-center gap-4 mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Scope</span>
+            <button className={toggleBtn(scope === 'week')} onClick={() => setScope('week')}>Last week</button>
+            <button className={toggleBtn(scope === 'month')} onClick={() => setScope('month')}>Last month</button>
+            <button className={toggleBtn(scope === 'overall')} onClick={() => setScope('overall')}>Overall</button>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Metric</span>
             <button className={toggleBtn(metric === 'adoption')} onClick={() => setMetric('adoption')}>Adoption</button>
@@ -220,6 +332,9 @@ export function UserAdoptionHeatmap() {
             <button className={toggleBtn(gran === 'week')} onClick={() => setGran('week')}>Weekly</button>
           </div>
         </div>
+        <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          {activeCount} of {perUser.length} developers active {SCOPE_LABEL[scope]} — ranked to the top.
+        </p>
 
         {/* Heatmap */}
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 shadow-sm mb-8 overflow-auto">
@@ -233,7 +348,7 @@ export function UserAdoptionHeatmap() {
                   Tier
                 </th>
                 <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-right pr-2" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                  {metric === 'adoption' ? 'Adopt%' : 'vs Base'}
+                  {metric === 'adoption' ? 'Adopt%' : '% Team'}
                 </th>
                 {periods.map(p => (
                   <th key={p} className="text-[9px] text-[#a8a29e] font-medium p-1 text-center whitespace-nowrap">
@@ -245,11 +360,14 @@ export function UserAdoptionHeatmap() {
             <tbody>
               {rows.map(u => {
                 const tier = TIER_STYLE[u.summary.intensityTier] ?? TIER_STYLE.none
-                const summaryVal =
-                  metric === 'adoption' ? `${u.summary.adoptionPct.toFixed(0)}%` : u.summary.prodVsBaseline
+                const wm = windowMetric[u.alias]
+                const summaryVal = wm.value == null ? '—' : `${Math.round(wm.value)}%`
                 return (
                   <tr key={u.alias}>
-                    <td className="sticky left-0 z-10 bg-white text-[11px] font-semibold text-[#1c1917] p-1 pr-3 whitespace-nowrap">
+                    <td
+                      className="sticky left-0 z-10 bg-white text-[11px] font-semibold p-1 pr-3 whitespace-nowrap"
+                      style={{ color: wm.active ? '#1c1917' : '#a8a29e' }}
+                    >
                       {u.alias}
                     </td>
                     <td className="text-[10px] p-1 whitespace-nowrap" style={{ color: tier.color }}>
@@ -263,16 +381,27 @@ export function UserAdoptionHeatmap() {
                       if (!cell) {
                         return <td key={p} className="p-0.5"><div className="w-7 h-7 rounded" style={{ backgroundColor: '#fafaf9' }} /></td>
                       }
-                      const intensity = metric === 'adoption' ? cell.adoption : cell.productivity / maxProductivity
-                      const { bg, fg } = rampColor(intensity)
+                      const teamProd = teamPeriodProd[p] ?? 0
+                      const ratio = metric === 'productivity' && teamProd > 0 ? cell.productivity / teamProd : null
+                      const { bg, fg } =
+                        metric === 'adoption'
+                          ? rampColor(cell.adoption)
+                          : ratio == null
+                          ? rampColor(0)
+                          : divergingColor(ratio)
                       const display =
                         metric === 'adoption'
                           ? `${Math.round(cell.adoption * 100)}`
-                          : cell.productivity.toFixed(1)
+                          : ratio == null
+                          ? '—'
+                          : `${Math.round(ratio * 100)}`
                       const acceptanceRate = cell.suggestions > 0 ? Math.round((cell.acceptances / cell.suggestions) * 100) : null
                       const title =
                         `${u.alias} · ${periodLabel(p, gran)}\n` +
                         `Tickets: ${cell.tickets} over ${cell.weeksPresent} wk (${cell.productivity.toFixed(2)}/wk)\n` +
+                        (ratio != null
+                          ? `Team this period: ${teamProd.toFixed(2)}/wk → ${Math.round(ratio * 100)}% of team\n`
+                          : '') +
                         `Copilot-active weeks: ${cell.copilotActiveWeeks}/${cell.weeksPresent} (${Math.round(cell.adoption * 100)}%)\n` +
                         `Suggestions: ${cell.suggestions} · Acceptances: ${cell.acceptances}` +
                         (acceptanceRate != null ? ` (${acceptanceRate}% accept)` : '')
@@ -301,8 +430,8 @@ export function UserAdoptionHeatmap() {
             How to read this
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = average tickets closed per active week (scaled to the busiest cell).</p>
-            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). <strong>{metric === 'adoption' ? 'Adopt%' : 'vs Base'}</strong> column is the mature-period summary used to rank rows.</p>
+            <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the team&apos;s for that same period (100% = team-typical, green = above, amber = below).</p>
+            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons (last week / last month / overall) rescope the <strong>{metric === 'adoption' ? 'Adopt%' : '% Team'}</strong> summary column to that window and float developers active in the window to the top; developers with no activity in the window are dimmed and sorted to the bottom (nothing is hidden).</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
               Hover any cell for the underlying tickets, Copilot-active weeks, suggestions and acceptance rate. A ticket worked by multiple developers is credited to each contributor.
             </p>
