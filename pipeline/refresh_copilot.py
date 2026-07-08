@@ -56,9 +56,13 @@ PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
-# Non-served output: the alias->UUID map for per-user drill-down. The UUID is also
-# shipped inline on each per_user record (identities are surfaced in the individual
-# view); this standalone map is kept for convenience / offline drill-down.
+# Server-only alias->UUID map. This lives OUTSIDE public/, so Next.js never serves
+# it statically. It is committed (needed at deploy time) and imported by the
+# auth-gated /api/copilot-user-map route, which returns it only to signed-in users
+# authorized for the ecs-sdlc-dashboard document. The public JSON above carries
+# aliases only — UUIDs never reach the browser except through that gated route.
+SERVER_USER_ID_MAP = PROJECT_ROOT / "data" / "copilot-user-id-map.json"
+# Legacy non-served drill-down copy (gitignored, offline convenience only).
 OUTPUT_DIR = PIPELINE_DIR / "output"
 USER_ID_MAP_OUTPUT = OUTPUT_DIR / "user-id-map.json"
 
@@ -925,7 +929,10 @@ def compute_per_user_metrics(prs, copilot_df):
     for i, (uuid, _mt, _tt, weekly, summary) in enumerate(ranking, start=1):
         alias = f"Dev-{i:02d}"
         uuid_map[alias] = uuid
-        per_user.append({'alias': alias, 'uuid': uuid, 'summary': summary, 'weekly': weekly})
+        # UUID is deliberately NOT embedded here: per_user is written to the public,
+        # unauthenticated JSON. The alias->UUID mapping travels only in uuid_map, which
+        # is persisted to a server-only file and surfaced through the auth-gated route.
+        per_user.append({'alias': alias, 'summary': summary, 'weekly': weekly})
 
     return per_user, uuid_map
 
@@ -1167,8 +1174,8 @@ def main():
     data = build_dashboard_data(path, pull_sheet, copilot_path)
 
     # Pull the standalone alias->UUID map out of the payload before the public write.
-    # (The UUID is still shipped inline on each per_user record for the individual view;
-    # this separate map is written to the non-served drill-down file below.)
+    # per_user itself carries aliases only; UUIDs are never written to the public JSON.
+    # The map is persisted to a server-only file that the auth-gated API route reads.
     user_id_map = data.pop('_userIdMap', None)
 
     data = _sanitize_for_json(data)
@@ -1179,6 +1186,12 @@ def main():
     print(f"JSON written to: {JSON_OUTPUT}")
 
     if user_id_map:
+        # Committed, server-only map consumed by /api/copilot-user-map (auth-gated).
+        SERVER_USER_ID_MAP.parent.mkdir(parents=True, exist_ok=True)
+        SERVER_USER_ID_MAP.write_text(json.dumps(user_id_map, indent=2), encoding='utf-8')
+        print(f"Server-only alias->UUID map ({len(user_id_map)} devs) written to: {SERVER_USER_ID_MAP}")
+
+        # Legacy gitignored drill-down copy (offline convenience).
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         USER_ID_MAP_OUTPUT.write_text(json.dumps(user_id_map, indent=2), encoding='utf-8')
         print(f"User-ID drill-down map ({len(user_id_map)} devs, NOT served) written to: {USER_ID_MAP_OUTPUT}")

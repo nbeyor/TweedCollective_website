@@ -78,12 +78,13 @@ export interface PerUserSummary {
   intensityTier: 'heavy' | 'medium' | 'light' | 'none'
 }
 
-// Per-developer record. `alias` (e.g. "Dev-07") is the stable display label; `uuid`
-// is the underlying author identifier, surfaced in the individual view so rows are
-// identifiable.
+// Per-developer record. `alias` (e.g. "Dev-07") is the stable display label. `uuid`
+// is the underlying author identifier; it is NOT present in the public dashboard JSON
+// and is merged in client-side only for signed-in, authorized viewers via the
+// auth-gated /api/copilot-user-map route — hence optional.
 export interface PerUserEntry {
   alias: string
-  uuid: string
+  uuid?: string
   summary: PerUserSummary
   weekly: PerUserWeekly[]
 }

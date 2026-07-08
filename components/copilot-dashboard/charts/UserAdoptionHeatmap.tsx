@@ -149,6 +149,9 @@ export function UserAdoptionHeatmap() {
   const [scope, setScope] = useState<Scope>('month')
   const [hover, setHover] = useState<{ alias: string; x: number; y: number } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  // alias -> UUID, fetched separately from an auth-gated route. UUIDs are NOT in the
+  // public dashboard JSON; they are only returned to signed-in, authorized viewers.
+  const [uuidByAlias, setUuidByAlias] = useState<Record<string, string>>({})
 
   useEffect(() => {
     fetch('/data/copilot-dashboard-data.json')
@@ -160,6 +163,18 @@ export function UserAdoptionHeatmap() {
       .catch(e => setError(e.message))
   }, [])
 
+  // Resolve real UUIDs via the auth-gated API. A 401/403 (not signed in, or not
+  // authorized for this document) simply leaves aliases unresolved — the UI degrades
+  // gracefully and shows no UUIDs rather than erroring.
+  useEffect(() => {
+    fetch('/api/copilot-user-map')
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => {
+        if (d?.map) setUuidByAlias(d.map)
+      })
+      .catch(() => {})
+  }, [])
+
   // Clear the "copied ✓" feedback shortly after a UUID is copied.
   useEffect(() => {
     if (!copied) return
@@ -167,7 +182,16 @@ export function UserAdoptionHeatmap() {
     return () => clearTimeout(t)
   }, [copied])
 
-  const perUser = data?.perUser ?? []
+  // Merge the auth-gated UUIDs onto the (alias-only) public records. When the map is
+  // empty (unauthorized or still loading), entries keep `uuid` undefined and the UI
+  // hides the UUID affordance via its `u.uuid && …` guards.
+  const perUser = useMemo(
+    () =>
+      (data?.perUser ?? []).map(u =>
+        uuidByAlias[u.alias] ? { ...u, uuid: uuidByAlias[u.alias] } : u,
+      ),
+    [data, uuidByAlias],
+  )
 
   // Most recent week-ending date across all developers. The scope windows anchor to
   // the data, not `Date.now()`, since the dataset can end days before "today".
@@ -548,6 +572,8 @@ export function UserAdoptionHeatmap() {
                       : null
                 }
                 const vsSelfUnit = metric === 'adoption' ? 'pp' : '%'
+                // Bind once so the value stays narrowed to `string` inside the copy handler.
+                const uuid = u.uuid
                 return (
                   <React.Fragment key={u.alias}>
                   {showDivider && (
@@ -574,18 +600,18 @@ export function UserAdoptionHeatmap() {
                       <div className="text-[11px] font-semibold leading-tight" style={{ color: active ? '#1c1917' : '#a8a29e' }}>
                         {u.alias}
                       </div>
-                      {u.uuid && (
+                      {uuid && (
                         <button
                           type="button"
                           onClick={() => {
-                            navigator.clipboard?.writeText(u.uuid)
+                            navigator.clipboard?.writeText(uuid)
                             setCopied(u.alias)
                           }}
-                          title={`${u.uuid}\n(click to copy)`}
+                          title={`${uuid}\n(click to copy)`}
                           className="text-[8px] text-[#a8a29e] hover:text-[#57534e] transition-colors leading-tight"
                           style={{ fontFamily: 'JetBrains Mono, monospace' }}
                         >
-                          {copied === u.alias ? 'copied ✓' : shortUuid(u.uuid)}
+                          {copied === u.alias ? 'copied ✓' : shortUuid(uuid)}
                         </button>
                       )}
                     </td>
