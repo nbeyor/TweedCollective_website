@@ -78,10 +78,12 @@ export interface PerUserSummary {
   intensityTier: 'heavy' | 'medium' | 'light' | 'none'
 }
 
-// Blinded per-developer record. `alias` (e.g. "Dev-07") is the only identifier
-// in the browser payload — the alias->UUID map stays server-side for drill-down.
+// Per-developer record. `alias` (e.g. "Dev-07") is the stable display label; `uuid`
+// is the underlying author identifier, surfaced in the individual view so rows are
+// identifiable.
 export interface PerUserEntry {
   alias: string
+  uuid: string
   summary: PerUserSummary
   weekly: PerUserWeekly[]
 }

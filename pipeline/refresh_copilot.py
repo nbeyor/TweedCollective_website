@@ -56,8 +56,9 @@ PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
-# Non-served output: the alias->UUID map for per-user drill-down. Deliberately
-# NOT under public/ so UUIDs never reach the browser (see compute_per_user_metrics).
+# Non-served output: the alias->UUID map for per-user drill-down. The UUID is also
+# shipped inline on each per_user record (identities are surfaced in the individual
+# view); this standalone map is kept for convenience / offline drill-down.
 OUTPUT_DIR = PIPELINE_DIR / "output"
 USER_ID_MAP_OUTPUT = OUTPUT_DIR / "user-id-map.json"
 
@@ -924,7 +925,7 @@ def compute_per_user_metrics(prs, copilot_df):
     for i, (uuid, _mt, _tt, weekly, summary) in enumerate(ranking, start=1):
         alias = f"Dev-{i:02d}"
         uuid_map[alias] = uuid
-        per_user.append({'alias': alias, 'summary': summary, 'weekly': weekly})
+        per_user.append({'alias': alias, 'uuid': uuid, 'summary': summary, 'weekly': weekly})
 
     return per_user, uuid_map
 
@@ -1165,8 +1166,9 @@ def main():
 
     data = build_dashboard_data(path, pull_sheet, copilot_path)
 
-    # Strip the alias->UUID map before the public write. UUIDs must never reach
-    # the browser; they go only to the non-served drill-down file below.
+    # Pull the standalone alias->UUID map out of the payload before the public write.
+    # (The UUID is still shipped inline on each per_user record for the individual view;
+    # this separate map is written to the non-served drill-down file below.)
     user_id_map = data.pop('_userIdMap', None)
 
     data = _sanitize_for_json(data)

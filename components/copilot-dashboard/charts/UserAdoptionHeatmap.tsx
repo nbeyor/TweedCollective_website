@@ -69,12 +69,86 @@ const TIER_STYLE: Record<string, { label: string; color: string }> = {
   none: { label: '—', color: '#d6d3d1' },
 }
 
+// Per-developer aggregate over a set of weeks (a scope window), plus team totals for
+// the same window. Metric-independent — the displayed score is derived per metric.
+interface WindowRow {
+  active: boolean
+  present: number
+  rawProd: number // tickets per present (active) week
+  adoption: number // % of present weeks Copilot-active (0..100)
+}
+interface WindowResult {
+  rows: Record<string, WindowRow>
+  teamProd: number
+  teamAdoption: number
+}
+
+// The score shown in the chip for a developer, given the selected metric.
+// adoption → the dev's adoption %; productivity → the dev's tickets/active-week as a % of team.
+function scoreFor(metric: Metric, row: WindowRow, teamProd: number): number | null {
+  if (!row.active) return null
+  if (metric === 'adoption') return row.adoption
+  return teamProd > 0 ? (row.rawProd / teamProd) * 100 : null
+}
+
+// A signed delta rendered as an arrow + magnitude, colored green up / amber down.
+function DeltaBadge({ value, unit, label }: { value: number | null; unit: string; label: string }) {
+  if (value == null) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[9px] text-[#d6d3d1]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        <span className="text-[#a8a29e]">{label}</span> —
+      </span>
+    )
+  }
+  const rounded = Math.round(value)
+  const up = rounded > 0
+  const flat = rounded === 0
+  const color = flat ? '#a8a29e' : up ? '#15803d' : '#b45309'
+  const arrow = flat ? '→' : up ? '▲' : '▼'
+  const sign = up ? '+' : ''
+  return (
+    <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold whitespace-nowrap" style={{ color, fontFamily: 'DM Sans, sans-serif' }}>
+      <span className="text-[#a8a29e] font-medium">{label}</span>
+      {arrow} {sign}{rounded}{unit}
+    </span>
+  )
+}
+
+// Dependency-free sparkline: the developer's per-period value (solid) against the team
+// reference (dashed). `dev`/`team` are aligned arrays; null = no data that period.
+function Sparkline({ dev, team, yMax, color }: { dev: (number | null)[]; team: (number | null)[]; yMax: number; color: string }) {
+  const n = dev.length
+  const W = Math.max(140, n * 16)
+  const H = 44
+  const pad = 5
+  const x = (i: number) => (n <= 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (n - 1))
+  const y = (v: number) => H - pad - (Math.min(v, yMax) / yMax) * (H - 2 * pad)
+  const toPoints = (arr: (number | null)[]) =>
+    arr.map((v, i) => (v == null ? null : `${x(i).toFixed(1)},${y(v).toFixed(1)}`)).filter(Boolean).join(' ')
+  const devPts = toPoints(dev)
+  const teamPts = toPoints(team)
+  return (
+    <svg width={W} height={H} className="block">
+      {teamPts && <polyline points={teamPts} fill="none" stroke="#d6d3d1" strokeWidth={1} strokeDasharray="3 2" />}
+      {devPts && <polyline points={devPts} fill="none" stroke={color} strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />}
+      {dev.map((v, i) => (v == null ? null : <circle key={i} cx={x(i)} cy={y(v)} r={1.6} fill={color} />))}
+    </svg>
+  )
+}
+
+function shortUuid(uuid: string): string {
+  if (uuid.length <= 12) return uuid
+  return `${uuid.slice(0, 8)}…${uuid.slice(-4)}`
+}
+
 export function UserAdoptionHeatmap() {
   const [data, setData] = useState<CopilotDashboardData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [metric, setMetric] = useState<Metric>('adoption')
   const [gran, setGran] = useState<Granularity>('month')
   const [scope, setScope] = useState<Scope>('month')
+  const [hover, setHover] = useState<{ alias: string; x: number; y: number } | null>(null)
+  const [copied, setCopied] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/data/copilot-dashboard-data.json')
@@ -85,6 +159,13 @@ export function UserAdoptionHeatmap() {
       .then(setData)
       .catch(e => setError(e.message))
   }, [])
+
+  // Clear the "copied ✓" feedback shortly after a UUID is copied.
+  useEffect(() => {
+    if (!copied) return
+    const t = setTimeout(() => setCopied(null), 1500)
+    return () => clearTimeout(t)
+  }, [copied])
 
   const perUser = data?.perUser ?? []
 
@@ -107,6 +188,33 @@ export function UserAdoptionHeatmap() {
         if (scope === 'week' && w.week === latestWeek) set.add(w.week)
         if (scope === 'month' && w.week.slice(0, 7) === month) set.add(w.week)
       }
+    return set
+  }, [perUser, scope, latestWeek])
+
+  // The prior equivalent window, for the "vs self" momentum trend. week → the week
+  // immediately before the latest; month → the calendar month before the latest month;
+  // overall → no prior (momentum is undefined and the badge is hidden).
+  const priorWindowWeeks = useMemo(() => {
+    if (scope === 'overall' || !latestWeek) return null
+    if (scope === 'week') {
+      let prev = ''
+      for (const u of perUser)
+        for (const w of u.weekly) if (w.week < latestWeek && w.week > prev) prev = w.week
+      if (!prev) return null
+      return new Set<string>([prev])
+    }
+    // month: find the latest month strictly before the current one, then take its weeks.
+    const curMonth = latestWeek.slice(0, 7)
+    let prevMonth = ''
+    for (const u of perUser)
+      for (const w of u.weekly) {
+        const m = w.week.slice(0, 7)
+        if (m < curMonth && m > prevMonth) prevMonth = m
+      }
+    if (!prevMonth) return null
+    const set = new Set<string>()
+    for (const u of perUser)
+      for (const w of u.weekly) if (w.week.slice(0, 7) === prevMonth) set.add(w.week)
     return set
   }, [perUser, scope, latestWeek])
 
@@ -167,77 +275,104 @@ export function UserAdoptionHeatmap() {
     return out
   }, [grid])
 
-  // Per-developer summary scoped to the selected window (last week / month / overall).
-  // productivity → dev tickets/active-week ÷ team tickets/active-week over the window (a %).
-  // adoption    → share of the dev's present weeks in the window that were Copilot-active.
-  // `active`    → whether the dev had any activity in the window at all.
-  const windowMetric = useMemo(() => {
-    // Team totals over the window, for the productivity denominator.
-    let teamTickets = 0
-    let teamWeeks = 0
-    for (const u of perUser)
-      for (const w of u.weekly) {
-        if (windowWeeks && !windowWeeks.has(w.week)) continue
-        const present = w.tickets > 0 || w.copilotActive > 0
-        if (present) {
-          teamTickets += w.tickets
-          teamWeeks += 1
-        }
+  // Team adoption per period: % of dev-weeks that period that were Copilot-active.
+  // Used as the sparkline reference line for the adoption metric.
+  const teamPeriodAdoption = useMemo(() => {
+    const active: Record<string, number> = {}
+    const weeks: Record<string, number> = {}
+    for (const byPeriod of Object.values(grid))
+      for (const [k, c] of Object.entries(byPeriod)) {
+        active[k] = (active[k] ?? 0) + c.copilotActiveWeeks
+        weeks[k] = (weeks[k] ?? 0) + c.weeksPresent
       }
-    const teamProd = teamWeeks > 0 ? teamTickets / teamWeeks : 0
-
-    const out: Record<string, { value: number | null; active: boolean }> = {}
-    for (const u of perUser) {
-      let tickets = 0
-      let present = 0
-      let copActive = 0
-      for (const w of u.weekly) {
-        if (windowWeeks && !windowWeeks.has(w.week)) continue
-        if (w.tickets > 0 || w.copilotActive > 0) {
-          present += 1
-          tickets += w.tickets
-          if (w.copilotActive > 0) copActive += 1
-        }
-      }
-      const active = present > 0
-      let value: number | null = null
-      if (active) {
-        value =
-          metric === 'adoption'
-            ? (copActive / present) * 100
-            : teamProd > 0
-            ? (tickets / present / teamProd) * 100
-            : null
-      }
-      out[u.alias] = { value, active }
-    }
+    const out: Record<string, number> = {}
+    for (const k of Object.keys(weeks)) out[k] = weeks[k] > 0 ? (active[k] / weeks[k]) * 100 : 0
     return out
-  }, [perUser, windowWeeks, metric])
+  }, [grid])
+
+  // Aggregate every developer (and the team) over an arbitrary set of weeks. Both the
+  // selected window and the prior window reuse this so the two stay perfectly in sync.
+  const computeWindow = useMemo(() => {
+    return (weeksSet: Set<string> | null): WindowResult => {
+      let teamTickets = 0
+      let teamWeeks = 0
+      let teamCopActive = 0
+      const rows: Record<string, WindowRow> = {}
+      for (const u of perUser) {
+        let tickets = 0
+        let present = 0
+        let copActive = 0
+        for (const w of u.weekly) {
+          if (weeksSet && !weeksSet.has(w.week)) continue
+          if (w.tickets > 0 || w.copilotActive > 0) {
+            present += 1
+            tickets += w.tickets
+            if (w.copilotActive > 0) copActive += 1
+          }
+        }
+        teamTickets += tickets
+        teamWeeks += present
+        teamCopActive += copActive
+        rows[u.alias] = {
+          active: present > 0,
+          present,
+          rawProd: present > 0 ? tickets / present : 0,
+          adoption: present > 0 ? (copActive / present) * 100 : 0,
+        }
+      }
+      return {
+        rows,
+        teamProd: teamWeeks > 0 ? teamTickets / teamWeeks : 0,
+        teamAdoption: teamWeeks > 0 ? (teamCopActive / teamWeeks) * 100 : 0,
+      }
+    }
+  }, [perUser])
+
+  const currentWindow = useMemo(() => computeWindow(windowWeeks), [computeWindow, windowWeeks])
+  const priorWindow = useMemo(
+    () => (priorWindowWeeks ? computeWindow(priorWindowWeeks) : null),
+    [computeWindow, priorWindowWeeks],
+  )
+
+  // The elevated score per developer for the selected metric (null when inactive).
+  const scoreMap = useMemo(() => {
+    const out: Record<string, number | null> = {}
+    for (const u of perUser) out[u.alias] = scoreFor(metric, currentWindow.rows[u.alias], currentWindow.teamProd)
+    return out
+  }, [perUser, currentWindow, metric])
 
   // Rows sorted so developers active in the selected window float to the top,
-  // ranked by their in-window metric; window-inactive developers sink to the bottom.
+  // ranked by their in-window score; window-inactive developers sink to the bottom.
   const rows = useMemo(() => {
     const copy = [...perUser]
     copy.sort((a, b) => {
-      const ma = windowMetric[a.alias]
-      const mb = windowMetric[b.alias]
-      if (ma.active !== mb.active) return ma.active ? -1 : 1
-      return (mb.value ?? -1) - (ma.value ?? -1)
+      const aa = currentWindow.rows[a.alias].active
+      const ba = currentWindow.rows[b.alias].active
+      if (aa !== ba) return aa ? -1 : 1
+      return (scoreMap[b.alias] ?? -1) - (scoreMap[a.alias] ?? -1)
     })
     return copy
-  }, [perUser, windowMetric])
+  }, [perUser, currentWindow, scoreMap])
 
   const activeCount = useMemo(
-    () => Object.values(windowMetric).filter(m => m.active).length,
-    [windowMetric],
+    () => Object.values(currentWindow.rows).filter(r => r.active).length,
+    [currentWindow],
   )
 
   // Index of the first window-inactive developer in the sorted rows — the point
   // where the dotted divider is drawn to separate active from inactive.
   const firstInactiveIndex = useMemo(
-    () => rows.findIndex(u => !windowMetric[u.alias].active),
-    [rows, windowMetric],
+    () => rows.findIndex(u => !currentWindow.rows[u.alias].active),
+    [rows, currentWindow],
   )
+
+  // Team headline number for the selected window: adoption % or tickets/active-week.
+  const teamHeadline =
+    metric === 'adoption'
+      ? `${Math.round(currentWindow.teamAdoption)}%`
+      : currentWindow.teamProd.toFixed(2)
+  const teamHeadlineLabel =
+    metric === 'adoption' ? 'Team adoption' : 'Team tickets / active wk'
 
   if (error) {
     return (
@@ -308,15 +443,11 @@ export function UserAdoptionHeatmap() {
             Per-Developer Adoption & Productivity
           </h1>
           <p className="text-sm text-[#57534e] max-w-3xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            One row per developer, blinded to a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>).
-            Each cell shows that developer&apos;s <strong>{metricLabel.toLowerCase()}</strong> for the period —{' '}
-            {metric === 'adoption'
-              ? 'greener is higher'
-              : 'as a % of the team that period (100% = team-typical; green = above, amber = below)'}.
-            Blank cells = no activity that period.
-          </p>
-          <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-3 inline-block" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            Identities are blinded on purpose. The alias→UUID map lives server-side only (not shipped to the browser) for drill-down if needed.
+            One row per developer, labeled by a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>)
+            with its author <strong>UUID</strong> shown beneath. The bold <strong>Score</strong> is the developer&apos;s{' '}
+            <strong>{metricLabel.toLowerCase()}</strong> for the selected window; the <strong>Trend</strong> badges compare
+            that window vs the team and vs the developer&apos;s own prior window. Each heatmap cell shows the same metric per
+            period — blank cells = no activity that period.
           </p>
         </div>
 
@@ -339,9 +470,25 @@ export function UserAdoptionHeatmap() {
             <button className={toggleBtn(gran === 'week')} onClick={() => setGran('week')}>Weekly</button>
           </div>
         </div>
-        <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-          {activeCount} of {perUser.length} developers active {SCOPE_LABEL[scope]} — ranked to the top.
-        </p>
+        {/* Window summary — elevates the overall score for the selected window */}
+        <div className="flex flex-wrap items-stretch gap-3 mb-5">
+          <div className="rounded-xl border border-[#e7e5e4] bg-white px-5 py-3 shadow-sm">
+            <div className="text-[10px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              {teamHeadlineLabel} · {SCOPE_LABEL[scope]}
+            </div>
+            <div className="text-3xl font-bold text-[#1c1917] leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              {teamHeadline}
+            </div>
+          </div>
+          <div className="rounded-xl border border-[#e7e5e4] bg-white px-5 py-3 shadow-sm">
+            <div className="text-[10px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              Active {SCOPE_LABEL[scope]}
+            </div>
+            <div className="text-3xl font-bold text-[#1c1917] leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              {activeCount}<span className="text-lg text-[#a8a29e] font-medium">/{perUser.length}</span>
+            </div>
+          </div>
+        </div>
 
         {/* Heatmap */}
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 shadow-sm mb-8 overflow-auto">
@@ -354,8 +501,11 @@ export function UserAdoptionHeatmap() {
                 <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-left" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                   Tier
                 </th>
-                <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-right pr-2" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                  {metric === 'adoption' ? 'Adopt%' : '% Team'}
+                <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-center px-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                  Score
+                </th>
+                <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-left pr-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                  Trend
                 </th>
                 {periods.map(p => (
                   <th key={p} className="text-[9px] text-[#a8a29e] font-medium p-1 text-center whitespace-nowrap">
@@ -368,13 +518,41 @@ export function UserAdoptionHeatmap() {
               {rows.map((u, i) => {
                 const showDivider = i === firstInactiveIndex && firstInactiveIndex > 0
                 const tier = TIER_STYLE[u.summary.intensityTier] ?? TIER_STYLE.none
-                const wm = windowMetric[u.alias]
-                const summaryVal = wm.value == null ? '—' : `${Math.round(wm.value)}%`
+                const cur = currentWindow.rows[u.alias]
+                const active = cur.active
+                const score = scoreMap[u.alias]
+                const scoreDisplay = score == null ? '—' : `${Math.round(score)}%`
+                const chip =
+                  !active || score == null
+                    ? { bg: '#f5f5f4', fg: '#a8a29e' }
+                    : metric === 'adoption'
+                    ? rampColor(score / 100)
+                    : divergingColor(score / 100)
+                // vs team: how far above/below team-typical this window (percentage points).
+                const vsTeam = !active
+                  ? null
+                  : metric === 'adoption'
+                  ? cur.adoption - currentWindow.teamAdoption
+                  : score == null
+                  ? null
+                  : score - 100
+                // vs self: this window vs the developer's own prior window.
+                const priorRow = priorWindow?.rows[u.alias]
+                let vsSelf: number | null = null
+                if (active && priorRow && priorRow.active) {
+                  vsSelf =
+                    metric === 'adoption'
+                      ? cur.adoption - priorRow.adoption
+                      : priorRow.rawProd > 0
+                      ? ((cur.rawProd - priorRow.rawProd) / priorRow.rawProd) * 100
+                      : null
+                }
+                const vsSelfUnit = metric === 'adoption' ? 'pp' : '%'
                 return (
                   <React.Fragment key={u.alias}>
                   {showDivider && (
                     <tr aria-hidden>
-                      <td colSpan={3 + periods.length} className="p-0">
+                      <td colSpan={4 + periods.length} className="p-0">
                         <div
                           className="text-[9px] text-[#a8a29e] uppercase tracking-wider py-1"
                           style={{ borderTop: '2px dotted #d6d3d1', fontFamily: 'DM Sans, sans-serif' }}
@@ -384,18 +562,49 @@ export function UserAdoptionHeatmap() {
                       </td>
                     </tr>
                   )}
-                  <tr>
-                    <td
-                      className="sticky left-0 z-10 bg-white text-[11px] font-semibold p-1 pr-3 whitespace-nowrap"
-                      style={{ color: wm.active ? '#1c1917' : '#a8a29e' }}
-                    >
-                      {u.alias}
+                  <tr
+                    onMouseEnter={e => {
+                      const r = e.currentTarget.getBoundingClientRect()
+                      setHover({ alias: u.alias, x: r.left, y: r.bottom })
+                    }}
+                    onMouseLeave={() => setHover(null)}
+                    className="hover:bg-[#fafaf9]"
+                  >
+                    <td className="sticky left-0 z-10 bg-white p-1 pr-3 whitespace-nowrap align-top">
+                      <div className="text-[11px] font-semibold leading-tight" style={{ color: active ? '#1c1917' : '#a8a29e' }}>
+                        {u.alias}
+                      </div>
+                      {u.uuid && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard?.writeText(u.uuid)
+                            setCopied(u.alias)
+                          }}
+                          title={`${u.uuid}\n(click to copy)`}
+                          className="text-[8px] text-[#a8a29e] hover:text-[#57534e] transition-colors leading-tight"
+                          style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                        >
+                          {copied === u.alias ? 'copied ✓' : shortUuid(u.uuid)}
+                        </button>
+                      )}
                     </td>
-                    <td className="text-[10px] p-1 whitespace-nowrap" style={{ color: tier.color }}>
+                    <td className="text-[10px] p-1 whitespace-nowrap align-top" style={{ color: tier.color }}>
                       {tier.label}
                     </td>
-                    <td className="text-[10px] p-1 pr-2 text-right text-[#57534e] whitespace-nowrap">
-                      {summaryVal}
+                    <td className="p-1 px-3 text-center align-middle">
+                      <span
+                        className="inline-block min-w-[2.75rem] rounded-md px-2 py-1 text-sm font-bold"
+                        style={{ backgroundColor: chip.bg, color: chip.fg, fontFamily: 'DM Sans, sans-serif' }}
+                      >
+                        {scoreDisplay}
+                      </span>
+                    </td>
+                    <td className="p-1 pr-3 align-middle">
+                      <div className="flex flex-col gap-0.5">
+                        <DeltaBadge value={vsTeam} unit="pp" label="team" />
+                        {scope !== 'overall' && <DeltaBadge value={vsSelf} unit={vsSelfUnit} label="self" />}
+                      </div>
                     </td>
                     {periods.map(p => {
                       const cell = grid[u.alias]?.[p]
@@ -446,6 +655,44 @@ export function UserAdoptionHeatmap() {
           </table>
         </div>
 
+        {/* Hover sparkline: the developer's per-period trend vs the team reference */}
+        {hover && (() => {
+          const u = perUser.find(x => x.alias === hover.alias)
+          if (!u) return null
+          const devSeries = periods.map(p => {
+            const cell = grid[u.alias]?.[p]
+            if (!cell) return null
+            if (metric === 'adoption') return cell.adoption * 100
+            const tp = teamPeriodProd[p] ?? 0
+            return tp > 0 ? (cell.productivity / tp) * 100 : null
+          })
+          const teamSeries = periods.map(p => (metric === 'adoption' ? teamPeriodAdoption[p] ?? 0 : 100))
+          const allVals = [...devSeries, ...teamSeries].filter((v): v is number => v != null)
+          const dataMax = allVals.length ? Math.max(...allVals) : 100
+          const yMax = metric === 'adoption' ? 100 : Math.max(120, dataMax * 1.05)
+          const color = metric === 'adoption' ? '#15803d' : '#2563eb'
+          const left = Math.min(hover.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 240)
+          return (
+            <div
+              className="fixed z-50 pointer-events-none rounded-lg border border-[#e7e5e4] bg-white shadow-lg p-3"
+              style={{ left, top: hover.y + 6 }}
+            >
+              <div className="text-[10px] font-semibold text-[#1c1917] mb-0.5" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                {u.alias} · {metric === 'adoption' ? 'Adoption %' : '% of team'} over time
+              </div>
+              {u.uuid && (
+                <div className="text-[8px] text-[#a8a29e] mb-1" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                  {u.uuid}
+                </div>
+              )}
+              <Sparkline dev={devSeries} team={teamSeries} yMax={yMax} color={color} />
+              <div className="text-[8px] text-[#a8a29e] mt-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                <span style={{ color }}>■</span> developer &nbsp; <span className="text-[#d6d3d1]">┄ team</span>
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Legend / how to read */}
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
           <h2 className="text-base font-semibold text-[#1c1917] mb-3" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -453,7 +700,9 @@ export function UserAdoptionHeatmap() {
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the team&apos;s for that same period (100% = team-typical, green = above, amber = below).</p>
-            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons (last week / last month / overall) rescope the <strong>{metric === 'adoption' ? 'Adopt%' : '% Team'}</strong> summary column to that window and float developers active in the window to the top; developers with no activity in the window are dimmed and sorted to the bottom (nothing is hidden). A dotted line marks the boundary — everyone below it had no activity in the selected window, so the &ldquo;active&rdquo; count reflects the window while the full roster stays listed.</p>
+            <p>The bold <strong>Score</strong> chip is the developer&apos;s {metric === 'adoption' ? 'adoption %' : 'productivity as a % of team'} for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy).</p>
+            <p><strong>Trend</strong> badges: <strong>team</strong> = this window vs team-typical (percentage points; ▲ above, ▼ below); <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. Both recompute with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s trend over time against the team reference.</p>
+            <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
               Hover any cell for the underlying tickets, Copilot-active weeks, suggestions and acceptance rate. A ticket worked by multiple developers is credited to each contributor.
             </p>
