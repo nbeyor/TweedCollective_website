@@ -3,13 +3,14 @@
 import React from 'react'
 import Link from 'next/link'
 import TweedLogo from './ui/tweed-logo'
-import { Mail, Phone, Linkedin, ArrowUpRight } from 'lucide-react'
+import { Mail, Linkedin, ArrowUpRight } from 'lucide-react'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 const quickLinks = [
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
   { name: 'Operators', href: '/operators' },
-  { name: 'Documents', href: '/documents' },
+  { name: 'Insights', href: '/insights' },
 ]
 
 const Footer = () => {
@@ -62,12 +63,12 @@ const Footer = () => {
             </h4>
             <ul className="space-y-4">
               <li>
-                <a 
-                  href="mailto:hello@tweedcollective.ai" 
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="text-stone hover:text-violet-light transition-colors inline-flex items-center gap-3 group"
                 >
                   <Mail className="icon-md text-sage/60 group-hover:text-sage-light transition-colors" />
-                  <span>hello@tweedcollective.ai</span>
+                  <span className="select-all">{CONTACT_EMAIL}</span>
                 </a>
               </li>
               <li>
@@ -84,20 +85,15 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Clients */}
           <div>
             <h4 className="mono-label mb-6">
-              Legal
+              Clients
             </h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/privacy" className="text-stone hover:text-violet-light transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-stone hover:text-violet-light transition-colors">
-                  Terms of Service
+                <Link href="/clients" className="text-stone hover:text-violet-light transition-colors">
+                  Client login
                 </Link>
               </li>
             </ul>

@@ -56,7 +56,7 @@ components/dashboard/
   charts/                           # Dashboard-specific chart components
   types.ts                          # Dashboard data types
 
-app/documents/
+app/insights/
   page.tsx                          # Documents listing page
   [documentId]/
     page.tsx                        # Dynamic document renderer (loads content, renders slides)
@@ -125,8 +125,8 @@ Add the dynamic import to `content/documents/loader.ts`:
 
 ### 4. That's it
 
-The dynamic route at `app/documents/[documentId]/page.tsx` handles the rest.
-**Do NOT create a static page file** like `app/documents/{document-id}/page.tsx`.
+The dynamic route at `app/insights/[documentId]/page.tsx` handles the rest.
+**Do NOT create a static page file** like `app/insights/{document-id}/page.tsx`.
 
 ---
 
@@ -184,7 +184,7 @@ Dashboards follow a different pattern from slide decks:
 
 1. **Data pipeline**: Raw data (Excel/CSV) → Python pipeline → `public/data/{dashboard-name}-data.json`
 2. **Dashboard component**: `components/dashboard/{DashboardName}.tsx` loads and renders the JSON
-3. **Page route**: `app/documents/{dashboard-id}/page.tsx` wraps with `DocumentAccessWrapper`
+3. **Page route**: `app/insights/{dashboard-id}/page.tsx` wraps with `DocumentAccessWrapper`
 4. **Register**: Add to `content/documents/index.ts` with `category: 'Dashboard'`
 
 ### Dashboard rules:
@@ -224,7 +224,7 @@ colors.neutral[200]      // Borders
 
 ## What NOT To Do
 
-- Do NOT create static page files in `app/documents/{id}/page.tsx` for slide-deck documents
+- Do NOT create static page files in `app/insights/{id}/page.tsx` for slide-deck documents
 - Do NOT put slide content (text, data, labels) inline in React components
 - Do NOT duplicate colors — always import from `slideTemplates.ts`
 - Do NOT duplicate shared components — use `components/presentation/shared/`

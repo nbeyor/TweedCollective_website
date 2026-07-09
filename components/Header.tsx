@@ -3,15 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
+import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
 import TweedLogo from './ui/tweed-logo'
 import { ChevronRight } from 'lucide-react'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 const navigation = [
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
   { name: 'Operators', href: '/operators' },
-  { name: 'Documents', href: '/documents' },
+  { name: 'Insights', href: '/insights' },
 ]
 
 export default function Header() {
@@ -137,11 +138,11 @@ export default function Header() {
           {/* CTA Button & Auth */}
           <div className="hidden lg:flex items-center gap-3">
             {showCTA && (
-              <a 
-                href="mailto:hello@tweedcollective.ai" 
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-sage text-cream hover:bg-sage-light hover:shadow-glow-sage"
               >
-                <span>Reach Out</span>
+                <span>Get in touch</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </a>
             )}
@@ -151,11 +152,6 @@ export default function Header() {
                   Sign In
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-sage text-sage-light hover:bg-sage/10">
-                  Sign Up
-                </button>
-              </SignUpButton>
             </SignedOut>
             <SignedIn>
               <UserButton 
@@ -248,11 +244,6 @@ export default function Header() {
                     Sign In
                   </button>
                 </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="w-full py-3 px-6 rounded-xl text-base font-medium transition-colors border border-sage text-sage-light hover:bg-sage/10">
-                  Sign Up
-                </button>
-                </SignUpButton>
               </SignedOut>
               <SignedIn>
                 <div className="flex items-center justify-center py-3">
@@ -260,12 +251,12 @@ export default function Header() {
                 </div>
               </SignedIn>
             {showCTA && (
-                <a 
-                  href="mailto:hello@tweedcollective.ai" 
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <span>Reach Out</span>
+                  <span>Get in touch</span>
                   <ChevronRight className="w-4 h-4" />
                 </a>
               )}

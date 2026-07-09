@@ -1,5 +1,6 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { isAdminUser } from '@/lib/client-access'
 
 export async function GET() {
   try {
@@ -15,11 +16,7 @@ export async function GET() {
       return NextResponse.json({ isAdmin: false })
     }
 
-    // Check for isAdmin in user metadata (managed via Clerk Dashboard)
-    const isAdmin = user.privateMetadata?.isAdmin === true ||
-                    user.publicMetadata?.role === 'admin'
-
-    return NextResponse.json({ isAdmin })
+    return NextResponse.json({ isAdmin: isAdminUser(user) })
   } catch (error) {
     console.error('Error checking admin status:', error)
     return NextResponse.json({ isAdmin: false })

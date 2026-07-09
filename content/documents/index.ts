@@ -9,7 +9,7 @@
  * 2. Create the content file in content/documents/{document-id}.ts
  * 3. Register the content file in content/documents/loader.ts
  *
- * Documents are rendered by the dynamic route at app/documents/[documentId]/page.tsx.
+ * Documents are rendered by the dynamic route at app/insights/[documentId]/page.tsx.
  * Do NOT create static page files for individual documents.
  */
 
@@ -34,10 +34,11 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     icon: 'Code2',
     date: '2024-12',
     readTime: '25 min',
-    visibility: 'listed',
+    visibility: 'public',
+    author: 'Nate Beyor',
   },
   {
-    id: 'health-tech-market-2024',
+    id: 'health-tech-market-2026',
     title: 'Health-Tech Market Landscape: Entering 2026',
     shortTitle: 'Health-Tech Market Landscape',
     description: 'Investment themes across stages (seed/venture/growth/buyout) and segments (pharmatech/provider-payor/consumer).',
@@ -45,7 +46,8 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     icon: 'BarChart3',
     date: '2025-12',
     readTime: '20 min',
-    visibility: 'listed',  // Changed from 'public' to 'listed' for email capture
+    visibility: 'public',
+    author: 'Nate Beyor',
   },
   {
     id: 'salmon-ai-genomics',
@@ -57,17 +59,6 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     date: '2024-11',
     readTime: '30 min',
     visibility: 'unlisted',  // Private, only via direct link/invitation
-  },
-  {
-    id: 'ecs-sdlc-dashboard',
-    title: 'eCS SDLC Dashboard — Copilot Adoption & Team Productivity',
-    shortTitle: 'eCS SDLC Dashboard',
-    description: 'Team-wide productivity vs pre-AI baseline with Copilot adoption metrics. Uses GitHub Copilot telemetry showing 96% developer adoption.',
-    category: 'Dashboard',
-    icon: 'BarChart3',
-    date: '2026-03',
-    readTime: '5 min',
-    visibility: 'unlisted',
   },
   {
     id: 'mercury-buyer-ai-diligence',
@@ -112,6 +103,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     date: '2026-04',
     readTime: '25 min',
     visibility: 'public',
+    author: 'Nate Beyor',
   },
   {
     id: 'ai-native-delivery',
@@ -123,6 +115,7 @@ export const DOCUMENT_CONFIGS: DocumentConfig[] = [
     date: '2026-04',
     readTime: '10 min',
     visibility: 'public',
+    author: 'Nate Beyor',
   },
   {
     id: 'ecs-sqa-plan',
@@ -183,7 +176,7 @@ export function getAllDocuments(): DocumentMeta[] {
   return DOCUMENT_CONFIGS.map(config => ({
     ...config,
     icon: getIconComponent(config.icon),
-    href: `/documents/${config.id}`,
+    href: `/insights/${config.id}`,
   }))
 }
 

@@ -12,7 +12,7 @@
 import { SlideData } from '@/lib/types'
 import { getIcon } from '@/lib/slideTemplates'
 
-export const DOCUMENT_ID = 'health-tech-market-2024'
+export const DOCUMENT_ID = 'health-tech-market-2026'
 
 // ============================================
 // Stage Data

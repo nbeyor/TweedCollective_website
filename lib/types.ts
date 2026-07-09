@@ -29,6 +29,7 @@ export interface DocumentConfig {
   date: string  // YYYY-MM format
   readTime: string
   visibility: DocumentVisibility
+  author?: string
 }
 
 /**

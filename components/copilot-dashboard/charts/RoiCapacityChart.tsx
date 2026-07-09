@@ -445,7 +445,7 @@ export function RoiCapacityChart() {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/documents/ecs-sdlc-dashboard"
+            href="/clients/ecs/sdlc-dashboard"
             className="inline-flex items-center gap-1 text-sm text-[#57534e] hover:text-[#1c1917] mb-4 transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >

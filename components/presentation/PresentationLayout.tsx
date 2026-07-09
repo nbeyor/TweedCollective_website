@@ -238,7 +238,7 @@ export default function PresentationLayout({
         <div className="flex items-center gap-2">
           {documentId && (
             <Link
-              href={`/documents/${documentId}/export`}
+              href={`/insights/${documentId}/export`}
               className="p-2 rounded-lg text-cream/60 hover:text-cream hover:bg-violet/10 transition-all"
               title="Export PDF"
             >

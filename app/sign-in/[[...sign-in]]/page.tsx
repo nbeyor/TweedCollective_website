@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 
 export default function SignInPage() {
   const searchParams = useSearchParams()
-  const redirectUrl = searchParams.get('redirect_url') || '/documents'
+  const redirectUrl = searchParams.get('redirect_url') || '/insights'
 
   return (
     <div className="pt-28 min-h-screen flex items-center justify-center bg-void">

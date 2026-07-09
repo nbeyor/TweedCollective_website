@@ -32,7 +32,7 @@ This skill generates complete, working documents (slide deck presentations) for 
 2. **Use `getIcon('semantic-name')`** for all icons — never hardcode Lucide icon names like `'TrendingUp'`.
 3. **No inline colors, fonts, or spacing** in content files — the template layer handles all visual styling.
 4. **All metadata in `content/documents/index.ts`** — never duplicate document config elsewhere.
-5. **Never create static page files** in `app/documents/` — the dynamic route `[documentId]/page.tsx` handles all documents.
+5. **Never create static page files** in `app/insights/` — the dynamic route `[documentId]/page.tsx` handles all documents.
 6. **Use standard slide types first** — only use `type: 'custom'` when no standard type fits the described visual.
 7. **Custom components receive ALL data via props** — no hardcoded content inside rendering components.
 8. **Design for a fixed US Letter landscape canvas** — 10in × 7.5in = **960 × 720 px at 96 dpi** (see Canvas Rules below).
@@ -349,8 +349,8 @@ The `content/documents/uploads/` folder may contain source files (Excel, PDF, im
 
 Documents automatically get a print/export view at `/documents/{document-id}/export`. For documents with complex custom slides that span multiple pages when exported:
 
-1. Add pagination metadata to `app/documents/[documentId]/export/adapters.tsx`
-2. Add rendering logic to `app/documents/[documentId]/export/ExportCustomSlide.tsx`
+1. Add pagination metadata to `app/insights/[documentId]/export/adapters.tsx`
+2. Add rendering logic to `app/insights/[documentId]/export/ExportCustomSlide.tsx`
 
 Most standard slide types export correctly without additional work.
 

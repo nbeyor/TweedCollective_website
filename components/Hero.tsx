@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import TechSpiral from './ui/tech-spiral'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 const Hero = () => {
   return (
@@ -51,14 +52,17 @@ const Hero = () => {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 animate-fade-up animation-delay-300">
-            <a href="mailto:hello@tweedcollective.ai" className="btn-primary text-base px-8 py-4 group">
-              <span>Reach Out</span>
-              <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </a>
-            <Link href="/services" className="btn-outline text-base px-8 py-4">
-              <span>Our Services</span>
-            </Link>
+          <div className="animate-fade-up animation-delay-300">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="btn-primary text-base px-8 py-4 group">
+                <span>Get in touch</span>
+                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </a>
+              <Link href="/services" className="btn-outline text-base px-8 py-4">
+                <span>Our Services</span>
+              </Link>
+            </div>
+            <p className="mt-3 font-mono text-sm text-stone select-all">{CONTACT_EMAIL}</p>
           </div>
         </div>
       </div>
