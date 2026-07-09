@@ -74,6 +74,7 @@ const TIER_STYLE: Record<string, { label: string; color: string }> = {
 interface WindowRow {
   active: boolean
   present: number
+  tickets: number // ticketed-PR count in the window; 0 = telemetry-only presence
   rawProd: number // tickets per present (active) week
   adoption: number // % of present weeks Copilot-active (0..100)
 }
@@ -85,9 +86,12 @@ interface WindowResult {
 
 // The score shown in the chip for a developer, given the selected metric.
 // adoption → the dev's adoption %; productivity → the dev's tickets/active-week as a % of team.
+// A dev present only via Copilot telemetry (zero ticketed PRs) has no productivity
+// score — the chip shows a "No PRs" flag instead of a misleading 0%.
 function scoreFor(metric: Metric, row: WindowRow, teamProd: number): number | null {
   if (!row.active) return null
   if (metric === 'adoption') return row.adoption
+  if (row.tickets === 0) return null
   return teamProd > 0 ? (row.rawProd / teamProd) * 100 : null
 }
 
@@ -316,6 +320,7 @@ export function UserAdoptionHeatmap() {
         rows[u.alias] = {
           active: present > 0,
           present,
+          tickets,
           rawProd: present > 0 ? tickets / present : 0,
           adoption: present > 0 ? (copActive / present) * 100 : 0,
         }
@@ -521,7 +526,11 @@ export function UserAdoptionHeatmap() {
                 const cur = currentWindow.rows[u.alias]
                 const active = cur.active
                 const score = scoreMap[u.alias]
-                const scoreDisplay = score == null ? '—' : `${Math.round(score)}%`
+                // Active via Copilot telemetry but zero ticketed PRs in the window —
+                // flagged explicitly rather than scored 0% (may be a non-developer,
+                // or work that never lands in a Jira-linked PR).
+                const noPrs = active && metric === 'productivity' && cur.tickets === 0
+                const scoreDisplay = noPrs ? 'No PRs' : score == null ? '—' : `${Math.round(score)}%`
                 const chip =
                   !active || score == null
                     ? { bg: '#f5f5f4', fg: '#a8a29e' }
@@ -539,7 +548,7 @@ export function UserAdoptionHeatmap() {
                 // vs self: this window vs the developer's own prior window.
                 const priorRow = priorWindow?.rows[u.alias]
                 let vsSelf: number | null = null
-                if (active && priorRow && priorRow.active) {
+                if (active && priorRow && priorRow.active && !noPrs) {
                   vsSelf =
                     metric === 'adoption'
                       ? cur.adoption - priorRow.adoption
@@ -594,7 +603,7 @@ export function UserAdoptionHeatmap() {
                     </td>
                     <td className="p-1 px-3 text-center align-middle">
                       <span
-                        className="inline-block min-w-[2.75rem] rounded-md px-2 py-1 text-sm font-bold"
+                        className={`inline-block min-w-[2.75rem] whitespace-nowrap rounded-md px-2 py-1 font-bold ${noPrs ? 'text-xs' : 'text-sm'}`}
                         style={{ backgroundColor: chip.bg, color: chip.fg, fontFamily: 'DM Sans, sans-serif' }}
                       >
                         {scoreDisplay}
@@ -612,7 +621,10 @@ export function UserAdoptionHeatmap() {
                         return <td key={p} className="p-0.5"><div className="w-7 h-7 rounded" style={{ backgroundColor: '#fafaf9' }} /></td>
                       }
                       const teamProd = teamPeriodProd[p] ?? 0
-                      const ratio = metric === 'productivity' && teamProd > 0 ? cell.productivity / teamProd : null
+                      // Copilot activity but no ticketed PRs this period — neutral, not 0% amber.
+                      const cellNoPrs = metric === 'productivity' && cell.tickets === 0
+                      const ratio =
+                        metric === 'productivity' && !cellNoPrs && teamProd > 0 ? cell.productivity / teamProd : null
                       const { bg, fg } =
                         metric === 'adoption'
                           ? rampColor(cell.adoption)
@@ -628,7 +640,9 @@ export function UserAdoptionHeatmap() {
                       const acceptanceRate = cell.suggestions > 0 ? Math.round((cell.acceptances / cell.suggestions) * 100) : null
                       const title =
                         `${u.alias} · ${periodLabel(p, gran)}\n` +
-                        `Tickets: ${cell.tickets} over ${cell.weeksPresent} wk (${cell.productivity.toFixed(2)}/wk)\n` +
+                        (cellNoPrs
+                          ? 'No ticketed PRs this period (Copilot activity only)\n'
+                          : `Tickets: ${cell.tickets} over ${cell.weeksPresent} wk (${cell.productivity.toFixed(2)}/wk)\n`) +
                         (ratio != null
                           ? `Team this period: ${teamProd.toFixed(2)}/wk → ${Math.round(ratio * 100)}% of team\n`
                           : '') +
@@ -663,6 +677,7 @@ export function UserAdoptionHeatmap() {
             const cell = grid[u.alias]?.[p]
             if (!cell) return null
             if (metric === 'adoption') return cell.adoption * 100
+            if (cell.tickets === 0) return null // Copilot-only period, no productivity signal
             const tp = teamPeriodProd[p] ?? 0
             return tp > 0 ? (cell.productivity / tp) * 100 : null
           })
@@ -700,6 +715,7 @@ export function UserAdoptionHeatmap() {
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the team&apos;s for that same period (100% = team-typical, green = above, amber = below).</p>
+            <p><strong>No PRs</strong> = the developer shows Copilot activity in the window but authored no Jira-linked PRs, so there is no productivity signal to score. This is common for non-developer roles with a Copilot license, and for work that never lands in a ticketed PR (untracked repos, PRs without a Jira reference) — it is not a 0% performance reading. Cells with Copilot activity but no ticketed PRs show <strong>—</strong> in neutral grey for the same reason.</p>
             <p>The bold <strong>Score</strong> chip is the developer&apos;s {metric === 'adoption' ? 'adoption %' : 'productivity as a % of team'} for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy).</p>
             <p><strong>Trend</strong> badges: <strong>team</strong> = this window vs team-typical (percentage points; ▲ above, ▼ below); <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. Both recompute with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s trend over time against the team reference.</p>
             <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
