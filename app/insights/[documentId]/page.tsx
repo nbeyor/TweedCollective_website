@@ -47,8 +47,8 @@ export default function DocumentPage() {
       <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
           <p className="text-cream/60 text-lg">Document not found</p>
-          <a href="/documents" className="text-sage-bright text-sm mt-2 inline-block hover:underline">
-            Back to documents
+          <a href="/insights" className="text-sage-bright text-sm mt-2 inline-block hover:underline">
+            Back to insights
           </a>
         </div>
       </div>
@@ -61,8 +61,8 @@ export default function DocumentPage() {
         <div className="text-center">
           <p className="text-red-400 text-lg mb-2">Error loading document</p>
           <p className="text-cream/40 text-sm">{error}</p>
-          <a href="/documents" className="text-sage-bright text-sm mt-4 inline-block hover:underline">
-            Back to documents
+          <a href="/insights" className="text-sage-bright text-sm mt-4 inline-block hover:underline">
+            Back to insights
           </a>
         </div>
       </div>

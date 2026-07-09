@@ -71,7 +71,7 @@ export default function MagicLinkPage() {
           })
           // Redirect to document after short delay
           setTimeout(() => {
-            router.push(`/documents/${data.documentId}`)
+            router.push(`/insights/${data.documentId}`)
           }, 1500)
           return
         }
@@ -113,7 +113,7 @@ export default function MagicLinkPage() {
         })
         // Redirect to document
         setTimeout(() => {
-          router.push(`/documents/${data.documentId}`)
+          router.push(`/insights/${data.documentId}`)
         }, 1500)
       } else if (response.status === 403 && data.error === 'Email mismatch') {
         setMagicLinkStatus({
@@ -181,7 +181,7 @@ export default function MagicLinkPage() {
               <span>Sign In with Different Email</span>
             </button>
             <Link
-              href="/documents"
+              href="/insights"
               className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -212,7 +212,7 @@ export default function MagicLinkPage() {
           
           <div className="space-y-3">
             <Link
-              href="/documents"
+              href="/insights"
               className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg bg-sage text-cream font-semibold hover:bg-sage/90 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />

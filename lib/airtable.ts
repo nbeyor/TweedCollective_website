@@ -64,15 +64,6 @@ export interface Service {
   outcomes: string[]
 }
 
-// New types for operators and updated projects
-export interface Operator {
-  id: string;
-  name: string;
-  linkedin: string;
-  photo?: string;
-  expertise: string[];
-}
-
 export interface ProjectRecord {
   id: string;
   company: string;
@@ -133,26 +124,6 @@ export const getProjects = async (): Promise<Project[]> => {
   } catch (error) {
     console.error('Error fetching projects:', error)
     return []
-  }
-}
-
-// Fetches all records from the "Operators" table.
-export const getOperators = async (): Promise<Operator[]> => {
-  const currentBase = getBase();
-  if (!currentBase) return [];
-
-  try {
-    const records = await currentBase('Operators').select().all();
-    return records.map(record => ({
-      id: record.id,
-      name: record.get('Name') as string,
-      linkedin: record.get('LinkedIn') as string,
-      photo: ((record.get('Headshot') as any[])?.[0]?.url) || (record.get('HeadshotURL') as string) || undefined,
-      expertise: (record.get('ExpertiseTags') as string[]) ?? [],
-    }));
-  } catch (error) {
-    console.error('Error fetching operators:', error);
-    return [];
   }
 }
 

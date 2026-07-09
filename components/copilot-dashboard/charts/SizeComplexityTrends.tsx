@@ -684,7 +684,7 @@ export function SizeComplexityTrends() {
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
         <div className="mb-8">
           <Link
-            href="/documents/ecs-sdlc-dashboard"
+            href="/clients/ecs/sdlc-dashboard"
             className="inline-flex items-center gap-1 text-sm text-[#57534e] hover:text-[#1c1917] mb-4 transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >

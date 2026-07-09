@@ -508,7 +508,7 @@ export default function AdminPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <a
-                          href={`/documents/${doc.id}/export`}
+                          href={`/insights/${doc.id}/export`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-4 py-2 text-sm font-medium text-sage bg-sage/10 hover:bg-sage/20 rounded-lg transition-colors flex items-center gap-2"

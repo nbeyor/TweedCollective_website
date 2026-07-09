@@ -1,4 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
+import { isAdminUser } from '@/lib/client-access'
 
 /**
  * Document access control
@@ -36,10 +37,7 @@ export async function checkDocumentAccess(documentId: string): Promise<DocumentA
     }
 
     // Admins always have access to all documents
-    const isAdmin = user.privateMetadata?.isAdmin === true ||
-                    user.publicMetadata?.role === 'admin'
-
-    if (isAdmin) {
+    if (isAdminUser(user)) {
       return { hasAccess: true, userId }
     }
 

@@ -102,28 +102,28 @@ export function CopilotKpiDashboard() {
         <DashboardHeader data={filtered} />
         <div className="mb-6 flex gap-3">
           <Link
-            href="/documents/ecs-sdlc-dashboard/roi"
+            href="/clients/ecs/sdlc-dashboard/roi"
             className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >
             View ROI Analysis →
           </Link>
           <Link
-            href="/documents/ecs-sdlc-dashboard/projects"
+            href="/clients/ecs/sdlc-dashboard/projects"
             className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >
             View Project Throughput →
           </Link>
           <Link
-            href="/documents/ecs-sdlc-dashboard/size-complexity-trends"
+            href="/clients/ecs/sdlc-dashboard/size-complexity-trends"
             className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >
             View Size × Complexity Trends →
           </Link>
           <Link
-            href="/documents/ecs-sdlc-dashboard/users"
+            href="/clients/ecs/sdlc-dashboard/users"
             className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
           >

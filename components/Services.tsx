@@ -6,32 +6,29 @@ const Services = () => {
   const services = [
     {
       number: "01",
-      title: "Advisory",
-      subtitle: "Due diligence that goes beyond the deck",
-      description: "We've evaluated 50+ computational biology platforms, AI-enabled drug discovery companies, and clinical tech assets for PE and VC investors. Our diligence includes technical architecture reviews, primary research, and commercial viability assessments.",
+      title: "Advise",
+      subtitle: "AI strategy and diligence",
+      description: "AI strategy and diligence for investors, boards, and executive teams. We've evaluated 50+ computational biology platforms, AI-enabled drug discovery companies, and clinical tech assets. Deliverables are specific: a model, a roadmap, a clear view on go or no-go.",
       icon: Users,
-      tangibleOutputs: ["Commercial & technical due diligence", "AI readiness audits and transformation roadmaps", "Strategic sector analyses with primary research", "Board presentations and investment memos"],
-      engagement: "Typical: 2-4 weeks, fixed scope",
+      tangibleOutputs: ["Technical and commercial diligence", "Opportunity sizing and quantified models", "Post-close AI roadmaps", "Board presentations and investment memos"],
       color: "sage"
     },
     {
       number: "02",
-      title: "Operators", 
-      subtitle: "Principals with P&L experience, embedded with equity alignment",
-      description: "We've run commercial organizations, closed enterprise deals, and built GTM motions in life sciences and AI companies. We embed for 100-day sprints with skin in the game—because we only win when you win.",
+      title: "Embed",
+      subtitle: "Operators inside your team",
+      description: "Fractional executive and operating roles inside growth-stage companies. We join the team, run the workstream, and hand it back working. Engagements run on a retained basis with defined outcomes, not open-ended hours.",
       icon: Target,
-      tangibleOutputs: ["Fractional CCO / CRO / CSO roles", "100-day transformation sprints", "GTM strategy → execution → closed pipeline", "Team building and organizational design"],
-      engagement: "Typical: 4-6 months, retainer + equity",
+      tangibleOutputs: ["Product strategy leadership", "Commercial strategy leadership", "AI program leadership", "Workstreams handed back working"],
       color: "taupe"
     },
     {
       number: "03",
-      title: "Incubation",
-      subtitle: "We co-found at the frontier",
-      description: "When we see a problem worth solving, we build. We've taken companies from napkin sketch to paying customer in under 90 days. We bring capital-efficient execution and deep domain networks.",
+      title: "Build",
+      subtitle: "Software that answers a business question",
+      description: "Small software builds that answer a business question. Dashboards, internal tools, prototypes, and analytical models. We build with modern AI tooling, which means working software in weeks, not quarters.",
       icon: Rocket,
-      tangibleOutputs: ["Problem validation and market research", "Zero to MVP in 90 days, <$250K total spend", "Corporate formation and fundraising support", "Studio co-founder model with sweat equity"],
-      engagement: "Current focus: AI × women's health, computational biology tools",
+      tangibleOutputs: ["Dashboards and internal tools", "Prototypes and analytical models", "Client tools that run on this site"],
       color: "gold"
     }
   ]
@@ -73,14 +70,14 @@ const Services = () => {
     <section className="section bg-carbon relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-void via-carbon to-graphite" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         {/* Section header */}
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-4">
-            <span className="mono-label">// How We Work</span>
+            <span className="mono-label">// What We Do</span>
           </div>
-          <h2 className="text-cream">Three models, one mission</h2>
+          <h2 className="text-cream">What we do</h2>
         </div>
 
         {/* Services grid with gap lines */}
@@ -88,18 +85,18 @@ const Services = () => {
           {services.map((service) => {
             const IconComponent = service.icon
             const colorClasses = getColorClasses(service.color)
-            
+
             return (
-              <div 
+              <div
                 key={service.title}
                 className="group bg-carbon p-8 hover:bg-graphite transition-all duration-500 relative"
               >
                 {/* Gradient top border on hover */}
                 <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${colorClasses.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                
+
                 {/* Number */}
                 <span className="font-mono text-sm text-zinc mb-6 block">{service.number}</span>
-                
+
                 {/* Icon */}
                 <div className={`w-14 h-14 rounded-xl ${colorClasses.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <IconComponent className={`w-7 h-7 ${colorClasses.icon}`} />
@@ -115,7 +112,7 @@ const Services = () => {
                   </p>
 
                   {/* Tangible Outputs */}
-                <div className="mb-6">
+                <div>
                   <p className="text-xs font-mono uppercase tracking-wider text-zinc mb-3">Deliverables</p>
                       <ul className="space-y-2">
                         {service.tangibleOutputs.map((output, i) => (
@@ -126,50 +123,9 @@ const Services = () => {
                         ))}
                       </ul>
                     </div>
-                
-                {/* Engagement meta */}
-                {service.engagement && (
-                  <p className="text-xs font-mono text-zinc pt-4 border-t border-slate/50">
-                    {service.engagement}
-                  </p>
-                )}
               </div>
             )
           })}
-        </div>
-
-        {/* Engagement Models */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="mono-label">// Engagement Models</span>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="card p-6 group hover:border-sage/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-sage/10 flex items-center justify-center group-hover:glow-sage transition-all">
-                <span className="text-sage-light font-mono text-lg">01</span>
-              </div>
-              <h4 className="text-cream font-semibold mb-2">Retainer + Equity</h4>
-              <p className="text-stone text-sm mb-4">Our preferred model for long-term operator partnerships</p>
-              <p className="text-xs font-mono text-zinc">Typical: $10-20K/mo + 0.5-2% equity</p>
-            </div>
-            <div className="card p-6 group hover:border-taupe/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-taupe/10 flex items-center justify-center">
-                <span className="text-taupe-light font-mono text-lg">02</span>
-              </div>
-              <h4 className="text-cream font-semibold mb-2">Fixed-Scope Project</h4>
-              <p className="text-stone text-sm mb-4">For targeted diligence and strategic analyses</p>
-              <p className="text-xs font-mono text-zinc">Typical: 2-6 weeks, $25-75K</p>
-            </div>
-            <div className="card p-6 group hover:border-gold/50 transition-colors">
-              <div className="w-10 h-10 mb-4 rounded-lg bg-gold/10 flex items-center justify-center">
-                <span className="text-gold font-mono text-lg">03</span>
-              </div>
-              <h4 className="text-cream font-semibold mb-2">Studio Co-found</h4>
-              <p className="text-stone text-sm mb-4">Sweat equity for ventures we believe in</p>
-              <p className="text-xs font-mono text-zinc">Typical: Significant equity, milestone-based</p>
-            </div>
-          </div>
         </div>
 
         {/* CTA */}
@@ -184,4 +140,4 @@ const Services = () => {
   )
 }
 
-export default Services 
+export default Services

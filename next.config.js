@@ -3,6 +3,41 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
   },
+  async redirects() {
+    return [
+      // Specific redirects must come before the /documents catch-all
+      {
+        source: '/documents/health-tech-market-2024',
+        destination: '/insights/health-tech-market-2026',
+        permanent: true,
+      },
+      {
+        source: '/insights/health-tech-market-2024',
+        destination: '/insights/health-tech-market-2026',
+        permanent: true,
+      },
+      {
+        source: '/documents/ecs-sdlc-dashboard',
+        destination: '/clients/ecs/sdlc-dashboard',
+        permanent: true,
+      },
+      {
+        source: '/documents/ecs-sdlc-dashboard/:sub*',
+        destination: '/clients/ecs/sdlc-dashboard/:sub*',
+        permanent: true,
+      },
+      {
+        source: '/documents',
+        destination: '/insights',
+        permanent: true,
+      },
+      {
+        source: '/documents/:path*',
+        destination: '/insights/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {

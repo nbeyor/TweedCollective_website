@@ -107,7 +107,7 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, visib
                   <span>Request Access</span>
                 </a>
                 <Link
-                  href="/documents"
+                  href="/insights"
                   className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default function DocumentAccessWrapper({ documentId, documentTitle, visib
                   </button>
                 </SignInButton>
                 <Link
-                  href="/documents"
+                  href="/insights"
                   className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-lg border border-cream/20 text-cream/80 hover:bg-cream/10 transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />

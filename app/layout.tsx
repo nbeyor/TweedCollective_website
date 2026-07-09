@@ -2,8 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import SiteChrome from '@/components/SiteChrome'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,9 +19,12 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Tweed Collective - Operators and Builders at the AI × Life Sciences Frontier',
-  description: 'Advisory for investors, fractional leadership with equity alignment, and venture building at the convergence of biotechnology and artificial intelligence.',
-  keywords: 'AI life sciences, biotech consulting, fractional operators, venture building, due diligence, computational biology',
+  title: {
+    default: 'Tweed Collective | AI × Life Sciences Advisory',
+    template: '%s | Tweed Collective',
+  },
+  description: 'Operators and builders at the frontier of AI and life sciences. We advise, we embed, we build.',
+  keywords: 'AI life sciences, biotech consulting, fractional operators, due diligence, computational biology',
 }
 
 export default function RootLayout({
@@ -93,11 +95,7 @@ export default function RootLayout({
       <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
         <body className="antialiased">
           <div className="min-h-screen flex flex-col bg-void">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
+            <SiteChrome>{children}</SiteChrome>
           </div>
         </body>
       </html>
