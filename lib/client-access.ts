@@ -38,7 +38,10 @@ export async function getClientSlugs(): Promise<string[]> {
 
 /**
  * Server-side guard for a specific client's pages. Redirects signed-out users
- * to sign-in and 404s users without access to this client.
+ * to sign-in. Signed-in users without access to a configured client are sent
+ * to an explicit access-restricted page (a 404 here reads as "the page is
+ * gone" and hides the real problem — missing Clerk metadata). Slugs that
+ * aren't configured clients at all still 404.
  */
 export async function requireClientAccess(slug: string): Promise<void> {
   const user = await currentUser()
@@ -48,6 +51,9 @@ export async function requireClientAccess(slug: string): Promise<void> {
 
   const slugs = await getClientSlugs()
   if (!slugs.includes(slug)) {
-    notFound()
+    if (!CLIENT_CONFIGS.some((client) => client.slug === slug)) {
+      notFound()
+    }
+    redirect(`/clients/access-denied?client=${encodeURIComponent(slug)}`)
   }
 }
