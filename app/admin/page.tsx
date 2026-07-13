@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX } from 'lucide-react'
+import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, UserX } from 'lucide-react'
 import Link from 'next/link'
 import { getGrantablePermissions } from '@/content/documents'
-import type { UserWithAccess, Invitation } from '@/lib/types'
+import type { UserWithAccess } from '@/lib/types'
 
 // Get documents/permissions from centralized registry
 const DOCUMENTS = getGrantablePermissions()
@@ -22,14 +22,8 @@ export default function AdminPage() {
   const [updating, setUpdating] = useState<string | null>(null)
   const [testingEmail, setTestingEmail] = useState(false)
   const [emailTestResult, setEmailTestResult] = useState<string | null>(null)
-  const [invitations, setInvitations] = useState<Invitation[]>([])
   const [adminEmails, setAdminEmails] = useState<string[]>([])
-  
-  // Per-document invitation state
-  const [docInviteEmails, setDocInviteEmails] = useState<Record<string, string>>({})
-  const [sendingDocInvite, setSendingDocInvite] = useState<Record<string, boolean>>({})
   const [deletingUser, setDeletingUser] = useState<string | null>(null)
-  const [revokingInvite, setRevokingInvite] = useState<string | null>(null)
 
   // Check if current user is admin
   useEffect(() => {
@@ -47,7 +41,6 @@ export default function AdminPage() {
         
         if (data.isAdmin) {
           fetchUsers()
-          fetchInvitations()
           fetchAdminEmails()
         } else {
           setLoading(false)
@@ -79,18 +72,6 @@ export default function AdminPage() {
     }
   }
 
-  async function fetchInvitations() {
-    try {
-      const response = await fetch('/api/admin/magic-links')
-      const data = await response.json()
-      if (data.magicLinks) {
-        setInvitations(data.magicLinks)
-      }
-    } catch (err) {
-      console.error('Failed to fetch invitations:', err)
-    }
-  }
-
   async function fetchAdminEmails() {
     try {
       const response = await fetch('/api/admin/emails')
@@ -100,115 +81,6 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Failed to fetch admin emails:', err)
-    }
-  }
-
-  async function sendDocumentInvitation(documentId: string) {
-    const emailText = docInviteEmails[documentId]
-    if (!emailText?.trim()) {
-      setError('Please enter at least one email address')
-      return
-    }
-
-    const emailList = emailText
-      .split(/[\n,;]/)
-      .map(e => e.trim())
-      .filter(e => e.length > 0 && e.includes('@'))
-
-    if (emailList.length === 0) {
-      setError('No valid email addresses found')
-      return
-    }
-
-    setSendingDocInvite({ ...sendingDocInvite, [documentId]: true })
-    setError(null)
-    setSuccessMessage(null)
-
-    try {
-      const response = await fetch('/api/admin/magic-links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          documentId, 
-          emails: emailList,
-          expiresInDays: 7 
-        })
-      })
-      
-      const data = await response.json()
-      
-      if (data.success) {
-        const successCount = data.results?.filter((r: { success: boolean }) => r.success).length || 0
-        const failedResults = data.results?.filter((r: { success: boolean; error?: string }) => !r.success) || []
-        
-        const docTitle = DOCUMENTS.find(d => d.id === documentId)?.title || documentId
-        
-        if (failedResults.length > 0) {
-          // Show which emails failed and why
-          const failedEmails = failedResults.map((r: { email: string; error?: string }) => 
-            `${r.email}: ${r.error || 'Unknown error'}`
-          ).join(', ')
-          setError(`Email failed for: ${failedEmails}`)
-        }
-        
-        if (successCount > 0) {
-          setSuccessMessage(`Sent ${successCount} invitation(s) for "${docTitle}"`)
-        } else if (failedResults.length > 0) {
-          setSuccessMessage(null) // Only show error
-        }
-        
-        setDocInviteEmails({ ...docInviteEmails, [documentId]: '' })
-        await fetchInvitations()
-      } else {
-        setError(data.error || 'Failed to send invitations')
-      }
-    } catch (err) {
-      setError('Failed to send invitations')
-    } finally {
-      setSendingDocInvite({ ...sendingDocInvite, [documentId]: false })
-    }
-  }
-
-  async function revokeInvitation(token: string) {
-    if (revokingInvite) return // Prevent double-clicks
-    
-    setRevokingInvite(token)
-    setError(null)
-    setSuccessMessage(null)
-    
-    // Optimistically remove from UI immediately
-    const previousInvitations = [...invitations]
-    setInvitations(invitations.filter(i => i.token !== token))
-    
-    try {
-      console.log('Deleting invitation:', token)
-      const response = await fetch('/api/admin/magic-links', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
-      })
-      
-      console.log('Delete response status:', response.status)
-      const data = await response.json()
-      console.log('Delete response data:', data)
-      
-      if (data.success) {
-        setSuccessMessage(`Invitation revoked (${data.remainingLinks ?? '?'} remaining)`)
-        setError(null)
-        // Don't restore - keep the optimistic update
-      } else {
-        // Restore on failure
-        console.error('Delete failed:', data)
-        setInvitations(previousInvitations)
-        setError(`Failed: ${data.error || 'Unknown error'}${data.debug ? ' - ' + JSON.stringify(data.debug) : ''}`)
-      }
-    } catch (err) {
-      // Restore on error
-      console.error('Delete exception:', err)
-      setInvitations(previousInvitations)
-      setError(`Network error: ${err instanceof Error ? err.message : 'Unknown'}`)
-    } finally {
-      setRevokingInvite(null)
     }
   }
 
@@ -303,11 +175,6 @@ export default function AdminPage() {
     }
   }
 
-  // Helper to get invitations for a document
-  function getDocumentInvitations(documentId: string) {
-    return invitations.filter(i => i.documentId === documentId)
-  }
-
   // Helper to get users with access to a document
   function getUsersWithAccess(documentId: string) {
     return users.filter(u => u.documentAccess.includes(documentId))
@@ -364,7 +231,7 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-serif text-charcoal mb-2">Admin Dashboard</h1>
-              <p className="text-warm-gray">Manage documents, invitations, and user access</p>
+              <p className="text-warm-gray">Manage documents and user access</p>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -376,7 +243,7 @@ export default function AdminPage() {
                 {testingEmail ? 'Sending...' : 'Test Email'}
               </button>
               <button
-                onClick={() => { fetchUsers(); fetchInvitations(); }}
+                onClick={() => fetchUsers()}
                 disabled={loading}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors"
               >
@@ -413,7 +280,7 @@ export default function AdminPage() {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
             <div className="p-4 rounded-xl bg-white border border-stone/30">
               <div className="flex items-center gap-3">
                 <Users className="w-8 h-8 text-sage" />
@@ -443,17 +310,6 @@ export default function AdminPage() {
                 </div>
               </div>
             </div>
-            <div className="p-4 rounded-xl bg-white border border-stone/30">
-              <div className="flex items-center gap-3">
-                <Mail className="w-8 h-8 text-taupe" />
-                <div>
-                  <p className="text-2xl font-bold text-charcoal">
-                    {invitations.filter(i => i.status === 'active').length}
-                  </p>
-                  <p className="text-sm text-warm-gray">Pending Invites</p>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Admin Emails Info */}
@@ -475,152 +331,53 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Documents & Invitations */}
+          {/* Documents */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
-              <h2 className="text-lg font-semibold text-charcoal">Documents & Invitations</h2>
-              <p className="text-sm text-warm-gray mt-1">Send invitations for each document</p>
+              <h2 className="text-lg font-semibold text-charcoal">Documents</h2>
+              <p className="text-sm text-warm-gray mt-1">Who has access to each document</p>
             </div>
             <div className="divide-y divide-stone/20">
               {DOCUMENTS.map((doc) => {
-                const docInvitations = getDocumentInvitations(doc.id)
                 const usersWithAccess = getUsersWithAccess(doc.id)
-                const activeInvites = docInvitations.filter(i => i.status === 'active')
                 const isExpanded = expandedDocument === doc.id
-                
+
                 return (
                   <div key={doc.id} className="px-6 py-4">
                     <div
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
                     >
-                      <div
-                        className="flex items-center gap-4 cursor-pointer flex-grow"
-                        onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
-                      >
+                      <div className="flex items-center gap-4 flex-grow">
                         <FileText className="w-6 h-6 text-taupe" />
                         <div>
                           <h3 className="font-medium text-charcoal">{doc.title}</h3>
                           <p className="text-sm text-warm-gray">
                             {usersWithAccess.length} user{usersWithAccess.length !== 1 ? 's' : ''} with access
-                            {activeInvites.length > 0 && ` • ${activeInvites.length} pending invite${activeInvites.length !== 1 ? 's' : ''}`}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <a
-                          href={`/insights/${doc.id}/export`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 text-sm font-medium text-sage bg-sage/10 hover:bg-sage/20 rounded-lg transition-colors flex items-center gap-2"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          Export
-                        </a>
-                        <button
-                          onClick={() => setExpandedDocument(isExpanded ? null : doc.id)}
-                          className="p-2"
-                        >
-                          {isExpanded ? (
-                            <ChevronUp className="w-5 h-5 text-warm-gray" />
-                          ) : (
-                            <ChevronDown className="w-5 h-5 text-warm-gray" />
-                          )}
-                        </button>
-                      </div>
+                      {isExpanded ? (
+                        <ChevronUp className="w-5 h-5 text-warm-gray" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-warm-gray" />
+                      )}
                     </div>
-                    
+
                     {isExpanded && (
-                      <div className="mt-4 pl-10 space-y-4">
-                        {/* Invite Form */}
-                        <div className="p-4 rounded-lg bg-stone/5 border border-stone/20">
-                          <label className="block text-sm font-medium text-charcoal mb-2">
-                            Send Invitations
-                          </label>
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={docInviteEmails[doc.id] || ''}
-                              onChange={(e) => setDocInviteEmails({ ...docInviteEmails, [doc.id]: e.target.value })}
-                              placeholder="Enter email addresses (comma-separated)"
-                              className="flex-grow px-4 py-2 rounded-lg border border-stone/30 bg-white text-charcoal text-sm focus:outline-none focus:border-sage"
-                            />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                sendDocumentInvitation(doc.id)
-                              }}
-                              disabled={sendingDocInvite[doc.id] || !docInviteEmails[doc.id]?.trim()}
-                              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sage text-cream hover:bg-sage/90 disabled:opacity-50 transition-colors text-sm font-medium whitespace-nowrap"
-                            >
-                              <Send className="w-4 h-4" />
-                              {sendingDocInvite[doc.id] ? 'Sending...' : 'Send'}
-                            </button>
+                      <div className="mt-4 pl-10">
+                        {usersWithAccess.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {usersWithAccess.map((u) => (
+                              <span key={u.id} className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-medium">
+                                {u.email}
+                              </span>
+                            ))}
                           </div>
-                          <p className="text-xs text-warm-gray mt-2">
-                            Each person receives a unique link valid for 7 days.
+                        ) : (
+                          <p className="text-sm text-warm-gray">
+                            No users yet. Grant access per user in the list below once they&apos;ve signed up.
                           </p>
-                        </div>
-
-                        {/* Pending Invitations for this document */}
-                        {activeInvites.length > 0 && (
-                          <div>
-                            <h4 className="text-sm font-medium text-charcoal mb-2">Pending Invitations</h4>
-                            <div className="space-y-2">
-                              {activeInvites.map((invite) => (
-                                <div key={invite.token} className="flex items-center justify-between p-3 rounded-lg bg-stone/5 border border-stone/20">
-                                  <div>
-                                    <span className="text-sm text-charcoal">{invite.targetEmail}</span>
-                                    <div className="text-xs text-warm-gray flex items-center gap-2 mt-0.5">
-                                      <Clock className="w-3 h-3" />
-                                      Expires: {new Date(invite.expiresAt).toLocaleDateString()}
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <button
-                                      onClick={async (e) => {
-                                        e.stopPropagation()
-                                        const url = `${window.location.origin}/magic-link/${invite.token}`
-                                        await navigator.clipboard.writeText(url)
-                                        setSuccessMessage('Invitation link copied!')
-                                      }}
-                                      className="p-1.5 hover:bg-stone/20 rounded transition-colors text-warm-gray"
-                                      title="Copy link"
-                                    >
-                                      <Copy className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        revokeInvitation(invite.token)
-                                      }}
-                                      disabled={revokingInvite === invite.token}
-                                      className={`p-1.5 hover:bg-red-50 rounded transition-colors text-red-600 ${revokingInvite === invite.token ? 'opacity-50' : ''}`}
-                                      title="Revoke"
-                                    >
-                                      <Trash2 className={`w-4 h-4 ${revokingInvite === invite.token ? 'animate-pulse' : ''}`} />
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Users with access */}
-                        {usersWithAccess.length > 0 && (
-                          <div>
-                            <h4 className="text-sm font-medium text-charcoal mb-2">Users with Access</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {usersWithAccess.map((u) => (
-                                <span key={u.id} className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-medium">
-                                  {u.email}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
                         )}
                       </div>
                     )}
@@ -688,20 +445,14 @@ export default function AdminPage() {
                         {DOCUMENTS.map((doc) => {
                           const hasAccess = u.documentAccess.includes(doc.id)
                           const isUpdating = updating === `${u.id}-${doc.id}`
-                          const grantInfo = u.grantInfo?.[doc.id]
-                          
+
                           return (
-                            <div 
+                            <div
                               key={doc.id}
                               className="flex items-center justify-between p-3 rounded-lg bg-stone/10"
                             >
                               <div className="flex-grow">
                                 <span className="text-sm text-charcoal">{doc.title}</span>
-                                {hasAccess && grantInfo && (
-                                  <div className="text-xs text-warm-gray mt-1">
-                                    {grantInfo.method === 'invitation' ? '✉️ Via invitation' : '👤 Manual'} - {new Date(grantInfo.timestamp).toLocaleDateString()}
-                                  </div>
-                                )}
                               </div>
                               <button
                                 onClick={(e) => {

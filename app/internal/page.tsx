@@ -20,7 +20,7 @@ const TOOLS: Tool[] = [
   {
     id: 'admin',
     title: 'Admin Dashboard',
-    description: 'Manage users, document access, and send invitations',
+    description: 'Manage users and document access',
     href: '/admin',
     icon: <Users className="w-6 h-6" />,
     requiresAdmin: true,

@@ -27,29 +27,14 @@ export async function GET() {
     const client = await clerkClient()
     const usersResponse = await client.users.getUserList({ limit: 100 })
 
-    const users = usersResponse.data.map(user => {
-      // Grant provenance is no longer persisted (the old audit trail lived in
-      // the admin's Clerk public metadata and overflowed its 8 KB cap), so
-      // every grant is reported as manual, stamped with the user's join date.
-      const grantInfo: Record<string, { method: 'invitation' | 'manual', timestamp: string }> = {}
-      const documentAccess = (user.privateMetadata?.documentAccess as string[]) || []
-      documentAccess.forEach(docId => {
-        grantInfo[docId] = {
-          method: 'manual',
-          timestamp: new Date(user.createdAt).toISOString()
-        }
-      })
-
-      return {
-        id: user.id,
-        email: user.primaryEmailAddress?.emailAddress || 'No email',
-        firstName: user.firstName,
-        lastName: user.lastName,
-        documentAccess,
-        createdAt: user.createdAt,
-        grantInfo // Map of documentId -> { method, timestamp }
-      }
-    })
+    const users = usersResponse.data.map(user => ({
+      id: user.id,
+      email: user.primaryEmailAddress?.emailAddress || 'No email',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      documentAccess: (user.privateMetadata?.documentAccess as string[]) || [],
+      createdAt: user.createdAt
+    }))
 
     return NextResponse.json({ users })
   } catch (error) {

@@ -526,32 +526,5 @@ export interface UserWithAccess {
   lastName: string | null
   documentAccess: string[]
   createdAt: string
-  grantInfo?: Record<string, { method: 'invitation' | 'manual', timestamp: string }>
-}
-
-/**
- * Invitation/magic link
- */
-export interface Invitation {
-  token: string
-  documentId: string
-  documentTitle?: string
-  targetEmail: string
-  createdAt: string
-  expiresAt: string
-  redeemedAt?: string
-  redeemedBy?: string
-  status: 'active' | 'expired' | 'redeemed'
-}
-
-/**
- * Audit entry for access grants
- */
-export interface AuditEntry {
-  userId: string
-  email: string
-  documentIds: string[]
-  timestamp: string
-  method: 'invitation' | 'manual'
 }
 

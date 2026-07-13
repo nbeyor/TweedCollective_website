@@ -36,6 +36,14 @@ const nextConfig = {
         destination: '/insights/:path*',
         permanent: true,
       },
+      // The magic-link invitation system was removed; send stale invite
+      // emails to the homepage instead of a 404. Not permanent so browsers
+      // don't cache it if anything ever lives at this path again.
+      {
+        source: '/magic-link/:path*',
+        destination: '/',
+        permanent: false,
+      },
     ]
   },
   async headers() {

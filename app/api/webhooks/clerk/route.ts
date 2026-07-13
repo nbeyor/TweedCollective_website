@@ -147,7 +147,7 @@ export async function POST(req: Request) {
               </a>
             </p>
             <p style="color: #999; font-size: 14px; margin-top: 32px;">
-              You can grant document access from the Admin dashboard or send an invitation email.
+              You can grant document access from the Admin dashboard.
             </p>
           </div>
         `,
