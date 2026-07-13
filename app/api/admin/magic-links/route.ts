@@ -117,7 +117,19 @@ export async function POST(request: Request) {
     // Get current metadata (fresh from Clerk)
     const currentMetadata = user.publicMetadata || {}
     const existingLinks = (currentMetadata.magicLinks as Record<string, MagicLink>) || {}
-    const magicLinks = { ...existingLinks }
+
+    // Prune stale links so the admin's metadata stays under Clerk's 8 KB cap:
+    // drop links already redeemed (access is recorded on the recipient's own
+    // account) and links expired for more than 30 days. Pending and recently
+    // expired links survive so they remain visible for re-sending.
+    const PRUNE_EXPIRED_AFTER_MS = 30 * 24 * 60 * 60 * 1000
+    const now = Date.now()
+    const magicLinks: Record<string, MagicLink> = {}
+    for (const [key, link] of Object.entries(existingLinks)) {
+      if (link.redeemedAt) continue
+      if (now - new Date(link.expiresAt).getTime() > PRUNE_EXPIRED_AFTER_MS) continue
+      magicLinks[key] = link
+    }
     
     const documentTitle = getDocumentTitle(documentId)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://tweedcollective.ai'
