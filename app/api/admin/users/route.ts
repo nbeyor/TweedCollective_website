@@ -26,79 +26,20 @@ export async function GET() {
     // Fetch all users from Clerk
     const client = await clerkClient()
     const usersResponse = await client.users.getUserList({ limit: 100 })
-    
-    // Get admin user to access audit trail
-    let adminUser = null
-    let offset = 0
-    const limit = 100
-    
-    while (!adminUser) {
-      const adminResponse = await client.users.getUserList({ limit, offset })
-      
-      adminUser = adminResponse.data.find(user => 
-        user.privateMetadata?.isAdmin === true || 
-        user.publicMetadata?.role === 'admin'
-      )
-      
-      if (adminResponse.data.length < limit || adminUser) {
-        break
-      }
-      
-      offset += limit
-    }
-    
-    const auditTrail = adminUser 
-      ? ((await client.users.getUser(adminUser.id)).publicMetadata?.accessAuditTrail as Array<{
-          userId: string
-          email: string
-          documentIds: string[]
-          timestamp: string
-          method: 'invitation' | 'manual'
-        }>) || []
-      : []
-    
-    // Create a map of user grants from audit trail
-    const userGrants: Record<string, { method: 'invitation' | 'manual', timestamp: string, documentIds: string[] }[]> = {}
-    
-    auditTrail.forEach(entry => {
-      if (!userGrants[entry.userId]) {
-        userGrants[entry.userId] = []
-      }
-      entry.documentIds.forEach(docId => {
-        userGrants[entry.userId].push({
-          method: entry.method,
-          timestamp: entry.timestamp,
-          documentIds: [docId]
-        })
-      })
-    })
-    
+
     const users = usersResponse.data.map(user => {
-      const grants = userGrants[user.id] || []
+      // Grant provenance is no longer persisted (the old audit trail lived in
+      // the admin's Clerk public metadata and overflowed its 8 KB cap), so
+      // every grant is reported as manual, stamped with the user's join date.
       const grantInfo: Record<string, { method: 'invitation' | 'manual', timestamp: string }> = {}
-      
-      grants.forEach(grant => {
-        grant.documentIds.forEach(docId => {
-          if (!grantInfo[docId] || new Date(grant.timestamp) > new Date(grantInfo[docId].timestamp)) {
-            grantInfo[docId] = {
-              method: grant.method,
-              timestamp: grant.timestamp
-            }
-          }
-        })
-      })
-      
-      // Mark documents without grant info as manual
       const documentAccess = (user.privateMetadata?.documentAccess as string[]) || []
       documentAccess.forEach(docId => {
-        if (!grantInfo[docId]) {
-          grantInfo[docId] = {
-            method: 'manual',
-            timestamp: new Date(user.createdAt).toISOString()
-          }
+        grantInfo[docId] = {
+          method: 'manual',
+          timestamp: new Date(user.createdAt).toISOString()
         }
       })
-      
+
       return {
         id: user.id,
         email: user.primaryEmailAddress?.emailAddress || 'No email',
@@ -110,10 +51,7 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ 
-      users,
-      auditTrail: auditTrail.slice(-50) // Return last 50 entries
-    })
+    return NextResponse.json({ users })
   } catch (error) {
     console.error('Error fetching users:', error)
     return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 })

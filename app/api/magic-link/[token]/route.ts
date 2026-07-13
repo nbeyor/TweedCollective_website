@@ -138,33 +138,7 @@ export async function GET(
       }
     })
 
-    // Store audit trail
-    const auditTrail = (adminUserData.publicMetadata?.accessAuditTrail as Array<{
-      userId: string
-      email: string
-      documentIds: string[]
-      timestamp: string
-      method: 'invitation' | 'manual'
-    }>) || []
-    
-    auditTrail.push({
-      userId: userId,
-      email: primaryEmail || magicLink.targetEmail,
-      documentIds: [magicLink.documentId],
-      timestamp: new Date().toISOString(),
-      method: 'invitation'
-    })
-    
-    const recentAudit = auditTrail.slice(-100)
-    
-    await client.users.updateUserMetadata(adminUser.id, {
-      publicMetadata: {
-        ...adminUserData.publicMetadata,
-        accessAuditTrail: recentAudit
-      }
-    })
-
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       documentId: magicLink.documentId,
       message: 'Access granted successfully'
