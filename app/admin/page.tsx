@@ -5,6 +5,7 @@ import { useAuth } from '@clerk/nextjs'
 import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, UserX } from 'lucide-react'
 import Link from 'next/link'
 import { getGrantablePermissions } from '@/content/documents'
+import { CLIENT_CONFIGS } from '@/content/clients'
 import type { UserWithAccess } from '@/lib/types'
 
 // Get documents/permissions from centralized registry
@@ -145,6 +146,34 @@ export default function AdminPage() {
       }
     } catch (err) {
       setError('Failed to update access')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  async function toggleClientAccess(targetUserId: string, clientSlug: string, currentlyHasAccess: boolean) {
+    setUpdating(`${targetUserId}-ws-${clientSlug}`)
+
+    try {
+      const response = await fetch('/api/admin/update-client-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: targetUserId,
+          clientSlug,
+          action: currentlyHasAccess ? 'revoke' : 'grant'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setUsers(users.map(u => (u.id === targetUserId ? { ...u, clientSlugs: data.clientSlugs } : u)))
+      } else {
+        setError(data.error || 'Failed to update workspace access')
+      }
+    } catch (err) {
+      setError('Failed to update workspace access')
     } finally {
       setUpdating(null)
     }
@@ -387,6 +416,48 @@ export default function AdminPage() {
             </div>
           </div>
 
+          {/* Client Workspaces */}
+          {CLIENT_CONFIGS.length > 0 && (
+            <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
+              <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
+                <h2 className="text-lg font-semibold text-charcoal">Client Workspaces</h2>
+                <p className="text-sm text-warm-gray mt-1">Who has access to each client workspace and its dashboards</p>
+              </div>
+              <div className="divide-y divide-stone/20">
+                {CLIENT_CONFIGS.map((workspace) => {
+                  const usersWithWorkspace = users.filter(u => u.clientSlugs.includes(workspace.slug))
+
+                  return (
+                    <div key={workspace.slug} className="px-6 py-4">
+                      <div className="flex items-center gap-4 mb-2">
+                        <Users className="w-6 h-6 text-taupe" />
+                        <div>
+                          <h3 className="font-medium text-charcoal">{workspace.name}</h3>
+                          <p className="text-sm text-warm-gray">
+                            /clients/{workspace.slug} • {usersWithWorkspace.length} user{usersWithWorkspace.length !== 1 ? 's' : ''} with access
+                          </p>
+                        </div>
+                      </div>
+                      {usersWithWorkspace.length > 0 ? (
+                        <div className="flex flex-wrap gap-2 pl-10">
+                          {usersWithWorkspace.map((u) => (
+                            <span key={u.id} className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-medium">
+                              {u.email}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-warm-gray pl-10">
+                          No users yet. Grant access per user in the list below once they&apos;ve signed up.
+                        </p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Users List */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
@@ -471,7 +542,48 @@ export default function AdminPage() {
                             </div>
                           )
                         })}
-                        
+
+                        {/* Client workspace access */}
+                        {CLIENT_CONFIGS.length > 0 && (
+                          <>
+                            <p className="text-xs font-medium text-warm-gray uppercase tracking-wide pt-3">
+                              Client Workspaces
+                            </p>
+                            {CLIENT_CONFIGS.map((workspace) => {
+                              const hasAccess = u.clientSlugs.includes(workspace.slug)
+                              const isUpdating = updating === `${u.id}-ws-${workspace.slug}`
+
+                              return (
+                                <div
+                                  key={workspace.slug}
+                                  className="flex items-center justify-between p-3 rounded-lg bg-stone/10"
+                                >
+                                  <div className="flex-grow">
+                                    <span className="text-sm text-charcoal">{workspace.name} workspace</span>
+                                    <div className="text-xs text-warm-gray mt-1">
+                                      /clients/{workspace.slug}
+                                    </div>
+                                  </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      toggleClientAccess(u.id, workspace.slug, hasAccess)
+                                    }}
+                                    disabled={isUpdating}
+                                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                                      hasAccess
+                                        ? 'bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-700'
+                                        : 'bg-stone/20 text-warm-gray hover:bg-green-100 hover:text-green-700'
+                                    } ${isUpdating ? 'opacity-50' : ''}`}
+                                  >
+                                    {isUpdating ? '...' : hasAccess ? 'Revoke' : 'Grant'}
+                                  </button>
+                                </div>
+                              )
+                            })}
+                          </>
+                        )}
+
                         {/* Delete User Button */}
                         <div className="pt-3 mt-3 border-t border-stone/20">
                           <button

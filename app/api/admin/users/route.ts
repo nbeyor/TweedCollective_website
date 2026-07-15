@@ -33,6 +33,11 @@ export async function GET() {
       firstName: user.firstName,
       lastName: user.lastName,
       documentAccess: (user.privateMetadata?.documentAccess as string[]) || [],
+      clientSlugs: Array.isArray(user.publicMetadata?.clientSlugs)
+        ? (user.publicMetadata.clientSlugs as unknown[]).filter(
+            (slug): slug is string => typeof slug === 'string'
+          )
+        : [],
       createdAt: user.createdAt
     }))
 

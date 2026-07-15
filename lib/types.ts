@@ -525,6 +525,7 @@ export interface UserWithAccess {
   firstName: string | null
   lastName: string | null
   documentAccess: string[]
+  clientSlugs: string[]
   createdAt: string
 }
 

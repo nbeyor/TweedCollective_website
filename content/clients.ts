@@ -7,10 +7,8 @@
  *
  * To add a client:
  * 1. Add a ClientConfig entry below
- * 2. Set allowedEmailDomains so anyone signing up with a verified work email
- *    at that domain gets access automatically. For people outside those
- *    domains (personal emails, external advisors), grant access via Clerk
- *    public metadata: { "clientSlugs": ["slug"] }
+ * 2. Grant users access from the Admin dashboard's Client Workspaces
+ *    toggles (writes { "clientSlugs": ["slug"] } to their Clerk metadata)
  */
 
 export interface ClientDeliverable {
@@ -24,12 +22,6 @@ export interface ClientDeliverable {
 export interface ClientConfig {
   slug: string
   name: string
-  /**
-   * Users with a verified email at one of these domains get access to this
-   * workspace automatically — no per-user Clerk metadata needed. Lowercase,
-   * no leading '@'.
-   */
-  allowedEmailDomains?: string[]
   deliverables: ClientDeliverable[]
 }
 
@@ -37,7 +29,6 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
   {
     slug: 'ecs',
     name: 'eCS',
-    allowedEmailDomains: ['eclinicalsol.com'],
     deliverables: [
       {
         title: 'SDLC Dashboard',
