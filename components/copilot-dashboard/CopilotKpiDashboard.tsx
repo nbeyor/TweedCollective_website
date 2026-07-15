@@ -40,7 +40,7 @@ import { CopilotAdoptionChart } from './charts/CopilotAdoptionChart'
 import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
 import { SizeComplexityQaHeatmap } from './charts/SizeComplexityQaHeatmap'
 import { CumulativeChart } from './charts/CumulativeChart'
-import { SurveySection } from '../dashboard/charts/SurveySection'
+import { SurveySection } from './charts/SurveySection'
 import { CopilotCorrelationChart } from './charts/CopilotCorrelationChart'
 import { MethodologyFooter } from './charts/MethodologyFooter'
 

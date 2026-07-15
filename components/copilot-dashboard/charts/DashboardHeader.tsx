@@ -23,7 +23,7 @@ export function DashboardHeader({ data }: Props) {
       </h1>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
         <span>
-          Data: {formatDate(rangeStart)} – {formatDate(rangeEnd)}
+          Data: {formatDate(rangeStart)} – <strong className="text-[#1c1917]">{formatDate(rangeEnd)}</strong>
         </span>
         <span className="text-[#e7e5e4]">|</span>
         <span>Baseline: pre-{formatDate(data.baselineEnd)}</span>
@@ -47,7 +47,7 @@ export function DashboardHeader({ data }: Props) {
         </span>
       </div>
       <p className="text-xs text-[#a8a29e] mt-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-        Generated {data.generated}
+        Data through {formatDate(rangeEnd)} · pipeline last run {data.generated}
       </p>
     </div>
   )
