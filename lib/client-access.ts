@@ -6,18 +6,25 @@ import { CLIENT_CONFIGS } from '@/content/clients'
 /**
  * Client workspace access control
  *
- * A signed-in user is mapped to one or more client slugs via Clerk metadata.
- *
- * To grant a user access to a client workspace:
- * 1. Go to Clerk Dashboard > Users > Select User > Metadata
- * 2. Add to public metadata: { "clientSlugs": ["ecs"] }
- *
- * Admins (privateMetadata.isAdmin === true or publicMetadata.role === 'admin')
- * see every client workspace.
+ * A signed-in user gets access to a client workspace when any of these hold:
+ * 1. A verified email at one of the client's allowedEmailDomains
+ *    (content/clients.ts) — the default, zero-setup path for client teams.
+ * 2. Clerk public metadata { "clientSlugs": ["ecs"] } — manual override for
+ *    people outside those domains (personal emails, external advisors).
+ * 3. Admin (privateMetadata.isAdmin === true or publicMetadata.role ===
+ *    'admin') — sees every client workspace.
  */
 
 export function isAdminUser(user: User): boolean {
   return user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin'
+}
+
+function verifiedEmailDomains(user: User): Set<string> {
+  const domains = user.emailAddresses
+    .filter((email) => email.verification?.status === 'verified')
+    .map((email) => email.emailAddress.split('@')[1]?.toLowerCase())
+    .filter((domain): domain is string => Boolean(domain))
+  return new Set(domains)
 }
 
 /**
@@ -31,9 +38,18 @@ export async function getClientSlugs(): Promise<string[]> {
     return CLIENT_CONFIGS.map((client) => client.slug)
   }
 
-  const slugs = user.publicMetadata?.clientSlugs
-  if (!Array.isArray(slugs)) return []
-  return slugs.filter((slug): slug is string => typeof slug === 'string')
+  const metadataSlugs = Array.isArray(user.publicMetadata?.clientSlugs)
+    ? (user.publicMetadata.clientSlugs as unknown[]).filter(
+        (slug): slug is string => typeof slug === 'string'
+      )
+    : []
+
+  const domains = verifiedEmailDomains(user)
+  const domainSlugs = CLIENT_CONFIGS.filter((client) =>
+    client.allowedEmailDomains?.some((domain) => domains.has(domain))
+  ).map((client) => client.slug)
+
+  return Array.from(new Set([...metadataSlugs, ...domainSlugs]))
 }
 
 /**
