@@ -10,43 +10,51 @@ export const team: TeamMember[] = [
   {
     name: 'Nate Beyor',
     role: 'Founder',
-    expertise: 'AI strategy and diligence, life sciences commercial leadership',
+    expertise:
+      'Leads AI strategy and technical diligence; builds commercial engines and go-to-market plans for life sciences companies',
   },
   {
     name: 'Sam Juraschka',
     role: 'Operating Partner',
-    expertise: 'Product strategy and delivery for AI-enabled software',
+    expertise:
+      'Takes AI products from concept to launch — product strategy, roadmap definition, and zero-to-one venture building',
     linkedin: 'https://www.linkedin.com/in/sjuraschka',
   },
   {
     name: 'Dan Sheikh',
     role: 'Operating Partner',
-    expertise: 'Engineering leadership and AI program delivery',
+    expertise:
+      'Stands up engineering teams and ships production AI systems — architecture, data pipelines, and program delivery',
     linkedin: 'https://www.linkedin.com/in/dansheikh',
   },
   {
     name: 'Bob Battista',
-    role: 'Head of Commercial, Salt AI',
-    expertise: 'Life sciences go-to-market and enterprise AI adoption',
+    role: 'Commercial Leadership',
+    expertise:
+      'Builds enterprise sales motions and partnerships that turn AI platforms into revenue in life sciences and healthcare',
   },
   {
     name: 'Sibel Sayiner',
-    role: 'VP, Business Operations & Analytics, Marley Medical',
-    expertise: 'Digital health operations and data-driven commercialization',
+    role: 'Business Operations & Analytics',
+    expertise:
+      'Designs the operating backbone of digital health businesses — care operations, analytics, and data-driven commercialization',
   },
   {
     name: 'Stuart John',
-    role: 'First American',
-    expertise: 'Enterprise data platforms and large-scale systems modernization',
+    role: 'Data Platforms & Product',
+    expertise:
+      'Modernizes legacy enterprise systems and builds large-scale data platforms that make AI adoption possible',
   },
   {
     name: 'Syuzi Pakhchyan',
-    role: 'Head of Innovation & Emerging Experiences, Target',
-    expertise: 'Experience design and emerging interfaces',
+    role: 'Innovation & Experience Design',
+    expertise:
+      'Prototypes and launches emerging interface experiences — turning new technologies into products customers actually use',
   },
   {
     name: 'Amy Zhang',
     role: 'Marketing Strategy & Growth',
-    expertise: 'Growth marketing and go-to-market for SaaS',
+    expertise:
+      'Builds demand engines for SaaS — positioning, pipeline generation, and full-funnel growth marketing',
   },
 ]
