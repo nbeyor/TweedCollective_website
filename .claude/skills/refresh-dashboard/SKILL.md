@@ -31,8 +31,10 @@ expected form: `Pull Requests and AI YYYY MM DD.xlsx`.
 
 ## 2. Download the attachment bytes
 
-The Gmail MCP server cannot download attachment bytes. The same file is synced
-to the user's Google Drive, so use the Drive MCP tools:
+The Gmail MCP server cannot download attachment bytes. An Apps Script in the
+user's Google account auto-saves each export into their Drive folder within
+~15 minutes of the email arriving (setup: `docs/gmail-to-drive-autosave.md`),
+so use the Drive MCP tools:
 
 1. `search_files` with `title contains 'Pull Requests and AI'` — match the
    exact filename from step 1 (verify `fileSize` > 0; ignore 0-byte duds).
@@ -42,8 +44,11 @@ to the user's Google Drive, so use the Drive MCP tools:
    to the next step. Do NOT use `read_file_content` for this — its text
    rendering flattens rows and merges the two sheets (lossy).
 
-If the file is not in Drive, stop and tell the user; do not improvise another
-transfer route for the binary.
+If the file is not in Drive yet: the email may be under 15 minutes old (the
+Apps Script trigger hasn't fired) — say so and suggest retrying shortly. If it
+still doesn't appear, the auto-save script may be broken; point the user at
+`docs/gmail-to-drive-autosave.md` (check script.google.com → Executions). Do
+not improvise another transfer route for the binary.
 
 ## 3. Convert to CSVs in uploads
 
