@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Gmail__search_threads",
+      "mcp__Gmail__get_thread",
+      "mcp__Gmail__get_message",
+      "mcp__Google_Drive__search_files",
+      "mcp__Google_Drive__list_recent_files",
+      "mcp__Google_Drive__get_file_metadata",
+      "mcp__Google_Drive__read_file_content",
+      "mcp__Google_Drive__download_file_content",
+      "mcp__c3d853f6-06a8-4975-9431-04abee7bf62f__search_threads",
+      "mcp__c3d853f6-06a8-4975-9431-04abee7bf62f__get_thread",
+      "mcp__c3d853f6-06a8-4975-9431-04abee7bf62f__get_message",
+      "mcp__765552c2-cc2f-4dce-8ea2-20e74f1186f0__search_files",
+      "mcp__765552c2-cc2f-4dce-8ea2-20e74f1186f0__list_recent_files",
+      "mcp__765552c2-cc2f-4dce-8ea2-20e74f1186f0__get_file_metadata",
+      "mcp__765552c2-cc2f-4dce-8ea2-20e74f1186f0__read_file_content",
+      "mcp__765552c2-cc2f-4dce-8ea2-20e74f1186f0__download_file_content",
+      "Bash(python3 *)",
+      "Bash(pip install *)",
+      "Bash(pip3 install *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git ls-files*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(ls *)",
+      "Bash(cp *)",
+      "Bash(mkdir *)",
+      "Bash(md5sum *)",
+      "Bash(diff *)"
+    ]
+  }
+}

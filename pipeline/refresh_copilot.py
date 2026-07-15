@@ -8,6 +8,12 @@ vs pre-pilot baseline, with Copilot adoption % as the availability metric.
 Usage:
     python pipeline/refresh_copilot.py
     python pipeline/refresh_copilot.py --input path/to/pr.xlsx --copilot path/to/copilot.xlsx
+    python pipeline/refresh_copilot.py --input "content/documents/uploads/... - Pull Requests.csv"
+
+With no --input, the newest "* - Pull Requests.csv" in content/documents/uploads/
+is preferred (the per-sheet CSVs written by pipeline/ingest_email_export.py);
+falls back to the newest xlsx in pipeline/data/exports/. A CSV input's sibling
+"* - AI Usage.csv" is used as the Copilot telemetry source automatically.
 """
 
 import argparse
@@ -55,6 +61,7 @@ FILES_LABELS = [f'1-{FILES_CUT}', f'{FILES_CUT + 1}+']
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
+UPLOADS_DIR = PROJECT_ROOT / "content" / "documents" / "uploads"
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
 # Non-served output: the alias->UUID map for per-user drill-down. The UUID is also
 # shipped inline on each per_user record (identities are surfaced in the individual
@@ -72,6 +79,21 @@ def find_latest_xlsx() -> Path:
     if not xlsx_files:
         raise FileNotFoundError(f"No xlsx files in {EXPORTS_DIR}")
     return xlsx_files[0]
+
+
+def find_latest_uploads_pr_csv() -> Path | None:
+    """Newest "* - Pull Requests.csv" in uploads, by filename (the names embed
+    the export date, and mtimes are unreliable on a fresh clone)."""
+    if not UPLOADS_DIR.exists():
+        return None
+    files = sorted(UPLOADS_DIR.glob("* - Pull Requests.csv"), reverse=True)
+    return files[0] if files else None
+
+
+def sibling_ai_usage_csv(pr_csv: Path) -> Path | None:
+    """The "* - AI Usage.csv" from the same export as a "* - Pull Requests.csv"."""
+    sib = pr_csv.with_name(pr_csv.name.replace(' - Pull Requests.csv', ' - AI Usage.csv'))
+    return sib if sib != pr_csv and sib.exists() else None
 
 
 def find_pull_sheet(xl) -> str | None:
@@ -113,6 +135,9 @@ def find_copilot_file() -> Path | None:
     for d in search_dirs:
         if not d.exists():
             continue
+        csvs = sorted(d.glob("* - AI Usage.csv"), reverse=True)
+        if csvs:
+            return csvs[0]
         for f in sorted(d.glob("*.xlsx"), key=os.path.getmtime, reverse=True):
             try:
                 xl = pd.ExcelFile(f)
@@ -128,7 +153,8 @@ def load_prs(input_path, sheet_name=None):
     if p.suffix in ('.xlsx', '.xls'):
         df = pd.read_excel(p, sheet_name=sheet_name or 0)
     else:
-        df = pd.read_csv(p, parse_dates=['FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'])
+        # Date columns are coerced below (handles 'NULL' strings in exports).
+        df = pd.read_csv(p)
     # Exports that ship only FirstReadyForQADate (no separate FirstActivity column)
     # still aggregate cleanly by aliasing the two.
     if 'FirstActivity' not in df.columns and 'FirstReadyForQADate' in df.columns:
@@ -517,13 +543,16 @@ def _load_copilot_df(copilot_path):
     The returned df always has canonical columns: user_id, EventDay,
     suggestions, acceptances, loc_added.
     """
-    xl = pd.ExcelFile(copilot_path)
-    result = find_copilot_sheet(xl)
-    if result is None:
-        return None, None
-
-    sheet_name, fmt = result
-    copilot = pd.read_excel(xl, sheet_name=sheet_name)
+    if Path(copilot_path).suffix.lower() == '.csv':
+        copilot = pd.read_csv(copilot_path)
+        fmt = 'new' if 'AuthorUUID' in copilot.columns else 'legacy'
+    else:
+        xl = pd.ExcelFile(copilot_path)
+        result = find_copilot_sheet(xl)
+        if result is None:
+            return None, None
+        sheet_name, fmt = result
+        copilot = pd.read_excel(xl, sheet_name=sheet_name)
     copilot['EventDay'] = pd.to_datetime(copilot['EventDay'], errors='coerce').dt.normalize()
 
     if fmt == 'new':
@@ -1140,23 +1169,34 @@ def main():
             print(f"Error: File not found: {path}")
             sys.exit(1)
     else:
-        try:
-            path = find_latest_xlsx()
-        except FileNotFoundError as e:
-            print(str(e))
-            sys.exit(1)
+        path = find_latest_uploads_pr_csv()
+        if path:
+            print(f"Using uploads CSV: {path}")
+        else:
+            try:
+                path = find_latest_xlsx()
+            except FileNotFoundError as e:
+                print(str(e))
+                sys.exit(1)
 
-    xl = pd.ExcelFile(path)
-    pull_sheet = args.sheet or find_pull_sheet(xl)
-    if not pull_sheet:
-        print("Error: No Pull sheet found. Use --sheet to specify.")
-        sys.exit(1)
+    if path.suffix.lower() == '.csv':
+        pull_sheet = None
+    else:
+        xl = pd.ExcelFile(path)
+        pull_sheet = args.sheet or find_pull_sheet(xl)
+        if not pull_sheet:
+            print("Error: No Pull sheet found. Use --sheet to specify.")
+            sys.exit(1)
 
     # Find copilot data
     copilot_path = args.copilot
     if copilot_path and not copilot_path.exists():
         print(f"Error: Copilot file not found: {copilot_path}")
         sys.exit(1)
+    if not copilot_path and path.suffix.lower() == '.csv':
+        copilot_path = sibling_ai_usage_csv(path)
+        if copilot_path:
+            print(f"Using sibling AI Usage CSV: {copilot_path}")
     if not copilot_path:
         copilot_path = find_copilot_file()
         if copilot_path:

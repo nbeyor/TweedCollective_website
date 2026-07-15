@@ -1,5 +1,10 @@
 # Dashboard Data Exports
 
+> **Preferred flow:** the `refresh-dashboard` skill (`.claude/skills/refresh-dashboard/`)
+> pulls the weekly export from email, writes per-sheet CSVs to
+> `content/documents/uploads/`, and runs the pipeline — those CSVs take
+> precedence over this directory. The xlsx drop below still works as a fallback.
+
 Place your most recent xlsx export here. The `refresh_copilot.py` pipeline reads from this
 directory and writes `public/data/copilot-dashboard-data.json`, which is the **only** data
 file the live eCS SDLC dashboard (`/clients/ecs/sdlc-dashboard`) renders.
