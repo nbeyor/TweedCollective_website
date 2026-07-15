@@ -1174,9 +1174,41 @@ def main():
     data = _sanitize_for_json(data)
     json_str = json.dumps(data, default=serialize, indent=2)
 
+    # Guard: refuse a silent no-op refresh. If the output matches the existing
+    # JSON except for the "generated" timestamp, the input contained no new data
+    # and rewriting the file would only make the dashboard *look* refreshed.
+    def strip_generated(text: str) -> str:
+        return re.sub(r'"generated": "[^"]*"', '"generated": ""', text, count=1)
+
+    if JSON_OUTPUT.exists() and strip_generated(JSON_OUTPUT.read_text(encoding='utf-8')) == strip_generated(json_str):
+        print("=" * 72)
+        print("ERROR: NO NEW DATA INGESTED — output not written.")
+        print(f"  Input export:      {path.name}")
+        print(f"  Existing output:   {JSON_OUTPUT}")
+        print("  The regenerated JSON is identical to the existing file (only the")
+        print("  'generated' timestamp would change), so the dashboard would show")
+        print("  nothing new. Add a fresh export to pipeline/data/exports/ (or pass")
+        print("  --input) and re-run.")
+        print("=" * 72)
+        sys.exit(1)
+
     JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUTPUT.write_text(json_str, encoding='utf-8')
     print(f"JSON written to: {JSON_OUTPUT}")
+
+    # Guard: warn when the freshest activity in the input is already old.
+    range_end_str = str(data.get('dataRange', '')).split(' to ')[-1]
+    try:
+        range_end = datetime.strptime(range_end_str, '%Y-%m-%d').date()
+        age_days = (date.today() - range_end).days
+        if age_days > 7:
+            print("=" * 72)
+            print(f"WARNING: STALE SOURCE DATA — newest activity in {path.name} is")
+            print(f"  {range_end_str} ({age_days} days old). The dashboard was rewritten but its")
+            print("  charts still end at that date. Export a newer xlsx to extend them.")
+            print("=" * 72)
+    except ValueError:
+        pass
 
     if user_id_map:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

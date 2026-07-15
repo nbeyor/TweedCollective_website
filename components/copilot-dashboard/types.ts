@@ -1,6 +1,24 @@
-import type { SurveyData } from '../dashboard/types'
-
-export type { SurveyData }
+export interface SurveyData {
+  respondents: number;
+  total_pilot: number;
+  response_rate: number;
+  productivity_perception: {
+    positive: number;
+    neutral: number;
+    negative: number;
+    detail: Record<string, number>;
+  };
+  modification_frequency: Record<string, number>;
+  tasks_used: { label: string; count: number; pct: number }[];
+  scenarios_encouraged: { label: string; count: number; pct: number }[];
+  risks_observed: { label: string; count: number; pct: number }[];
+  quotes: {
+    name: string;
+    benefit?: string;
+    drawback?: string;
+    recommendation?: string;
+  }[];
+}
 
 export interface CopilotDashboardData {
   generated: string

@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "python3 pipeline/refresh.py && next build",
+    "build": "next build",
     "build:next": "next build",
-    "refresh-dashboard": "python3 pipeline/refresh.py",
+    "refresh-dashboard": "python3 pipeline/refresh_copilot.py",
     "setup:pipeline": "bash pipeline/setup.sh",
     "start": "next start",
     "lint": "next lint"

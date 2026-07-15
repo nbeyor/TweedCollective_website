@@ -51,8 +51,8 @@ components/charts/
   RadarChart.tsx                    # Reusable Chart.js radar chart
   chartSetup.ts                     # Chart.js registration and setup
 
-components/dashboard/
-  KpiDashboard.tsx                  # Dashboard orchestrator (loads data, renders charts)
+components/copilot-dashboard/
+  CopilotKpiDashboard.tsx           # eCS SDLC dashboard orchestrator (loads data, renders charts)
   charts/                           # Dashboard-specific chart components
   types.ts                          # Dashboard data types
 
@@ -183,7 +183,7 @@ export function RevenueChart({ data, title }: { data: number[]; title: string })
 Dashboards follow a different pattern from slide decks:
 
 1. **Data pipeline**: Raw data (Excel/CSV) → Python pipeline → `public/data/{dashboard-name}-data.json`
-2. **Dashboard component**: `components/dashboard/{DashboardName}.tsx` loads and renders the JSON
+2. **Dashboard component**: `components/{dashboard-name}/{DashboardName}.tsx` loads and renders the JSON (see `components/copilot-dashboard/` for the reference implementation)
 3. **Page route**: `app/insights/{dashboard-id}/page.tsx` wraps with `DocumentAccessWrapper`
 4. **Register**: Add to `content/documents/index.ts` with `category: 'Dashboard'`
 

@@ -1,31 +1,40 @@
 # Dashboard Data Exports
 
-Place your most recent xlsx export here. The `refresh.py` pipeline reads from this directory.
+Place your most recent xlsx export here. The `refresh_copilot.py` pipeline reads from this
+directory and writes `public/data/copilot-dashboard-data.json`, which is the **only** data
+file the live eCS SDLC dashboard (`/clients/ecs/sdlc-dashboard`) renders.
 
 **Usage:**
 ```bash
-python pipeline/refresh.py
-# Uses the latest xlsx; auto-detects Pull sheet
+python pipeline/refresh_copilot.py
+# Uses the latest xlsx (by modification time); auto-detects the Pull sheet
+# and the Copilot/AI telemetry sheet (AI All, or legacy Copilot_All)
 
-python pipeline/refresh.py --input pipeline/data/exports/your_file.xlsx --sheet "Pull 02_11_26"
+python pipeline/refresh_copilot.py --input "pipeline/data/exports/your_file.xlsx" --sheet "Pull 02_11_26"
 ```
+
+The pipeline refuses to run as a no-op: if the regenerated JSON is identical to the
+existing one (i.e. the export contains no new data), it exits with an error instead of
+bumping the timestamp, and it warns when the newest activity in the export is more than
+a week old. After a successful run, commit both the new export and the regenerated
+`public/data/copilot-dashboard-data.json`.
 
 ## Sheet names
 
 Use these tab names in your xlsx (recommended) so you don’t need to update each export:
 
 - **Current dashboard data** – PR/Jira metrics (preferred over legacy `Pull MM_DD_YY`)
+- **AI All** – Copilot/AI telemetry (preferred over legacy `Copilot_All`)
 - **Current survey data** – developer survey results (preferred over legacy `Survey 1 results`)
 
-The pipeline will fall back to `Pull 02_11_26`-style and `Survey 1 results` if the generic names are missing.
+The pipeline will fall back to the legacy names if the generic names are missing.
 
 ## Filename convention
 
-Include a date in the filename so the export date appears on the dashboard:
+Include a date in the filename so exports sort predictably:
 
+- `20260708 PullRequests and AI.xlsx`
 - `dashboard_2026-02-16.xlsx`
-- `Pilot_Export_20260216.xlsx`
-- `metrics_2026_02_16.xlsx`
 
 Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is found, the file’s modification date is used.
 
@@ -39,7 +48,7 @@ Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is 
 | FirstReadyForQADate | date | Ready for QA date |
 | PRStart | date | PR start (used for week bucketing if present) |
 | PREnd | date | PR end |
-| AuthorUUID | string | Developer identifier (pilot vs non-pilot determined by PILOT_UUIDS in refresh.py) |
+| AuthorUUID | string | Developer identifier |
 | PRFiles | number | Files changed in PR |
 | PRLines | number | Lines changed in PR |
 | PRAI | number | AI-related metric |
@@ -50,9 +59,7 @@ Any format with `YYYY-MM-DD`, `YYYY_MM_DD`, or `YYYYMMDD` is parsed. If none is 
 | QAChurnLines | number | QA rework lines (fallback if QAChurnFiles missing) |
 | QAChurnAI | number | QA churn AI metric |
 
-**Date bucketing:** Uses `PREnd` for week assignment. Weeks are Saturday-end.
-
-**Pilot vs non-pilot:** AuthorUUID matched against PILOT_UUIDS list in `pipeline/refresh.py`. Pilot tickets count only from Dec 1, 2025 onward.
+**Date bucketing:** Uses `PREnd` for week assignment.
 
 ## Survey sheet (optional)
 
