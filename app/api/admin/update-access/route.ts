@@ -1,16 +1,17 @@
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { CLIENT_CONFIGS } from '@/content/clients'
 
 export async function POST(request: Request) {
   try {
     const { userId: currentUserId } = await auth()
-    
+
     if (!currentUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const currentUserData = await currentUser()
-    
+
     if (!currentUserData) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -23,30 +24,52 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const { userId, documentId, action } = await request.json()
+    const { userId, documentId, clientSlug, action } = await request.json()
 
-    if (!userId || !documentId || !action) {
+    if (!userId || !action || (!documentId && !clientSlug)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Get current user's document access
-    const client = await clerkClient()
-    const targetUser = await client.users.getUser(userId)
-    const currentAccess = (targetUser.privateMetadata?.documentAccess as string[]) || []
-
-    let newAccess: string[]
-
-    if (action === 'grant') {
-      // Add document if not already present
-      newAccess = currentAccess.includes(documentId) 
-        ? currentAccess 
-        : [...currentAccess, documentId]
-    } else if (action === 'revoke') {
-      // Remove document
-      newAccess = currentAccess.filter(d => d !== documentId)
-    } else {
+    if (action !== 'grant' && action !== 'revoke') {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
+
+    const client = await clerkClient()
+    const targetUser = await client.users.getUser(userId)
+
+    // Client workspace access lives in PUBLIC metadata (read by
+    // requireClientAccess), unlike document access which is private.
+    if (clientSlug) {
+      if (!CLIENT_CONFIGS.some(c => c.slug === clientSlug)) {
+        return NextResponse.json({ error: 'Unknown client workspace' }, { status: 400 })
+      }
+
+      const currentSlugs = Array.isArray(targetUser.publicMetadata?.clientSlugs)
+        ? (targetUser.publicMetadata.clientSlugs as unknown[]).filter(
+            (slug): slug is string => typeof slug === 'string'
+          )
+        : []
+
+      const newSlugs = action === 'grant'
+        ? (currentSlugs.includes(clientSlug) ? currentSlugs : [...currentSlugs, clientSlug])
+        : currentSlugs.filter(s => s !== clientSlug)
+
+      await client.users.updateUserMetadata(userId, {
+        publicMetadata: {
+          ...targetUser.publicMetadata,
+          clientSlugs: newSlugs,
+        },
+      })
+
+      return NextResponse.json({ success: true, clientSlugs: newSlugs })
+    }
+
+    // Get current user's document access
+    const currentAccess = (targetUser.privateMetadata?.documentAccess as string[]) || []
+
+    const newAccess = action === 'grant'
+      ? (currentAccess.includes(documentId) ? currentAccess : [...currentAccess, documentId])
+      : currentAccess.filter(d => d !== documentId)
 
     // Update user's private metadata
     await client.users.updateUserMetadata(userId, {
