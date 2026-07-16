@@ -40,7 +40,6 @@ const MONTHLY_COST = FULLY_LOADED_ANNUAL / 12
 
 const GREEN = chartTheme.dashboard.pilot       // #15803d
 const GREEN_BG = '#dcfce7'
-const BLUE = '#2563eb'
 const DARK = '#1c1917'
 
 interface MonthBucket {
@@ -49,7 +48,6 @@ interface MonthBucket {
   partial: boolean      // month still accumulating weeks at the data cutoff
   avgProductivity: number
   avgCopilotUsers: number
-  avgAdoptionPct: number
   upliftPct: number
   fteEquivalent: number
   dollarValue: number
@@ -58,7 +56,7 @@ interface MonthBucket {
 
 function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
   const baselineProd = data.baseline.productivity
-  const byMonth = new Map<string, { prods: number[]; users: number[]; pcts: number[] }>()
+  const byMonth = new Map<string, { prods: number[]; users: number[] }>()
 
   for (const w of data.weekly) {
     if (w.lowConfidence) continue
@@ -74,12 +72,11 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
     midpoint.setUTCDate(midpoint.getUTCDate() - 3)
     const monthKey = `${midpoint.getUTCFullYear()}-${String(midpoint.getUTCMonth() + 1).padStart(2, '0')}`
     if (!byMonth.has(monthKey)) {
-      byMonth.set(monthKey, { prods: [], users: [], pcts: [] })
+      byMonth.set(monthKey, { prods: [], users: [] })
     }
     const bucket = byMonth.get(monthKey)!
     bucket.prods.push(w.teamProductivity)
     bucket.users.push(w.copilotActiveUsers)
-    bucket.pcts.push(w.copilotPct)
   }
 
   const avg = (arr: number[]) => arr.reduce((s, v) => s + v, 0) / arr.length
@@ -96,7 +93,6 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
     const b = byMonth.get(key)!
     const avgProd = avg(b.prods)
     const avgUsers = avg(b.users)
-    const avgPct = avg(b.pcts)
     const uplift = Math.max(0, (avgProd - baselineProd) / baselineProd)
     const fte = avgUsers * uplift
     const dollars = fte * MONTHLY_COST
@@ -113,7 +109,6 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
       partial,
       avgProductivity: avgProd,
       avgCopilotUsers: avgUsers,
-      avgAdoptionPct: avgPct,
       upliftPct: uplift,
       fteEquivalent: fte,
       dollarValue: dollars,
@@ -223,21 +218,6 @@ export function RoiCapacityChart() {
       borderWidth: 1,
       borderRadius: 4,
       yAxisID: 'y',
-      order: 2,
-    },
-    {
-      type: 'line',
-      label: 'Copilot Adoption %',
-      data: months.map(m => m.avgAdoptionPct),
-      borderColor: BLUE,
-      backgroundColor: `${BLUE}15`,
-      fill: true,
-      borderWidth: 2,
-      tension: 0.3,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      yAxisID: 'y1',
-      order: 1,
     },
   ]
 
@@ -270,46 +250,17 @@ export function RoiCapacityChart() {
         },
         grid: { color: '#f5f5f4' },
       },
-      y1: {
-        position: 'right' as const,
-        beginAtZero: true,
-        max: 100,
-        title: {
-          display: true,
-          text: 'Copilot Adoption %',
-          font: { family: 'DM Sans, sans-serif', size: 11 },
-          color: BLUE,
-        },
-        ticks: {
-          font: { family: 'JetBrains Mono, monospace', size: 10 },
-          color: BLUE,
-          callback: (v: number | string) => typeof v === 'number' ? `${v}%` : v,
-        },
-        grid: { display: false },
-      },
     },
     plugins: {
-      legend: {
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          usePointStyle: true,
-          pointStyleWidth: 10,
-          boxHeight: 6,
-          font: { family: 'DM Sans, sans-serif', size: 11 },
-          color: '#57534e',
-        },
-      },
+      legend: { display: false },
       tooltip: {
         backgroundColor: DARK,
         titleFont: { family: 'DM Sans, sans-serif', size: 12 },
         bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
         callbacks: {
-          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
+          label: (ctx: { parsed: { y: number | null } }) => {
             const v = ctx.parsed.y
-            if (v == null) return ''
-            if (ctx.dataset.label?.includes('Adoption')) return `Adoption: ${v.toFixed(0)}%`
-            return `Capacity: ${formatDollarsLong(v)}`
+            return v == null ? '' : `Capacity: ${formatDollarsLong(v)}`
           },
         },
       },
@@ -446,7 +397,6 @@ export function RoiCapacityChart() {
   // --- Detail table data ---
   const tableRows = months.map(m => ({
     label: m.label,
-    adoption: `${m.avgAdoptionPct.toFixed(0)}%`,
     users: m.avgCopilotUsers.toFixed(1),
     uplift: `+${(m.upliftPct * 100).toFixed(1)}%`,
     fte: m.fteEquivalent.toFixed(1),
@@ -502,10 +452,10 @@ export function RoiCapacityChart() {
         {/* Primary Chart: Monthly Capacity + Adoption */}
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
           <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            Monthly Capacity Released vs. Copilot Adoption
+            Monthly Capacity Released
           </h2>
           <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            Dollar value of engineering capacity unlocked each month, overlaid with team-wide adoption rate
+            Dollar value of engineering capacity unlocked each month
           </p>
           <div style={{ height: 340 }}>
             <Chart type="bar" data={{ labels: primaryLabels, datasets: primaryDatasets as never }} options={primaryOptions as never} />
@@ -542,7 +492,6 @@ export function RoiCapacityChart() {
             <thead>
               <tr className="text-left text-[10px] text-[#a8a29e] uppercase tracking-wider" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <th className="pb-2 pr-4">Month</th>
-                <th className="pb-2 pr-4 text-right">Adoption</th>
                 <th className="pb-2 pr-4 text-right">Avg Users</th>
                 <th className="pb-2 pr-4 text-right">Uplift</th>
                 <th className="pb-2 pr-4 text-right">FTE-Equiv</th>
@@ -554,7 +503,6 @@ export function RoiCapacityChart() {
               {tableRows.map((row) => (
                 <tr key={row.label} className="border-t border-[#f5f5f4] text-[11px] text-[#1c1917]">
                   <td className="py-2 pr-4">{row.label}</td>
-                  <td className="py-2 pr-4 text-right">{row.adoption}</td>
                   <td className="py-2 pr-4 text-right">{row.users}</td>
                   <td className="py-2 pr-4 text-right" style={{ color: GREEN }}>{row.uplift}</td>
                   <td className="py-2 pr-4 text-right">{row.fte}</td>
