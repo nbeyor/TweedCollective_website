@@ -102,6 +102,8 @@ export interface PerUserSummary {
 export interface PerUserEntry {
   alias: string
   uuid: string
+  /** Modal Department from PR rows, falling back to AI telemetry. */
+  department?: string | null
   summary: PerUserSummary
   weekly: PerUserWeekly[]
 }
@@ -113,7 +115,13 @@ export interface WeeklyEntry {
   teamAuthors: number
   teamProductivity: number
   teamQARate: number | null
+  /** Raw PRs merged this week (a ticket can span several PRs). */
+  totalPRs?: number
+  /** Total PR lines across the week's tickets. */
+  totalLines?: number
   copilotPct: number | null
+  /** Adoption % within the Development department only. */
+  copilotPctDev?: number | null
   copilotActiveUsers: number | null
   copilotCodeGen: number | null
   lowConfidence: boolean
@@ -178,6 +186,10 @@ export interface CopilotWeeklyEntry {
   agentUsers?: number
   chatUsers?: number
   locAdded: number
+  /** Development-department cohort (omitted when the export has no Department column). */
+  devActiveUsers?: number
+  devRollingActiveUsers?: number
+  devCopilotPct?: number
 }
 
 export interface CopilotPrCorrelation {

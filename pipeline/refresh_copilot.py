@@ -220,6 +220,11 @@ def compute_weekly_team_metrics(tickets):
             'TeamAuthors': team_authors,
             'TeamProductivity': team_prod,
             'TeamQAChurnRate': team_qa,
+            # Raw output volume — reconciles ticket-based productivity with
+            # PR/commit counts from external tools (Bitbucket/Qlik): PRs per
+            # ticket can rise while tickets/FTE-day stays flat.
+            'TotalPRs': int(wk_tickets['PRCount'].sum()),
+            'TotalLines': int(wk_tickets['TotalLines'].sum()),
             'LowConfidence': total_tickets < MIN_TICKETS_THRESHOLD,
         })
 
@@ -295,26 +300,36 @@ def compute_team_summary(tickets, weekly, baseline):
     }
 
 
-def compute_size_complexity(tickets):
-    """Compute size/complexity distribution for mature adoption vs pre-AI baseline."""
+def compute_size_complexity(tickets, sc_weekly):
+    """Compute size/complexity distribution for mature adoption vs pre-AI baseline.
+
+    Productivity per bucket is the **mean of weekly** per-bucket productivity
+    (`tickets / (bucket-active authors × 5)`) over weeks where the bucket
+    shipped at least one ticket — the exact series plotted on the Size ×
+    Complexity Trends page. This keeps the heatmap deltas and the trends-page
+    baseline lines directly comparable to the plotted weekly data, mirroring
+    the mean-of-weekly methodology of the main productivity chart.
+
+    (The previous pooled formula divided bucket tickets by the full-period
+    author roster × all weeks, which deflated baselines ~2-4× relative to the
+    weekly series and made every bucket read as "way above baseline" even
+    during the baseline period itself.)
+
+    Ticket counts and QA churn remain pooled per period — QA churn is a share
+    of tickets, so pooling is denominator-consistent.
+    """
     baseline_end_ts = pd.Timestamp(BASELINE_END)
     mature_start_ts = pd.Timestamp(MATURE_START)
     post = tickets[tickets['PREndDate'] >= mature_start_ts]
     pre = tickets[tickets['PREndDate'] < baseline_end_ts]
 
-    post_weeks = len(post['WeekEnding'].unique())
-    pre_weeks = len(pre['WeekEnding'].unique())
-
-    # Count unique authors in each period for FTE normalization
-    post_authors = set()
-    for uuids_str in post['AuthorUUIDs']:
-        post_authors.update(str(uuids_str).split(','))
-    pre_authors = set()
-    for uuids_str in pre['AuthorUUIDs']:
-        pre_authors.update(str(uuids_str).split(','))
-
-    post_fte_days = max(len(post_authors), 1) * max(post_weeks, 1) * WORKDAYS_PER_WEEK
-    pre_fte_days = max(len(pre_authors), 1) * max(pre_weeks, 1) * WORKDAYS_PER_WEEK
+    def weekly_mean_productivity(size, complexity, phase):
+        vals = [
+            r['productivity'] for r in sc_weekly
+            if r['size'] == size and r['complexity'] == complexity
+            and r['phase'] == phase and r['tickets'] > 0
+        ]
+        return sum(vals) / len(vals) if vals else 0
 
     buckets = []
     for size in SIZE_LABELS:
@@ -330,8 +345,8 @@ def compute_size_complexity(tickets):
                     'complexity': complexity,
                     'post_tickets': int(len(p)),
                     'baseline_tickets': int(len(b)),
-                    'post_productivity': len(p) / post_fte_days if post_fte_days > 0 else 0,
-                    'baseline_productivity': len(b) / pre_fte_days if pre_fte_days > 0 else 0,
+                    'post_productivity': weekly_mean_productivity(size, complexity, 'mature'),
+                    'baseline_productivity': weekly_mean_productivity(size, complexity, 'baseline'),
                     'post_qa_churn': post_qa,
                     'baseline_qa_churn': pre_qa,
                 })
@@ -590,6 +605,21 @@ def compute_copilot_adoption(copilot_path):
     has_agent = 'UsedAgent' in copilot.columns
     has_chat = 'UsedChat' in copilot.columns
 
+    # Development-department cohort. AI seats are increasingly granted to
+    # non-engineering roles (Management, SQA, Product, Support, …) who use the
+    # tools sporadically and author no PRs; each onboarding wave inflates the
+    # rolling denominator and drags the all-users adoption % down without any
+    # change in developer behavior. The dev-only series is the like-for-like
+    # adoption signal over time. A user's department = modal Department value
+    # in their telemetry rows (absent in legacy exports → cohort is empty and
+    # the dev fields are omitted).
+    dev_users = set()
+    has_department = 'Department' in copilot.columns
+    if has_department:
+        dept_mode = copilot.groupby(copilot['user_id'].astype(str))['Department'] \
+            .agg(lambda s: s.dropna().mode().iloc[0] if len(s.dropna().mode()) else None)
+        dev_users = {u for u, d in dept_mode.items() if d == 'Development'}
+
     # Weekly aggregation.
     #
     # Denominator note: `copilotPct` uses a rolling 4-week active-user
@@ -613,7 +643,7 @@ def compute_copilot_adoption(copilot_path):
         for w in window_weeks:
             rolling_active |= user_sets_by_week[w]
         denom = max(len(rolling_active), 1)
-        weekly_rows.append({
+        row = {
             'week': pd.Timestamp(week).strftime('%Y-%m-%d'),
             'activeUsers': int(active),
             'rollingActiveUsers': int(len(rolling_active)),
@@ -623,7 +653,15 @@ def compute_copilot_adoption(copilot_path):
             'agentUsers': agent_users,
             'chatUsers': chat_users,
             'locAdded': int(grp['loc_added'].sum()),
-        })
+        }
+        if dev_users:
+            week_users = {str(u) for u in user_sets_by_week[week]}
+            dev_active = week_users & dev_users
+            dev_rolling = {str(u) for u in rolling_active} & dev_users
+            row['devActiveUsers'] = len(dev_active)
+            row['devRollingActiveUsers'] = len(dev_rolling)
+            row['devCopilotPct'] = round(len(dev_active) / max(len(dev_rolling), 1) * 100, 1)
+        weekly_rows.append(row)
 
     # Monthly trend for summary
     copilot['month'] = copilot['EventDay'].dt.to_period('M')
@@ -850,6 +888,24 @@ def compute_per_user_metrics(prs, copilot_df):
 
     users = sorted(set(auw['AuthorUUID'].astype(str)) | set(cu['user_id'].astype(str)))
 
+    # Department per user: modal Department from PR rows, falling back to
+    # AI-telemetry rows for users who never authored a PR. Older exports
+    # without the column simply leave department as None.
+    dept_map = {}
+
+    def _fill_dept(df, id_col):
+        if df is None or 'Department' not in getattr(df, 'columns', []):
+            return
+        for uid, grp in df.groupby(df[id_col].astype(str)):
+            if uid in dept_map:
+                continue
+            m = grp['Department'].dropna().mode()
+            if len(m):
+                dept_map[uid] = str(m.iloc[0])
+
+    _fill_dept(pr, 'AuthorUUID')
+    _fill_dept(copilot_df, 'user_id')
+
     ranking = []
     for uuid in users:
         u_prod = auw[auw['AuthorUUID'].astype(str) == uuid].set_index('week')
@@ -925,7 +981,13 @@ def compute_per_user_metrics(prs, copilot_df):
     for i, (uuid, _mt, _tt, weekly, summary) in enumerate(ranking, start=1):
         alias = f"Dev-{i:02d}"
         uuid_map[alias] = uuid
-        per_user.append({'alias': alias, 'uuid': uuid, 'summary': summary, 'weekly': weekly})
+        per_user.append({
+            'alias': alias,
+            'uuid': uuid,
+            'department': dept_map.get(uuid),
+            'summary': summary,
+            'weekly': weekly,
+        })
 
     return per_user, uuid_map
 
@@ -992,8 +1054,10 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     weekly = compute_weekly_team_metrics(tickets)
     baseline = compute_baseline(tickets, weekly)
     summary = compute_team_summary(tickets, weekly, baseline)
-    size_complexity = compute_size_complexity(tickets)
+    # Weekly per-bucket rows come first: the period summaries (heatmap +
+    # trends baselines) are mean-of-weekly aggregates of these same rows.
     size_complexity_weekly = compute_size_complexity_weekly(tickets)
+    size_complexity = compute_size_complexity(tickets, size_complexity_weekly)
     projects = compute_project_metrics(tickets)
 
     # Copilot adoption data
@@ -1044,8 +1108,11 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             'teamAuthors': int(row['TeamAuthors']),
             'teamProductivity': row['TeamProductivity'],
             'teamQARate': row['TeamQAChurnRate'],
+            'totalPRs': int(row['TotalPRs']),
+            'totalLines': int(row['TotalLines']),
             'lowConfidence': bool(row['LowConfidence']),
             'copilotPct': None,
+            'copilotPctDev': None,
             'copilotActiveUsers': None,
             'copilotCodeGen': None,
         }
@@ -1054,6 +1121,7 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             for cw in copilot_data['weekly']:
                 if cw['week'] == week_str:
                     entry['copilotPct'] = cw['copilotPct']
+                    entry['copilotPctDev'] = cw.get('devCopilotPct')
                     entry['copilotActiveUsers'] = cw['activeUsers']
                     entry['copilotCodeGen'] = cw['totalCodeGen']
                     break

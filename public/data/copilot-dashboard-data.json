@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-15 16:18",
+  "generated": "2026-07-16 05:21",
   "dataRange": "2025-07-02 to 2026-07-10",
   "dataCutoff": "2026-07-15",
   "baselineEnd": "2025-10-01",
@@ -51,8 +51,11 @@
       "teamAuthors": 2,
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
+      "totalPRs": 2,
+      "totalLines": 6,
       "lowConfidence": true,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -63,8 +66,11 @@
       "teamAuthors": 9,
       "teamProductivity": 0.511111,
       "teamQARate": 0.130435,
+      "totalPRs": 25,
+      "totalLines": 1286,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -75,8 +81,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.446154,
       "teamQARate": 0.275862,
+      "totalPRs": 37,
+      "totalLines": 5288,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -87,8 +96,11 @@
       "teamAuthors": 9,
       "teamProductivity": 0.311111,
       "teamQARate": 0.285714,
+      "totalPRs": 20,
+      "totalLines": 2168,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -99,8 +111,11 @@
       "teamAuthors": 6,
       "teamProductivity": 0.366667,
       "teamQARate": 0.363636,
+      "totalPRs": 15,
+      "totalLines": 1061,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -111,8 +126,11 @@
       "teamAuthors": 11,
       "teamProductivity": 0.345455,
       "teamQARate": 0.263158,
+      "totalPRs": 27,
+      "totalLines": 4794,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -123,8 +141,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.323077,
       "teamQARate": 0.142857,
+      "totalPRs": 27,
+      "totalLines": 72407,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -135,8 +156,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.415385,
       "teamQARate": 0.259259,
+      "totalPRs": 43,
+      "totalLines": 10760,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -147,8 +171,11 @@
       "teamAuthors": 8,
       "teamProductivity": 0.35,
       "teamQARate": 0.142857,
+      "totalPRs": 18,
+      "totalLines": 2761,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -159,8 +186,11 @@
       "teamAuthors": 8,
       "teamProductivity": 0.375,
       "teamQARate": 0.2,
+      "totalPRs": 23,
+      "totalLines": 1670,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -171,8 +201,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.4,
       "teamQARate": 0.15,
+      "totalPRs": 25,
+      "totalLines": 3830,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -183,8 +216,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.4,
       "teamQARate": 0.4,
+      "totalPRs": 37,
+      "totalLines": 9541,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -195,8 +231,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.369231,
       "teamQARate": 0.375,
+      "totalPRs": 58,
+      "totalLines": 24355,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -207,8 +246,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.292308,
       "teamQARate": 0.315789,
+      "totalPRs": 36,
+      "totalLines": 8672,
       "lowConfidence": false,
       "copilotPct": null,
+      "copilotPctDev": null,
       "copilotActiveUsers": null,
       "copilotCodeGen": null
     },
@@ -219,8 +261,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.4,
       "teamQARate": 0.35,
+      "totalPRs": 40,
+      "totalLines": 13483,
       "lowConfidence": false,
       "copilotPct": 100.0,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 7,
       "copilotCodeGen": 513
     },
@@ -231,8 +276,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.369231,
       "teamQARate": 0.166667,
+      "totalPRs": 41,
+      "totalLines": 8628,
       "lowConfidence": false,
       "copilotPct": 100.0,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 10,
       "copilotCodeGen": 866
     },
@@ -243,8 +291,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.44,
       "teamQARate": 0.045455,
+      "totalPRs": 29,
+      "totalLines": 2865,
       "lowConfidence": false,
       "copilotPct": 90.0,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 9,
       "copilotCodeGen": 1294
     },
@@ -255,8 +306,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.48,
       "teamQARate": 0.125,
+      "totalPRs": 32,
+      "totalLines": 5924,
       "lowConfidence": false,
       "copilotPct": 70.0,
+      "copilotPctDev": 77.8,
       "copilotActiveUsers": 7,
       "copilotCodeGen": 1069
     },
@@ -267,8 +321,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.493333,
       "teamQARate": 0.378378,
+      "totalPRs": 63,
+      "totalLines": 19901,
       "lowConfidence": false,
       "copilotPct": 93.3,
+      "copilotPctDev": 92.3,
       "copilotActiveUsers": 14,
       "copilotCodeGen": 1813
     },
@@ -279,8 +336,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.461538,
       "teamQARate": 0.3,
+      "totalPRs": 50,
+      "totalLines": 9124,
       "lowConfidence": false,
       "copilotPct": 93.8,
+      "copilotPctDev": 92.9,
       "copilotActiveUsers": 15,
       "copilotCodeGen": 1322
     },
@@ -291,8 +351,11 @@
       "teamAuthors": 14,
       "teamProductivity": 0.371429,
       "teamQARate": 0.076923,
+      "totalPRs": 37,
+      "totalLines": 5775,
       "lowConfidence": false,
       "copilotPct": 88.2,
+      "copilotPctDev": 92.9,
       "copilotActiveUsers": 15,
       "copilotCodeGen": 1354
     },
@@ -303,8 +366,11 @@
       "teamAuthors": 5,
       "teamProductivity": 0.28,
       "teamQARate": 0.0,
+      "totalPRs": 7,
+      "totalLines": 1905,
       "lowConfidence": false,
       "copilotPct": 58.8,
+      "copilotPctDev": 64.3,
       "copilotActiveUsers": 10,
       "copilotCodeGen": 501
     },
@@ -315,8 +381,11 @@
       "teamAuthors": 14,
       "teamProductivity": 0.442857,
       "teamQARate": 0.193548,
+      "totalPRs": 39,
+      "totalLines": 2868,
       "lowConfidence": false,
       "copilotPct": 89.5,
+      "copilotPctDev": 93.8,
       "copilotActiveUsers": 17,
       "copilotCodeGen": 1884
     },
@@ -327,8 +396,11 @@
       "teamAuthors": 12,
       "teamProductivity": 0.5,
       "teamQARate": 0.2,
+      "totalPRs": 38,
+      "totalLines": 4005,
       "lowConfidence": false,
       "copilotPct": 77.8,
+      "copilotPctDev": 86.7,
       "copilotActiveUsers": 14,
       "copilotCodeGen": 1652
     },
@@ -339,8 +411,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.493333,
       "teamQARate": 0.135135,
+      "totalPRs": 53,
+      "totalLines": 8867,
       "lowConfidence": false,
       "copilotPct": 81.0,
+      "copilotPctDev": 77.8,
       "copilotActiveUsers": 17,
       "copilotCodeGen": 1379
     },
@@ -351,8 +426,11 @@
       "teamAuthors": 2,
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
+      "totalPRs": 3,
+      "totalLines": 3,
       "lowConfidence": true,
       "copilotPct": 57.1,
+      "copilotPctDev": 50.0,
       "copilotActiveUsers": 12,
       "copilotCodeGen": 864
     },
@@ -363,8 +441,11 @@
       "teamAuthors": 2,
       "teamProductivity": 0.2,
       "teamQARate": 0.0,
+      "totalPRs": 2,
+      "totalLines": 233,
       "lowConfidence": true,
       "copilotPct": 65.0,
+      "copilotPctDev": 64.7,
       "copilotActiveUsers": 13,
       "copilotCodeGen": 592
     },
@@ -375,8 +456,11 @@
       "teamAuthors": 4,
       "teamProductivity": 0.25,
       "teamQARate": 0.0,
+      "totalPRs": 7,
+      "totalLines": 682,
       "lowConfidence": false,
       "copilotPct": 95.2,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 20,
       "copilotCodeGen": 1871
     },
@@ -387,8 +471,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.4,
       "teamQARate": 0.205882,
+      "totalPRs": 44,
+      "totalLines": 7616,
       "lowConfidence": false,
       "copilotPct": 85.7,
+      "copilotPctDev": 88.9,
       "copilotActiveUsers": 18,
       "copilotCodeGen": 2418
     },
@@ -399,8 +486,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.38,
       "teamQARate": 0.052632,
+      "totalPRs": 26,
+      "totalLines": 4766,
       "lowConfidence": false,
       "copilotPct": 82.6,
+      "copilotPctDev": 84.2,
       "copilotActiveUsers": 19,
       "copilotCodeGen": 2735
     },
@@ -411,8 +501,11 @@
       "teamAuthors": 12,
       "teamProductivity": 0.333333,
       "teamQARate": 0.15,
+      "totalPRs": 30,
+      "totalLines": 5543,
       "lowConfidence": false,
       "copilotPct": 90.9,
+      "copilotPctDev": 89.5,
       "copilotActiveUsers": 20,
       "copilotCodeGen": 4143
     },
@@ -423,8 +516,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.492308,
       "teamQARate": 0.15625,
+      "totalPRs": 39,
+      "totalLines": 15167,
       "lowConfidence": false,
       "copilotPct": 100.0,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 24,
       "copilotCodeGen": 4012
     },
@@ -435,8 +531,11 @@
       "teamAuthors": 16,
       "teamProductivity": 0.3875,
       "teamQARate": 0.258065,
+      "totalPRs": 62,
+      "totalLines": 20587,
       "lowConfidence": false,
       "copilotPct": 88.0,
+      "copilotPctDev": 95.2,
       "copilotActiveUsers": 22,
       "copilotCodeGen": 3161
     },
@@ -447,8 +546,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.329412,
       "teamQARate": 0.392857,
+      "totalPRs": 52,
+      "totalLines": 23801,
       "lowConfidence": false,
       "copilotPct": 76.0,
+      "copilotPctDev": 85.7,
       "copilotActiveUsers": 19,
       "copilotCodeGen": 3240
     },
@@ -459,8 +561,11 @@
       "teamAuthors": 12,
       "teamProductivity": 0.466667,
       "teamQARate": 0.178571,
+      "totalPRs": 52,
+      "totalLines": 23915,
       "lowConfidence": false,
       "copilotPct": 92.0,
+      "copilotPctDev": 95.2,
       "copilotActiveUsers": 23,
       "copilotCodeGen": 3898
     },
@@ -471,8 +576,11 @@
       "teamAuthors": 12,
       "teamProductivity": 0.666667,
       "teamQARate": 0.125,
+      "totalPRs": 63,
+      "totalLines": 17585,
       "lowConfidence": false,
       "copilotPct": 96.2,
+      "copilotPctDev": 95.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 3988
     },
@@ -483,8 +591,11 @@
       "teamAuthors": 16,
       "teamProductivity": 0.5375,
       "teamQARate": 0.209302,
+      "totalPRs": 78,
+      "totalLines": 17244,
       "lowConfidence": false,
       "copilotPct": 92.6,
+      "copilotPctDev": 91.3,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 2603
     },
@@ -495,8 +606,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.466667,
       "teamQARate": 0.228571,
+      "totalPRs": 71,
+      "totalLines": 12387,
       "lowConfidence": false,
       "copilotPct": 89.7,
+      "copilotPctDev": 87.0,
       "copilotActiveUsers": 26,
       "copilotCodeGen": 2018
     },
@@ -507,8 +621,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.493333,
       "teamQARate": 0.432432,
+      "totalPRs": 55,
+      "totalLines": 19093,
       "lowConfidence": false,
       "copilotPct": 89.3,
+      "copilotPctDev": 95.5,
       "copilotActiveUsers": 25,
       "copilotCodeGen": 2951
     },
@@ -519,8 +636,11 @@
       "teamAuthors": 16,
       "teamProductivity": 0.3375,
       "teamQARate": 0.111111,
+      "totalPRs": 32,
+      "totalLines": 3902,
       "lowConfidence": false,
       "copilotPct": 89.7,
+      "copilotPctDev": 90.9,
       "copilotActiveUsers": 26,
       "copilotCodeGen": 2995
     },
@@ -531,8 +651,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.576471,
       "teamQARate": 0.102041,
+      "totalPRs": 71,
+      "totalLines": 14626,
       "lowConfidence": false,
       "copilotPct": 96.8,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 2855
     },
@@ -543,8 +666,11 @@
       "teamAuthors": 19,
       "teamProductivity": 0.494737,
       "teamQARate": 0.234043,
+      "totalPRs": 64,
+      "totalLines": 37528,
       "lowConfidence": false,
       "copilotPct": 90.3,
+      "copilotPctDev": 95.5,
       "copilotActiveUsers": 28,
       "copilotCodeGen": 2004
     },
@@ -555,8 +681,11 @@
       "teamAuthors": 9,
       "teamProductivity": 0.444444,
       "teamQARate": 0.3,
+      "totalPRs": 35,
+      "totalLines": 26920,
       "lowConfidence": false,
       "copilotPct": 90.9,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 2230
     },
@@ -567,8 +696,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.388235,
       "teamQARate": 0.181818,
+      "totalPRs": 47,
+      "totalLines": 23827,
       "lowConfidence": false,
       "copilotPct": 87.9,
+      "copilotPctDev": 100.0,
       "copilotActiveUsers": 29,
       "copilotCodeGen": 3522
     },
@@ -579,8 +711,11 @@
       "teamAuthors": 16,
       "teamProductivity": 0.425,
       "teamQARate": 0.205882,
+      "totalPRs": 41,
+      "totalLines": 5705,
       "lowConfidence": false,
       "copilotPct": 88.2,
+      "copilotPctDev": 95.8,
       "copilotActiveUsers": 30,
       "copilotCodeGen": 5374
     },
@@ -591,8 +726,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.338462,
       "teamQARate": 0.272727,
+      "totalPRs": 27,
+      "totalLines": 6312,
       "lowConfidence": false,
       "copilotPct": 91.2,
+      "copilotPctDev": 91.7,
       "copilotActiveUsers": 31,
       "copilotCodeGen": 4113
     },
@@ -603,8 +741,11 @@
       "teamAuthors": 18,
       "teamProductivity": 0.411111,
       "teamQARate": 0.243243,
+      "totalPRs": 74,
+      "totalLines": 27878,
       "lowConfidence": false,
       "copilotPct": 88.6,
+      "copilotPctDev": 95.8,
       "copilotActiveUsers": 31,
       "copilotCodeGen": 4857
     },
@@ -615,8 +756,11 @@
       "teamAuthors": 13,
       "teamProductivity": 0.276923,
       "teamQARate": 0.388889,
+      "totalPRs": 27,
+      "totalLines": 12822,
       "lowConfidence": false,
       "copilotPct": 83.8,
+      "copilotPctDev": 87.5,
       "copilotActiveUsers": 31,
       "copilotCodeGen": 3666
     },
@@ -627,8 +771,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.352941,
       "teamQARate": 0.2,
+      "totalPRs": 44,
+      "totalLines": 26410,
       "lowConfidence": false,
       "copilotPct": 85.0,
+      "copilotPctDev": 87.5,
       "copilotActiveUsers": 34,
       "copilotCodeGen": 6260
     },
@@ -639,8 +786,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.4,
       "teamQARate": 0.166667,
+      "totalPRs": 39,
+      "totalLines": 13763,
       "lowConfidence": false,
       "copilotPct": 70.7,
+      "copilotPctDev": 80.0,
       "copilotActiveUsers": 29,
       "copilotCodeGen": 7062
     },
@@ -651,8 +801,11 @@
       "teamAuthors": 15,
       "teamProductivity": 0.373333,
       "teamQARate": 0.25,
+      "totalPRs": 56,
+      "totalLines": 27100,
       "lowConfidence": false,
       "copilotPct": 82.5,
+      "copilotPctDev": 95.7,
       "copilotActiveUsers": 33,
       "copilotCodeGen": 5265
     },
@@ -663,8 +816,11 @@
       "teamAuthors": 17,
       "teamProductivity": 0.435294,
       "teamQARate": 0.243243,
+      "totalPRs": 54,
+      "totalLines": 20960,
       "lowConfidence": false,
       "copilotPct": 77.8,
+      "copilotPctDev": 92.0,
       "copilotActiveUsers": 35,
       "copilotCodeGen": 4265
     },
@@ -675,8 +831,11 @@
       "teamAuthors": 10,
       "teamProductivity": 0.4,
       "teamQARate": 0.1,
+      "totalPRs": 73,
+      "totalLines": 40189,
       "lowConfidence": false,
       "copilotPct": 66.7,
+      "copilotPctDev": 79.2,
       "copilotActiveUsers": 28,
       "copilotCodeGen": 1890
     },
@@ -687,8 +846,11 @@
       "teamAuthors": 19,
       "teamProductivity": 0.642105,
       "teamQARate": 0.311475,
+      "totalPRs": 106,
+      "totalLines": 52184,
       "lowConfidence": false,
       "copilotPct": 71.7,
+      "copilotPctDev": 75.0,
       "copilotActiveUsers": 33,
       "copilotCodeGen": 3235
     }
@@ -793,8 +955,8 @@
       "complexity": "1-5",
       "post_tickets": 386,
       "baseline_tickets": 144,
-      "post_productivity": 0.124316,
-      "baseline_productivity": 0.102857,
+      "post_productivity": 0.34877,
+      "baseline_productivity": 0.316679,
       "post_qa_churn": 0.15285,
       "baseline_qa_churn": 0.1875
     },
@@ -804,8 +966,8 @@
       "complexity": "6+",
       "post_tickets": 62,
       "baseline_tickets": 19,
-      "post_productivity": 0.019968,
-      "baseline_productivity": 0.013571,
+      "post_productivity": 0.21342,
+      "baseline_productivity": 0.2,
       "post_qa_churn": 0.16129,
       "baseline_qa_churn": 0.368421
     },
@@ -815,8 +977,8 @@
       "complexity": "1-5",
       "post_tickets": 37,
       "baseline_tickets": 15,
-      "post_productivity": 0.011916,
-      "baseline_productivity": 0.010714,
+      "post_productivity": 0.223333,
+      "baseline_productivity": 0.229167,
       "post_qa_churn": 0.162162,
       "baseline_qa_churn": 0.266667
     },
@@ -826,8 +988,8 @@
       "complexity": "6+",
       "post_tickets": 252,
       "baseline_tickets": 64,
-      "post_productivity": 0.081159,
-      "baseline_productivity": 0.045714,
+      "post_productivity": 0.249395,
+      "baseline_productivity": 0.227071,
       "post_qa_churn": 0.376984,
       "baseline_qa_churn": 0.328125
     }
@@ -3551,7 +3713,10 @@
         "totalCodeAccept": 121,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 356
+        "locAdded": 356,
+        "devActiveUsers": 6,
+        "devRollingActiveUsers": 6,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2025-10-19",
@@ -3562,7 +3727,10 @@
         "totalCodeAccept": 277,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 4228
+        "locAdded": 4228,
+        "devActiveUsers": 9,
+        "devRollingActiveUsers": 9,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2025-10-26",
@@ -3573,7 +3741,10 @@
         "totalCodeAccept": 438,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 5235
+        "locAdded": 5235,
+        "devActiveUsers": 9,
+        "devRollingActiveUsers": 9,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2025-11-02",
@@ -3584,7 +3755,10 @@
         "totalCodeAccept": 342,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 7469
+        "locAdded": 7469,
+        "devActiveUsers": 7,
+        "devRollingActiveUsers": 9,
+        "devCopilotPct": 77.8
       },
       {
         "week": "2025-11-09",
@@ -3595,7 +3769,10 @@
         "totalCodeAccept": 568,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 2386
+        "locAdded": 2386,
+        "devActiveUsers": 12,
+        "devRollingActiveUsers": 13,
+        "devCopilotPct": 92.3
       },
       {
         "week": "2025-11-16",
@@ -3606,7 +3783,10 @@
         "totalCodeAccept": 419,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 2896
+        "locAdded": 2896,
+        "devActiveUsers": 13,
+        "devRollingActiveUsers": 14,
+        "devCopilotPct": 92.9
       },
       {
         "week": "2025-11-23",
@@ -3617,7 +3797,10 @@
         "totalCodeAccept": 326,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 6227
+        "locAdded": 6227,
+        "devActiveUsers": 13,
+        "devRollingActiveUsers": 14,
+        "devCopilotPct": 92.9
       },
       {
         "week": "2025-11-30",
@@ -3628,7 +3811,10 @@
         "totalCodeAccept": 145,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 2358
+        "locAdded": 2358,
+        "devActiveUsers": 9,
+        "devRollingActiveUsers": 14,
+        "devCopilotPct": 64.3
       },
       {
         "week": "2025-12-07",
@@ -3639,7 +3825,10 @@
         "totalCodeAccept": 584,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 9513
+        "locAdded": 9513,
+        "devActiveUsers": 15,
+        "devRollingActiveUsers": 16,
+        "devCopilotPct": 93.8
       },
       {
         "week": "2025-12-14",
@@ -3650,7 +3839,10 @@
         "totalCodeAccept": 370,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 5248
+        "locAdded": 5248,
+        "devActiveUsers": 13,
+        "devRollingActiveUsers": 15,
+        "devCopilotPct": 86.7
       },
       {
         "week": "2025-12-21",
@@ -3661,7 +3853,10 @@
         "totalCodeAccept": 290,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 8184
+        "locAdded": 8184,
+        "devActiveUsers": 14,
+        "devRollingActiveUsers": 18,
+        "devCopilotPct": 77.8
       },
       {
         "week": "2025-12-28",
@@ -3672,7 +3867,10 @@
         "totalCodeAccept": 194,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 9172
+        "locAdded": 9172,
+        "devActiveUsers": 9,
+        "devRollingActiveUsers": 18,
+        "devCopilotPct": 50.0
       },
       {
         "week": "2026-01-04",
@@ -3683,7 +3881,10 @@
         "totalCodeAccept": 198,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 12671
+        "locAdded": 12671,
+        "devActiveUsers": 11,
+        "devRollingActiveUsers": 17,
+        "devCopilotPct": 64.7
       },
       {
         "week": "2026-01-11",
@@ -3694,7 +3895,10 @@
         "totalCodeAccept": 472,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 27127
+        "locAdded": 27127,
+        "devActiveUsers": 18,
+        "devRollingActiveUsers": 18,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2026-01-18",
@@ -3705,7 +3909,10 @@
         "totalCodeAccept": 675,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 41746
+        "locAdded": 41746,
+        "devActiveUsers": 16,
+        "devRollingActiveUsers": 18,
+        "devCopilotPct": 88.9
       },
       {
         "week": "2026-01-25",
@@ -3716,7 +3923,10 @@
         "totalCodeAccept": 831,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 37811
+        "locAdded": 37811,
+        "devActiveUsers": 16,
+        "devRollingActiveUsers": 19,
+        "devCopilotPct": 84.2
       },
       {
         "week": "2026-02-01",
@@ -3727,7 +3937,10 @@
         "totalCodeAccept": 1009,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 48499
+        "locAdded": 48499,
+        "devActiveUsers": 17,
+        "devRollingActiveUsers": 19,
+        "devCopilotPct": 89.5
       },
       {
         "week": "2026-02-08",
@@ -3738,7 +3951,10 @@
         "totalCodeAccept": 1035,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 23329
+        "locAdded": 23329,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 20,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2026-02-15",
@@ -3749,7 +3965,10 @@
         "totalCodeAccept": 1200,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 14838
+        "locAdded": 14838,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 21,
+        "devCopilotPct": 95.2
       },
       {
         "week": "2026-02-22",
@@ -3760,7 +3979,10 @@
         "totalCodeAccept": 1019,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 25103
+        "locAdded": 25103,
+        "devActiveUsers": 18,
+        "devRollingActiveUsers": 21,
+        "devCopilotPct": 85.7
       },
       {
         "week": "2026-03-01",
@@ -3771,7 +3993,10 @@
         "totalCodeAccept": 840,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 26364
+        "locAdded": 26364,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 21,
+        "devCopilotPct": 95.2
       },
       {
         "week": "2026-03-08",
@@ -3782,7 +4007,10 @@
         "totalCodeAccept": 1144,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 34434
+        "locAdded": 34434,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 22,
+        "devCopilotPct": 95.5
       },
       {
         "week": "2026-03-15",
@@ -3793,7 +4021,10 @@
         "totalCodeAccept": 604,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 31093
+        "locAdded": 31093,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 23,
+        "devCopilotPct": 91.3
       },
       {
         "week": "2026-03-22",
@@ -3804,7 +4035,10 @@
         "totalCodeAccept": 530,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 43623
+        "locAdded": 43623,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 23,
+        "devCopilotPct": 87.0
       },
       {
         "week": "2026-03-29",
@@ -3815,7 +4049,10 @@
         "totalCodeAccept": 898,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 33538
+        "locAdded": 33538,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 22,
+        "devCopilotPct": 95.5
       },
       {
         "week": "2026-04-05",
@@ -3826,7 +4063,10 @@
         "totalCodeAccept": 885,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 34008
+        "locAdded": 34008,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 22,
+        "devCopilotPct": 90.9
       },
       {
         "week": "2026-04-12",
@@ -3837,7 +4077,10 @@
         "totalCodeAccept": 1089,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 40615
+        "locAdded": 40615,
+        "devActiveUsers": 22,
+        "devRollingActiveUsers": 22,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2026-04-19",
@@ -3848,7 +4091,10 @@
         "totalCodeAccept": 729,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 28727
+        "locAdded": 28727,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 22,
+        "devCopilotPct": 95.5
       },
       {
         "week": "2026-04-26",
@@ -3859,7 +4105,10 @@
         "totalCodeAccept": 856,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 36166
+        "locAdded": 36166,
+        "devActiveUsers": 23,
+        "devRollingActiveUsers": 23,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2026-05-03",
@@ -3870,7 +4119,10 @@
         "totalCodeAccept": 2585,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 62918
+        "locAdded": 62918,
+        "devActiveUsers": 23,
+        "devRollingActiveUsers": 23,
+        "devCopilotPct": 100.0
       },
       {
         "week": "2026-05-10",
@@ -3881,7 +4133,10 @@
         "totalCodeAccept": 4213,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 60284
+        "locAdded": 60284,
+        "devActiveUsers": 23,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 95.8
       },
       {
         "week": "2026-05-17",
@@ -3892,7 +4147,10 @@
         "totalCodeAccept": 2995,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 49081
+        "locAdded": 49081,
+        "devActiveUsers": 22,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 91.7
       },
       {
         "week": "2026-05-24",
@@ -3903,7 +4161,10 @@
         "totalCodeAccept": 3569,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 69423
+        "locAdded": 69423,
+        "devActiveUsers": 23,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 95.8
       },
       {
         "week": "2026-05-31",
@@ -3914,7 +4175,10 @@
         "totalCodeAccept": 2105,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 35623
+        "locAdded": 35623,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 87.5
       },
       {
         "week": "2026-06-07",
@@ -3925,7 +4189,10 @@
         "totalCodeAccept": 4770,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 64517
+        "locAdded": 64517,
+        "devActiveUsers": 21,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 87.5
       },
       {
         "week": "2026-06-14",
@@ -3936,7 +4203,10 @@
         "totalCodeAccept": 5567,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 100831
+        "locAdded": 100831,
+        "devActiveUsers": 20,
+        "devRollingActiveUsers": 25,
+        "devCopilotPct": 80.0
       },
       {
         "week": "2026-06-21",
@@ -3947,7 +4217,10 @@
         "totalCodeAccept": 4113,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 81483
+        "locAdded": 81483,
+        "devActiveUsers": 22,
+        "devRollingActiveUsers": 23,
+        "devCopilotPct": 95.7
       },
       {
         "week": "2026-06-28",
@@ -3958,7 +4231,10 @@
         "totalCodeAccept": 3195,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 123186
+        "locAdded": 123186,
+        "devActiveUsers": 23,
+        "devRollingActiveUsers": 25,
+        "devCopilotPct": 92.0
       },
       {
         "week": "2026-07-05",
@@ -3969,7 +4245,10 @@
         "totalCodeAccept": 1486,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 31512
+        "locAdded": 31512,
+        "devActiveUsers": 19,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 79.2
       },
       {
         "week": "2026-07-12",
@@ -3980,7 +4259,10 @@
         "totalCodeAccept": 2501,
         "agentUsers": 0,
         "chatUsers": 0,
-        "locAdded": 60990
+        "locAdded": 60990,
+        "devActiveUsers": 18,
+        "devRollingActiveUsers": 24,
+        "devCopilotPct": 75.0
       }
     ]
   },
@@ -4639,6 +4921,7 @@
     {
       "alias": "Dev-01",
       "uuid": "f18a1512-d283-455f-b6df-b1744fdfddce",
+      "department": "Development",
       "summary": {
         "matureTickets": 81,
         "baselineTickets": 24,
@@ -5244,6 +5527,7 @@
     {
       "alias": "Dev-02",
       "uuid": "5b7b8122-68d5-4d44-b30c-de245a77c85c",
+      "department": "Development",
       "summary": {
         "matureTickets": 68,
         "baselineTickets": 16,
@@ -5849,6 +6133,7 @@
     {
       "alias": "Dev-03",
       "uuid": "3cd6a958-e92e-4561-b30b-1a6f2487b7c5",
+      "department": "Development",
       "summary": {
         "matureTickets": 54,
         "baselineTickets": 3,
@@ -6322,6 +6607,7 @@
     {
       "alias": "Dev-04",
       "uuid": "9b426b3d-af31-4131-8b5e-dbced2ab1524",
+      "department": "Development",
       "summary": {
         "matureTickets": 54,
         "baselineTickets": 0,
@@ -6819,6 +7105,7 @@
     {
       "alias": "Dev-05",
       "uuid": "315708a7-d25d-44ff-a0c3-069db5ac5974",
+      "department": "Development",
       "summary": {
         "matureTickets": 53,
         "baselineTickets": 30,
@@ -7376,6 +7663,7 @@
     {
       "alias": "Dev-06",
       "uuid": "e2dddcf5-f963-484c-bcf2-d28b7e662a06",
+      "department": "Development",
       "summary": {
         "matureTickets": 52,
         "baselineTickets": 3,
@@ -7873,6 +8161,7 @@
     {
       "alias": "Dev-07",
       "uuid": "987bb5a0-e18e-4b08-b48c-7515018a2f99",
+      "department": "Development",
       "summary": {
         "matureTickets": 45,
         "baselineTickets": 18,
@@ -8466,6 +8755,7 @@
     {
       "alias": "Dev-08",
       "uuid": "2a9ca09d-b2fd-42e0-8470-9dfbf8f7da8f",
+      "department": "Development",
       "summary": {
         "matureTickets": 41,
         "baselineTickets": 22,
@@ -9035,6 +9325,7 @@
     {
       "alias": "Dev-09",
       "uuid": "92d8106c-b379-443d-aa4c-7bff1d81daf7",
+      "department": "Development",
       "summary": {
         "matureTickets": 41,
         "baselineTickets": 12,
@@ -9568,6 +9859,7 @@
     {
       "alias": "Dev-10",
       "uuid": "5bab04e9-93d5-40ba-bedd-1a479733dd68",
+      "department": "Development",
       "summary": {
         "matureTickets": 35,
         "baselineTickets": 15,
@@ -10065,6 +10357,7 @@
     {
       "alias": "Dev-11",
       "uuid": "c2f7dc76-f7ec-4be3-9dd7-caf78b33ab94",
+      "department": "Development",
       "summary": {
         "matureTickets": 29,
         "baselineTickets": 14,
@@ -10646,6 +10939,7 @@
     {
       "alias": "Dev-12",
       "uuid": "bdb6a72b-3bb0-4000-9560-a6d1de234827",
+      "department": "Development",
       "summary": {
         "matureTickets": 28,
         "baselineTickets": 15,
@@ -11263,6 +11557,7 @@
     {
       "alias": "Dev-13",
       "uuid": "d239b5a5-bd5d-4206-848c-afbd9f749d02",
+      "department": "Development",
       "summary": {
         "matureTickets": 27,
         "baselineTickets": 0,
@@ -11628,6 +11923,7 @@
     {
       "alias": "Dev-14",
       "uuid": "5ef64702-da64-4f06-b3e4-6b86d583bca7",
+      "department": "Development",
       "summary": {
         "matureTickets": 25,
         "baselineTickets": 11,
@@ -12161,6 +12457,7 @@
     {
       "alias": "Dev-15",
       "uuid": "1611a482-9b78-4957-aebe-2895d81cb529",
+      "department": "Development",
       "summary": {
         "matureTickets": 24,
         "baselineTickets": 0,
@@ -12610,6 +12907,7 @@
     {
       "alias": "Dev-16",
       "uuid": "fb185be7-2757-4032-8612-00775eaf511c",
+      "department": "Development",
       "summary": {
         "matureTickets": 23,
         "baselineTickets": 11,
@@ -12999,6 +13297,7 @@
     {
       "alias": "Dev-17",
       "uuid": "19feac8e-d961-49e4-8b50-189774b99031",
+      "department": "Development",
       "summary": {
         "matureTickets": 22,
         "baselineTickets": 0,
@@ -13460,6 +13759,7 @@
     {
       "alias": "Dev-18",
       "uuid": "d5ae2d04-3c5e-4f51-82fb-ead878dbc51b",
+      "department": "Development",
       "summary": {
         "matureTickets": 20,
         "baselineTickets": 2,
@@ -13825,6 +14125,7 @@
     {
       "alias": "Dev-19",
       "uuid": "4233b846-3041-4a26-9b77-005a2bf3f537",
+      "department": "Development",
       "summary": {
         "matureTickets": 16,
         "baselineTickets": 10,
@@ -14346,6 +14647,7 @@
     {
       "alias": "Dev-20",
       "uuid": "ee3d3313-fcbf-4566-8357-4f4295e60712",
+      "department": "Management",
       "summary": {
         "matureTickets": 14,
         "baselineTickets": 3,
@@ -14603,6 +14905,7 @@
     {
       "alias": "Dev-21",
       "uuid": "77f70f93-ecd4-46ee-93c0-f054027be899",
+      "department": "Development",
       "summary": {
         "matureTickets": 14,
         "baselineTickets": 0,
@@ -14668,6 +14971,7 @@
     {
       "alias": "Dev-22",
       "uuid": "657032d8-10ae-4f3b-8606-6b541887619d",
+      "department": "Development",
       "summary": {
         "matureTickets": 12,
         "baselineTickets": 0,
@@ -15105,6 +15409,7 @@
     {
       "alias": "Dev-23",
       "uuid": "9e35f162-85db-4f55-be68-448c74334135",
+      "department": "Management",
       "summary": {
         "matureTickets": 9,
         "baselineTickets": 1,
@@ -15482,6 +15787,7 @@
     {
       "alias": "Dev-24",
       "uuid": "b7e9f01b-bab4-4c68-aef7-c3cda3ab49ff",
+      "department": "Development",
       "summary": {
         "matureTickets": 9,
         "baselineTickets": 0,
@@ -15679,6 +15985,7 @@
     {
       "alias": "Dev-25",
       "uuid": "0324e9cd-2788-42ee-b58a-5eaafa9935b7",
+      "department": "Development",
       "summary": {
         "matureTickets": 5,
         "baselineTickets": 0,
@@ -16032,6 +16339,7 @@
     {
       "alias": "Dev-26",
       "uuid": "c9a3b38e-d344-43c6-8e15-a5e76c30b305",
+      "department": "Architecture",
       "summary": {
         "matureTickets": 1,
         "baselineTickets": 0,
@@ -16313,6 +16621,7 @@
     {
       "alias": "Dev-27",
       "uuid": "89bb0419-e608-492c-89c1-4423c837682f",
+      "department": "AppSec",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 17,
@@ -16534,6 +16843,7 @@
     {
       "alias": "Dev-28",
       "uuid": "85c70245-0ef3-49de-bb0f-c92fbfcc3e13",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 9,
@@ -16599,6 +16909,7 @@
     {
       "alias": "Dev-29",
       "uuid": "94a2ef01-0447-4d37-ad59-61f4a973676f",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 8,
@@ -16712,6 +17023,7 @@
     {
       "alias": "Dev-30",
       "uuid": "21E6BA9A-5EC7-4A31-82BA-6DAFE185220E",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -16765,6 +17077,7 @@
     {
       "alias": "Dev-31",
       "uuid": "51C869FC-784E-4B3B-B533-BAE65AF5DE2B",
+      "department": "Product",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -16842,6 +17155,7 @@
     {
       "alias": "Dev-32",
       "uuid": "52EFB6FB-27DC-4B00-9097-F64E4A1261E0",
+      "department": "Management",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -16931,6 +17245,7 @@
     {
       "alias": "Dev-33",
       "uuid": "605580cf-fd97-453d-8f77-c9a48b7a24de",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17332,6 +17647,7 @@
     {
       "alias": "Dev-34",
       "uuid": "62FA5D43-9AEA-4273-995D-83B539EFC2AF",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17361,6 +17677,7 @@
     {
       "alias": "Dev-35",
       "uuid": "641E96BE-4E8B-4811-B29E-AF2A7D6C4ED6",
+      "department": "Prof Svcs",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17402,6 +17719,7 @@
     {
       "alias": "Dev-36",
       "uuid": "73d7e4cb-099a-4699-abbc-6633fac02815",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17707,6 +18025,7 @@
     {
       "alias": "Dev-37",
       "uuid": "749F67E8-D5A1-4969-AFA6-0F2945F4A815",
+      "department": "Management",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17736,6 +18055,7 @@
     {
       "alias": "Dev-38",
       "uuid": "75b6e24c-ddcf-4ba7-8f51-a5d10b145d58",
+      "department": "Architecture",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -17969,6 +18289,7 @@
     {
       "alias": "Dev-39",
       "uuid": "78BC2292-7428-4559-8606-9F13A1467CEF",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18010,6 +18331,7 @@
     {
       "alias": "Dev-40",
       "uuid": "7EC7FE92-E0BC-4D5F-A7E6-FD6A7DCCE393",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18039,6 +18361,7 @@
     {
       "alias": "Dev-41",
       "uuid": "831CB7E9-20D1-428A-8E5A-15E3530BC28E",
+      "department": "RPA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18068,6 +18391,7 @@
     {
       "alias": "Dev-42",
       "uuid": "94D6805A-9803-471D-A7F4-84B415399665",
+      "department": "Product",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18097,6 +18421,7 @@
     {
       "alias": "Dev-43",
       "uuid": "9A0FB826-5665-43DB-8CC1-7AC65CDD1ADC",
+      "department": "Management",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18162,6 +18487,7 @@
     {
       "alias": "Dev-44",
       "uuid": "9C70A5D7-8C95-475B-8859-6FF80161D8A5",
+      "department": "Support",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18323,6 +18649,7 @@
     {
       "alias": "Dev-45",
       "uuid": "9E88D353-7388-4689-B70C-2D705AA3D7FC",
+      "department": "RPA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18364,6 +18691,7 @@
     {
       "alias": "Dev-46",
       "uuid": "9b712599-421c-4afe-8231-a086640eb647",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18549,6 +18877,7 @@
     {
       "alias": "Dev-47",
       "uuid": "ABD07D67-EC21-4CC3-A597-68177594BBC9",
+      "department": "Devops",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18602,6 +18931,7 @@
     {
       "alias": "Dev-48",
       "uuid": "B30355C2-D10D-4AC3-96A6-1A72CBC7769B",
+      "department": "Management",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18727,6 +19057,7 @@
     {
       "alias": "Dev-49",
       "uuid": "B45FE785-A40B-4CDB-B0E1-05FF49F29960",
+      "department": "Management",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18768,6 +19099,7 @@
     {
       "alias": "Dev-50",
       "uuid": "BE3BA275-EB91-4A0A-8CD0-DA232BD1EBE6",
+      "department": "Prov Svcs",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18797,6 +19129,7 @@
     {
       "alias": "Dev-51",
       "uuid": "C4078B5A-FD9B-441F-829E-0D9805E31307",
+      "department": "Prof Svcs",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18850,6 +19183,7 @@
     {
       "alias": "Dev-52",
       "uuid": "D6E6CDCC-DE0F-4FBA-B308-FD13C3B5E676",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18903,6 +19237,7 @@
     {
       "alias": "Dev-53",
       "uuid": "DCFC9A6C-4851-42BD-A984-61BB1F5842E6",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -18944,6 +19279,7 @@
     {
       "alias": "Dev-54",
       "uuid": "E2785D11-5C7E-4C47-AE66-AE6571E55659",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -19081,6 +19417,7 @@
     {
       "alias": "Dev-55",
       "uuid": "F571AB60-7F99-4217-BB16-4511BE69C9BE",
+      "department": "Development",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -19158,6 +19495,7 @@
     {
       "alias": "Dev-56",
       "uuid": "FC483C85-B5BA-4597-B213-9111AD831F45",
+      "department": "SQA",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,
@@ -19187,6 +19525,7 @@
     {
       "alias": "Dev-57",
       "uuid": "f766eca5-3dd3-43aa-baa8-22ad27d71692",
+      "department": "Architecture",
       "summary": {
         "matureTickets": 0,
         "baselineTickets": 0,

@@ -790,7 +790,7 @@ export function SizeComplexityTrends() {
         {showProductivity && (
           <MetricGrid
             title="Productivity over time"
-            subtitle="Tickets per FTE-day inside each bucket, week by week. Dashed line = bucket's pre-AI baseline."
+            subtitle="Tickets per FTE-day inside each bucket, week by week. Dashed line = bucket's pre-AI baseline, computed as the mean of these same weekly values over baseline weeks — directly comparable to the plotted line."
             metric="productivity"
             data={data}
             weeks={weeks}
@@ -830,7 +830,10 @@ export function SizeComplexityTrends() {
             ticket counts behind the mix.
           </p>
           <p>
-            For productivity and QA, the dashed grey line is the bucket&apos;s pre-AI baseline. Hollow points mark
+            For productivity and QA, the dashed grey line is the bucket&apos;s pre-AI baseline. The productivity
+            baseline is the mean of the bucket&apos;s <em>weekly</em> productivity (tickets ÷ bucket-active authors ×
+            5 days) over baseline weeks where the bucket shipped — the same formula as the plotted points, so
+            line-vs-baseline gaps are real, not a denominator mismatch. Hollow points mark
             low-confidence weeks (fewer than {data.minTicketsThreshold} tickets in that bucket that week); treat them
             skeptically. 4-week rolling smoothing is on by default because weekly bucket-level counts are often thin.
           </p>

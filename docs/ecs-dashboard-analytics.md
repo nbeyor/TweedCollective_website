@@ -59,6 +59,14 @@ All analytics are organized around a three-phase timeline:
 - **Primary axis (left):** Tickets/FTE-day. Shows both weekly raw data points and a 4-week rolling average line. The rolling average is computed only over "confident" weeks (≥5 tickets) and requires at least 2 data points in the window to emit a value. Low-confidence weeks are shown as smaller, dimmed dots. Transition-phase dots use a diamond marker shape.
 - **Secondary axis (right):** Copilot adoption percentage — the percentage of developers using Copilot that week, rendered as a filled area chart.
 - **Annotations:** Horizontal dashed line at the pre-AI baseline productivity (mean-of-weekly from baseline period). Vertical dashed lines mark "AI Rollout" (Oct 1, 2025) and "80%+ Adoption" (Feb 7, 2026). The transition zone is shaded gray.
+- **Dev-dept adoption overlay:** A second, dashed blue line shows adoption within the Development department only. The all-users adoption line dips whenever a wave of non-engineering seats (Management, SQA, Product, Support…) is onboarded — sporadic new users inflate the rolling 4-week denominator without being active every week. The dev-only line is the like-for-like signal for "are the engineers still using it."
+
+### Output Volume — PRs & Code vs Tickets
+
+- **Purpose:** Reconcile ticket-based productivity with raw output counts from external tools (Bitbucket/Qlik PR dashboards). Tickets/FTE-day can hold flat while PR volume hits records if the same tickets are being delivered as more, smaller PRs.
+- **PR volume mode:** Grouped weekly bars of PRs merged vs Jira tickets closed, with a 4-week rolling **PRs-per-ticket** line on the right axis and a dashed pre-AI baseline for that ratio (mean of weekly ratios over confident baseline weeks).
+- **Lines/FTE-day mode:** Weekly total PR lines ÷ (active authors × 5 workdays), raw dots plus 4-week rolling average, with the pre-AI baseline as a dashed line. If tickets/FTE-day is flat but lines/FTE-day rose, each ticket carries more code.
+- **Data:** `totalPRs` (sum of per-ticket PR counts) and `totalLines` (sum of per-ticket PR lines) per week, emitted by the pipeline alongside the existing weekly series.
 
 ### Quality — QA Churn Rate vs Copilot Acceptance Rate
 
@@ -99,9 +107,9 @@ All analytics are organized around a three-phase timeline:
 
 - **Purpose:** Determine whether AI-driven productivity gains hold across different ticket characteristics, or are concentrated in a specific size/complexity category.
 - **Dimensions:**
-  - **Size:** Total lines of code across all PRs for a ticket. Buckets: `0–300` vs `301+`.
-  - **Complexity:** Maximum files touched by any single PR for the ticket. Buckets: `1–10` vs `11+`.
-- **Cell logic:** Each cell shows the percentage change in productivity vs baseline: `(post_productivity − baseline_productivity) / baseline_productivity × 100%`. Productivity per cell = `tickets_in_bucket / (unique_authors × distinct_weeks × 5 workdays)`, computed separately for the mature and baseline periods using full-period author and week counts (not per-cell counts).
+  - **Size:** Total lines of code across all PRs for a ticket. Buckets: `0–150` vs `151+`.
+  - **Complexity:** Maximum files touched by any single PR for the ticket. Buckets: `1–5` vs `6+`.
+- **Cell logic:** Each cell shows the percentage change in productivity vs baseline: `(post_productivity − baseline_productivity) / baseline_productivity × 100%`. Productivity per cell is the **mean of weekly** per-bucket productivity — for each week where the bucket shipped ≥1 ticket, `tickets_that_week / (bucket-active authors that week × 5 workdays)`, averaged over the period's weeks. This is the same series plotted on the Size × Complexity Trends page and mirrors the main chart's mean-of-weekly methodology, so heatmap deltas, trends-page baselines, and the headline productivity number are all directly comparable. (An earlier version pooled bucket tickets over the full-period author roster × all weeks, which deflated baselines ~2–4× relative to the weekly series.)
 - **Color scale:** Green shades indicate improvement (darker green = larger gain), red shades indicate regression.
 
 ### Size × Complexity — QA Churn vs Baseline (2×2 Grid)
@@ -155,7 +163,7 @@ The main dashboard links to three drill-down pages. They share the three-phase m
   - `qaChurn` — mean of `HasQAChurn` in the bucket that week, or `null` if no tickets.
   - `lowConfidence` — `true` when `tickets < 5`.
   - `phase` — baseline / transition / mature tag.
-- **Rendering:** One small-multiple chart per bucket. User can toggle metric (productivity / QA churn / both) and smoothing (raw vs 4-week rolling mean). A horizontal reference line per bucket shows that bucket's baseline value from the heatmap dataset.
+- **Rendering:** One small-multiple chart per bucket. User can toggle metric (productivity / QA churn / both) and smoothing (raw vs 4-week rolling mean). A horizontal reference line per bucket shows that bucket's baseline value from the heatmap dataset — computed with the same weekly per-bucket-author formula as the plotted series (see heatmap Cell logic above), so the dashed line runs through the middle of the baseline-phase data rather than far below it.
 - **Nuance — different rolling-avg rule:** The rolling mean here emits a value whenever ≥1 data point exists in the window (`SizeComplexityTrends.tsx:49–64`), unlike the main-dashboard rolling averages which require ≥2. This is intentional — per-bucket series are sparse and a ≥2 rule would leave too many gaps — but it means the earliest weeks of a trend line can be based on a single point and should not be read as "stable."
 
 ---
@@ -169,8 +177,9 @@ The main dashboard links to three drill-down pages. They share the three-phase m
 | **Confident week** | A week with ≥5 total tickets. Low-confidence weeks are excluded from rolling averages. |
 | **Rolling average** | 4-week sliding window over confident weeks only. Requires ≥2 data points in the window to produce a value. (Exception: Size × Complexity Trends requires only ≥1.) |
 | **QA churn** | Any ticket where `qa_churn_lines > 0` across its PRs. Indicates QA rework was needed. |
-| **Size bucket** | Sum of `pr_lines` across all PRs for the ticket: `0–300` or `301+`. |
-| **Complexity bucket** | Maximum `pr_files` from any single PR for the ticket: `1–10` or `11+`. |
+| **Size bucket** | Sum of `pr_lines` across all PRs for the ticket: `0–150` or `151+`. |
+| **Complexity bucket** | Maximum `pr_files` from any single PR for the ticket: `1–5` or `6+`. |
+| **Department** | Modal `Department` value from the user's PR rows, falling back to AI-telemetry rows for users who never authored a PR. Drives the per-user page filter and the dev-only adoption series. |
 | **User tier** | Copilot usage intensity based on cumulative active days over the entire telemetry dataset (not per-period): Heavy (≥30), Medium (10–29), Light (<10). |
 | **Copilot-assisted** | A ticket whose PR author had Copilot telemetry activity during the same Saturday-ending week as the PR completion. |
 | **Partial week** | A week whose Saturday end-date is later than `max(PREnd)` in the input data (i.e., the most recent week is still in progress at export time). Pipeline emits `partial: true` for these rows. Excluded from the Team Productivity mean-of-weekly KPI, from the main productivity chart's rolling average, and from the ROI monthly rollup. Still rendered on the productivity time series as a dimmed dot with a "Partial week" tooltip. |
