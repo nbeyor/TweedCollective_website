@@ -166,6 +166,15 @@ The main dashboard links to three drill-down pages. They share the three-phase m
 - **Rendering:** One small-multiple chart per bucket. User can toggle metric (productivity / QA churn / both) and smoothing (raw vs 4-week rolling mean). A horizontal reference line per bucket shows that bucket's baseline value from the heatmap dataset — computed with the same weekly per-bucket-author formula as the plotted series (see heatmap Cell logic above), so the dashed line runs through the middle of the baseline-phase data rather than far below it.
 - **Nuance — different rolling-avg rule:** The rolling mean here emits a value whenever ≥1 data point exists in the window (`SizeComplexityTrends.tsx:49–64`), unlike the main-dashboard rolling averages which require ≥2. This is intentional — per-bucket series are sparse and a ≥2 rule would leave too many gaps — but it means the earliest weeks of a trend line can be based on a single point and should not be read as "stable."
 
+### Per-Developer Adoption & Productivity (`/documents/ecs-sdlc-dashboard/users`)
+
+- **Purpose:** Per-developer drill-down on adoption and throughput, designed for change management rather than ranking — productivity is always scored against the developer's *own* history, never against teammates.
+- **Rows:** One per developer (stable blinded alias `Dev-NN`, UUID beneath), with a **Department** column and filter (from the PR export's `Department`, falling back to AI telemetry).
+- **Productivity score:** `tickets per present week in the window ÷ the developer's own pre-AI baseline rate × 100`, where the baseline rate = their average tickets per active week during the baseline phase. 100% = same pace as before AI. The chip shows the **absolute ticket count** with the % beneath; heatmap cells show raw ticket counts, with color encoding the vs-own-baseline ratio. Developers with no pre-AI history show "no pre-AI data" (grey). On the *Overall* scope, only post-rollout weeks count toward the score, so it reads "since AI vs before AI."
+- **Adoption score:** share of the developer's present weeks with any Copilot activity. A "team" badge (percentage points vs cohort adoption) is shown for adoption only — tool rollout is a shared goal, so a team reference is appropriate there but deliberately absent from productivity.
+- **"self" badge:** current window vs the developer's own prior equivalent window (last week vs the week before; last month vs the month before).
+- **Quantization caveat:** window numerators are small integer ticket counts (a one-week window difference of one ticket can move the score ~100pp of baseline), and tickets are not size-normalized. Month/Overall scopes are the judgment views; Last week is a pulse check.
+
 ---
 
 ## Key Definitions

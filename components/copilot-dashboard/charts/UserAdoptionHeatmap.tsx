@@ -50,9 +50,9 @@ function rampColor(intensity: number): { bg: string; fg: string } {
   return { bg: '#15803d', fg: '#ffffff' }
 }
 
-// Diverging ramp for a productivity ratio centered on 1.0 (= team-typical for the
-// period). Below team reads amber, at team reads neutral grey, above team reads green.
-// Kept inside the dashboard's existing amber+green palette.
+// Diverging ramp for a productivity ratio centered on 1.0 (= the developer's own
+// pre-AI baseline pace). Below their baseline reads amber, at baseline reads
+// neutral grey, above reads green. Kept inside the dashboard's existing palette.
 function divergingColor(ratio: number): { bg: string; fg: string } {
   if (ratio < 0.5) return { bg: '#b45309', fg: '#ffffff' }
   if (ratio < 0.85) return { bg: '#fcd34d', fg: '#78350f' }
@@ -75,7 +75,9 @@ interface WindowRow {
   active: boolean
   present: number
   tickets: number // ticketed-PR count in the window; 0 = telemetry-only presence
-  rawProd: number // tickets per present (active) week
+  prodTickets: number // tickets in post-rollout weeks — the productivity numerator
+  prodWeeks: number // post-rollout present weeks — the productivity denominator
+  rawProd: number // tickets per present week (post-rollout weeks only)
   adoption: number // % of present weeks Copilot-active (0..100)
 }
 interface WindowResult {
@@ -85,14 +87,17 @@ interface WindowResult {
 }
 
 // The score shown in the chip for a developer, given the selected metric.
-// adoption → the dev's adoption %; productivity → the dev's tickets/active-week as a % of team.
-// A dev present only via Copilot telemetry (zero ticketed PRs) has no productivity
-// score — the chip shows a "No PRs" flag instead of a misleading 0%.
-function scoreFor(metric: Metric, row: WindowRow, teamProd: number): number | null {
+// adoption → the dev's adoption %; productivity → the dev's tickets/active-week
+// as a % of their OWN pre-AI baseline rate (100 = same pace as before AI).
+// Self-referenced deliberately: it's a stabler yardstick than a vs-team ratio
+// and avoids ranking developers against each other. Null when there is nothing
+// to score — no ticketed PRs in the window, or no pre-AI history to compare to.
+function scoreFor(metric: Metric, row: WindowRow, baseRate: number | null): number | null {
   if (!row.active) return null
   if (metric === 'adoption') return row.adoption
-  if (row.tickets === 0) return null
-  return teamProd > 0 ? (row.rawProd / teamProd) * 100 : null
+  if (row.prodTickets === 0) return null
+  if (baseRate == null || baseRate <= 0) return null
+  return (row.rawProd / baseRate) * 100
 }
 
 // A signed delta rendered as an arrow + magnitude, colored green up / amber down.
@@ -189,6 +194,26 @@ export function UserAdoptionHeatmap() {
     [allUsers, dept],
   )
 
+  // Each developer's own pre-AI throughput: tickets per active week during the
+  // baseline phase. This is the productivity yardstick — a developer is scored
+  // against their own history, never against teammates. null = no pre-AI
+  // history (joined after the AI rollout).
+  const baselineRates = useMemo(() => {
+    const out: Record<string, number | null> = {}
+    for (const u of allUsers) {
+      let tickets = 0
+      let weeks = 0
+      for (const w of u.weekly) {
+        if (w.phase === 'baseline' && w.tickets > 0) {
+          tickets += w.tickets
+          weeks += 1
+        }
+      }
+      out[u.alias] = weeks > 0 ? tickets / weeks : null
+    }
+    return out
+  }, [allUsers])
+
   // Most recent week-ending date across all developers. The scope windows anchor to
   // the data, not `Date.now()`, since the dataset can end days before "today".
   const latestWeek = useMemo(() => {
@@ -280,21 +305,6 @@ export function UserAdoptionHeatmap() {
     return out
   }, [perUser, gran])
 
-  // Team productivity per period: mean tickets per active-dev-week across all developers.
-  // Used as the denominator so a cell reads as a % of the team that same period.
-  const teamPeriodProd = useMemo(() => {
-    const tickets: Record<string, number> = {}
-    const weeks: Record<string, number> = {}
-    for (const byPeriod of Object.values(grid))
-      for (const [k, c] of Object.entries(byPeriod)) {
-        tickets[k] = (tickets[k] ?? 0) + c.tickets
-        weeks[k] = (weeks[k] ?? 0) + c.weeksPresent
-      }
-    const out: Record<string, number> = {}
-    for (const k of Object.keys(tickets)) out[k] = weeks[k] > 0 ? tickets[k] / weeks[k] : 0
-    return out
-  }, [grid])
-
   // Team adoption per period: % of dev-weeks that period that were Copilot-active.
   // Used as the sparkline reference line for the adoption metric.
   const teamPeriodAdoption = useMemo(() => {
@@ -314,36 +324,50 @@ export function UserAdoptionHeatmap() {
   // selected window and the prior window reuse this so the two stay perfectly in sync.
   const computeWindow = useMemo(() => {
     return (weeksSet: Set<string> | null): WindowResult => {
-      let teamTickets = 0
       let teamWeeks = 0
       let teamCopActive = 0
+      let teamProdTickets = 0
+      let teamProdWeeks = 0
       const rows: Record<string, WindowRow> = {}
       for (const u of perUser) {
         let tickets = 0
         let present = 0
         let copActive = 0
+        // Productivity accumulators skip baseline-phase weeks so the "Overall"
+        // scope reads as "since the AI rollout vs pre-AI baseline" instead of
+        // partially comparing the baseline against itself. For week/month
+        // scopes (post-rollout by construction) these equal tickets/present.
+        let prodTickets = 0
+        let prodWeeks = 0
         for (const w of u.weekly) {
           if (weeksSet && !weeksSet.has(w.week)) continue
           if (w.tickets > 0 || w.copilotActive > 0) {
             present += 1
             tickets += w.tickets
             if (w.copilotActive > 0) copActive += 1
+            if (w.phase !== 'baseline') {
+              prodWeeks += 1
+              prodTickets += w.tickets
+            }
           }
         }
-        teamTickets += tickets
         teamWeeks += present
         teamCopActive += copActive
+        teamProdTickets += prodTickets
+        teamProdWeeks += prodWeeks
         rows[u.alias] = {
           active: present > 0,
           present,
           tickets,
-          rawProd: present > 0 ? tickets / present : 0,
+          prodTickets,
+          prodWeeks,
+          rawProd: prodWeeks > 0 ? prodTickets / prodWeeks : 0,
           adoption: present > 0 ? (copActive / present) * 100 : 0,
         }
       }
       return {
         rows,
-        teamProd: teamWeeks > 0 ? teamTickets / teamWeeks : 0,
+        teamProd: teamProdWeeks > 0 ? teamProdTickets / teamProdWeeks : 0,
         teamAdoption: teamWeeks > 0 ? (teamCopActive / teamWeeks) * 100 : 0,
       }
     }
@@ -358,19 +382,25 @@ export function UserAdoptionHeatmap() {
   // The elevated score per developer for the selected metric (null when inactive).
   const scoreMap = useMemo(() => {
     const out: Record<string, number | null> = {}
-    for (const u of perUser) out[u.alias] = scoreFor(metric, currentWindow.rows[u.alias], currentWindow.teamProd)
+    for (const u of perUser) out[u.alias] = scoreFor(metric, currentWindow.rows[u.alias], baselineRates[u.alias])
     return out
-  }, [perUser, currentWindow, metric])
+  }, [perUser, currentWindow, metric, baselineRates])
 
   // Rows sorted so developers active in the selected window float to the top,
-  // ranked by their in-window score; window-inactive developers sink to the bottom.
+  // ranked by their in-window score (unscoreable-but-active rows — e.g. no
+  // pre-AI history — sort by ticket count after the scored ones);
+  // window-inactive developers sink to the bottom.
   const rows = useMemo(() => {
     const copy = [...perUser]
     copy.sort((a, b) => {
-      const aa = currentWindow.rows[a.alias].active
-      const ba = currentWindow.rows[b.alias].active
-      if (aa !== ba) return aa ? -1 : 1
-      return (scoreMap[b.alias] ?? -1) - (scoreMap[a.alias] ?? -1)
+      const ra = currentWindow.rows[a.alias]
+      const rb = currentWindow.rows[b.alias]
+      if (ra.active !== rb.active) return ra.active ? -1 : 1
+      const sa = scoreMap[a.alias]
+      const sb = scoreMap[b.alias]
+      if ((sa == null) !== (sb == null)) return sa == null ? 1 : -1
+      if (sa != null && sb != null && sa !== sb) return sb - sa
+      return rb.prodTickets - ra.prodTickets
     })
     return copy
   }, [perUser, currentWindow, scoreMap])
@@ -441,8 +471,6 @@ export function UserAdoptionHeatmap() {
     )
   }
 
-  const metricLabel = metric === 'adoption' ? 'Copilot Adoption' : 'Productivity'
-
   const toggleBtn = (active: boolean) =>
     `px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
       active ? 'bg-[#15803d] text-white' : 'bg-white text-[#57534e] border border-[#e7e5e4] hover:bg-[#f5f5f4]'
@@ -465,10 +493,12 @@ export function UserAdoptionHeatmap() {
           </h1>
           <p className="text-sm text-[#57534e] max-w-3xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             One row per developer, labeled by a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>)
-            with its author <strong>UUID</strong> shown beneath. The bold <strong>Score</strong> is the developer&apos;s{' '}
-            <strong>{metricLabel.toLowerCase()}</strong> for the selected window; the <strong>Trend</strong> badges compare
-            that window vs the team and vs the developer&apos;s own prior window. Each heatmap cell shows the same metric per
-            period — blank cells = no activity that period.
+            with its author <strong>UUID</strong> shown beneath. For <strong>productivity</strong>, the bold chip shows the
+            developer&apos;s <strong>absolute ticket count</strong> for the window with their pace as a % of their{' '}
+            <strong>own pre-AI baseline</strong> (100% = same pace as before AI — no cross-developer comparison). For{' '}
+            <strong>adoption</strong>, it shows their adoption %. The <strong>self</strong> badge compares the window vs the
+            developer&apos;s own prior window. Each heatmap cell shows the same metric per period — blank cells = no
+            activity that period.
           </p>
         </div>
 
@@ -564,7 +594,9 @@ export function UserAdoptionHeatmap() {
                 // Active via Copilot telemetry but zero ticketed PRs in the window —
                 // flagged explicitly rather than scored 0% (may be a non-developer,
                 // or work that never lands in a Jira-linked PR).
-                const noPrs = active && metric === 'productivity' && cur.tickets === 0
+                const noPrs = active && metric === 'productivity' && cur.prodTickets === 0
+                // Shipping now but no pre-AI history — nothing to score against.
+                const noBase = active && metric === 'productivity' && cur.prodTickets > 0 && score == null
                 const scoreDisplay = noPrs ? 'No PRs' : score == null ? '—' : `${Math.round(score)}%`
                 const chip =
                   !active || score == null
@@ -572,14 +604,10 @@ export function UserAdoptionHeatmap() {
                     : metric === 'adoption'
                     ? rampColor(score / 100)
                     : divergingColor(score / 100)
-                // vs team: how far above/below team-typical this window (percentage points).
-                const vsTeam = !active
-                  ? null
-                  : metric === 'adoption'
-                  ? cur.adoption - currentWindow.teamAdoption
-                  : score == null
-                  ? null
-                  : score - 100
+                // vs team is shown for adoption only — a shared tool-usage goal.
+                // Productivity is scored against the developer's own baseline
+                // instead, to avoid a competitive leaderboard framing.
+                const vsTeam = !active || metric !== 'adoption' ? null : cur.adoption - currentWindow.teamAdoption
                 // vs self: this window vs the developer's own prior window.
                 const priorRow = priorWindow?.rows[u.alias]
                 let vsSelf: number | null = null
@@ -647,12 +675,21 @@ export function UserAdoptionHeatmap() {
                         className={`inline-block min-w-[2.75rem] whitespace-nowrap rounded-md px-2 py-1 font-bold ${noPrs ? 'text-xs' : 'text-sm'}`}
                         style={{ backgroundColor: chip.bg, color: chip.fg, fontFamily: 'DM Sans, sans-serif' }}
                       >
-                        {scoreDisplay}
+                        {metric === 'productivity' && active && !noPrs ? (
+                          <>
+                            {cur.prodTickets} tix
+                            <span className="block text-[9px] font-semibold leading-tight opacity-80">
+                              {noBase ? 'no pre-AI data' : `${Math.round(score ?? 0)}% of own base`}
+                            </span>
+                          </>
+                        ) : (
+                          scoreDisplay
+                        )}
                       </span>
                     </td>
                     <td className="p-1 pr-3 align-middle">
                       <div className="flex flex-col gap-0.5">
-                        <DeltaBadge value={vsTeam} unit="pp" label="team" />
+                        {metric === 'adoption' && <DeltaBadge value={vsTeam} unit="pp" label="team" />}
                         {scope !== 'overall' && <DeltaBadge value={vsSelf} unit={vsSelfUnit} label="self" />}
                       </div>
                     </td>
@@ -661,23 +698,29 @@ export function UserAdoptionHeatmap() {
                       if (!cell) {
                         return <td key={p} className="p-0.5"><div className="w-7 h-7 rounded" style={{ backgroundColor: '#fafaf9' }} /></td>
                       }
-                      const teamProd = teamPeriodProd[p] ?? 0
+                      const baseRate = baselineRates[u.alias]
                       // Copilot activity but no ticketed PRs this period — neutral, not 0% amber.
                       const cellNoPrs = metric === 'productivity' && cell.tickets === 0
+                      // Productivity cells show the ABSOLUTE ticket count; color encodes
+                      // pace vs the developer's own pre-AI baseline (grey = no baseline).
                       const ratio =
-                        metric === 'productivity' && !cellNoPrs && teamProd > 0 ? cell.productivity / teamProd : null
+                        metric === 'productivity' && !cellNoPrs && baseRate != null && baseRate > 0
+                          ? cell.productivity / baseRate
+                          : null
                       const { bg, fg } =
                         metric === 'adoption'
                           ? rampColor(cell.adoption)
-                          : ratio == null
+                          : cellNoPrs
                           ? rampColor(0)
+                          : ratio == null
+                          ? { bg: '#f5f5f4', fg: '#57534e' }
                           : divergingColor(ratio)
                       const display =
                         metric === 'adoption'
                           ? `${Math.round(cell.adoption * 100)}`
-                          : ratio == null
+                          : cellNoPrs
                           ? '—'
-                          : `${Math.round(ratio * 100)}`
+                          : `${cell.tickets}`
                       const acceptanceRate = cell.suggestions > 0 ? Math.round((cell.acceptances / cell.suggestions) * 100) : null
                       const title =
                         `${u.alias} · ${periodLabel(p, gran)}\n` +
@@ -685,7 +728,9 @@ export function UserAdoptionHeatmap() {
                           ? 'No ticketed PRs this period (Copilot activity only)\n'
                           : `Tickets: ${cell.tickets} over ${cell.weeksPresent} wk (${cell.productivity.toFixed(2)}/wk)\n`) +
                         (ratio != null
-                          ? `Team this period: ${teamProd.toFixed(2)}/wk → ${Math.round(ratio * 100)}% of team\n`
+                          ? `Own pre-AI baseline: ${(baseRate ?? 0).toFixed(2)}/wk → ${Math.round(ratio * 100)}% of own pace\n`
+                          : metric === 'productivity' && !cellNoPrs
+                          ? 'No pre-AI history to compare against\n'
                           : '') +
                         `Copilot-active weeks: ${cell.copilotActiveWeeks}/${cell.weeksPresent} (${Math.round(cell.adoption * 100)}%)\n` +
                         `Suggestions: ${cell.suggestions} · Acceptances: ${cell.acceptances}` +
@@ -714,18 +759,19 @@ export function UserAdoptionHeatmap() {
         {hover && (() => {
           const u = perUser.find(x => x.alias === hover.alias)
           if (!u) return null
+          const baseRate = baselineRates[u.alias]
           const devSeries = periods.map(p => {
             const cell = grid[u.alias]?.[p]
             if (!cell) return null
             if (metric === 'adoption') return cell.adoption * 100
             if (cell.tickets === 0) return null // Copilot-only period, no productivity signal
-            const tp = teamPeriodProd[p] ?? 0
-            return tp > 0 ? (cell.productivity / tp) * 100 : null
+            return cell.productivity
           })
-          const teamSeries = periods.map(p => (metric === 'adoption' ? teamPeriodAdoption[p] ?? 0 : 100))
+          // Productivity reference = the developer's own pre-AI pace, not the team.
+          const teamSeries = periods.map(p => (metric === 'adoption' ? teamPeriodAdoption[p] ?? 0 : baseRate))
           const allVals = [...devSeries, ...teamSeries].filter((v): v is number => v != null)
           const dataMax = allVals.length ? Math.max(...allVals) : 100
-          const yMax = metric === 'adoption' ? 100 : Math.max(120, dataMax * 1.05)
+          const yMax = metric === 'adoption' ? 100 : Math.max(1, dataMax * 1.1)
           const color = metric === 'adoption' ? '#15803d' : '#2563eb'
           const left = Math.min(hover.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 240)
           return (
@@ -734,7 +780,7 @@ export function UserAdoptionHeatmap() {
               style={{ left, top: hover.y + 6 }}
             >
               <div className="text-[10px] font-semibold text-[#1c1917] mb-0.5" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                {u.alias} · {metric === 'adoption' ? 'Adoption %' : '% of team'} over time
+                {u.alias} · {metric === 'adoption' ? 'Adoption %' : 'Tickets / active wk'} over time
               </div>
               {u.uuid && (
                 <div className="text-[8px] text-[#a8a29e] mb-1" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
@@ -743,7 +789,8 @@ export function UserAdoptionHeatmap() {
               )}
               <Sparkline dev={devSeries} team={teamSeries} yMax={yMax} color={color} />
               <div className="text-[8px] text-[#a8a29e] mt-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                <span style={{ color }}>■</span> developer &nbsp; <span className="text-[#d6d3d1]">┄ team</span>
+                <span style={{ color }}>■</span> developer &nbsp;{' '}
+                <span className="text-[#d6d3d1]">┄ {metric === 'adoption' ? 'team' : 'own pre-AI baseline'}</span>
               </div>
             </div>
           )
@@ -755,10 +802,11 @@ export function UserAdoptionHeatmap() {
             How to read this
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the team&apos;s for that same period (100% = team-typical, green = above, amber = below).</p>
+            <p><strong>Adoption</strong> = share of the developer&apos;s active weeks in the period where they used Copilot. <strong>Productivity</strong> = the developer&apos;s tickets per active week compared to <em>their own</em> pre-AI baseline (their average tickets/active-week from Jul–Sep 2025). 100% = same pace as before AI, green = faster than their own history, amber = slower. Developers are never scored against each other; cells show the raw ticket count, with color carrying the vs-baseline signal. Developers who joined after the rollout have no baseline and show <strong>no pre-AI data</strong> (grey).</p>
+            <p><strong>Counts are small integers</strong> — in a one-week window the difference between 100% and 200% of baseline can be a single ticket, and tickets are not size-normalized. Prefer the Month or Overall scope for judgments; treat Last week as a pulse check.</p>
             <p><strong>No PRs</strong> = the developer shows Copilot activity in the window but authored no Jira-linked PRs, so there is no productivity signal to score. This is common for non-developer roles with a Copilot license, and for work that never lands in a ticketed PR (untracked repos, PRs without a Jira reference) — it is not a 0% performance reading. Cells with Copilot activity but no ticketed PRs show <strong>—</strong> in neutral grey for the same reason.</p>
-            <p>The bold <strong>Score</strong> chip is the developer&apos;s {metric === 'adoption' ? 'adoption %' : 'productivity as a % of team'} for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy).</p>
-            <p><strong>Trend</strong> badges: <strong>team</strong> = this window vs team-typical (percentage points; ▲ above, ▼ below); <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. Both recompute with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s trend over time against the team reference.</p>
+            <p>The bold <strong>Score</strong> chip is the developer&apos;s {metric === 'adoption' ? 'adoption %' : 'ticket count and % of their own pre-AI baseline'} for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy).</p>
+            <p><strong>Trend</strong> badges: <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. For adoption, a <strong>team</strong> badge also shows percentage points above/below the cohort&apos;s adoption (tool rollout is a shared goal, so a team reference is appropriate there). Badges recompute with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s trend over time against {metric === 'adoption' ? 'the team reference' : 'their own baseline'}. On &ldquo;Overall&rdquo;, productivity counts only post-rollout weeks, so the score reads &ldquo;since AI vs before AI.&rdquo;</p>
             <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
             <p><strong>Department</strong> comes from the PR export (falling back to AI telemetry for users with no PRs). Filtering recomputes every team reference against the selected department only — &ldquo;vs team&rdquo; then means &ldquo;vs this department.&rdquo; Note that most non-Development seats show AI activity but no ticketed PRs, so their productivity reads as <strong>No PRs</strong> by design.</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
