@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   Chart as ChartJS,
@@ -32,6 +32,7 @@ ChartJS.register(
 )
 
 import type { CopilotDashboardData } from './types'
+import { trimIncompleteWeeks } from './utils'
 import { DashboardHeader } from './charts/DashboardHeader'
 import { KpiCards } from './charts/KpiCards'
 import { ProductivityChart } from './charts/ProductivityChart'
@@ -52,7 +53,7 @@ export function CopilotKpiDashboard() {
         if (!r.ok) throw new Error(`Failed to load dashboard data: ${r.status}`)
         return r.json()
       })
-      .then(setData)
+      .then(d => setData(trimIncompleteWeeks(d)))
       .catch(e => setError(e.message))
   }, [])
 
@@ -67,23 +68,7 @@ export function CopilotKpiDashboard() {
     )
   }
 
-  // Filter out incomplete last week (week date > data range end)
-  const filtered = useMemo(() => {
-    if (!data) return null
-    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
-    if (!dataRangeEnd) return data
-    return {
-      ...data,
-      weekly: data.weekly.filter(w => w.week <= dataRangeEnd),
-      availability: data.availability.filter(w => w.week <= dataRangeEnd),
-      copilotAdoption: data.copilotAdoption ? {
-        ...data.copilotAdoption,
-        weekly: data.copilotAdoption.weekly.filter(w => w.week <= dataRangeEnd),
-      } : null,
-    }
-  }, [data])
-
-  if (!filtered) {
+  if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#fafaf9]">
         <div className="text-center">
@@ -97,7 +82,7 @@ export function CopilotKpiDashboard() {
   return (
     <div className="min-h-screen bg-[#fafaf9]">
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
-        <DashboardHeader data={filtered} />
+        <DashboardHeader data={data} />
         <div className="mb-6 flex gap-3">
           <Link
             href="/clients/ecs/sdlc-dashboard/roi"
@@ -121,19 +106,19 @@ export function CopilotKpiDashboard() {
             View Per-Developer Breakdown →
           </Link>
         </div>
-        <KpiCards data={filtered} />
-        <ProductivityChart data={filtered} />
-        <OutputVolumeChart data={filtered} />
-        <QaChurnChart data={filtered} copilotAdoption={filtered.copilotAdoption} />
+        <KpiCards data={data} />
+        <ProductivityChart data={data} />
+        <OutputVolumeChart data={data} />
+        <QaChurnChart data={data} copilotAdoption={data.copilotAdoption} />
 
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <CopilotCorrelationChart data={filtered} />
-          <CumulativeChart data={filtered} />
+          <CopilotCorrelationChart data={data} />
+          <CumulativeChart data={data} />
         </div>
 
-        {filtered.survey && <SurveySection survey={filtered.survey} />}
+        {data.survey && <SurveySection survey={data.survey} />}
 
-        <MethodologyFooter data={filtered} />
+        <MethodologyFooter data={data} />
       </div>
     </div>
   )
