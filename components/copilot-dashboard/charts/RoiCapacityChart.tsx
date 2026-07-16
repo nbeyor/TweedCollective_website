@@ -18,6 +18,7 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation'
 import { Chart } from 'react-chartjs-2'
 import type { CopilotDashboardData } from '../types'
+import { trimIncompleteWeeks, weekCutoff } from '../utils'
 import { chartTheme } from '@/lib/slideTemplates'
 
 ChartJS.register(
@@ -39,15 +40,14 @@ const MONTHLY_COST = FULLY_LOADED_ANNUAL / 12
 
 const GREEN = chartTheme.dashboard.pilot       // #15803d
 const GREEN_BG = '#dcfce7'
-const BLUE = '#2563eb'
 const DARK = '#1c1917'
 
 interface MonthBucket {
   label: string         // e.g. "Oct 2025"
   month: string         // e.g. "2025-10"
+  partial: boolean      // month still accumulating weeks at the data cutoff
   avgProductivity: number
   avgCopilotUsers: number
-  avgAdoptionPct: number
   upliftPct: number
   fteEquivalent: number
   dollarValue: number
@@ -56,7 +56,7 @@ interface MonthBucket {
 
 function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
   const baselineProd = data.baseline.productivity
-  const byMonth = new Map<string, { prods: number[]; users: number[]; pcts: number[] }>()
+  const byMonth = new Map<string, { prods: number[]; users: number[] }>()
 
   for (const w of data.weekly) {
     if (w.lowConfidence) continue
@@ -65,19 +65,18 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
     // w.week is the Sunday week-end label (Mon-Sun ISO calendar week).
     // Attribute to the month containing the week's midpoint (Thursday =
     // Sunday − 3 days) so boundary weeks land in the month where the
-    // majority of their days fall. (Partial trailing weeks are already
-    // hidden upstream by the pipeline.)
+    // majority of their days fall. (Incomplete trailing weeks are trimmed
+    // via trimIncompleteWeeks at fetch time.)
     const weekEnd = new Date(w.week + 'T00:00:00Z')
     const midpoint = new Date(weekEnd)
     midpoint.setUTCDate(midpoint.getUTCDate() - 3)
     const monthKey = `${midpoint.getUTCFullYear()}-${String(midpoint.getUTCMonth() + 1).padStart(2, '0')}`
     if (!byMonth.has(monthKey)) {
-      byMonth.set(monthKey, { prods: [], users: [], pcts: [] })
+      byMonth.set(monthKey, { prods: [], users: [] })
     }
     const bucket = byMonth.get(monthKey)!
     bucket.prods.push(w.teamProductivity)
     bucket.users.push(w.copilotActiveUsers)
-    bucket.pcts.push(w.copilotPct)
   }
 
   const avg = (arr: number[]) => arr.reduce((s, v) => s + v, 0) / arr.length
@@ -85,26 +84,31 @@ function aggregateMonths(data: CopilotDashboardData): MonthBucket[] {
   const months: MonthBucket[] = []
   let cumulative = 0
 
+  // The month containing the data cutoff is still accumulating weeks — its
+  // run rate rests on fewer observations and can swing on a single week.
+  const cutoffMonth = weekCutoff(data).slice(0, 7)
+
   const sortedKeys = Array.from(byMonth.keys()).sort()
   for (const key of sortedKeys) {
     const b = byMonth.get(key)!
     const avgProd = avg(b.prods)
     const avgUsers = avg(b.users)
-    const avgPct = avg(b.pcts)
     const uplift = Math.max(0, (avgProd - baselineProd) / baselineProd)
     const fte = avgUsers * uplift
     const dollars = fte * MONTHLY_COST
     cumulative += dollars
 
     const d = new Date(key + '-15')
-    const label = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    const partial = key === cutoffMonth
+    const label =
+      d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) + (partial ? ' (partial)' : '')
 
     months.push({
       label,
       month: key,
+      partial,
       avgProductivity: avgProd,
       avgCopilotUsers: avgUsers,
-      avgAdoptionPct: avgPct,
       upliftPct: uplift,
       fteEquivalent: fte,
       dollarValue: dollars,
@@ -135,7 +139,7 @@ export function RoiCapacityChart() {
         if (!r.ok) throw new Error(`Failed to load data: ${r.status}`)
         return r.json()
       })
-      .then(setData)
+      .then(d => setData(trimIncompleteWeeks(d)))
       .catch(e => setError(e.message))
   }, [])
 
@@ -166,9 +170,15 @@ export function RoiCapacityChart() {
     )
   }
 
-  const totalCumulative = months.length > 0 ? months[months.length - 1].cumulativeDollar : 0
-  const currentRunRate = months.length > 0 ? months[months.length - 1].dollarValue : 0
-  const peakMonth = months.reduce((max, m) => m.dollarValue > max.dollarValue ? m : max, months[0])
+  const lastMonth = months.length > 0 ? months[months.length - 1] : null
+  const totalCumulative = lastMonth?.cumulativeDollar ?? 0
+  const currentRunRate = lastMonth?.dollarValue ?? 0
+  // A partial month's run rate rests on too few weeks to crown it the peak.
+  const completeMonths = months.filter(m => !m.partial)
+  const peakMonth = completeMonths.reduce(
+    (max, m) => (m.dollarValue > max.dollarValue ? m : max),
+    completeMonths[0],
+  )
 
   const kpiCards = [
     {
@@ -181,7 +191,7 @@ export function RoiCapacityChart() {
     {
       label: 'Current Monthly Run Rate',
       value: formatDollarsLong(currentRunRate),
-      context: `${months[months.length - 1]?.fteEquivalent.toFixed(1) ?? '0'} FTE-equivalents`,
+      context: `${lastMonth?.fteEquivalent.toFixed(1) ?? '0'} FTE-equivalents${lastMonth?.partial ? ' · partial month' : ''}`,
       accent: GREEN,
       accentBg: GREEN_BG,
     },
@@ -203,26 +213,11 @@ export function RoiCapacityChart() {
       type: 'bar',
       label: 'Capacity Released ($/mo)',
       data: months.map(m => m.dollarValue),
-      backgroundColor: `${GREEN}cc`,
+      backgroundColor: months.map(m => (m.partial ? `${GREEN}55` : `${GREEN}cc`)),
       borderColor: GREEN,
       borderWidth: 1,
       borderRadius: 4,
       yAxisID: 'y',
-      order: 2,
-    },
-    {
-      type: 'line',
-      label: 'Copilot Adoption %',
-      data: months.map(m => m.avgAdoptionPct),
-      borderColor: BLUE,
-      backgroundColor: `${BLUE}15`,
-      fill: true,
-      borderWidth: 2,
-      tension: 0.3,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      yAxisID: 'y1',
-      order: 1,
     },
   ]
 
@@ -255,46 +250,17 @@ export function RoiCapacityChart() {
         },
         grid: { color: '#f5f5f4' },
       },
-      y1: {
-        position: 'right' as const,
-        beginAtZero: true,
-        max: 100,
-        title: {
-          display: true,
-          text: 'Copilot Adoption %',
-          font: { family: 'DM Sans, sans-serif', size: 11 },
-          color: BLUE,
-        },
-        ticks: {
-          font: { family: 'JetBrains Mono, monospace', size: 10 },
-          color: BLUE,
-          callback: (v: number | string) => typeof v === 'number' ? `${v}%` : v,
-        },
-        grid: { display: false },
-      },
     },
     plugins: {
-      legend: {
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          usePointStyle: true,
-          pointStyleWidth: 10,
-          boxHeight: 6,
-          font: { family: 'DM Sans, sans-serif', size: 11 },
-          color: '#57534e',
-        },
-      },
+      legend: { display: false },
       tooltip: {
         backgroundColor: DARK,
         titleFont: { family: 'DM Sans, sans-serif', size: 12 },
         bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
         callbacks: {
-          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
+          label: (ctx: { parsed: { y: number | null } }) => {
             const v = ctx.parsed.y
-            if (v == null) return ''
-            if (ctx.dataset.label?.includes('Adoption')) return `Adoption: ${v.toFixed(0)}%`
-            return `Capacity: ${formatDollarsLong(v)}`
+            return v == null ? '' : `Capacity: ${formatDollarsLong(v)}`
           },
         },
       },
@@ -431,7 +397,6 @@ export function RoiCapacityChart() {
   // --- Detail table data ---
   const tableRows = months.map(m => ({
     label: m.label,
-    adoption: `${m.avgAdoptionPct.toFixed(0)}%`,
     users: m.avgCopilotUsers.toFixed(1),
     uplift: `+${(m.upliftPct * 100).toFixed(1)}%`,
     fte: m.fteEquivalent.toFixed(1),
@@ -487,10 +452,10 @@ export function RoiCapacityChart() {
         {/* Primary Chart: Monthly Capacity + Adoption */}
         <div className="rounded-xl border border-[#e7e5e4] bg-white p-6 mb-8 shadow-sm">
           <h2 className="text-base font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            Monthly Capacity Released vs. Copilot Adoption
+            Monthly Capacity Released
           </h2>
           <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            Dollar value of engineering capacity unlocked each month, overlaid with team-wide adoption rate
+            Dollar value of engineering capacity unlocked each month
           </p>
           <div style={{ height: 340 }}>
             <Chart type="bar" data={{ labels: primaryLabels, datasets: primaryDatasets as never }} options={primaryOptions as never} />
@@ -527,7 +492,6 @@ export function RoiCapacityChart() {
             <thead>
               <tr className="text-left text-[10px] text-[#a8a29e] uppercase tracking-wider" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <th className="pb-2 pr-4">Month</th>
-                <th className="pb-2 pr-4 text-right">Adoption</th>
                 <th className="pb-2 pr-4 text-right">Avg Users</th>
                 <th className="pb-2 pr-4 text-right">Uplift</th>
                 <th className="pb-2 pr-4 text-right">FTE-Equiv</th>
@@ -539,7 +503,6 @@ export function RoiCapacityChart() {
               {tableRows.map((row) => (
                 <tr key={row.label} className="border-t border-[#f5f5f4] text-[11px] text-[#1c1917]">
                   <td className="py-2 pr-4">{row.label}</td>
-                  <td className="py-2 pr-4 text-right">{row.adoption}</td>
                   <td className="py-2 pr-4 text-right">{row.users}</td>
                   <td className="py-2 pr-4 text-right" style={{ color: GREEN }}>{row.uplift}</td>
                   <td className="py-2 pr-4 text-right">{row.fte}</td>
@@ -573,7 +536,9 @@ export function RoiCapacityChart() {
               to achieve the same throughput increase.
             </p>
             <p>
-              <strong>Limitations:</strong> Weeks with fewer than {data.minTicketsThreshold} tickets are excluded as low-confidence.
+              <strong>Limitations:</strong> Weeks with fewer than {data.minTicketsThreshold} tickets are excluded as low-confidence,
+              and any week not fully covered by the data extract is dropped entirely. The month containing the data cutoff is marked
+              <em> (partial)</em> — its run rate rests on fewer weeks and is excluded from the Peak Month comparison.
               Months with negative productivity uplift are floored at $0. This metric captures throughput gains only and does not
               account for quality improvements (e.g., reduced QA churn) or developer satisfaction benefits.
             </p>

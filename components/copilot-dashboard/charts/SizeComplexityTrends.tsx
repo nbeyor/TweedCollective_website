@@ -16,6 +16,7 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation'
 import { Chart } from 'react-chartjs-2'
 import type { CopilotDashboardData, SizeComplexityWeeklyEntry, SizeComplexityEntry } from '../types'
+import { trimIncompleteWeeks } from '../utils'
 import { getBuckets } from './buckets'
 
 ChartJS.register(
@@ -611,17 +612,14 @@ export function SizeComplexityTrends() {
         if (!r.ok) throw new Error(`Failed to load data: ${r.status}`)
         return r.json()
       })
-      .then(setData)
+      .then(d => setData(trimIncompleteWeeks(d)))
       .catch(e => setError(e.message))
   }, [])
 
   const weeks = useMemo(() => {
     if (!data?.sizeComplexityWeekly) return []
-    const dataRangeEnd = data.dataRange.split(' to ')[1] ?? ''
     const unique = new Set<string>()
-    for (const row of data.sizeComplexityWeekly) {
-      if (!dataRangeEnd || row.week <= dataRangeEnd) unique.add(row.week)
-    }
+    for (const row of data.sizeComplexityWeekly) unique.add(row.week)
     return Array.from(unique).sort()
   }, [data])
 

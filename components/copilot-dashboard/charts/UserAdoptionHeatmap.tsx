@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { CopilotDashboardData } from '../types'
+import { trimIncompleteWeeks } from '../utils'
 
 type Granularity = 'month' | 'week'
 type Scope = 'week' | 'month' | 'overall'
@@ -143,7 +144,7 @@ export function UserAdoptionHeatmap() {
         if (!r.ok) throw new Error(`Failed to load data: ${r.status}`)
         return r.json()
       })
-      .then(setData)
+      .then(d => setData(trimIncompleteWeeks(d)))
       .catch(e => setError(e.message))
   }, [])
 
