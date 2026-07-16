@@ -360,6 +360,17 @@ export function UserAdoptionHeatmap() {
     [currentWindow],
   )
 
+  // Average ticket count per developer who shipped at least one ticketed PR in
+  // the window — the headline number the score chips' "N tix" compares against.
+  const avgTickets = useMemo(() => {
+    const scored = Object.values(currentWindow.rows).filter(r => r.prodTickets > 0)
+    if (!scored.length) return null
+    return {
+      avg: scored.reduce((s, r) => s + r.prodTickets, 0) / scored.length,
+      n: scored.length,
+    }
+  }, [currentWindow])
+
   // Index of the first window-inactive developer in the sorted rows — the point
   // where the dotted divider is drawn to separate active from inactive.
   const firstInactiveIndex = useMemo(
@@ -436,9 +447,9 @@ export function UserAdoptionHeatmap() {
           <p className="text-sm text-[#57534e] max-w-3xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             One row per developer, labeled by a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>)
             with its author <strong>UUID</strong> shown beneath. The bold chip shows the developer&apos;s{' '}
-            <strong>absolute ticket count</strong> for the window with their pace as a % of the{' '}
-            <strong>pre-AI team baseline</strong> — a fixed historical bar (100% = the average developer&apos;s pace before
-            AI), not a comparison against current teammates. The <strong>self</strong> badge compares the window vs the
+            <strong>tickets and active weeks</strong> for the window, and their resulting <strong>pace</strong>{' '}
+            (tickets ÷ active weeks) as a % of the <strong>pre-AI team baseline</strong> — a fixed historical bar
+            (100% = the average developer&apos;s pace before AI), not a comparison against current teammates. The <strong>self</strong> badge compares the window vs the
             developer&apos;s own prior window. Each heatmap cell shows the ticket count per period, colored on the same
             vs-baseline scale — blank cells = no activity that period.
           </p>
@@ -478,10 +489,13 @@ export function UserAdoptionHeatmap() {
         <div className="flex flex-wrap items-stretch gap-3 mb-5">
           <div className="rounded-xl border border-[#e7e5e4] bg-white px-5 py-3 shadow-sm">
             <div className="text-[10px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              Team tickets / active wk · {SCOPE_LABEL[scope]}
+              Avg tickets / dev · {SCOPE_LABEL[scope]}
             </div>
             <div className="text-3xl font-bold text-[#1c1917] leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              {currentWindow.teamProd.toFixed(2)}
+              {avgTickets ? avgTickets.avg.toFixed(1) : '—'}
+            </div>
+            <div className="text-[9px] text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              across {avgTickets?.n ?? 0} devs with ticketed PRs
             </div>
           </div>
           <div className="rounded-xl border border-[#e7e5e4] bg-white px-5 py-3 shadow-sm">
@@ -605,9 +619,9 @@ export function UserAdoptionHeatmap() {
                       >
                         {active && !noPrs ? (
                           <>
-                            {cur.prodTickets} tix
+                            {cur.prodTickets} tix / {cur.prodWeeks} wk
                             <span className="block text-[9px] font-semibold leading-tight opacity-80">
-                              {noBase ? 'no baseline' : `${Math.round(score ?? 0)}% of pre-AI base`}
+                              {noBase ? 'no baseline' : `${cur.rawProd.toFixed(1)}/wk = ${Math.round(score ?? 0)}% of pre-AI base`}
                             </span>
                           </>
                         ) : (
@@ -718,12 +732,13 @@ export function UserAdoptionHeatmap() {
           </h2>
           <div className="space-y-2 text-sm text-[#57534e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             <p><strong>Productivity</strong> = the developer&apos;s tickets per active week as a % of the <em>pre-AI team baseline</em> — the team&apos;s average tickets per active developer-week from before the AI rollout (Jul–Sep 2025). The bar is fixed: it doesn&apos;t shift when the window moves or when people join, so scores are comparable across time and new hires are scoreable from their first week. 100% = the average developer&apos;s pre-AI pace, green = above that bar, amber = below. Cells show the raw ticket count, with color carrying the vs-baseline signal.</p>
+            <p><strong>The score is a pace, not a raw count</strong> — everyone is scored against the same baseline denominator ({teamBaseRate ? teamBaseRate.toFixed(2) : '—'} tix/wk), but the numerator is tickets <em>per active week</em>, so a developer with 6 tickets in 1 active week (6.0/wk) outscores one with 7 tickets across 2 weeks (3.5/wk). The chip shows the tickets, the active weeks, and the resulting per-week rate so the math is visible. The <strong>Avg tickets / dev</strong> card at the top is the raw-count yardstick: how many tickets the typical developer with PRs shipped in this window.</p>
             <p><strong>Counts are small integers</strong> — in a one-week window one ticket moves the score by ~{teamBaseRate ? Math.round(100 / teamBaseRate) : 50}pp, so developers with the same ticket count tie exactly, and tickets are not size-normalized (a config tweak counts the same as a feature). Prefer the Month or Overall scope for judgments; treat Last week as a pulse check.</p>
             <p><strong>No PRs</strong> = the developer shows Copilot activity in the window but authored no Jira-linked PRs, so there is no productivity signal to score. This is common for non-developer roles with a Copilot license, and for work that never lands in a ticketed PR (untracked repos, PRs without a Jira reference) — it is not a 0% performance reading. Cells with Copilot activity but no ticketed PRs show <strong>—</strong> in neutral grey for the same reason.</p>
             <p>The bold <strong>Score</strong> chip is the developer&apos;s ticket count and % of the pre-AI team baseline for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy). There is deliberately no vs-team ranking — the bar is historical, not current teammates.</p>
             <p><strong>Trend</strong> badge: <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. It recomputes with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s pace over time against the pre-AI baseline bar. On &ldquo;Overall&rdquo;, productivity counts only post-rollout weeks, so the score reads &ldquo;since AI vs before AI.&rdquo;</p>
             <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
-            <p><strong>Department</strong> comes from the PR export (falling back to AI telemetry for users with no PRs). Filtering changes which developers are shown (and the team tickets/active-wk card); the pre-AI baseline bar is fixed and does not change with the filter. Note that most non-Development seats show AI activity but no ticketed PRs, so their productivity reads as <strong>No PRs</strong> by design.</p>
+            <p><strong>Department</strong> comes from the PR export (falling back to AI telemetry for users with no PRs). Filtering changes which developers are shown (and the avg tickets/dev card); the pre-AI baseline bar is fixed and does not change with the filter. Note that most non-Development seats show AI activity but no ticketed PRs, so their productivity reads as <strong>No PRs</strong> by design.</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
               Hover any cell for the underlying tickets, Copilot-active weeks, suggestions and acceptance rate. A ticket worked by multiple developers is credited to each contributor.
             </p>
