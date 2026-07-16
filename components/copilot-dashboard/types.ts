@@ -119,6 +119,8 @@ export interface WeeklyEntry {
   totalPRs?: number
   /** Total PR lines across the week's tickets. */
   totalLines?: number
+  /** Merged PRs with no Jira key this week — real output invisible to every ticket-based metric; not included in totalPRs. */
+  keylessPRs?: number
   copilotPct: number | null
   /** Adoption % within the Development department only. */
   copilotPctDev?: number | null

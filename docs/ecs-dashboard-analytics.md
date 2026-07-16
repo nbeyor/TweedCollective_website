@@ -65,6 +65,7 @@ All analytics are organized around a three-phase timeline:
 
 - **Purpose:** Reconcile ticket-based productivity with raw output counts from external tools (Bitbucket/Qlik PR dashboards). Tickets/FTE-day can hold flat while PR volume hits records if the same tickets are being delivered as more, smaller PRs.
 - **PR volume mode:** Grouped weekly bars of PRs merged vs Jira tickets closed, with a 4-week rolling **PRs-per-ticket** line on the right axis and a dashed pre-AI baseline for that ratio (mean of weekly ratios over confident baseline weeks).
+- **Keyless PRs (amber segment):** merged PRs with **no Jira key** are stacked on top of the keyed-PR bar in amber, with the weekly share shown in the tooltip. These are ~6–10% of all merged PRs and are invisible to every ticket-based metric (tickets closed, productivity, PRs-per-ticket, QA churn) — they are counted here, and only here, so raw Bitbucket/Qlik PR totals can be reconciled against the dashboard. The pipeline counts them per Mon–Sun week from rows the ticket loader drops (`keylessPRs` on each weekly row), applying the same partial-week trim as every other series.
 - **Lines/FTE-day mode:** Weekly total PR lines ÷ (active authors × 5 workdays), raw dots plus 4-week rolling average, with the pre-AI baseline as a dashed line. If tickets/FTE-day is flat but lines/FTE-day rose, each ticket carries more code.
 - **Data:** `totalPRs` (sum of per-ticket PR counts) and `totalLines` (sum of per-ticket PR lines) per week, emitted by the pipeline alongside the existing weekly series.
 

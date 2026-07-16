@@ -136,6 +136,12 @@ def load_prs(input_path, sheet_name=None):
     for col in ('FirstActivity', 'FirstReadyForQADate', 'PRStart', 'PREnd'):
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], errors='coerce')
+    # Keyless PRs: merged work with no Jira key (~6-10% of the export). These
+    # rows can't join any ticket-based metric, but they ARE real output and
+    # explain why raw PR counts (Bitbucket/Qlik) run ahead of every dashboard
+    # number here. Kept separately so the Output Volume chart can show them.
+    keyless = df[df['JiraTicket'].isna() & df['PREnd'].notna()].copy()
+
     # Drop rows with null key columns. A null AuthorUUID was previously
     # stringified to 'nan' and counted as a distinct author, inflating the
     # productivity denominator.
@@ -143,8 +149,9 @@ def load_prs(input_path, sheet_name=None):
     df = df.dropna(subset=['JiraTicket', 'AuthorUUID', 'PREnd']).copy()
     dropped = before - len(df)
     if dropped:
-        print(f"load_prs: dropped {dropped} PR rows with null JiraTicket / AuthorUUID / PREnd")
-    return df
+        print(f"load_prs: dropped {dropped} PR rows with null JiraTicket / AuthorUUID / PREnd"
+              f" ({len(keyless)} keyless PRs kept for the Output Volume overlay)")
+    return df, keyless
 
 
 def extract_project_key(jira_ticket):
@@ -1033,7 +1040,7 @@ def serialize(obj):
 
 
 def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
-    prs = load_prs(input_path, sheet_name)
+    prs, keyless_prs = load_prs(input_path, sheet_name)
     # Cutoff = latest observed PR end date. Reported in the JSON as
     # `dataCutoff` for context.
     cutoff = pd.to_datetime(prs['PREnd']).dropna().max().normalize() if 'PREnd' in prs.columns else None
@@ -1049,6 +1056,16 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
         if n_partial:
             print(f"build_dashboard_data: hid {n_partial} PR rows in partial trailing week (cutoff {cutoff.strftime('%Y-%m-%d')})")
         prs = prs[~partial_mask].copy()
+
+    # Keyless PRs per week (same Mon-Sun week key and partial-week rule as
+    # everything else). Consumed by the Output Volume chart as a stacked
+    # segment on the PR bars — real merged work that no ticket metric sees.
+    keyless_by_week = {}
+    if keyless_prs is not None and len(keyless_prs):
+        kw = pd.to_datetime(keyless_prs['PREnd']).dt.to_period('W-SUN').dt.end_time.dt.normalize()
+        if cutoff is not None:
+            kw = kw[kw <= cutoff]
+        keyless_by_week = {ts.strftime('%Y-%m-%d'): int(n) for ts, n in kw.value_counts().items()}
 
     tickets = aggregate_to_tickets(prs)
     weekly = compute_weekly_team_metrics(tickets)
@@ -1110,6 +1127,9 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
             'teamQARate': row['TeamQAChurnRate'],
             'totalPRs': int(row['TotalPRs']),
             'totalLines': int(row['TotalLines']),
+            # Merged PRs with no Jira key that week — not part of totalPRs
+            # (which sums per-ticket PR counts) or any ticket-based metric.
+            'keylessPRs': keyless_by_week.get(week_str, 0),
             'lowConfidence': bool(row['LowConfidence']),
             'copilotPct': None,
             'copilotPctDev': None,

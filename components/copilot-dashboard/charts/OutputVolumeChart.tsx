@@ -15,6 +15,7 @@ type Mode = 'prs' | 'lines'
 const TICKET_COLOR = chartTheme.dashboard.pilot
 const BASELINE_COLOR = chartTheme.dashboard.baseline
 const PR_COLOR = '#2563eb'
+const KEYLESS_COLOR = '#d97706'
 const RATIO_COLOR = '#7c3aed'
 const TRANSITION_BG = 'rgba(148,163,184,0.08)'
 
@@ -40,6 +41,7 @@ export function OutputVolumeChart({ data }: Props) {
   const { weekly } = data
 
   const hasVolume = weekly.some(w => w.totalPRs != null)
+  const hasKeyless = weekly.some(w => (w.keylessPRs ?? 0) > 0)
 
   const transitionStartIdx = useMemo(() => {
     const idx = weekly.findIndex(w => w.phase === 'transition')
@@ -93,14 +95,33 @@ export function OutputVolumeChart({ data }: Props) {
     datasets.push(
       {
         type: 'bar',
-        label: 'PRs merged',
+        label: 'PRs merged (Jira-keyed)',
         data: weekly.map(e => e.totalPRs ?? null),
         backgroundColor: `${PR_COLOR}55`,
         borderColor: PR_COLOR,
         borderWidth: 0,
         yAxisID: 'y',
+        stack: 'prs',
         order: 3,
       },
+    )
+    if (hasKeyless) {
+      // Stacked on top of the keyed-PR bar: merged work with no Jira key.
+      // It never enters tickets, productivity, or PRs-per-ticket — this
+      // segment is the only place the dashboard shows it.
+      datasets.push({
+        type: 'bar',
+        label: 'PRs w/o Jira key',
+        data: weekly.map(e => e.keylessPRs ?? 0),
+        backgroundColor: `${KEYLESS_COLOR}66`,
+        borderColor: KEYLESS_COLOR,
+        borderWidth: 0,
+        yAxisID: 'y',
+        stack: 'prs',
+        order: 3,
+      })
+    }
+    datasets.push(
       {
         type: 'bar',
         label: 'Tickets closed',
@@ -108,6 +129,7 @@ export function OutputVolumeChart({ data }: Props) {
         backgroundColor: `${TICKET_COLOR}88`,
         borderWidth: 0,
         yAxisID: 'y',
+        stack: 'tickets',
         order: 2,
       },
       {
@@ -206,7 +228,9 @@ export function OutputVolumeChart({ data }: Props) {
 
   const scales: Record<string, unknown> = {
     x: {
-      stacked: false,
+      // Stacking groups the two PR segments (keyed + keyless) into one bar
+      // while the tickets bar keeps its own stack alongside.
+      stacked: mode === 'prs',
       ticks: {
         maxTicksLimit: 12,
         maxRotation: 0,
@@ -218,6 +242,7 @@ export function OutputVolumeChart({ data }: Props) {
     y: {
       position: 'left',
       beginAtZero: true,
+      stacked: mode === 'prs',
       title: {
         display: true,
         text: mode === 'prs' ? 'PRs / Tickets per week' : 'PR lines / FTE-day',
@@ -272,12 +297,18 @@ export function OutputVolumeChart({ data }: Props) {
         titleFont: { family: 'DM Sans, sans-serif', size: 12 },
         bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
         callbacks: {
-          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
+          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null }; dataIndex: number }) => {
             const v = ctx.parsed.y
             if (v == null) return ''
             const label = ctx.dataset.label ?? ''
             if (label.includes('per ticket')) return `${label}: ${v.toFixed(2)}`
             if (label.includes('FTE-day')) return `${label}: ${Math.round(v).toLocaleString()}`
+            if (label.includes('w/o Jira key')) {
+              const w = weekly[ctx.dataIndex]
+              const total = (w?.totalPRs ?? 0) + (w?.keylessPRs ?? 0)
+              const share = total > 0 ? ` (${Math.round(((w?.keylessPRs ?? 0) / total) * 100)}% of PRs)` : ''
+              return `${label}: ${Math.round(v)}${share}`
+            }
             return `${label}: ${Math.round(v)}`
           },
         },
@@ -308,7 +339,7 @@ export function OutputVolumeChart({ data }: Props) {
       </div>
       <p className="text-[11px] text-[#a8a29e] mb-4" style={{ fontFamily: 'DM Sans, sans-serif' }}>
         {mode === 'prs'
-          ? 'Raw PRs merged vs Jira tickets closed per week, with PRs-per-ticket (right axis). A rising ratio means the same ticket cadence is being delivered as more, smaller PRs — record PR counts with flat tickets/FTE-day is composition, not contradiction.'
+          ? 'Raw PRs merged vs Jira tickets closed per week, with PRs-per-ticket (right axis). A rising ratio means the same ticket cadence is being delivered as more, smaller PRs — record PR counts with flat tickets/FTE-day is composition, not contradiction. The amber segment is merged PRs with no Jira key: real output that no ticket-based metric (including PRs-per-ticket) counts.'
           : 'Total PR lines per developer-day, weekly dots with a 4-week rolling average. Complements tickets/FTE-day: if tickets are flat but lines/FTE-day rose, each ticket carries more code.'}
       </p>
       <div style={{ height: 300 }}>
