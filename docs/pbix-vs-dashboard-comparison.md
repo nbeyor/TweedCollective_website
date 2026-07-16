@@ -165,7 +165,43 @@ is a product choice, not a defect.
 
 ---
 
-## 7. Unchanged housekeeping items
+## 7. Ticket-count reconciliation — 1,931 (Atchu) vs 1,396 (website)
+
+The two numbers count **different grains of work** from the same export
+(`Pull Requests and AI 2026 07 14`, merges through Jul 15). The reconciliation is exact:
+
+| Step | Count |
+|---|---|
+| Distinct Jira tickets with ≥1 merged PR, through Jul 10 (website's universe) | **1,395** |
+| + tickets whose last PR merged Jul 11–14 | +27 → 1,422 |
+| + extra (ticket × week) episodes — a ticket counted once per week it had a PR merge | +362 → 1,784 |
+| + PRs with a **blank Jira key**, counted individually | +147 → **1,931** |
+
+So Atchu's 1,931 is a **ticket-week episode count plus keyless PRs**: the query groups by
+ticket *and* week, so the 229 tickets whose PRs span multiple weeks (up to 10 weeks for
+one ticket) are counted once per week, and the 147 PRs with no Jira key each count as
+their own item. The website counts each distinct ticket once — in the week of its **last**
+PR merge — and drops keyless PRs (`aggregate_to_tickets()`; the loader's null-key rule).
+
+Implications:
+
+- **Neither number is "wrong"** — they answer different questions. "How many tickets did
+  we complete?" → 1,396. "How many ticket-weeks of PR activity happened?" → 1,784 (+147
+  unattributed PRs). For tickets/FTE-day productivity, the distinct-ticket count is the
+  right numerator; episode counting would double-pay tickets that drag across weeks.
+- **This is not the driver of the §4 correlation divergences** — those compare the
+  warehouse vs the website on the same distinct-ticket grain. Atchu's count is a third
+  system with a different grain.
+- **The 147 keyless PRs (~6% of all PRs) deserve a decision**: they are real merged work
+  invisible to every ticket-based metric on both dashboards. Either enforce Jira keys at
+  PR creation or surface them as an "unattributed PRs" line on the Output Volume chart.
+  **[Website]** + upstream process.
+- The multi-week spread is also why PR counts outrun ticket counts (2,377 PRs → 1,423
+  tickets) — exactly what the new Output Volume chart's PRs-per-ticket line tracks.
+
+---
+
+## 8. Unchanged housekeeping items
 
 | Item | Fix |
 |---|---|
@@ -178,7 +214,7 @@ is a product choice, not a defect.
 
 ---
 
-## 8. Recommended order of work
+## 9. Recommended order of work
 
 1. **[Website]** Update `pipeline/sql/copilot_dashboard_queries.sql` to match the current
    pipeline: 150/5 bucket cuts, mean-of-weekly per-bucket heatmap productivity, fixed
