@@ -1,205 +1,194 @@
-# Power BI (eCS_SDLC_AI_KPI_v2.pbix) vs Website Dashboard — Calculation Comparison
+# Power BI (eCS_SDLC_AI_KPI_v2.pbix) vs Website Dashboard — Calculation Comparison (v2)
 
-**Scope:** Reconciles the SQL/M/DAX calculations inside `eCS_SDLC_AI_KPI_v2.pbix` against the
-eCS SDLC dashboard's underlying analytics in this repo
-(`pipeline/refresh_copilot.py` → `public/data/copilot-dashboard-data.json`, reference SQL in
-`pipeline/sql/copilot_dashboard_queries.sql`, methodology in `docs/ecs-dashboard-analytics.md`).
+**Status:** Second pass, run after the July 2026 website dashboard rework (KPI card
+restructure, size/complexity methodology change, output-volume + dev-adoption analytics,
+ROI partial-month handling). The pbix analyzed is the same `eCS_SDLC_AI_KPI_v2.pbix`
+(data through week ending **2026-07-05**); the website JSON was regenerated **2026-07-16**
+with data through **2026-07-10**.
 
-**Data vintages compared:** the pbix import contains data through week ending **2026-07-05**;
-the website JSON was generated **2026-07-15** with data through **2026-07-10** (latest full week
-ending **2026-07-12**). Several "differences" are purely this one-refresh gap — they are called
-out separately from genuine methodology differences below.
+**How to read this:** every difference is tagged with where the fix belongs —
+**[Warehouse]** = the Fabric `SDLC_Copilot_Warehouse` view definitions (feeds the pbix),
+**[pbix]** = DAX measures / report visuals inside the Power BI file,
+**[Website]** = this repo (pipeline, components, or docs),
+**[Refresh]** = no logic change, just refresh/re-import.
 
 ---
 
-## 1. What's actually inside the pbix
+## 1. Quick verdict
 
-There are **no hand-written SQL queries** in the pbix. Each of its 10 Power Query (M) sources is a
-plain view binding to a Microsoft Fabric warehouse:
+The website rework did **not** change the headline team numbers — same data, same
+methodology, so the five KPIs that reconciled last time still reconcile
+(737 tickets / +14.7% productivity / −5.4% QA churn / 71.7% adoption on the website vs the
+pbix's one-refresh-older 687 / +11.7% / −8.1% / 66.7%). What the rework did do:
 
-```
-Sql.Database("...datawarehouse.fabric.microsoft.com", "SDLC_Copilot_Warehouse")
-  → dbo.v_weekly_team_metrics, dbo.v_tickets, dbo.v_team_summary, dbo.v_size_complexity,
-    dbo.v_copilot_weekly_adoption, dbo.v_copilot_user_tiers, dbo.v_copilot_intensity,
-    dbo.v_copilot_assisted_weekly, dbo.v_copilot_assisted_summary, dbo.v_baseline_metrics
-```
+1. **Restructured the KPI row** — four of the pbix's seven cards no longer exist on the
+   website, and a new "Copilot Impact on QA Churn" card was added that puts the biggest
+   unresolved warehouse discrepancy (the QA sign flip) directly on screen.
+2. **Replaced the size/complexity heatmap productivity formula** (pooled → mean-of-weekly)
+   on top of the earlier bucket-cut change — the pbix heatmap is now wrong on two axes.
+3. **Added analytics the warehouse can't feed yet** — weekly PR/line output volume and a
+   Development-department adoption series.
+4. **Tightened partial-period handling** (client-side `trimIncompleteWeeks`, ROI months
+   flagged "(partial)" and excluded from peak-month) — the pbix ROI page doesn't do this.
 
-So the calculation logic lives in **two places**: (a) the warehouse view definitions (not visible in
-the pbix — only their output rows are), and (b) ~70 DAX measures layered on top. The repo's
-reference SQL file was written to be the canonical warehouse implementation, but the warehouse
-views **do not match it exactly** — names differ and, more importantly, some numbers are not
-reproducible from the reference SQL (Section 4).
+Nothing in the rework resolved the warehouse-side divergences from the first report; all
+of them remain open and one of them (QA churn sign flip) got more visible.
 
-### View name mapping
+---
 
-| pbix / warehouse view | Reference SQL view (`copilot_dashboard_queries.sql`) | Website pipeline function |
+## 2. KPI card row — layout now diverges by design decision
+
+Website `KpiCards.tsx` now renders **four** cards; the pbix still renders the old
+seven-card layout.
+
+| pbix card | Website equivalent now | Difference / fix |
 |---|---|---|
-| `v_tickets` | `v_tickets` (Query 0) | `aggregate_to_tickets()` |
-| `v_weekly_team_metrics` | `v_weekly_team_metrics` (Query 1) | `compute_weekly_team_metrics()` |
-| `v_baseline_metrics` | `v_baseline_metrics` (Query 2) | `compute_baseline()` |
-| `v_team_summary` | `v_mature_summary` (Query 3) | `compute_team_summary()` |
-| `v_size_complexity` | `v_size_complexity_heatmap` (Query 4) | `compute_size_complexity()` |
-| `v_copilot_weekly_adoption` | `v_copilot_adoption_weekly` (Query 5) | `compute_copilot_adoption()` |
-| `v_copilot_user_tiers` | `v_copilot_user_tiers` (Query 6) | `compute_copilot_adoption()` (tiers) |
-| `v_copilot_assisted_weekly` | `v_copilot_pr_correlation_weekly` (Query 7) | `compute_copilot_pr_correlation()` |
-| `v_copilot_assisted_summary` | `v_copilot_pr_correlation_summary` (Query 7b) | same (summary portion) |
-| `v_copilot_intensity` | `v_copilot_intensity_buckets` (Query 8) | same (intensity portion) |
+| Team Productivity — big number **0.43**, "+11.7%" pill | "Team Productivity" — big number **+14.7%**, absolute "0.441 tickets/FTE-day" beneath | Same math; the website flipped which number is the headline (delta first). **[pbix]** presentation change if parity is wanted; **[Refresh]** for the value gap. |
+| QA Churn — big number **22.4%**, "−8.1%" pill | "QA Churn" — big number **−5.4%**, absolute "23.1% churn rate" beneath | Same as above. **[pbix]** presentation + **[Refresh]**. |
+| Total Output (687 / 27 devs / 21 wks) | **Removed from website** | Decide whether the pbix keeps it (it's harmless and reconciles). **[None / product decision]** |
+| Copilot Adoption (current) 66.7% | **Removed from website** (adoption now lives only as the chart overlay) | If kept in pbix: the "53 of 28 developers" label is still a reversed-operand DAX bug (`Weekly Active Users Label_1`). **[pbix]** |
+| Weekly Active Users 28 | **Removed from website** | If kept: "of 28 developers" label bug (`Weekly Active Users Label` uses last week's actives as the denominator). **[pbix]** |
+| Copilot Acceptance Rate 78.6% | **Removed from website** | Value was formula-identical; card removal is a product decision. **[None / product decision]** |
+| Second "Copilot Adoption (current)" **57.8%** | "Copilot Impact on Productivity" **+60.4%** | Title still a copy-paste error in the pbix **[pbix]**; the numeric gap is the warehouse classification issue (§4). **[Warehouse]** |
+| — (no card) | **NEW: "Copilot Impact on QA Churn" +32.4%** (assisted 24.4% vs non-assisted 18.5%, flagged amber = worse) | The pbix has the columns (`v_copilot_assisted_summary.assisted_qa_churn / non_assisted_qa_churn / qa_churn_delta_pct`) but no card — and its values say the **opposite** (−7.1%, assisted better). Adding the card is **[pbix]**; making the number trustworthy is **[Warehouse]** (§4). |
 
 ---
 
-## 2. KPI-card reconciliation (the snapshot numbers)
+## 3. Size × Complexity heatmap — now diverges on two axes **[Warehouse]**
 
-| Card (snapshot) | pbix shows | Website (Jul 15 data) | Verdict |
-|---|---|---|---|
-| Team Productivity | **0.43**, +11.7%, pre-AI 0.384 | 0.441, +14.7%, pre-AI 0.384 | ✅ Same methodology (mean-of-weekly, confident mature weeks). Gap = data vintage (21 vs 23 mature weeks). See §4.4 for a small internal inconsistency. |
-| QA Churn | **22.4%**, −8.1% vs 24.4% | 23.1%, −5.4% vs 24.4% | ✅ Same methodology (pooled ticket rate). Vintage only. |
-| Total Output | **687**, 27 devs, 21 weeks | 737, 27 devs, 23 weeks | ✅ Vintage only. |
-| Copilot Adoption (current) | **66.7%**, "10 → 28 monthly users" | 71.7%, "10 → 34 monthly users" | ✅ Same formula (latest week ÷ rolling-4-week distinct users: 28/42 = 66.7% for Jul 5; 33/46 = 71.7% for Jul 12). Vintage only. Sub-label "53 of 28 developers" is a **DAX label bug** — see §3.1. |
-| Weekly Active Users | **28**, "of 28 developers", 29/6/18 tiers | 33, "of 31 developers", 29/7/18 tiers | ⚠️ Value is vintage-only; "of 28" is a **DAX label bug** (§3.2). Tiers sum to 53 lifetime users, so "28 of 28" is internally incoherent on the card. |
-| Copilot Acceptance Rate | **78.6%**, 1,890 suggestions | 77.3%, 3,235 suggestions | ✅ Identical formula (latest-week accepts ÷ suggestions: 1,486/1,890 = 78.6% for Jul 5). Vintage only. |
-| Second "Copilot Adoption (current)" — **57.8%**, 616/71, 0.709 vs 0.449 | — | "Copilot Impact on Productivity": **+60.4%**, 569/168, 0.379 vs 0.237 | ❌ Card **title is a copy-paste error** (it is the assisted-vs-non-assisted productivity lift, not adoption), and the underlying numbers genuinely diverge — see §4.1–4.3. |
+The website changed the per-bucket productivity formula in `compute_size_complexity()`:
 
-Bottom line on the snapshot: five of seven cards agree with the website's math and differ only
-because the pbix is one refresh behind. The problems concentrate in (a) three label/title bugs,
-and (b) everything derived from the Copilot-assisted correlation and intensity views.
+- **Old (still in pbix/warehouse and in the reference SQL):** pooled —
+  `bucket_tickets / (full-period authors × full-period weeks × 5)`.
+- **New (website):** **mean-of-weekly** — for each week where the bucket shipped ≥1
+  ticket, `tickets / (bucket-active authors that week × 5)`, averaged over the period.
+  Rationale (from the commit): the pooled denominator deflated baselines 2–4× vs the
+  plotted weekly series, making every bucket read "way above baseline" even during the
+  baseline period. QA churn cells stay pooled (unchanged).
 
----
+Combined with the earlier bucket-cut change, the pbix heatmap now differs in **both cuts
+and formula**:
 
-## 3. DAX label/title bugs (cosmetic but visible)
+| | pbix / warehouse | Website (current) |
+|---|---|---|
+| Size cuts | 0–300 / 301+ lines | **0–150 / 151+** |
+| Complexity cuts | 1–10 / 11+ files | **1–5 / 6+** |
+| Productivity per cell | pooled full-period | **mean-of-weekly, bucket-active authors** |
+| Example: small/simple baseline | 0.128 | **0.317** |
+| Example: small/simple post | 0.156 | **0.349** |
 
-1. **"53 of 28 developers"** — measure `Weekly Active Users Label_1` concatenates the operands in
-   reverse order: `FORMAT(TotalDevelopers) & " of " & FORMAT(ActiveUsers)` where
-   TotalDevelopers = 53 (lifetime distinct Copilot users) and ActiveUsers = 28 (latest week).
-   The website's equivalent label is `{totalCopilotUsers} of {teamSize}` = "54 of 31 developers"
-   (`KpiCards.tsx:68`). Note the website's own label is also questionable — telemetry contains more
-   user IDs (54) than the configured team size (31; `config.copilotCoveragePct` = 174%), so this
-   label confuses readers on both platforms.
-2. **"of 28 developers"** under Weekly Active Users — measure `Weekly Active Users Label` assigns
-   the latest week's `active_users` to its `TotalUsers` variable, so the card reads "28 … of 28
-   developers". The website uses the fixed team size (31). The warehouse has no team-size table,
-   which is why the DAX author reached for the wrong column.
-3. **Duplicate card title** — the 57.8% card is titled "Copilot Adoption (current)" but its
-   measure is `Copilot Productivity Impact` = (assisted − non-assisted) ÷ non-assisted
-   productivity. Website title: "Copilot Impact on Productivity".
+No cell in the pbix heatmap is comparable to the website anymore. **Fix: [Warehouse]** —
+rebuild `v_size_complexity` with the 150/5 cuts and the mean-of-weekly formula (derive the
+summary from the weekly per-bucket series, as the pipeline now does). The pbix DAX
+(`Productivity vs Baseline %`, cell labels) reads view columns and needs no change once
+the view is rebuilt. Note the repo's reference SQL
+(`pipeline/sql/copilot_dashboard_queries.sql`, Query 4) still encodes the old cuts and the
+pooled formula — update it first so the warehouse has a correct spec to build from.
+**[Website]** (the SQL file lives here) then **[Warehouse]**.
 
 ---
 
-## 4. Genuine calculation divergences (not vintage, not labels)
+## 4. Copilot-assisted correlation — still the biggest open issue **[Warehouse]**
 
-### 4.1 Copilot-assisted classification differs → 616/71 vs 569/168
+Unchanged from the first report, but now more consequential because the website surfaces
+the QA delta as a headline KPI card:
 
-The website rule (`compute_copilot_pr_correlation`): a ticket is *assisted* if any of its PRs was
-authored by an `AuthorUUID` with `suggestions > 0` in the **same Mon–Sun ISO week** as that PR's
-end date. Through the same cutoff (Jul 5), the website classifies **554 assisted / 122
-non-assisted**; the warehouse view in the pbix says **616 / 71** (89.7% assisted vs 82%).
-Week-by-week the two disagree in *both* directions (e.g. week of Mar 1: warehouse 20/8 vs website
-23/5; week of Apr 5: warehouse 24/3 vs website 17/10), so this is not explainable by data vintage
-alone — the warehouse's matching rule (join key, week alignment, or the `suggestions > 0`
-threshold) differs from the pipeline's.
+- **Classification:** warehouse 616 assisted / 71 non-assisted vs website 554 / 122
+  through the same cutoff; week-by-week disagreements go in both directions, so it is not
+  a data-vintage artifact. The website rule is: author UUID has `suggestions > 0` in the
+  **same Mon–Sun ISO week** as the PR's end date.
+- **QA churn sign flip:** warehouse −7.1% (assisted *better*) vs website +32.4% (assisted
+  *worse*). The two dashboards still tell opposite quality stories, and the website now
+  displays its version on an amber warning card. Do not quote either until unified.
+- **Productivity levels:** warehouse summary 0.709/0.449 remains unreproducible from its
+  own weekly view (~0.41/0.37) — the ~8 authors/week implied denominator matches the
+  reference SQL's `LIMIT 1` first-author-only counting defect (Query 7).
+- **Intensity buckets:** warehouse still includes all phases (1,056 tickets > 687 mature)
+  with ~12× inflated average suggestions; website is mature-only, suggestions > 0.
+- **NULL handling:** warehouse weekly view still emits `0.2` productivity / `0.000001`
+  rates for empty groups instead of NULL.
 
-### 4.2 Assisted productivity levels are ~1.9× the website's — and don't match the pbix's own weekly view
-
-`v_copilot_assisted_summary` reports assisted/non-assisted productivity of **0.709 / 0.449**.
-Neither number is reproducible from the pbix's *own* `v_copilot_assisted_weekly` rows, whose
-mean-of-weekly is **0.409 / 0.368**. The website reports **0.379 / 0.237**. The implied
-denominator in the warehouse summary is ≈8 authors/week (vs the website's 11–13), which is the
-signature of counting only **one author per ticket** — the reference SQL's Query 7 contains
-exactly this defect (`COUNT(DISTINCT (SELECT p.author_uuid ... LIMIT 1))` counts distinct
-*first* authors only). Because numerator and denominator groups are inflated by a similar factor,
-the headline **lift lands in the same ballpark (+57.8% vs +60.4%) largely by cancellation** — the
-underlying levels shown on the card ("0.709 vs 0.449 tix/FTE-day") are not comparable to the
-website's ("0.379 vs 0.237").
-
-### 4.3 The QA-churn quality story flips sign
-
-- Warehouse/pbix: assisted QA churn **0.2224 vs 0.2394** non-assisted → **−7.1%** (*assisted code
-  is cleaner*).
-- Website: assisted **0.2443 vs 0.1845** → **+32.4%** (*assisted code needs more QA rework*).
-
-Both use the same pooled formula (`tickets_with_churn / tickets`); the flip is caused entirely by
-the classification difference in §4.1 — moving ~100 tickets between the groups reverses the
-conclusion. **This is the most decision-relevant discrepancy**: the two dashboards currently
-support opposite narratives about Copilot's quality impact. Until the classification rule is
-unified, neither delta should be quoted.
-
-### 4.4 Summary vs weekly views inside the pbix disagree slightly
-
-`v_team_summary` says 687 tickets / 21 confident mature weeks / 0.4289, but recomputing from the
-pbix's own `v_weekly_team_metrics` gives 718 mature tickets / 22 confident weeks / 0.4318. The
-summary and weekly views appear to have been snapshotted at different refresh times (or apply the
-partial-week cutoff differently). Small today, but it means the pbix can contradict itself after
-a refresh.
-
-### 4.5 Size × Complexity buckets are stale
-
-The pbix `v_size_complexity` uses the old cuts — size **0-300 / 301+** lines, complexity
-**1-10 / 11+** files. The website pipeline now uses **0-150 / 151+** and **1-5 / 6+**
-(`copilot-dashboard-data.json → bucketing`, `components/copilot-dashboard/charts/buckets.ts`).
-The four heatmap cells are therefore not comparable between the two dashboards at all. (The
-reference SQL file also still has the old 300/10 cuts — it's behind the pipeline too.)
-
-### 4.6 Copilot intensity view ignores the mature filter and double-counts suggestions
-
-pbix `v_copilot_intensity`: 31 low / 131 medium / 894 high = **1,056 tickets** — more than the
-687 mature tickets, so it clearly includes baseline/transition tickets. Website (mature only,
-suggestions > 0): 23 / 77 / 469 = 569. Average suggestions in the "high" bucket: **5,236 vs
-435** (~12×), consistent with summing the author's weekly suggestion totals once per PR (a ticket
-with several PRs in one week re-counts the same week's suggestions) and/or over all phases.
-
-### 4.7 Placeholder values instead of NULL in the weekly assisted view
-
-For weeks with zero non-assisted tickets, the warehouse emits `non_assisted_productivity = 0.2`
-(i.e. `1/(1×5)` — a COALESCE-to-1 artifact) and QA rates like `0.000001`, where the reference SQL
-and the website emit NULL. Any DAX `AVERAGE` over these columns silently ingests fake 0.2 rows.
-(The reference SQL's convention — NULL — is the right one.)
-
-### 4.8 DAX measures that deviate from the website's ROI/rolling logic
-
-- **Two inconsistent ROI formulas coexist**: `Monthly Capacity Released` = `max(0, avgCopilotUsers
-  × upliftPct) × $19,166.67` — this matches the website's `RoiCapacityChart.tsx` ($230k/12 ✓).
-  But `FTE Saved Weekly` = `(current − baseline productivity) × team_authors × 5` is a different
-  (gain × headcount) model that will not reconcile with the monthly one.
-- **Monthly ROI inputs**: the website drops weeks that are low-confidence **or missing Copilot
-  telemetry** before monthly aggregation; DAX `Monthly Productivity` only filters
-  `low_confidence = 0`.
-- **`Copilot Adoption %`** = `AVERAGE(copilot_pct)/100` — an unweighted average of weekly
-  percentages; the website's headline is latest-week only. Fine for a trend visual, wrong if
-  surfaced as "current adoption".
-- **`Copilot_Adoption_Pct`** (the SUMMARIZE-based measure) counts
-  `DISTINCTCOUNT(v_tickets[jira_ticket])` where its own comments say "users" — it measures ticket
-  counts, not users. It appears abandoned; it should be deleted before someone binds a visual
-  to it.
-- **Rolling averages**: website requires ≥2 qualifying points in the 4-week window (except
-  Size×Complexity Trends); the DAX rolling measures (`Productivity Rolling Avg`, `Velocity 4W
-  Avg`, `Acceptance Rate Rolling Avg`) impose no minimum-point rule, so the earliest weeks can
-  render single-point "averages".
-
-### 4.9 Documentation nit
-
-`docs/ecs-dashboard-analytics.md` describes weeks as "Saturday-ending" in several places, but the
-pipeline and reference SQL both use Mon–Sun ISO weeks with **Sunday** `week_ending`
-(`to_period('W-SUN')`). The doc should be corrected; the code is consistent.
+**Fix: [Warehouse]** for all five, using the corrected reference SQL as the spec.
 
 ---
 
-## 5. Recommendations
+## 5. New website analytics with no warehouse/pbix counterpart
 
-1. **Rebuild the Fabric warehouse views from `pipeline/sql/copilot_dashboard_queries.sql`** (after
-   updating that file's size/complexity cuts to 150/5 and fixing its Query 7 `LIMIT 1` author
-   count). The file's header already states the contract: Power BI should bind to the views and
-   never recompute aggregates in DAX/M — the pbix honors that for the base metrics, which is why
-   those five KPI cards reconcile perfectly.
-2. **Unify the assisted-ticket rule** (AuthorUUID + same ISO Mon–Sun week + suggestions > 0) and
-   re-verify the QA churn delta before quoting it anywhere — today the two dashboards tell
-   opposite quality stories (§4.3).
-3. **Fix the three DAX label bugs** (§3): swap the operands in `Weekly Active Users Label_1`,
-   point `Weekly Active Users Label` at a real team-size value, and retitle the 57.8% card
-   "Copilot Impact on Productivity". Add a tiny `config` table (team_size = 31) to the warehouse
-   so labels stop improvising denominators.
-4. **Refresh all views in one pass** so `v_team_summary` and `v_weekly_team_metrics` come from the
-   same cut (§4.4).
-5. **Filter `v_copilot_intensity` to mature-period tickets with suggestions > 0** and dedupe
-   author-week suggestion sums (§4.6); emit NULL, not 0.2/0.000001 placeholders, for empty groups
-   (§4.7).
-6. **Prune abandoned DAX** (`Copilot_Adoption_Pct`, the `FTE Saved Weekly` family, commented-out
-   variants) so future maintainers don't bind visuals to dead logic.
+### 5.1 Output Volume — PRs & code vs tickets **[Warehouse]**, workaround **[pbix]**
+
+The pipeline now emits `totalPRs` and `totalLines` per week (sums of per-ticket PR counts
+and PR lines), and a new `OutputVolumeChart` shows PRs-merged vs tickets-closed with a
+rolling **PRs-per-ticket** line and its pre-AI baseline, plus a lines/FTE-day mode. Its
+purpose is reconciling ticket productivity with Bitbucket/Qlik PR counts (more, smaller
+PRs per ticket).
+
+- The warehouse `v_weekly_team_metrics` has no PR/line columns → **[Warehouse]**: add
+  `total_prs`, `total_lines` to the view.
+- Interim **[pbix]** workaround: the imported `v_tickets` already carries `pr_count` and
+  `total_lines`, so `SUM(pr_count)` / `SUM(total_lines)` by `week_ending` reproduces the
+  series in DAX today.
+
+### 5.2 Development-department adoption series **[Warehouse]** then **[pbix]**
+
+The pipeline now classifies each telemetry user by modal `Department` and emits
+`devActiveUsers` / `devRollingActiveUsers` / `devCopilotPct` per week; the productivity
+chart overlays the dev-only adoption line (rationale: non-engineering seat waves inflate
+the rolling denominator — e.g. latest week all-users 71.7% vs dev-only 75.0%, and 79.2% vs
+66.7% for the pbix's latest week). The warehouse has **no Department data at all** — no
+column on `v_copilot_weekly_adoption`, no user dimension. **Fix: [Warehouse]** (land the
+Department column from the telemetry export, add the three dev columns to the adoption
+view), then **[pbix]** to overlay the line.
+
+### 5.3 Removed website features (no pbix action)
+
+The Projects/throughput page (`ProjectThroughputChart`) was deleted, and the adoption
+bar chart + both heatmaps were dropped from the main dashboard page. The pbix never had
+the projects view, so nothing to do; whether the pbix keeps its adoption/heatmap visuals
+is a product choice, not a defect.
+
+---
+
+## 6. Partial-period handling — website tightened, pbix didn't **[pbix]**
+
+- The website now applies `trimIncompleteWeeks()` at fetch time (drops any week ending
+  past `dataCutoff` from every series) — this generalizes what the warehouse views already
+  do server-side, so no warehouse gap here.
+- **ROI page:** the month containing the data cutoff is labeled **"(partial)"** and is
+  **excluded from the peak-month callout** (it still shows as the current run rate). The
+  pbix's `Peak Capacity` / `Peak Month Label` / `Show ROI Month` measures include the
+  partial month, so after a refresh early in a month the pbix can crown a 1-week month as
+  peak or show a misleading run-rate. **Fix: [pbix]** — add an `is_partial` flag to
+  `DimMonth` (or filter `Peak Capacity`'s month set to months whose last week ≤ cutoff)
+  and suffix the label. The website also dropped `avgAdoptionPct` from its ROI month
+  buckets; the pbix `Copilot Adoption %` measure (unweighted `AVERAGE(copilot_pct)`) no
+  longer has a website counterpart on that page.
+
+---
+
+## 7. Unchanged housekeeping items
+
+| Item | Fix |
+|---|---|
+| pbix data is one refresh behind (week of Jul 5 vs Jul 12) | **[Refresh]** |
+| `v_team_summary` vs `v_weekly_team_metrics` snapshotted at different times inside the pbix (687/21wk vs 718/22wk) | **[Warehouse]** — refresh all views in one pass |
+| Abandoned DAX (`Copilot_Adoption_Pct` counts tickets as "users"; `FTE Saved Weekly` family uses a different ROI formula than `Monthly Capacity Released`) | **[pbix]** — delete or align |
+| DAX rolling averages impose no ≥2-point minimum (website requires ≥2 everywhere except size/complexity trends) | **[pbix]** |
+| Docs still say "Saturday-ending" weeks in two Key-Definitions rows (Copilot-assisted, Partial week); code is Mon–Sun ISO / Sunday-ending throughout | **[Website]** — docs fix |
+| Baseline 0.384 (warehouse) vs 0.3844 (website) | Rounding; ignore |
+
+---
+
+## 8. Recommended order of work
+
+1. **[Website]** Update `pipeline/sql/copilot_dashboard_queries.sql` to match the current
+   pipeline: 150/5 bucket cuts, mean-of-weekly per-bucket heatmap productivity, fixed
+   Query 7 author counting, mature-only intensity, NULL (not placeholder) empty groups,
+   `total_prs`/`total_lines` on the weekly view, dev-department adoption columns. This
+   file is the contract the warehouse should be rebuilt from.
+2. **[Warehouse]** Rebuild the Fabric views from that spec in a single refresh, and align
+   the assisted-ticket classification rule — then re-check whether the QA churn delta is
+   +32% or −7%; that answer changes the Copilot quality narrative.
+3. **[pbix]** Retitle the 57.8% card, fix/retire the two developer-count labels, add the
+   "Copilot Impact on QA Churn" card, add the output-volume visual (from `v_tickets` until
+   the view lands), add partial-month exclusion to the ROI peak measures, delete abandoned
+   measures, then refresh.
