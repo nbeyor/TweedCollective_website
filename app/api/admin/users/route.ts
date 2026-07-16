@@ -40,12 +40,19 @@ export async function GET() {
         }
       })
 
+      const clientSlugs = Array.isArray(user.publicMetadata?.clientSlugs)
+        ? (user.publicMetadata.clientSlugs as unknown[]).filter(
+            (slug): slug is string => typeof slug === 'string'
+          )
+        : []
+
       return {
         id: user.id,
         email: user.primaryEmailAddress?.emailAddress || 'No email',
         firstName: user.firstName,
         lastName: user.lastName,
         documentAccess,
+        clientSlugs,
         createdAt: user.createdAt,
         grantInfo // Map of documentId -> { method, timestamp }
       }

@@ -2,13 +2,18 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX } from 'lucide-react'
+import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX, LayoutDashboard } from 'lucide-react'
 import Link from 'next/link'
 import { getGrantablePermissions } from '@/content/documents'
+import { CLIENT_CONFIGS } from '@/content/clients'
 import type { UserWithAccess, Invitation } from '@/lib/types'
 
 // Get documents/permissions from centralized registry
 const DOCUMENTS = getGrantablePermissions()
+
+// Client workspaces (dashboards under /clients/[slug]) — gated separately
+// from documents via Clerk public metadata clientSlugs
+const WORKSPACES = CLIENT_CONFIGS.map(c => ({ slug: c.slug, name: c.name }))
 
 export default function AdminPage() {
   const { userId, isLoaded } = useAuth()
@@ -278,6 +283,44 @@ export default function AdminPage() {
     }
   }
 
+  async function toggleWorkspaceAccess(targetUserId: string, clientSlug: string, currentlyHasAccess: boolean) {
+    setUpdating(`${targetUserId}-workspace-${clientSlug}`)
+
+    try {
+      const response = await fetch('/api/admin/update-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: targetUserId,
+          clientSlug,
+          action: currentlyHasAccess ? 'revoke' : 'grant'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setUsers(users.map(u => {
+          if (u.id === targetUserId) {
+            return {
+              ...u,
+              clientSlugs: currentlyHasAccess
+                ? u.clientSlugs.filter(s => s !== clientSlug)
+                : [...u.clientSlugs, clientSlug]
+            }
+          }
+          return u
+        }))
+      } else {
+        setError(data.error || 'Failed to update workspace access')
+      }
+    } catch (err) {
+      setError('Failed to update workspace access')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
   async function testEmail() {
     setTestingEmail(true)
     setEmailTestResult(null)
@@ -475,6 +518,41 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* Client Workspaces */}
+          <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
+            <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
+              <h2 className="text-lg font-semibold text-charcoal">Client Workspaces</h2>
+              <p className="text-sm text-warm-gray mt-1">Dashboard access per client — grant or revoke from each user below</p>
+            </div>
+            <div className="divide-y divide-stone/20">
+              {WORKSPACES.map((ws) => {
+                const usersWithWorkspace = users.filter(u => (u.clientSlugs || []).includes(ws.slug))
+                return (
+                  <div key={ws.slug} className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <LayoutDashboard className="w-6 h-6 text-taupe" />
+                      <div className="flex-grow">
+                        <h3 className="font-medium text-charcoal">{ws.name} workspace</h3>
+                        <p className="text-sm text-warm-gray">
+                          /clients/{ws.slug} • {usersWithWorkspace.length} user{usersWithWorkspace.length !== 1 ? 's' : ''} with access
+                        </p>
+                      </div>
+                    </div>
+                    {usersWithWorkspace.length > 0 && (
+                      <div className="mt-3 pl-10 flex flex-wrap gap-2">
+                        {usersWithWorkspace.map((u) => (
+                          <span key={u.id} className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-medium">
+                            {u.email}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
           {/* Documents & Invitations */}
           <div className="bg-white rounded-xl border border-stone/30 overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-stone/20 bg-stone/10">
@@ -668,9 +746,14 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
+                        {(u.clientSlugs || []).length > 0 && (
+                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-sage/20 text-sage">
+                            {u.clientSlugs.length} workspace{u.clientSlugs.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          u.documentAccess.length > 0 
-                            ? 'bg-green-100 text-green-700' 
+                          u.documentAccess.length > 0
+                            ? 'bg-green-100 text-green-700'
                             : 'bg-stone/20 text-warm-gray'
                         }`}>
                           {u.documentAccess.length} document{u.documentAccess.length !== 1 ? 's' : ''}
@@ -685,6 +768,40 @@ export default function AdminPage() {
                     
                     {expandedUser === u.id && (
                       <div className="mt-4 pl-14 space-y-2">
+                        {/* Client workspace access (dashboards) */}
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-warm-gray pt-1">Client Workspaces</h4>
+                        {WORKSPACES.map((ws) => {
+                          const hasAccess = (u.clientSlugs || []).includes(ws.slug)
+                          const isUpdating = updating === `${u.id}-workspace-${ws.slug}`
+
+                          return (
+                            <div
+                              key={ws.slug}
+                              className="flex items-center justify-between p-3 rounded-lg bg-stone/10"
+                            >
+                              <div className="flex items-center gap-2 flex-grow">
+                                <LayoutDashboard className="w-4 h-4 text-taupe" />
+                                <span className="text-sm text-charcoal">{ws.name} workspace</span>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleWorkspaceAccess(u.id, ws.slug, hasAccess)
+                                }}
+                                disabled={isUpdating}
+                                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                                  hasAccess
+                                    ? 'bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-700'
+                                    : 'bg-stone/20 text-warm-gray hover:bg-green-100 hover:text-green-700'
+                                } ${isUpdating ? 'opacity-50' : ''}`}
+                              >
+                                {isUpdating ? '...' : hasAccess ? 'Revoke' : 'Grant'}
+                              </button>
+                            </div>
+                          )
+                        })}
+
+                        <h4 className="text-xs font-semibold uppercase tracking-wide text-warm-gray pt-3">Documents</h4>
                         {DOCUMENTS.map((doc) => {
                           const hasAccess = u.documentAccess.includes(doc.id)
                           const isUpdating = updating === `${u.id}-${doc.id}`
