@@ -151,6 +151,7 @@ export function UserAdoptionHeatmap() {
   const [metric, setMetric] = useState<Metric>('adoption')
   const [gran, setGran] = useState<Granularity>('month')
   const [scope, setScope] = useState<Scope>('month')
+  const [dept, setDept] = useState<string>('all')
   const [hover, setHover] = useState<{ alias: string; x: number; y: number } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
 
@@ -171,7 +172,22 @@ export function UserAdoptionHeatmap() {
     return () => clearTimeout(t)
   }, [copied])
 
-  const perUser = data?.perUser ?? []
+  const allUsers = useMemo(() => data?.perUser ?? [], [data])
+
+  // Distinct departments present in the data (from the PR export's Department
+  // column, falling back to AI telemetry for telemetry-only users).
+  const departments = useMemo(() => {
+    const s = new Set<string>()
+    for (const u of allUsers) s.add(u.department ?? 'Unknown')
+    return Array.from(s).sort()
+  }, [allUsers])
+
+  // All derived metrics — grid, team references, window scores — recompute
+  // against the filtered cohort, so "vs team" reads as "vs this department".
+  const perUser = useMemo(
+    () => (dept === 'all' ? allUsers : allUsers.filter(u => (u.department ?? 'Unknown') === dept)),
+    [allUsers, dept],
+  )
 
   // Most recent week-ending date across all developers. The scope windows anchor to
   // the data, not `Date.now()`, since the dataset can end days before "today".
@@ -401,7 +417,7 @@ export function UserAdoptionHeatmap() {
     )
   }
 
-  if (!perUser.length) {
+  if (!allUsers.length) {
     return (
       <div className="min-h-screen bg-[#fafaf9]">
         <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
@@ -474,6 +490,22 @@ export function UserAdoptionHeatmap() {
             <button className={toggleBtn(gran === 'month')} onClick={() => setGran('month')}>Monthly</button>
             <button className={toggleBtn(gran === 'week')} onClick={() => setGran('week')}>Weekly</button>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] uppercase tracking-wider text-[#a8a29e]" style={{ fontFamily: 'DM Sans, sans-serif' }}>Department</span>
+            <select
+              value={dept}
+              onChange={e => setDept(e.target.value)}
+              className="px-3 py-1.5 text-xs font-medium rounded-md bg-white text-[#57534e] border border-[#e7e5e4] hover:bg-[#f5f5f4] cursor-pointer"
+              style={{ fontFamily: 'DM Sans, sans-serif' }}
+            >
+              <option value="all">All ({allUsers.length})</option>
+              {departments.map(d => (
+                <option key={d} value={d}>
+                  {d} ({allUsers.filter(u => (u.department ?? 'Unknown') === d).length})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         {/* Window summary — elevates the overall score for the selected window */}
         <div className="flex flex-wrap items-stretch gap-3 mb-5">
@@ -502,6 +534,9 @@ export function UserAdoptionHeatmap() {
               <tr>
                 <th className="sticky left-0 z-10 bg-white text-left text-[10px] text-[#a8a29e] font-medium p-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                   Dev
+                </th>
+                <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-left" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                  Dept
                 </th>
                 <th className="text-[10px] text-[#a8a29e] font-medium p-1 text-left" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                   Tier
@@ -561,7 +596,7 @@ export function UserAdoptionHeatmap() {
                   <React.Fragment key={u.alias}>
                   {showDivider && (
                     <tr aria-hidden>
-                      <td colSpan={4 + periods.length} className="p-0">
+                      <td colSpan={5 + periods.length} className="p-0">
                         <div
                           className="text-[9px] text-[#a8a29e] uppercase tracking-wider py-1"
                           style={{ borderTop: '2px dotted #d6d3d1', fontFamily: 'DM Sans, sans-serif' }}
@@ -597,6 +632,12 @@ export function UserAdoptionHeatmap() {
                           {copied === u.alias ? 'copied ✓' : shortUuid(u.uuid)}
                         </button>
                       )}
+                    </td>
+                    <td
+                      className="text-[10px] p-1 pr-2 whitespace-nowrap align-top"
+                      style={{ color: active ? '#57534e' : '#a8a29e', fontFamily: 'DM Sans, sans-serif' }}
+                    >
+                      {u.department ?? '—'}
                     </td>
                     <td className="text-[10px] p-1 whitespace-nowrap align-top" style={{ color: tier.color }}>
                       {tier.label}
@@ -719,6 +760,7 @@ export function UserAdoptionHeatmap() {
             <p>The bold <strong>Score</strong> chip is the developer&apos;s {metric === 'adoption' ? 'adoption %' : 'productivity as a % of team'} for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy).</p>
             <p><strong>Trend</strong> badges: <strong>team</strong> = this window vs team-typical (percentage points; ▲ above, ▼ below); <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. Both recompute with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s trend over time against the team reference.</p>
             <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
+            <p><strong>Department</strong> comes from the PR export (falling back to AI telemetry for users with no PRs). Filtering recomputes every team reference against the selected department only — &ldquo;vs team&rdquo; then means &ldquo;vs this department.&rdquo; Note that most non-Development seats show AI activity but no ticketed PRs, so their productivity reads as <strong>No PRs</strong> by design.</p>
             <p className="text-[11px] italic pt-2 border-t border-[#f5f5f4] mt-3">
               Hover any cell for the underlying tickets, Copilot-active weeks, suggestions and acceptance rate. A ticket worked by multiple developers is credited to each contributor.
             </p>

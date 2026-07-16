@@ -35,6 +35,7 @@ import type { CopilotDashboardData } from './types'
 import { DashboardHeader } from './charts/DashboardHeader'
 import { KpiCards } from './charts/KpiCards'
 import { ProductivityChart } from './charts/ProductivityChart'
+import { OutputVolumeChart } from './charts/OutputVolumeChart'
 import { QaChurnChart } from './charts/QaChurnChart'
 import { CopilotAdoptionChart } from './charts/CopilotAdoptionChart'
 import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
@@ -132,6 +133,7 @@ export function CopilotKpiDashboard() {
         </div>
         <KpiCards data={filtered} />
         <ProductivityChart data={filtered} />
+        <OutputVolumeChart data={filtered} />
         <QaChurnChart data={filtered} copilotAdoption={filtered.copilotAdoption} />
 
         <div className="grid grid-cols-2 gap-4 mb-8">

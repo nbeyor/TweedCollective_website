@@ -46,6 +46,7 @@ export function ProductivityChart({ data }: Props) {
 
   const labels = weekly.map(e => formatWeekLabel(e.week))
   const hasCopilot = weekly.some(e => e.copilotPct != null)
+  const hasDevCopilot = weekly.some(e => e.copilotPctDev != null)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const datasets: any[] = [
@@ -102,6 +103,27 @@ export function ProductivityChart({ data }: Props) {
       spanGaps: false,
       yAxisID: 'y1',
       order: 4,
+    })
+  }
+
+  // 4. Development-department adoption % — the like-for-like signal. The
+  // all-users line dips whenever a wave of non-engineering seats is onboarded
+  // (sporadic users inflate the rolling denominator); this line doesn't.
+  if (hasDevCopilot) {
+    datasets.push({
+      type: 'line',
+      label: 'Adoption % (Dev dept)',
+      data: weekly.map(e => e.copilotPctDev),
+      borderColor: COPILOT_COLOR,
+      backgroundColor: 'transparent',
+      borderWidth: 1.5,
+      borderDash: [5, 3],
+      tension: 0.3,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      spanGaps: false,
+      yAxisID: 'y1',
+      order: 5,
     })
   }
 
@@ -182,7 +204,7 @@ export function ProductivityChart({ data }: Props) {
           label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
             const v = ctx.parsed.y
             if (v == null) return ''
-            if (ctx.dataset.label?.includes('Copilot')) return `${ctx.dataset.label}: ${v.toFixed(0)}%`
+            if (ctx.dataset.label?.includes('Copilot') || ctx.dataset.label?.includes('Adoption')) return `${ctx.dataset.label}: ${v.toFixed(0)}%`
             return `${ctx.dataset.label}: ${v.toFixed(3)}`
           },
           afterBody: () => '',
