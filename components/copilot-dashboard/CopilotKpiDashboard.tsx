@@ -37,9 +37,6 @@ import { KpiCards } from './charts/KpiCards'
 import { ProductivityChart } from './charts/ProductivityChart'
 import { OutputVolumeChart } from './charts/OutputVolumeChart'
 import { QaChurnChart } from './charts/QaChurnChart'
-import { CopilotAdoptionChart } from './charts/CopilotAdoptionChart'
-import { SizeComplexityHeatmap } from './charts/SizeComplexityHeatmap'
-import { SizeComplexityQaHeatmap } from './charts/SizeComplexityQaHeatmap'
 import { CumulativeChart } from './charts/CumulativeChart'
 import { SurveySection } from './charts/SurveySection'
 import { CopilotCorrelationChart } from './charts/CopilotCorrelationChart'
@@ -110,13 +107,6 @@ export function CopilotKpiDashboard() {
             View ROI Analysis →
           </Link>
           <Link
-            href="/clients/ecs/sdlc-dashboard/projects"
-            className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
-            style={{ fontFamily: 'DM Sans, sans-serif' }}
-          >
-            View Project Throughput →
-          </Link>
-          <Link
             href="/clients/ecs/sdlc-dashboard/size-complexity-trends"
             className="inline-flex items-center gap-2 rounded-lg border border-[#e7e5e4] bg-white px-4 py-2 text-sm font-medium text-[#15803d] shadow-sm hover:bg-[#f0fdf4] transition-colors"
             style={{ fontFamily: 'DM Sans, sans-serif' }}
@@ -137,11 +127,8 @@ export function CopilotKpiDashboard() {
         <QaChurnChart data={filtered} copilotAdoption={filtered.copilotAdoption} />
 
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <CopilotAdoptionChart data={filtered} />
           <CopilotCorrelationChart data={filtered} />
-          <SizeComplexityHeatmap data={filtered} />
           <CumulativeChart data={filtered} />
-          <SizeComplexityQaHeatmap data={filtered} />
         </div>
 
         {filtered.survey && <SurveySection survey={filtered.survey} />}

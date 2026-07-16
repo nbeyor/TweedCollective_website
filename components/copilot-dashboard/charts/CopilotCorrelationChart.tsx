@@ -78,11 +78,6 @@ export function CopilotCorrelationChart({ data }: Props) {
     },
   }
 
-  const intensity = corr.copilotIntensity
-  const intensityRows = ['low', 'medium', 'high'].filter(
-    k => intensity[k] && intensity[k].tickets > 0
-  )
-
   return (
     <div className="rounded-xl border border-[#e7e5e4] bg-white p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
@@ -94,33 +89,6 @@ export function CopilotCorrelationChart({ data }: Props) {
       <div style={{ height: 180 }}>
         <Chart type="bar" data={chartData} options={options as never} />
       </div>
-
-      {intensityRows.length > 0 && (
-        <div className="mt-4 border-t border-[#f5f5f4] pt-3">
-          <p className="text-[10px] font-medium text-[#a8a29e] uppercase tracking-wider mb-2" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            By Copilot Intensity (suggestions/ticket)
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            {intensityRows.map(k => {
-              const b = intensity[k]
-              const label = k === 'low' ? '≤10' : k === 'medium' ? '11–50' : '51+'
-              return (
-                <div key={k} className="rounded-lg bg-[#fafaf9] p-2 text-center">
-                  <p className="text-[10px] text-[#a8a29e] uppercase" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                    {k} ({label})
-                  </p>
-                  <p className="text-sm font-semibold text-[#1c1917]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                    {b.tickets} tix
-                  </p>
-                  <p className="text-[10px] text-[#57534e]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                    QA: {(b.qaChurn * 100).toFixed(0)}%
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
