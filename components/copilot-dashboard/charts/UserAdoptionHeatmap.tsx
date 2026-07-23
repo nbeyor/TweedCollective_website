@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import type { CopilotDashboardData } from '../types'
+import type { CopilotDashboardData, PerUserEntry } from '../types'
 import { trimIncompleteWeeks } from '../utils'
 
 type Granularity = 'month' | 'week'
@@ -130,9 +130,10 @@ function Sparkline({ dev, team, yMax, color }: { dev: (number | null)[]; team: (
   )
 }
 
-function shortUuid(uuid: string): string {
-  if (uuid.length <= 12) return uuid
-  return `${uuid.slice(0, 8)}…${uuid.slice(-4)}`
+// Row label: the user's email local part (e.g. "pnagpal"), falling back to the
+// stable Dev-NN alias for users the export has no email for.
+function displayName(u: PerUserEntry): string {
+  return u.email || u.alias
 }
 
 export function UserAdoptionHeatmap() {
@@ -142,7 +143,6 @@ export function UserAdoptionHeatmap() {
   const [scope, setScope] = useState<Scope>('month')
   const [dept, setDept] = useState<string>('all')
   const [hover, setHover] = useState<{ alias: string; x: number; y: number } | null>(null)
-  const [copied, setCopied] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/data/copilot-dashboard-data.json')
@@ -153,13 +153,6 @@ export function UserAdoptionHeatmap() {
       .then(d => setData(trimIncompleteWeeks(d)))
       .catch(e => setError(e.message))
   }, [])
-
-  // Clear the "copied ✓" feedback shortly after a UUID is copied.
-  useEffect(() => {
-    if (!copied) return
-    const t = setTimeout(() => setCopied(null), 1500)
-    return () => clearTimeout(t)
-  }, [copied])
 
   const allUsers = useMemo(() => data?.perUser ?? [], [data])
 
@@ -445,8 +438,8 @@ export function UserAdoptionHeatmap() {
             Per-Developer Productivity
           </h1>
           <p className="text-sm text-[#57534e] max-w-3xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-            One row per developer, labeled by a stable alias (<code className="text-xs bg-[#f5f5f4] px-1 rounded">Dev-NN</code>)
-            with its author <strong>UUID</strong> shown beneath. The bold chip shows the developer&apos;s{' '}
+            One row per developer, labeled by their <strong>email username</strong> (e.g.{' '}
+            <code className="text-xs bg-[#f5f5f4] px-1 rounded">pnagpal</code>). The bold chip shows the developer&apos;s{' '}
             <strong>tickets and active weeks</strong> for the window, and their resulting <strong>pace</strong>{' '}
             (tickets ÷ active weeks) as a % of the <strong>pre-AI team baseline</strong> — a fixed historical bar
             (100% = the average developer&apos;s pace before AI), not a comparison against current teammates. The <strong>self</strong> badge compares the window vs the
@@ -586,22 +579,8 @@ export function UserAdoptionHeatmap() {
                   >
                     <td className="sticky left-0 z-10 bg-white p-1 pr-3 whitespace-nowrap align-top">
                       <div className="text-[11px] font-semibold leading-tight" style={{ color: active ? '#1c1917' : '#a8a29e' }}>
-                        {u.alias}
+                        {displayName(u)}
                       </div>
-                      {u.uuid && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard?.writeText(u.uuid)
-                            setCopied(u.alias)
-                          }}
-                          title={`${u.uuid}\n(click to copy)`}
-                          className="text-[8px] text-[#a8a29e] hover:text-[#57534e] transition-colors leading-tight"
-                          style={{ fontFamily: 'JetBrains Mono, monospace' }}
-                        >
-                          {copied === u.alias ? 'copied ✓' : shortUuid(u.uuid)}
-                        </button>
-                      )}
                     </td>
                     <td
                       className="text-[10px] p-1 pr-2 whitespace-nowrap align-top"
@@ -655,7 +634,7 @@ export function UserAdoptionHeatmap() {
                       const display = cellNoPrs ? '—' : `${cell.tickets}`
                       const acceptanceRate = cell.suggestions > 0 ? Math.round((cell.acceptances / cell.suggestions) * 100) : null
                       const title =
-                        `${u.alias} · ${periodLabel(p, gran)}\n` +
+                        `${displayName(u)} · ${periodLabel(p, gran)}\n` +
                         (cellNoPrs
                           ? 'No ticketed PRs this period (Copilot activity only)\n'
                           : `Tickets: ${cell.tickets} over ${cell.weeksPresent} wk (${cell.productivity.toFixed(2)}/wk)\n`) +
@@ -709,14 +688,9 @@ export function UserAdoptionHeatmap() {
               className="fixed z-50 pointer-events-none rounded-lg border border-[#e7e5e4] bg-white shadow-lg p-3"
               style={{ left, top: hover.y + 6 }}
             >
-              <div className="text-[10px] font-semibold text-[#1c1917] mb-0.5" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                {u.alias} · Tickets / active wk over time
+              <div className="text-[10px] font-semibold text-[#1c1917] mb-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                {displayName(u)} · Tickets / active wk over time
               </div>
-              {u.uuid && (
-                <div className="text-[8px] text-[#a8a29e] mb-1" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
-                  {u.uuid}
-                </div>
-              )}
               <Sparkline dev={devSeries} team={teamSeries} yMax={yMax} color={color} />
               <div className="text-[8px] text-[#a8a29e] mt-1" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <span style={{ color }}>■</span> developer &nbsp; <span className="text-[#d6d3d1]">┄ pre-AI team baseline</span>
@@ -735,7 +709,7 @@ export function UserAdoptionHeatmap() {
             <p><strong>The score is a pace, not a raw count</strong> — everyone is scored against the same baseline denominator ({teamBaseRate ? teamBaseRate.toFixed(2) : '—'} tix/wk), but the numerator is tickets <em>per active week</em>, so a developer with 6 tickets in 1 active week (6.0/wk) outscores one with 7 tickets across 2 weeks (3.5/wk). The chip shows the tickets, the active weeks, and the resulting per-week rate so the math is visible. The <strong>Avg tickets / dev</strong> card at the top is the raw-count yardstick: how many tickets the typical developer with PRs shipped in this window.</p>
             <p><strong>Counts are small integers</strong> — in a one-week window one ticket moves the score by ~{teamBaseRate ? Math.round(100 / teamBaseRate) : 50}pp, so developers with the same ticket count tie exactly, and tickets are not size-normalized (a config tweak counts the same as a feature). Prefer the Month or Overall scope for judgments; treat Last week as a pulse check.</p>
             <p><strong>No PRs</strong> = the developer shows Copilot activity in the window but authored no Jira-linked PRs, so there is no productivity signal to score. This is common for non-developer roles with a Copilot license, and for work that never lands in a ticketed PR (untracked repos, PRs without a Jira reference) — it is not a 0% performance reading. Cells with Copilot activity but no ticketed PRs show <strong>—</strong> in neutral grey for the same reason.</p>
-            <p>The bold <strong>Score</strong> chip is the developer&apos;s ticket count and % of the pre-AI team baseline for the selected window, colored on the same scale as the cells. Beneath each alias is the author <strong>UUID</strong> (click to copy). There is deliberately no vs-team ranking — the bar is historical, not current teammates.</p>
+            <p>The bold <strong>Score</strong> chip is the developer&apos;s ticket count and % of the pre-AI team baseline for the selected window, colored on the same scale as the cells. Rows are labeled by the developer&apos;s <strong>email username</strong> (the part before the @). There is deliberately no vs-team ranking — the bar is historical, not current teammates.</p>
             <p><strong>Trend</strong> badge: <strong>self</strong> = this window vs the developer&apos;s own prior equivalent window (last month vs the month before, or last week vs the week before) — hidden on &ldquo;Overall&rdquo; since there is no prior window. It recomputes with the <strong>Scope</strong> selector. Hover a row for a <strong>sparkline</strong> of the developer&apos;s pace over time against the pre-AI baseline bar. On &ldquo;Overall&rdquo;, productivity counts only post-rollout weeks, so the score reads &ldquo;since AI vs before AI.&rdquo;</p>
             <p><strong>Tier</strong> reflects lifetime Copilot-active days (Heavy ≥30, Medium 10–29, Light &lt;10). The <strong>Scope</strong> buttons float developers active in the window to the top; developers with no activity are dimmed and sorted below the dotted line (nothing is hidden).</p>
             <p><strong>Department</strong> comes from the PR export (falling back to AI telemetry for users with no PRs). Filtering changes which developers are shown (and the avg tickets/dev card); the pre-AI baseline bar is fixed and does not change with the filter. Note that most non-Development seats show AI activity but no ticketed PRs, so their productivity reads as <strong>No PRs</strong> by design.</p>

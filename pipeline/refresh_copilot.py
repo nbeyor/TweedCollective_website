@@ -835,13 +835,13 @@ def compute_per_user_metrics(prs, copilot_df):
     """Per-developer productivity + Copilot adoption, keyed by AuthorUUID.
 
     Returns (per_user, uuid_map):
-      - per_user: list of dicts, each with a BLINDED alias (``Dev-NN``) plus
-        weekly and summary metrics. Contains **no UUIDs** — safe to ship in the
-        public dashboard JSON.
+      - per_user: list of dicts, each with a stable alias (``Dev-NN``), the
+        author UUID, and — when the export carries an Email column — the
+        email local part (``pnagpal`` for ``pnagpal@eclinicalsol.com``) as
+        the display identity, plus weekly and summary metrics.
       - uuid_map: ``{alias: uuid}`` for offline drill-down. Kept out of the
         public payload; the caller writes it to a non-served file.
 
-    Blinding is the privacy contract: the browser only ever sees ``Dev-NN``.
     Productivity reuses the team definition (distinct tickets / FTE-day); a
     ticket touched by N authors is credited to each of them. Adoption reuses the
     intensity-tier cutoffs from ``compute_copilot_adoption``.
@@ -905,6 +905,24 @@ def compute_per_user_metrics(prs, copilot_df):
 
     _fill_dept(pr, 'AuthorUUID')
     _fill_dept(copilot_df, 'user_id')
+
+    # Email per user: modal Email from PR rows, falling back to AI-telemetry
+    # rows. Only the local part (before "@") is shipped — enough to identify
+    # the user without publishing full addresses.
+    email_map = {}
+
+    def _fill_email(df, id_col):
+        if df is None or 'Email' not in getattr(df, 'columns', []):
+            return
+        for uid, grp in df.groupby(df[id_col].astype(str)):
+            if uid in email_map:
+                continue
+            m = grp['Email'].dropna().mode()
+            if len(m):
+                email_map[uid] = str(m.iloc[0]).split('@')[0].strip()
+
+    _fill_email(pr, 'AuthorUUID')
+    _fill_email(copilot_df, 'user_id')
 
     ranking = []
     for uuid in users:
@@ -984,6 +1002,7 @@ def compute_per_user_metrics(prs, copilot_df):
         per_user.append({
             'alias': alias,
             'uuid': uuid,
+            'email': email_map.get(uuid),
             'department': dept_map.get(uuid),
             'summary': summary,
             'weekly': weekly,
@@ -1075,9 +1094,10 @@ def build_dashboard_data(input_path, sheet_name=None, copilot_path=None):
     if copilot_df is not None and copilot_fmt == 'new':
         pr_correlation = compute_copilot_pr_correlation(prs, copilot_df)
 
-    # Per-user (blinded) productivity + adoption. perUser carries aliases only;
-    # the alias->UUID map is stashed under a private key that main() strips
-    # before writing the public JSON and persists to a non-served file.
+    # Per-user productivity + adoption, labeled by email local part (with the
+    # alias/UUID kept for stable keys). The alias->UUID map is stashed under a
+    # private key that main() strips before writing the public JSON and
+    # persists to a non-served file.
     per_user, user_id_map = compute_per_user_metrics(prs, copilot_df)
 
     # Unique authors across all data

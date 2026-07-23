@@ -96,12 +96,15 @@ export interface PerUserSummary {
   intensityTier: 'heavy' | 'medium' | 'light' | 'none'
 }
 
-// Per-developer record. `alias` (e.g. "Dev-07") is the stable display label; `uuid`
-// is the underlying author identifier, surfaced in the individual view so rows are
-// identifiable.
+// Per-developer record. `email` (the local part of the user's address, e.g.
+// "pnagpal") is the display label; `alias` (e.g. "Dev-07") is a stable key that
+// doubles as the fallback label for users with no email in the export; `uuid`
+// is the underlying author identifier.
 export interface PerUserEntry {
   alias: string
   uuid: string
+  /** Email local part (text before "@"), e.g. "pnagpal". */
+  email?: string | null
   /** Modal Department from PR rows, falling back to AI telemetry. */
   department?: string | null
   summary: PerUserSummary
