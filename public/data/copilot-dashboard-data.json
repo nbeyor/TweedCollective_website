@@ -5018,6 +5018,7 @@
     {
       "alias": "Dev-01",
       "uuid": "f18a1512-d283-455f-b6df-b1744fdfddce",
+      "email": "randerson",
       "department": "Development",
       "summary": {
         "matureTickets": 85,
@@ -5636,6 +5637,7 @@
     {
       "alias": "Dev-02",
       "uuid": "5b7b8122-68d5-4d44-b30c-de245a77c85c",
+      "email": "kmacallister",
       "department": "Development",
       "summary": {
         "matureTickets": 68,
@@ -6254,6 +6256,7 @@
     {
       "alias": "Dev-03",
       "uuid": "e2dddcf5-f963-484c-bcf2-d28b7e662a06",
+      "email": "spaldia",
       "department": "Development",
       "summary": {
         "matureTickets": 62,
@@ -6764,6 +6767,7 @@
     {
       "alias": "Dev-04",
       "uuid": "3cd6a958-e92e-4561-b30b-1a6f2487b7c5",
+      "email": "sbandaru",
       "department": "Development",
       "summary": {
         "matureTickets": 61,
@@ -7250,6 +7254,7 @@
     {
       "alias": "Dev-05",
       "uuid": "315708a7-d25d-44ff-a0c3-069db5ac5974",
+      "email": "wlandis",
       "department": "Development",
       "summary": {
         "matureTickets": 57,
@@ -7820,6 +7825,7 @@
     {
       "alias": "Dev-06",
       "uuid": "9b426b3d-af31-4131-8b5e-dbced2ab1524",
+      "email": "rvagh",
       "department": "Development",
       "summary": {
         "matureTickets": 57,
@@ -8330,6 +8336,7 @@
     {
       "alias": "Dev-07",
       "uuid": "2a9ca09d-b2fd-42e0-8470-9dfbf8f7da8f",
+      "email": "zgercsak",
       "department": "Development",
       "summary": {
         "matureTickets": 47,
@@ -8912,6 +8919,7 @@
     {
       "alias": "Dev-08",
       "uuid": "987bb5a0-e18e-4b08-b48c-7515018a2f99",
+      "email": "bpalaksha",
       "department": "Development",
       "summary": {
         "matureTickets": 46,
@@ -9518,6 +9526,7 @@
     {
       "alias": "Dev-09",
       "uuid": "92d8106c-b379-443d-aa4c-7bff1d81daf7",
+      "email": "hchen",
       "department": "Development",
       "summary": {
         "matureTickets": 41,
@@ -10052,6 +10061,7 @@
     {
       "alias": "Dev-10",
       "uuid": "77f70f93-ecd4-46ee-93c0-f054027be899",
+      "email": "ekhalil",
       "department": "Development",
       "summary": {
         "matureTickets": 38,
@@ -10130,6 +10140,7 @@
     {
       "alias": "Dev-11",
       "uuid": "5bab04e9-93d5-40ba-bedd-1a479733dd68",
+      "email": "claur",
       "department": "Development",
       "summary": {
         "matureTickets": 36,
@@ -10640,6 +10651,7 @@
     {
       "alias": "Dev-12",
       "uuid": "bdb6a72b-3bb0-4000-9560-a6d1de234827",
+      "email": "smate",
       "department": "Development",
       "summary": {
         "matureTickets": 30,
@@ -11270,6 +11282,7 @@
     {
       "alias": "Dev-13",
       "uuid": "c2f7dc76-f7ec-4be3-9dd7-caf78b33ab94",
+      "email": "ntates",
       "department": "Development",
       "summary": {
         "matureTickets": 30,
@@ -11864,6 +11877,7 @@
     {
       "alias": "Dev-14",
       "uuid": "d239b5a5-bd5d-4206-848c-afbd9f749d02",
+      "email": "lveras",
       "department": "Development",
       "summary": {
         "matureTickets": 29,
@@ -12242,6 +12256,7 @@
     {
       "alias": "Dev-15",
       "uuid": "1611a482-9b78-4957-aebe-2895d81cb529",
+      "email": "taubrey",
       "department": "Development",
       "summary": {
         "matureTickets": 28,
@@ -12704,6 +12719,7 @@
     {
       "alias": "Dev-16",
       "uuid": "5ef64702-da64-4f06-b3e4-6b86d583bca7",
+      "email": "ntalanina",
       "department": "Development",
       "summary": {
         "matureTickets": 26,
@@ -13250,6 +13266,7 @@
     {
       "alias": "Dev-17",
       "uuid": "19feac8e-d961-49e4-8b50-189774b99031",
+      "email": "ppoisson",
       "department": "Development",
       "summary": {
         "matureTickets": 25,
@@ -13724,6 +13741,7 @@
     {
       "alias": "Dev-18",
       "uuid": "fb185be7-2757-4032-8612-00775eaf511c",
+      "email": "sphilips",
       "department": "Development",
       "summary": {
         "matureTickets": 24,
@@ -14126,6 +14144,7 @@
     {
       "alias": "Dev-19",
       "uuid": "d5ae2d04-3c5e-4f51-82fb-ead878dbc51b",
+      "email": "aelrahep",
       "department": "Development",
       "summary": {
         "matureTickets": 20,
@@ -14504,6 +14523,7 @@
     {
       "alias": "Dev-20",
       "uuid": "4233b846-3041-4a26-9b77-005a2bf3f537",
+      "email": "mkhalil",
       "department": "Development",
       "summary": {
         "matureTickets": 16,
@@ -15038,6 +15058,7 @@
     {
       "alias": "Dev-21",
       "uuid": "ee3d3313-fcbf-4566-8357-4f4295e60712",
+      "email": "sanwar",
       "department": "Management",
       "summary": {
         "matureTickets": 14,
@@ -15308,6 +15329,7 @@
     {
       "alias": "Dev-22",
       "uuid": "657032d8-10ae-4f3b-8606-6b541887619d",
+      "email": "dmacres",
       "department": "Development",
       "summary": {
         "matureTickets": 12,
@@ -15746,6 +15768,7 @@
     {
       "alias": "Dev-23",
       "uuid": "9e35f162-85db-4f55-be68-448c74334135",
+      "email": "dhughes",
       "department": "Management",
       "summary": {
         "matureTickets": 9,
@@ -16136,6 +16159,7 @@
     {
       "alias": "Dev-24",
       "uuid": "b7e9f01b-bab4-4c68-aef7-c3cda3ab49ff",
+      "email": "nklyus",
       "department": "Development",
       "summary": {
         "matureTickets": 9,
@@ -16334,6 +16358,7 @@
     {
       "alias": "Dev-25",
       "uuid": "0324e9cd-2788-42ee-b58a-5eaafa9935b7",
+      "email": "pnagpal",
       "department": "Development",
       "summary": {
         "matureTickets": 7,
@@ -16700,6 +16725,7 @@
     {
       "alias": "Dev-26",
       "uuid": "c9a3b38e-d344-43c6-8e15-a5e76c30b305",
+      "email": "cgoicoechea",
       "department": "Architecture",
       "summary": {
         "matureTickets": 1,
@@ -16982,6 +17008,7 @@
     {
       "alias": "Dev-27",
       "uuid": "89bb0419-e608-492c-89c1-4423c837682f",
+      "email": "dchristman",
       "department": "AppSec",
       "summary": {
         "matureTickets": 0,
@@ -17204,6 +17231,7 @@
     {
       "alias": "Dev-28",
       "uuid": "85c70245-0ef3-49de-bb0f-c92fbfcc3e13",
+      "email": "r",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -17270,6 +17298,7 @@
     {
       "alias": "Dev-29",
       "uuid": "94a2ef01-0447-4d37-ad59-61f4a973676f",
+      "email": "yrajput",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -17384,6 +17413,7 @@
     {
       "alias": "Dev-30",
       "uuid": "21E6BA9A-5EC7-4A31-82BA-6DAFE185220E",
+      "email": "ekhalil",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -17450,6 +17480,7 @@
     {
       "alias": "Dev-31",
       "uuid": "51C869FC-784E-4B3B-B533-BAE65AF5DE2B",
+      "email": "mtun",
       "department": "Product",
       "summary": {
         "matureTickets": 0,
@@ -17528,6 +17559,7 @@
     {
       "alias": "Dev-32",
       "uuid": "52EFB6FB-27DC-4B00-9097-F64E4A1261E0",
+      "email": "vmallarapu",
       "department": "Management",
       "summary": {
         "matureTickets": 0,
@@ -17618,6 +17650,7 @@
     {
       "alias": "Dev-33",
       "uuid": "605580cf-fd97-453d-8f77-c9a48b7a24de",
+      "email": "cbillings",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -18020,6 +18053,7 @@
     {
       "alias": "Dev-34",
       "uuid": "62FA5D43-9AEA-4273-995D-83B539EFC2AF",
+      "email": "spatil",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -18050,6 +18084,7 @@
     {
       "alias": "Dev-35",
       "uuid": "641E96BE-4E8B-4811-B29E-AF2A7D6C4ED6",
+      "email": "pvanguru",
       "department": "Prof Svcs",
       "summary": {
         "matureTickets": 0,
@@ -18104,6 +18139,7 @@
     {
       "alias": "Dev-36",
       "uuid": "73d7e4cb-099a-4699-abbc-6633fac02815",
+      "email": "adubovenko",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -18422,6 +18458,7 @@
     {
       "alias": "Dev-37",
       "uuid": "749F67E8-D5A1-4969-AFA6-0F2945F4A815",
+      "email": "lwhitsell",
       "department": "Management",
       "summary": {
         "matureTickets": 0,
@@ -18452,6 +18489,7 @@
     {
       "alias": "Dev-38",
       "uuid": "75b6e24c-ddcf-4ba7-8f51-a5d10b145d58",
+      "email": "jfincke",
       "department": "Architecture",
       "summary": {
         "matureTickets": 0,
@@ -18686,6 +18724,7 @@
     {
       "alias": "Dev-39",
       "uuid": "78BC2292-7428-4559-8606-9F13A1467CEF",
+      "email": "rchamarti",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -18740,6 +18779,7 @@
     {
       "alias": "Dev-40",
       "uuid": "7EC7FE92-E0BC-4D5F-A7E6-FD6A7DCCE393",
+      "email": "nsahu",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -18770,6 +18810,7 @@
     {
       "alias": "Dev-41",
       "uuid": "831CB7E9-20D1-428A-8E5A-15E3530BC28E",
+      "email": "anagaraju",
       "department": "RPA",
       "summary": {
         "matureTickets": 0,
@@ -18800,6 +18841,7 @@
     {
       "alias": "Dev-42",
       "uuid": "94D6805A-9803-471D-A7F4-84B415399665",
+      "email": "ycashmankiperberg",
       "department": "Product",
       "summary": {
         "matureTickets": 0,
@@ -18830,6 +18872,7 @@
     {
       "alias": "Dev-43",
       "uuid": "9A0FB826-5665-43DB-8CC1-7AC65CDD1ADC",
+      "email": "mkurley",
       "department": "Management",
       "summary": {
         "matureTickets": 0,
@@ -18896,6 +18939,7 @@
     {
       "alias": "Dev-44",
       "uuid": "9C70A5D7-8C95-475B-8859-6FF80161D8A5",
+      "email": "sdaigle",
       "department": "Support",
       "summary": {
         "matureTickets": 0,
@@ -19070,6 +19114,7 @@
     {
       "alias": "Dev-45",
       "uuid": "9E88D353-7388-4689-B70C-2D705AA3D7FC",
+      "email": "sjana",
       "department": "RPA",
       "summary": {
         "matureTickets": 0,
@@ -19112,6 +19157,7 @@
     {
       "alias": "Dev-46",
       "uuid": "9b712599-421c-4afe-8231-a086640eb647",
+      "email": "lfitzgerald",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -19310,6 +19356,7 @@
     {
       "alias": "Dev-47",
       "uuid": "ABD07D67-EC21-4CC3-A597-68177594BBC9",
+      "email": "amouly",
       "department": "Devops",
       "summary": {
         "matureTickets": 0,
@@ -19364,6 +19411,7 @@
     {
       "alias": "Dev-48",
       "uuid": "B30355C2-D10D-4AC3-96A6-1A72CBC7769B",
+      "email": "divanov",
       "department": "Management",
       "summary": {
         "matureTickets": 0,
@@ -19502,6 +19550,7 @@
     {
       "alias": "Dev-49",
       "uuid": "B45FE785-A40B-4CDB-B0E1-05FF49F29960",
+      "email": "rindupuri",
       "department": "Management",
       "summary": {
         "matureTickets": 0,
@@ -19544,6 +19593,7 @@
     {
       "alias": "Dev-50",
       "uuid": "BE3BA275-EB91-4A0A-8CD0-DA232BD1EBE6",
+      "email": "rdarbha",
       "department": "Prov Svcs",
       "summary": {
         "matureTickets": 0,
@@ -19574,6 +19624,7 @@
     {
       "alias": "Dev-51",
       "uuid": "C4078B5A-FD9B-441F-829E-0D9805E31307",
+      "email": "skoniki",
       "department": "Prof Svcs",
       "summary": {
         "matureTickets": 0,
@@ -19628,6 +19679,7 @@
     {
       "alias": "Dev-52",
       "uuid": "D6E6CDCC-DE0F-4FBA-B308-FD13C3B5E676",
+      "email": "vkaltovich",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -19682,6 +19734,7 @@
     {
       "alias": "Dev-53",
       "uuid": "DCFC9A6C-4851-42BD-A984-61BB1F5842E6",
+      "email": "ppavankumar",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -19736,6 +19789,7 @@
     {
       "alias": "Dev-54",
       "uuid": "E2785D11-5C7E-4C47-AE66-AE6571E55659",
+      "email": "amukherjee",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -19874,6 +19928,7 @@
     {
       "alias": "Dev-55",
       "uuid": "F571AB60-7F99-4217-BB16-4511BE69C9BE",
+      "email": "slinberg",
       "department": "Development",
       "summary": {
         "matureTickets": 0,
@@ -19964,6 +20019,7 @@
     {
       "alias": "Dev-56",
       "uuid": "FC483C85-B5BA-4597-B213-9111AD831F45",
+      "email": "smandavekar",
       "department": "SQA",
       "summary": {
         "matureTickets": 0,
@@ -19994,6 +20050,7 @@
     {
       "alias": "Dev-57",
       "uuid": "f766eca5-3dd3-43aa-baa8-22ad27d71692",
+      "email": "dborad",
       "department": "Architecture",
       "summary": {
         "matureTickets": 0,
