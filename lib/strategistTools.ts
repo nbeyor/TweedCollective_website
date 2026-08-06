@@ -30,7 +30,20 @@ import {
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
-import { shipDecisionToBrief, type ShipEntry } from './googleDocs'
+/**
+ * A decision recorded against a brief element. Registered in the workspace
+ * decision log (client-side, persisted per document) — never written to Drive.
+ * The published protocol picks decisions up when the user hits Publish.
+ */
+export interface ShipEntry {
+  brief_id: string
+  element_id: string
+  element_label: string
+  decision: string
+  rationale: string
+  alternatives_considered: Array<{ option: string; tradeoff: string }>
+  evidence: string[]
+}
 
 const COHORT_FILTER_SCHEMA = {
   therapeutic_area: {
@@ -270,7 +283,7 @@ export const TOOLS = [
   {
     name: 'ship_decision',
     description:
-      "Record a decision on a brief element: write the revised element, the option chosen, the alternatives considered with their tradeoffs, and the corpus evidence into the design brief's decision log. Call this only when the user settles on an option and says to ship it. The entry must be self-contained — a teammate not in the session should understand why the choice was made.",
+      "Record a decision on a brief element: the revised element, the option chosen, the alternatives considered with their tradeoffs, and the corpus evidence. The entry registers in the workspace decision log (shown in the left panel and available to later turns) — it does not write any document; the user publishes the updated protocol separately. Call this only when the user settles on an option and says to ship it. The entry must be self-contained — a teammate not in the session should understand why the choice was made.",
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -341,11 +354,6 @@ function cohortStats(cohort: Protocol[]) {
 export interface ToolContext {
   /** The document under review; null when the session is in net-new mode. */
   brief: DesignBrief | null
-  /**
-   * Only the drafted hero brief has a pre-seeded Google Doc behind it, so
-   * ship_decision writes to Docs in hero mode and logs on-page otherwise.
-   */
-  isHero: boolean
 }
 
 const NO_BRIEF = {
@@ -356,7 +364,7 @@ const NO_BRIEF = {
 export async function runTool(
   name: string,
   input: Record<string, unknown>,
-  ctx: ToolContext = { brief: designBrief(), isHero: true }
+  ctx: ToolContext = { brief: designBrief() }
 ): Promise<unknown> {
   switch (name) {
     case 'describe_corpus': {
@@ -602,12 +610,14 @@ export async function runTool(
           (input.alternatives_considered as Array<{ option: string; tradeoff: string }>) ?? [],
         evidence: (input.evidence as string[]) ?? [],
       }
-      // Only the hero brief has a pre-seeded Google Doc; other sources keep
-      // the decision in the on-page log.
-      const outcome = ctx.isHero
-        ? await shipDecisionToBrief(entry)
-        : { written: false, detail: 'Decision logged on-page; only the drafted brief has a linked Google Doc.' }
-      return { ok: true, entry, ...outcome, _ship: { entry, ...outcome } }
+      return {
+        ok: true,
+        entry,
+        registered: true,
+        detail:
+          'Decision registered in the workspace decision log. It will be applied to the protocol when the user publishes the updated protocol.',
+        _ship: { entry },
+      }
     }
 
     default:

@@ -1,6 +1,6 @@
 import { currentUser } from '@clerk/nextjs/server'
 import type { User } from '@clerk/nextjs/server'
-import { notFound, redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { CLIENT_CONFIGS } from '@/content/clients'
 
 /**
@@ -59,10 +59,12 @@ export async function getClientSlugs(): Promise<string[]> {
 
 /**
  * Server-side guard for a specific client's pages. Redirects signed-out users
- * to sign-in. Signed-in users without access to a configured client are sent
- * to an explicit access-restricted page (a 404 here reads as "the page is
- * gone" and hides the real problem — missing Clerk metadata). Slugs that
- * aren't configured clients at all still 404.
+ * to sign-in. Any signed-in user without access — including to a slug that has
+ * a page but is missing from CLIENT_CONFIGS — is sent to the access-restricted
+ * page. A 404 here reads as "the page is gone" and hides the real problem
+ * (missing Clerk metadata, or a workspace that was never registered), which is
+ * exactly how the strategist demo broke: the route existed, the registry entry
+ * didn't, and locked-out users saw a bare 404.
  */
 export async function requireClientAccess(slug: string): Promise<void> {
   const user = await currentUser()
@@ -72,9 +74,6 @@ export async function requireClientAccess(slug: string): Promise<void> {
 
   const slugs = await getClientSlugs()
   if (!slugs.includes(slug)) {
-    if (!CLIENT_CONFIGS.some((client) => client.slug === slug)) {
-      notFound()
-    }
     redirect(`/clients/access-denied?client=${encodeURIComponent(slug)}`)
   }
 }

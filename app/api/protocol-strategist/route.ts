@@ -31,6 +31,42 @@ const MAX_TOOL_ROUNDS = 12
 /** Which document the session is anchored on. Sent by the client per request. */
 export type BriefSource = { kind: 'hero' } | { kind: 'corpus'; protocolId: string } | { kind: 'blank' }
 
+/**
+ * A shipped decision as the client stores it. Sent back with every chat request
+ * so the model can pull up the log and treat decided elements as settled —
+ * the client's message history carries only text turns, so without this the
+ * model forgets its own shipped decisions between turns.
+ */
+interface ClientDecision {
+  element_id?: string
+  element_label?: string
+  decision?: string
+  rationale?: string
+}
+
+function sanitizeDecisions(raw: unknown): ClientDecision[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter((d): d is Record<string, unknown> => Boolean(d) && typeof d === 'object')
+    .slice(0, 50)
+    .map((d) => ({
+      element_id: typeof d.element_id === 'string' ? d.element_id.slice(0, 200) : undefined,
+      element_label: typeof d.element_label === 'string' ? d.element_label.slice(0, 300) : undefined,
+      decision: typeof d.decision === 'string' ? d.decision.slice(0, 2000) : undefined,
+      rationale: typeof d.rationale === 'string' ? d.rationale.slice(0, 2000) : undefined,
+    }))
+    .filter((d) => d.decision)
+}
+
+function decisionSection(decisions: ClientDecision[]): string {
+  if (!decisions.length) return ''
+  const lines = decisions.map(
+    (d) =>
+      `- ${d.element_label ?? d.element_id ?? 'Element'}: ${d.decision}${d.rationale ? ` (why: ${d.rationale})` : ''}`
+  )
+  return `\n\n## Decision log for this document\n\nThese decisions are already shipped and registered in the workspace decision log:\n\n${lines.join('\n')}\n\nTreat the affected elements as revised to their decided form in every analysis. When the user asks to pull up, review, or summarize the decision log, restate it from this list — no tool call needed. Do not re-open a shipped decision unless the user asks to revisit it.`
+}
+
 function resolveBrief(source: BriefSource): DesignBrief | null {
   if (source.kind === 'blank') return null
   if (source.kind === 'corpus') return deriveBriefFromProtocol(source.protocolId)
@@ -47,13 +83,13 @@ function documentSection(source: BriefSource, brief: DesignBrief | null): string
   return `The session opens on a pre-drafted design brief: **${brief.title}** — a Phase ${brief.phase} study in ${brief.line_of_treatment.toLowerCase()} ${brief.indication}, target enrollment ${brief.target_enrollment} across ~${brief.planned_sites} sites. It already has arms, a primary endpoint, draft eligibility criteria, and a schedule sketch. Call \`get_design_brief\` first to see it. The team is not starting from a blank page — they are stress-testing a starting point, and one eligibility element (GI-comorbidity verification) is deliberately unresolved.`
 }
 
-function systemPrompt(source: BriefSource, brief: DesignBrief | null): string {
+function systemPrompt(source: BriefSource, brief: DesignBrief | null, decisions: ClientDecision[]): string {
   const m = manifest() as Record<string, unknown>
-  return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions back into the document.
+  return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions in the workspace decision log.
 
 ## The document under review
 
-${documentSection(source, brief)}
+${documentSection(source, brief)}${decisionSection(decisions)}
 
 ## Your data
 
@@ -69,7 +105,7 @@ Behind the session sits ${BRAND.corpusName}: ${m.protocolCount} synthetic protoc
 
 **Use the charts.** Analysis tools render a fixed chart in the side panel automatically (criteria waterfall, sensitivity comparison, comparator scatter, amendment risk). For a second-order cut no fixed chart covers — a site-level breakdown, a bespoke comparison — call \`site_level_breakdown\` or \`render_chart\` to emit a generated chart, using only numbers you retrieved.
 
-**Ship when told.** When the user settles on an option and says to ship it, call \`ship_decision\` with the revised element, the option chosen, the alternatives and their tradeoffs, and the evidence. Do not ship unprompted.
+**Ship when told.** When the user settles on an option and says to ship it, call \`ship_decision\` with the revised element, the option chosen, the alternatives and their tradeoffs, and the evidence. Do not ship unprompted. Shipping registers the entry in the workspace decision log (left panel) — it does not write any document. When the team wants the revised protocol as a document, point them at the Publish button, which produces the updated protocol with every shipped decision applied.
 
 ## What this data is
 
@@ -106,12 +142,13 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  let body: { messages?: ClientMessage[]; context?: BriefSource }
+  let body: { messages?: ClientMessage[]; context?: BriefSource; decisions?: unknown }
   try {
     body = await req.json()
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), { status: 400 })
   }
+  const decisions = sanitizeDecisions(body.decisions)
 
   const incoming = (body.messages ?? []).filter(
     (m) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim()
@@ -163,7 +200,7 @@ export async function POST(req: NextRequest) {
             system: [
               {
                 type: 'text',
-                text: systemPrompt(source, activeBrief),
+                text: systemPrompt(source, activeBrief, decisions),
                 cache_control: { type: 'ephemeral' },
               },
             ],
@@ -213,7 +250,6 @@ export async function POST(req: NextRequest) {
             try {
               const output = (await runTool(call.name, call.input as Record<string, unknown>, {
                 brief: activeBrief,
-                isHero: source.kind === 'hero',
               })) as Record<string, unknown>
               send('tool_result', { name: call.name, ok: true })
 

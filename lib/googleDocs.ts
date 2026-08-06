@@ -1,7 +1,9 @@
 /**
  * Google Docs bridge for the Protocol Strategist.
  *
- * Codify → the strategist writes a working document (Doc A).
+ * Publish → the strategist writes the updated protocol (Doc A). Shipped
+ *           decisions stay in the workspace decision log — the only artifact
+ *           that lands in Drive is the protocol itself.
  * Review  → it reads that document back *with the human's comment threads*
  *           and produces a revised document (Doc B) whose change log is keyed
  *           to those comments.
@@ -42,7 +44,6 @@ const SCOPES = [
 ]
 const DRIVE = 'https://www.googleapis.com/drive/v3'
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3'
-const DOCS = 'https://docs.googleapis.com/v1/documents'
 
 export interface DocRef {
   id: string
@@ -341,115 +342,6 @@ export async function getDocMeta(fileId: string): Promise<DocRef> {
     `${DRIVE}/files/${encodeURIComponent(fileId)}?supportsAllDrives=true&fields=id,name,webViewLink`
   )
   return (await res.json()) as DocRef
-}
-
-// ------------------------------------------------------------- ship-it ------
-
-export interface ShipEntry {
-  brief_id: string
-  element_id: string
-  element_label: string
-  decision: string
-  rationale: string
-  alternatives_considered: Array<{ option: string; tradeoff: string }>
-  evidence: string[]
-}
-
-export interface ShipOutcome {
-  written: boolean
-  doc?: DocRef
-  detail?: string
-}
-
-/**
- * Append a decision to the design brief's decision log, in place.
- *
- * The service account can edit the brief document through the Docs API (unlike
- * the session connector, which is read/create only), so a shipped decision lands
- * in the same document the demo opened on — the doc accumulates a decision log,
- * and by the end reads as a design brief where every choice shows its work.
- *
- * Degrades cleanly: with no brief document id or credentials configured, it
- * returns { written: false } and the page keeps the decision in its on-page log,
- * so the flow still demos without Google set up.
- */
-export async function shipDecisionToBrief(entry: ShipEntry): Promise<ShipOutcome> {
-  const docId = process.env.STRATEGIST_BRIEF_DOC_ID
-  if (!docId) {
-    return { written: false, detail: 'STRATEGIST_BRIEF_DOC_ID is not set; decision logged on-page only.' }
-  }
-  if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64) {
-    return { written: false, detail: 'Google credentials not configured; decision logged on-page only.' }
-  }
-
-  try {
-    const stamp = new Date().toISOString().slice(0, 10)
-    const lines: string[] = []
-    lines.push(`Decision — ${entry.element_label} (${stamp})`)
-    lines.push(`Chosen: ${entry.decision}`)
-    if (entry.rationale) lines.push(`Why: ${entry.rationale}`)
-    if (entry.alternatives_considered.length) {
-      lines.push('Alternatives considered:')
-      for (const a of entry.alternatives_considered) lines.push(`  • ${a.option} — ${a.tradeoff}`)
-    }
-    if (entry.evidence.length) {
-      lines.push('Evidence:')
-      for (const e of entry.evidence) lines.push(`  • ${e}`)
-    }
-    const block = '\n' + lines.join('\n') + '\n'
-
-    // Find the document end index, then insert the block there. A HEADING_3 on
-    // the title line keeps the log scannable.
-    const docRes = await docsFetch(`${DOCS}/${encodeURIComponent(docId)}?fields=body(content(endIndex))`)
-    const doc = (await docRes.json()) as { body?: { content?: Array<{ endIndex?: number }> } }
-    const content = doc.body?.content ?? []
-    const endIndex = content.reduce((m, c) => Math.max(m, c.endIndex ?? 1), 1)
-    const insertAt = Math.max(1, endIndex - 1)
-
-    const titleStart = insertAt + 1 // after the leading newline
-    const titleEnd = titleStart + lines[0].length
-
-    await docsFetch(`${DOCS}/${encodeURIComponent(docId)}:batchUpdate`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        requests: [
-          { insertText: { location: { index: insertAt }, text: block } },
-          {
-            updateParagraphStyle: {
-              range: { startIndex: titleStart, endIndex: titleEnd },
-              paragraphStyle: { namedStyleType: 'HEADING_3' },
-              fields: 'namedStyleType',
-            },
-          },
-        ],
-      }),
-    })
-
-    return {
-      written: true,
-      doc: {
-        id: docId,
-        name: 'Design brief',
-        webViewLink: `https://docs.google.com/document/d/${docId}/edit`,
-      },
-    }
-  } catch (err) {
-    return { written: false, detail: err instanceof Error ? err.message : String(err) }
-  }
-}
-
-async function docsFetch(url: string, init: RequestInit = {}): Promise<Response> {
-  const token = await accessToken()
-  const res = await fetch(url, {
-    ...init,
-    headers: { ...(init.headers ?? {}), authorization: `Bearer ${token}` },
-  })
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`Google Docs API ${res.status}: ${body.slice(0, 400)}`)
-  }
-  return res
 }
 
 /** Share a file with a person by email. Used to hand Doc A/B to the reviewer. */
