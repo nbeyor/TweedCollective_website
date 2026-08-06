@@ -1,7 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { BarChart3, Check, CheckCircle2, FilePlus2, FileText, HelpCircle, Play } from 'lucide-react'
+import {
+  BarChart3,
+  Check,
+  CheckCircle2,
+  FilePlus2,
+  FileText,
+  HelpCircle,
+  MessageSquare,
+  Play,
+} from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
 import { wcg } from './wcgTheme'
@@ -164,7 +173,7 @@ export function BriefPanel({
           endpoints — in what comparable trials in the corpus actually did. The
           design takes shape here as decisions are shipped.
         </div>
-        <DecisionLog decisions={decisions} />
+        <DecisionLog decisions={decisions} onReviewInChat={onRunAnalysis} />
       </div>
     )
   }
@@ -264,7 +273,7 @@ export function BriefPanel({
         </>
       )}
 
-      <DecisionLog decisions={decisions} />
+      <DecisionLog decisions={decisions} onReviewInChat={onRunAnalysis} />
     </div>
   )
 }
@@ -362,13 +371,35 @@ function AnalyticsExplorer({ onRunAnalysis }: { onRunAnalysis: (prompt: string) 
   )
 }
 
-function DecisionLog({ decisions }: { decisions: ShippedDecision[] }) {
+function DecisionLog({
+  decisions,
+  onReviewInChat,
+}: {
+  decisions: ShippedDecision[]
+  onReviewInChat?: (prompt: string) => void
+}) {
   if (!decisions.length) return null
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.14em] mb-2" style={{ color: wcg.teal }}>
-        Decision log
-      </p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: wcg.teal }}>
+          Decision log
+        </p>
+        {onReviewInChat && (
+          <button
+            onClick={() =>
+              onReviewInChat(
+                'Pull up the decision log — summarize what we have decided so far and what is still open.'
+              )
+            }
+            title="Review the decision log in the chat"
+            className="inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10.5px] font-medium transition-colors"
+            style={{ background: wcg.surface, borderColor: wcg.border, color: wcg.blue }}
+          >
+            <MessageSquare className="w-3 h-3" /> Review in chat
+          </button>
+        )}
+      </div>
       <div className="space-y-2">
         {decisions.map((d, i) => (
           <div
@@ -390,12 +421,13 @@ function DecisionLog({ decisions }: { decisions: ShippedDecision[] }) {
                 vs {d.alternatives_considered.map((a) => a.option).join('; ')}
               </p>
             )}
-            <p className="text-[10.5px] mt-1" style={{ color: wcg.faint }}>
-              {d.written ? 'Written to the brief' : 'Logged on-page'}
-            </p>
           </div>
         ))}
       </div>
+      <p className="text-[10.5px] mt-2 leading-snug" style={{ color: wcg.faint }}>
+        Decisions live here, not in Drive — “Publish updated protocol” applies them to the published
+        document.
+      </p>
     </div>
   )
 }

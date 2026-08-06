@@ -30,7 +30,34 @@ import {
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
-import { shipDecisionToBrief, type ShipEntry } from './googleDocs'
+/**
+ * A decision recorded against a brief element. Registered in the workspace
+ * decision log (client-side, persisted per document) — never written to Drive.
+ * The published protocol picks decisions up when the user hits Publish.
+ */
+export interface ShipEntry {
+  brief_id: string
+  element_id: string
+  element_label: string
+  decision: string
+  rationale: string
+  alternatives_considered: Array<{ option: string; tradeoff: string }>
+  evidence: string[]
+}
+
+/**
+ * Shared input on every fixed-panel analysis tool. The panel chart renders
+ * automatically when the tool runs, which is right when the tool IS the answer
+ * — and noise when the model is only looking a number up in support of a
+ * different question. This flag lets the model make that call.
+ */
+const CONTEXT_ONLY_SCHEMA = {
+  context_only: {
+    type: 'boolean',
+    description:
+      'Set true when calling this only to look up numbers in support of a different question — suppresses the side-panel chart so the panel stays focused on what the user actually asked. Default false renders the chart.',
+  },
+} as const
 
 const COHORT_FILTER_SCHEMA = {
   therapeutic_area: {
@@ -151,8 +178,8 @@ export const TOOLS = [
   {
     name: 'draft_criteria_burden',
     description:
-      "Rank the brief's own eligibility criteria by screen-fail attribution — the share of the eligible population each one costs — drawn from comparator protocols that use the same criterion. Call this for first-order questions like 'which criteria will cost us the most patients?'. Renders the criteria-burden waterfall.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Rank the brief's own eligibility criteria by screen-fail attribution — the share of the eligible population each one costs — drawn from comparator protocols that use the same criterion. Call this for first-order questions like 'which criteria will cost us the most patients?'. Renders the criteria-burden waterfall unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'procedure_sensitivity',
@@ -161,6 +188,7 @@ export const TOOLS = [
     input_schema: {
       type: 'object' as const,
       properties: {
+        ...CONTEXT_ONLY_SCHEMA,
         added_procedure: {
           type: 'string',
           description:
@@ -191,6 +219,7 @@ export const TOOLS = [
     input_schema: {
       type: 'object' as const,
       properties: {
+        ...CONTEXT_ONLY_SCHEMA,
         assessments: {
           type: 'array',
           items: { type: 'string' },
@@ -222,14 +251,14 @@ export const TOOLS = [
   {
     name: 'comparator_landscape',
     description:
-      "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'amendment_risk_sweep',
     description:
-      "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'render_chart',
@@ -270,7 +299,7 @@ export const TOOLS = [
   {
     name: 'ship_decision',
     description:
-      "Record a decision on a brief element: write the revised element, the option chosen, the alternatives considered with their tradeoffs, and the corpus evidence into the design brief's decision log. Call this only when the user settles on an option and says to ship it. The entry must be self-contained — a teammate not in the session should understand why the choice was made.",
+      "Record a decision on a brief element: the revised element, the option chosen, the alternatives considered with their tradeoffs, and the corpus evidence. The entry registers in the workspace decision log (shown in the left panel and available to later turns) — it does not write any document; the user publishes the updated protocol separately. Call this only when the user settles on an option and says to ship it. The entry must be self-contained — a teammate not in the session should understand why the choice was made.",
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -341,11 +370,6 @@ function cohortStats(cohort: Protocol[]) {
 export interface ToolContext {
   /** The document under review; null when the session is in net-new mode. */
   brief: DesignBrief | null
-  /**
-   * Only the drafted hero brief has a pre-seeded Google Doc behind it, so
-   * ship_decision writes to Docs in hero mode and logs on-page otherwise.
-   */
-  isHero: boolean
 }
 
 const NO_BRIEF = {
@@ -356,7 +380,7 @@ const NO_BRIEF = {
 export async function runTool(
   name: string,
   input: Record<string, unknown>,
-  ctx: ToolContext = { brief: designBrief(), isHero: true }
+  ctx: ToolContext = { brief: designBrief() }
 ): Promise<unknown> {
   switch (name) {
     case 'describe_corpus': {
@@ -488,6 +512,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = criteriaWaterfall(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'criteria_waterfall', data } }
     }
 
@@ -524,6 +549,7 @@ export async function runTool(
         })
       }
       const data = procedureSensitivity(brief, scenarios)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'sensitivity_comparison', data } }
     }
 
@@ -532,6 +558,7 @@ export async function runTool(
       if (!brief) return NO_BRIEF
       const assessments = (input.assessments as string[] | undefined) ?? []
       const data = endpointSensitivity(brief, assessments)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'endpoint_timeline', data } }
     }
 
@@ -569,6 +596,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = comparatorLandscape(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'comparator_scatter', data } }
     }
 
@@ -576,6 +604,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = amendmentRiskSweep(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'amendment_risk', data } }
     }
 
@@ -602,12 +631,14 @@ export async function runTool(
           (input.alternatives_considered as Array<{ option: string; tradeoff: string }>) ?? [],
         evidence: (input.evidence as string[]) ?? [],
       }
-      // Only the hero brief has a pre-seeded Google Doc; other sources keep
-      // the decision in the on-page log.
-      const outcome = ctx.isHero
-        ? await shipDecisionToBrief(entry)
-        : { written: false, detail: 'Decision logged on-page; only the drafted brief has a linked Google Doc.' }
-      return { ok: true, entry, ...outcome, _ship: { entry, ...outcome } }
+      return {
+        ok: true,
+        entry,
+        registered: true,
+        detail:
+          'Decision registered in the workspace decision log. It will be applied to the protocol when the user publishes the updated protocol.',
+        _ship: { entry },
+      }
     }
 
     default:

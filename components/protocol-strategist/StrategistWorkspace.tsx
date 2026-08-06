@@ -25,7 +25,7 @@ const TOOL_LABELS: Record<string, string> = {
   comparator_landscape: 'Placing the draft against comparators',
   amendment_risk_sweep: 'Sweeping amendment history',
   render_chart: 'Drawing a chart',
-  ship_decision: 'Shipping the decision to the brief',
+  ship_decision: 'Registering the decision in the log',
   describe_corpus: 'Reading the data dictionary',
   query_cohort: 'Querying comparator cohort',
   get_protocol: 'Pulling protocol detail',
@@ -192,7 +192,7 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next, context: source }),
+          body: JSON.stringify({ messages: next, context: source, decisions }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -236,7 +236,25 @@ export function StrategistWorkspace({
               case 'panel': {
                 const panel = evt.panel as { chart: string; data: Record<string, unknown> }
                 seq.current += 1
-                setInsights((prev) => [{ kind: 'fixed', key: `p${seq.current}`, panel }, ...prev])
+                const freshKey = `p${seq.current}`
+                // One card per fixed chart type: a repeat with identical data is
+                // dropped (the model consulted the tool again, nothing new to
+                // show); changed data replaces the old card at the top.
+                setInsights((prev) => {
+                  const idx = prev.findIndex((it) => it.kind === 'fixed' && it.panel.chart === panel.chart)
+                  if (idx === -1) return [{ kind: 'fixed', key: freshKey, panel }, ...prev]
+                  const existing = prev[idx]
+                  if (
+                    existing.kind === 'fixed' &&
+                    JSON.stringify(existing.panel.data) === JSON.stringify(panel.data)
+                  ) {
+                    return prev
+                  }
+                  return [
+                    { kind: 'fixed', key: freshKey, panel },
+                    ...prev.filter((_, i) => i !== idx),
+                  ]
+                })
                 break
               }
               case 'chart': {
@@ -258,17 +276,13 @@ export function StrategistWorkspace({
               }
               case 'ship': {
                 const entry = (evt.entry ?? {}) as ShippedDecision
-                const written = Boolean(evt.written)
-                const doc = (evt.doc ?? null) as ShippedDecision['doc']
                 setDecisions((prev) => {
-                  const next = [...prev, { ...entry, written, doc }]
+                  const next = [...prev, entry]
                   storeDecisions(sourceKey(source), next)
                   return next
                 })
                 setShipNotice(
-                  written
-                    ? `Shipped “${entry.element_label}” — written to the brief.`
-                    : `Shipped “${entry.element_label}” — logged on-page.`
+                  `Shipped “${entry.element_label}” — registered in the decision log. Publish when you want the updated protocol as a doc.`
                 )
                 break
               }
@@ -289,7 +303,7 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming, source]
+    [messages, streaming, source, decisions]
   )
 
   /** Clear the current document's conversation and charts. Its decision log stays. */
@@ -364,15 +378,18 @@ export function StrategistWorkspace({
   )
 
   const publish = useCallback(async () => {
-    if (!messages.length || streaming || publishing) return
+    if ((!messages.length && !decisions.length) || streaming || publishing) return
     setPublishing(true)
     setPublishError(null)
     setPublishedDoc(null)
     try {
+      // Publishes the updated protocol — the brief with shipped decisions
+      // applied. The decision log itself stays in the workspace; it is never
+      // published as a document.
       const res = await fetch('/api/protocol-strategist/codify', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages, context: source, decisions }),
       })
       const data = (await res.json()) as { webViewLink?: string; error?: string }
       if (!res.ok) throw new Error(data.error ?? `Publish failed (${res.status}).`)
@@ -382,7 +399,7 @@ export function StrategistWorkspace({
     } finally {
       setPublishing(false)
     }
-  }, [messages, streaming, publishing])
+  }, [messages, decisions, source, streaming, publishing])
 
   const startDrag = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -408,7 +425,10 @@ export function StrategistWorkspace({
   const mode: BriefMode = source.kind
   const empty = messages.length === 0
   const publishDisabled =
-    !messages.length || streaming || publishing || (docsReady !== null && !docsReady.ok)
+    (!messages.length && !decisions.length) ||
+    streaming ||
+    publishing ||
+    (docsReady !== null && !docsReady.ok)
 
   return (
     <div
@@ -484,13 +504,13 @@ export function StrategistWorkspace({
             title={
               docsReady && !docsReady.ok
                 ? `Google Docs is not available: ${docsReady.detail}`
-                : 'Turn this conversation into a formatted Google Doc'
+                : 'Publish the updated protocol — the design with every shipped decision applied — as a Google Doc'
             }
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-white disabled:opacity-40 transition-colors"
             style={{ background: wcg.navy }}
           >
             {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileUp className="w-3.5 h-3.5" />}
-            {publishing ? 'Publishing…' : 'Publish to Doc'}
+            {publishing ? 'Publishing…' : 'Publish updated protocol'}
           </button>
         </div>
 
