@@ -1,5 +1,6 @@
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { isAdminUser } from '@/lib/client-access'
 
 interface MagicLink {
   documentId: string
@@ -33,10 +34,7 @@ export async function GET(
     while (!adminUser) {
       const usersResponse = await client.users.getUserList({ limit, offset })
       
-      adminUser = usersResponse.data.find(user => 
-        user.privateMetadata?.isAdmin === true || 
-        user.publicMetadata?.role === 'admin'
-      )
+      adminUser = usersResponse.data.find(user => isAdminUser(user))
       
       if (usersResponse.data.length < limit || adminUser) {
         break

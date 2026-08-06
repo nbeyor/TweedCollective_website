@@ -12,12 +12,27 @@ import { CLIENT_CONFIGS } from '@/content/clients'
  * 1. Go to Clerk Dashboard > Users > Select User > Metadata
  * 2. Add to public metadata: { "clientSlugs": ["ecs"] }
  *
- * Admins (privateMetadata.isAdmin === true or publicMetadata.role === 'admin')
- * see every client workspace.
+ * Admins (privateMetadata.isAdmin === true, publicMetadata.role === 'admin',
+ * or a verified primary email in ADMIN_EMAILS) see every client workspace.
  */
 
+/**
+ * Always-admin emails. The address must be the user's verified primary
+ * email in Clerk — an unverified sign-up claiming one of these gets nothing.
+ */
+const ADMIN_EMAILS = new Set(['nate.beyor@tweedcollective.ai'])
+
 export function isAdminUser(user: User): boolean {
-  return user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin'
+  if (user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin') {
+    return true
+  }
+
+  const primaryEmail = user.primaryEmailAddress
+  return (
+    primaryEmail != null &&
+    primaryEmail.verification?.status === 'verified' &&
+    ADMIN_EMAILS.has(primaryEmail.emailAddress.toLowerCase())
+  )
 }
 
 /**
