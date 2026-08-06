@@ -7,8 +7,11 @@ const nextConfig = {
     // Files under public/ are served by the CDN and are NOT bundled into
     // serverless functions by default. The strategist routes read the trial
     // corpus with fs at request time, so it has to be traced in explicitly.
+    // The workspace page renders per request too (its layout checks the
+    // signed-in user), so it needs the same corpus files as the API routes.
     outputFileTracingIncludes: {
       '/api/protocol-strategist/**': ['./public/data/trial-corpus/**'],
+      '/clients/protocol-strategist': ['./public/data/trial-corpus/**'],
     },
   },
   async redirects() {

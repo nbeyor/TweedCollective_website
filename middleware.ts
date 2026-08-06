@@ -22,9 +22,19 @@ const isPublicRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   // Protect all routes except public ones
-  if (!isPublicRoute(req)) {
-    await auth.protect();
+  if (isPublicRoute(req)) return;
+
+  const { userId, redirectToSignIn } = await auth();
+  if (userId) return;
+
+  // Not auth.protect(): that helper answers signed-out NON-document requests
+  // (client-side navigations, prefetches, fetch calls) with a bare 404, so an
+  // authorized user whose session expired mid-visit clicks a workspace link
+  // and reads "page not found" instead of being asked to sign back in.
+  if (req.nextUrl.pathname.startsWith("/api") || req.nextUrl.pathname.startsWith("/trpc")) {
+    return Response.json({ error: "Signed out. Sign in to use this endpoint." }, { status: 401 });
   }
+  return redirectToSignIn({ returnBackUrl: req.url });
 });
 
 export const config = {
