@@ -46,18 +46,25 @@ from trial_corpus_content import (
     STUDY_TYPES, TA_CRITERIA, THERAPEUTIC_AREAS, UNIVERSAL_EXCLUSION,
     UNIVERSAL_INCLUSION,
 )
+from trial_corpus_sensitivity import (
+    ASSESSMENT_OPS_COLUMNS, PROCEDURE_OPS_COLUMNS, amendment_economics,
+    build_assessment_operations, build_design_brief, build_procedure_operations,
+)
 
 SEED = 20260806
-TARGET_PROTOCOLS = 120
-CORPUS_VERSION = "1.0.0"
+TARGET_PROTOCOLS = 150
+CORPUS_VERSION = "2.0.0"
 GENERATED_ON = "2026-08-06"          # fixed, so reruns are byte-identical
 
-# Corpus share by therapeutic area (deep areas carry more protocols).
+# Corpus share by therapeutic area. Oncology carries the most, weighted toward
+# thoracic / NSCLC so the hero flow (a Phase 2 second-line metastatic NSCLC
+# design brief) has a comparator set with real depth — see NSCLC weighting in
+# build_protocol_shell.
 TA_SHARES = {
-    "Respiratory": 0.25,
-    "Oncology": 0.25,
-    "Immunology & Inflammation": 0.20,
-    "Cardiometabolic": 0.17,
+    "Respiratory": 0.22,
+    "Oncology": 0.32,
+    "Immunology & Inflammation": 0.18,
+    "Cardiometabolic": 0.15,
     "Neurology": 0.13,
 }
 
@@ -96,8 +103,23 @@ def write(out_dir, name, payload):
 
 def build_protocol_shell(rng, idx, ta_name):
     ta = THERAPEUTIC_AREAS[ta_name]
-    disease_area = rng.choice(list(ta["disease_areas"]))
-    indication = rng.choice(ta["disease_areas"][disease_area])
+    disease_areas = ta["disease_areas"]
+    # NSCLC depth: over-represent thoracic oncology, and NSCLC within it, so the
+    # hero comparator cohort is a real distribution rather than a handful.
+    if ta_name == "Oncology" and "Thoracic Oncology" in disease_areas:
+        if rng.random() < 0.55:
+            disease_area = "Thoracic Oncology"
+        else:
+            disease_area = rng.choice(list(disease_areas))
+        inds = disease_areas[disease_area]
+        if disease_area == "Thoracic Oncology" and rng.random() < 0.72 \
+                and "Advanced Non-Small Cell Lung Cancer" in inds:
+            indication = "Advanced Non-Small Cell Lung Cancer"
+        else:
+            indication = rng.choice(inds)
+    else:
+        disease_area = rng.choice(list(disease_areas))
+        indication = rng.choice(disease_areas[disease_area])
     phase = wchoice(rng, PHASE_WEIGHTS)
 
     # Design follows phase.
@@ -677,6 +699,7 @@ def main():
     protocols, elig_rows, grids, soa_rows, site_rows = [], [], [], [], []
     obj_rows, ep_rows, dose_rows, conmed_rows, prohib_rows = [], [], [], [], []
     amend_rows, hist_rows = [], []
+    attribution_acc = {}  # (ta, criterion, type, category) -> [per-protocol attribution %]
     site_seq = [0]
 
     # ---- pass 1: protocol structure and raw indices ------------------------
@@ -713,6 +736,18 @@ def main():
         ta = THERAPEUTIC_AREAS[ta_name]
         ops = build_operational(rng, shell, restrict, burden, drag, n_sites)
         sites = build_sites(rng, shell, ops, drag, n_sites, site_seq)
+
+        # Criterion-level screen-fail attribution: split this protocol's
+        # screen-fail rate across its criteria by restrictiveness weight. This is
+        # what the burden waterfall (UC1) reads — an additive per-criterion share
+        # of the eligible population lost, sourced from the corpus, not the model.
+        sf = ops["screen_fail_rate"]
+        wsum = sum(r["_restrictiveness"] for r in elig) or 1.0
+        for r in elig:
+            attr = (r["_restrictiveness"] / wsum) * sf * 100.0
+            key = (ta_name, r["std_eligibility_criteria"], r["criterion_type"],
+                   r["eligibility_categorization"])
+            attribution_acc.setdefault(key, []).append(attr)
 
         # Objectives and endpoints.
         n_pri_obj = rng.randint(1, 2)
@@ -766,7 +801,12 @@ def main():
             else:
                 atype = rng.choice(AMENDMENT_TYPES)
                 section = rng.choice(AMENDMENT_SECTIONS)
-            amend_rows.append([shell["protocol_id"], f"Amendment {a+1}", section, atype])
+            # Economics: timing (months from FPI) and the ~$500K cost framing,
+            # deterministic per amendment so the risk sweep resolves to dollars.
+            jitter = int(shell["protocol_id"].split("-")[1]) * 7 + a
+            amd_cost, amd_month = amendment_economics(atype, a, jitter)
+            amend_rows.append([shell["protocol_id"], f"Amendment {a+1}", section, atype,
+                               amd_month, amd_cost])
 
         inc = sum(1 for r in elig if r["criterion_type"] == "Inclusion")
         exc = len(elig) - inc
@@ -855,7 +895,27 @@ def main():
          "document_history[].countries_impacted"], hist_rows)
     files["description_of_change.json"] = columnar(
         ["protocol_id", "amendment", "description_of_change[].section_name",
-         "description_of_change[].amendment_type"], amend_rows)
+         "description_of_change[].amendment_type", "timing_months_from_fpi",
+         "cost_estimate_usd"], amend_rows)
+
+    # ---- v0.2 sensitivity layer -------------------------------------------
+    files["procedure_operations.json"] = columnar(
+        PROCEDURE_OPS_COLUMNS, build_procedure_operations())
+    files["assessment_operations.json"] = columnar(
+        ASSESSMENT_OPS_COLUMNS, build_assessment_operations())
+
+    attribution_rows = []
+    for (ta_name, crit, ctype, cat), vals in attribution_acc.items():
+        attribution_rows.append([
+            ta_name, crit, ctype, cat,
+            round(sum(vals) / len(vals), 2), len(vals),
+        ])
+    attribution_rows.sort(key=lambda r: (r[0], -r[4]))
+    files["criterion_attribution.json"] = columnar(
+        ["therapeutic_area", "criterion", "criterion_type", "category",
+         "mean_screen_fail_attribution_pct", "protocols_using"], attribution_rows)
+
+    files["design_brief.json"] = build_design_brief()
     files["vocabularies.json"] = dict(
         phase=PHASES, study_type=STUDY_TYPES, study_design=DESIGN_ELEMENTS,
         randomization_scheme=RANDOMIZATION_SCHEMES, dosing_frequency=DOSING_FREQUENCIES,
@@ -887,7 +947,12 @@ def main():
         schemaBasis=("WCG Trial IntelX(TM) Data Dictionary v1.1 (15 deliverable sheets) "
                      "joined to the KMR Clinical Data Workbook field list (trial + site level)"),
         extensions=["criterion_type", "restrictiveness_index", "burden_index",
-                    "diversity_drag_index", "startup_days", "total_endpoints_count"],
+                    "diversity_drag_index", "startup_days", "total_endpoints_count",
+                    "screen_fail_attribution", "procedure_operations",
+                    "assessment_operations", "amendment_economics", "design_brief"],
+        sensitivityTables=["procedure_operations", "assessment_operations",
+                           "criterion_attribution", "design_brief"],
+        heroBrief="NSCLC-2L-DESIGN-BRIEF",
         disclaimer=("Entirely synthetic. No real sponsor, site, investigator, protocol, or "
                     "participant. Generated for demonstration only; not fit for any "
                     "clinical, regulatory, or operational decision."),

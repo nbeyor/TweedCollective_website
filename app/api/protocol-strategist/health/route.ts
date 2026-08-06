@@ -53,6 +53,25 @@ export async function GET() {
     checks.tools = { ok: false, detail: err instanceof Error ? err.message : String(err) }
   }
 
+  // --- v0.2 sensitivity layer: brief loads and a scenario computes ---
+  try {
+    const t = Date.now()
+    const brief = (await runTool('get_design_brief', {})) as { indication?: string }
+    const ps = (await runTool('procedure_sensitivity', {
+      added_procedure: 'Upper gastrointestinal endoscopy (EGD)',
+    })) as { scenarios?: Array<{ enrollment_slip_months?: number }> }
+    const n = ps.scenarios?.length ?? 0
+    checks.sensitivity = {
+      ok: Boolean(brief.indication) && n >= 2,
+      detail: `brief "${brief.indication}"; procedure_sensitivity returned ${n} scenarios (${ps.scenarios
+        ?.map((s) => `${s.enrollment_slip_months}mo`)
+        .join(', ')})`,
+      ms: Date.now() - t,
+    }
+  } catch (err) {
+    checks.sensitivity = { ok: false, detail: err instanceof Error ? err.message : String(err) }
+  }
+
   // --- anthropic ---
   if (!process.env.ANTHROPIC_API_KEY) {
     checks.anthropic = { ok: false, detail: 'ANTHROPIC_API_KEY is not set in this environment.' }
