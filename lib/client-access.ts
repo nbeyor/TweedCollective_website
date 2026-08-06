@@ -36,12 +36,9 @@ export function isAdminUser(user: User): boolean {
 }
 
 /**
- * Client slugs the current user may access. Admins get all configured slugs.
+ * Client slugs a given user may access. Admins get all configured slugs.
  */
-export async function getClientSlugs(): Promise<string[]> {
-  const user = await currentUser()
-  if (!user) return []
-
+export function clientSlugsForUser(user: User): string[] {
   if (isAdminUser(user)) {
     return CLIENT_CONFIGS.map((client) => client.slug)
   }
@@ -49,6 +46,15 @@ export async function getClientSlugs(): Promise<string[]> {
   const slugs = user.publicMetadata?.clientSlugs
   if (!Array.isArray(slugs)) return []
   return slugs.filter((slug): slug is string => typeof slug === 'string')
+}
+
+/**
+ * Client slugs the current user may access. Admins get all configured slugs.
+ */
+export async function getClientSlugs(): Promise<string[]> {
+  const user = await currentUser()
+  if (!user) return []
+  return clientSlugsForUser(user)
 }
 
 /**
@@ -71,4 +77,28 @@ export async function requireClientAccess(slug: string): Promise<void> {
     }
     redirect(`/clients/access-denied?client=${encodeURIComponent(slug)}`)
   }
+}
+
+/**
+ * API-route counterpart to requireClientAccess. Returns a JSON error response
+ * when the caller may not use the workspace, or null when they may.
+ *
+ * Route handlers can't redirect a fetch() caller anywhere useful, and the
+ * workspace endpoints bill real model calls — so an unauthorized caller has to
+ * be turned away before any work happens, not just kept out of the page.
+ */
+export async function clientAccessError(slug: string): Promise<Response | null> {
+  const user = await currentUser()
+  if (!user) {
+    return Response.json({ error: 'Sign in to use this workspace.' }, { status: 401 })
+  }
+
+  if (!clientSlugsForUser(user).includes(slug)) {
+    return Response.json(
+      { error: 'Your account is not authorized for this workspace.' },
+      { status: 403 }
+    )
+  }
+
+  return null
 }

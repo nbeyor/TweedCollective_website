@@ -13,10 +13,14 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest } from 'next/server'
 
+import { clientAccessError } from '@/lib/client-access'
 import { createDoc, getDocMeta, readComments, readDoc, shareDoc } from '@/lib/googleDocs'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
+
+/** Workspace this endpoint belongs to — callers need it granted in Clerk. */
+const WORKSPACE_SLUG = 'protocol-strategist'
 
 const REVIEW_SYSTEM = `You are revising a working document in response to a reviewer's margin comments.
 
@@ -33,6 +37,9 @@ Then reproduce the full revised document beneath, with the changes incorporated 
 Where a comment asks a question rather than requesting a change, answer it in the document text if the answer belongs there, and note in the change log that you did.`
 
 export async function POST(req: NextRequest) {
+  const denied = await clientAccessError(WORKSPACE_SLUG)
+  if (denied) return denied
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json({ error: 'ANTHROPIC_API_KEY is not configured.' }, { status: 503 })
   }

@@ -11,10 +11,14 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest } from 'next/server'
 
+import { clientAccessError } from '@/lib/client-access'
 import { createDoc, shareDoc } from '@/lib/googleDocs'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
+
+/** Workspace this endpoint belongs to — callers need it granted in Clerk. */
+const WORKSPACE_SLUG = 'protocol-strategist'
 
 const DOC_SYSTEM = `You are turning a protocol strategy conversation into a working document a study team will edit and comment on.
 
@@ -40,6 +44,9 @@ function unfence(s: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const denied = await clientAccessError(WORKSPACE_SLUG)
+  if (denied) return denied
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json({ error: 'ANTHROPIC_API_KEY is not configured.' }, { status: 503 })
   }

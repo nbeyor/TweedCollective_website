@@ -66,8 +66,16 @@ export function StrategistChat({ suggestions = [] }: { suggestions?: string[] })
           body: JSON.stringify({ messages: next }),
         })
         if (!res.ok || !res.body) {
+          // Errors come back as JSON ({ error }); fall back to raw text so a
+          // proxy or platform error page still says something useful.
           const detail = await res.text()
-          throw new Error(detail.slice(0, 300) || `Request failed (${res.status})`)
+          let message = detail.slice(0, 300)
+          try {
+            message = String(JSON.parse(detail).error ?? message)
+          } catch {
+            /* not JSON — keep the raw text */
+          }
+          throw new Error(message || `Request failed (${res.status})`)
         }
 
         const reader = res.body.getReader()
