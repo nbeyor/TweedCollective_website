@@ -45,6 +45,20 @@ export interface ShipEntry {
   evidence: string[]
 }
 
+/**
+ * Shared input on every fixed-panel analysis tool. The panel chart renders
+ * automatically when the tool runs, which is right when the tool IS the answer
+ * — and noise when the model is only looking a number up in support of a
+ * different question. This flag lets the model make that call.
+ */
+const CONTEXT_ONLY_SCHEMA = {
+  context_only: {
+    type: 'boolean',
+    description:
+      'Set true when calling this only to look up numbers in support of a different question — suppresses the side-panel chart so the panel stays focused on what the user actually asked. Default false renders the chart.',
+  },
+} as const
+
 const COHORT_FILTER_SCHEMA = {
   therapeutic_area: {
     type: 'string',
@@ -164,8 +178,8 @@ export const TOOLS = [
   {
     name: 'draft_criteria_burden',
     description:
-      "Rank the brief's own eligibility criteria by screen-fail attribution — the share of the eligible population each one costs — drawn from comparator protocols that use the same criterion. Call this for first-order questions like 'which criteria will cost us the most patients?'. Renders the criteria-burden waterfall.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Rank the brief's own eligibility criteria by screen-fail attribution — the share of the eligible population each one costs — drawn from comparator protocols that use the same criterion. Call this for first-order questions like 'which criteria will cost us the most patients?'. Renders the criteria-burden waterfall unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'procedure_sensitivity',
@@ -174,6 +188,7 @@ export const TOOLS = [
     input_schema: {
       type: 'object' as const,
       properties: {
+        ...CONTEXT_ONLY_SCHEMA,
         added_procedure: {
           type: 'string',
           description:
@@ -204,6 +219,7 @@ export const TOOLS = [
     input_schema: {
       type: 'object' as const,
       properties: {
+        ...CONTEXT_ONLY_SCHEMA,
         assessments: {
           type: 'array',
           items: { type: 'string' },
@@ -235,14 +251,14 @@ export const TOOLS = [
   {
     name: 'comparator_landscape',
     description:
-      "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'amendment_risk_sweep',
     description:
-      "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view.",
-    input_schema: { type: 'object' as const, properties: {}, required: [] },
+      "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
     name: 'render_chart',
@@ -496,6 +512,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = criteriaWaterfall(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'criteria_waterfall', data } }
     }
 
@@ -532,6 +549,7 @@ export async function runTool(
         })
       }
       const data = procedureSensitivity(brief, scenarios)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'sensitivity_comparison', data } }
     }
 
@@ -540,6 +558,7 @@ export async function runTool(
       if (!brief) return NO_BRIEF
       const assessments = (input.assessments as string[] | undefined) ?? []
       const data = endpointSensitivity(brief, assessments)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'endpoint_timeline', data } }
     }
 
@@ -577,6 +596,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = comparatorLandscape(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'comparator_scatter', data } }
     }
 
@@ -584,6 +604,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const data = amendmentRiskSweep(brief)
+      if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'amendment_risk', data } }
     }
 

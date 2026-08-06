@@ -236,7 +236,25 @@ export function StrategistWorkspace({
               case 'panel': {
                 const panel = evt.panel as { chart: string; data: Record<string, unknown> }
                 seq.current += 1
-                setInsights((prev) => [{ kind: 'fixed', key: `p${seq.current}`, panel }, ...prev])
+                const freshKey = `p${seq.current}`
+                // One card per fixed chart type: a repeat with identical data is
+                // dropped (the model consulted the tool again, nothing new to
+                // show); changed data replaces the old card at the top.
+                setInsights((prev) => {
+                  const idx = prev.findIndex((it) => it.kind === 'fixed' && it.panel.chart === panel.chart)
+                  if (idx === -1) return [{ kind: 'fixed', key: freshKey, panel }, ...prev]
+                  const existing = prev[idx]
+                  if (
+                    existing.kind === 'fixed' &&
+                    JSON.stringify(existing.panel.data) === JSON.stringify(panel.data)
+                  ) {
+                    return prev
+                  }
+                  return [
+                    { kind: 'fixed', key: freshKey, panel },
+                    ...prev.filter((_, i) => i !== idx),
+                  ]
+                })
                 break
               }
               case 'chart': {
