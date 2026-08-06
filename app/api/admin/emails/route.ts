@@ -1,5 +1,6 @@
 import { clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { isAdminUser } from '@/lib/client-access'
 
 // Public endpoint to get admin contact emails for access requests
 export async function GET() {
@@ -15,10 +16,7 @@ export async function GET() {
       const usersResponse = await client.users.getUserList({ limit, offset })
       
       for (const user of usersResponse.data) {
-        const isAdmin = user.privateMetadata?.isAdmin === true || 
-                       user.publicMetadata?.role === 'admin'
-        
-        if (isAdmin && user.primaryEmailAddress?.emailAddress) {
+        if (isAdminUser(user) && user.primaryEmailAddress?.emailAddress) {
           adminEmails.push(user.primaryEmailAddress.emailAddress)
         }
       }

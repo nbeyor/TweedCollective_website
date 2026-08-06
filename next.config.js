@@ -3,6 +3,14 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
   },
+  experimental: {
+    // Files under public/ are served by the CDN and are NOT bundled into
+    // serverless functions by default. The strategist routes read the trial
+    // corpus with fs at request time, so it has to be traced in explicitly.
+    outputFileTracingIncludes: {
+      '/api/protocol-strategist/**': ['./public/data/trial-corpus/**'],
+    },
+  },
   async redirects() {
     return [
       // Specific redirects must come before the /documents catch-all

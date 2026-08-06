@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
+import { isAdminUser } from '@/lib/client-access'
 
 function getResend() {
   if (!process.env.RESEND_API_KEY) {
@@ -15,10 +16,7 @@ async function getAdminEmails(): Promise<string[]> {
     const usersResponse = await client.users.getUserList({ limit: 100 })
     
     const adminEmails = usersResponse.data
-      .filter(user => 
-        user.privateMetadata?.isAdmin === true || 
-        user.publicMetadata?.role === 'admin'
-      )
+      .filter(user => isAdminUser(user))
       .map(user => user.primaryEmailAddress?.emailAddress)
       .filter((email): email is string => !!email)
     
@@ -37,9 +35,8 @@ export async function POST(req: Request) {
   }
 
   const user = await currentUser()
-  const isAdmin = user?.privateMetadata?.isAdmin === true || user?.publicMetadata?.role === 'admin'
 
-  if (!isAdmin) {
+  if (!user || !isAdminUser(user)) {
     return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
   }
 
