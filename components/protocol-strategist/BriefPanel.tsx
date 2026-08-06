@@ -12,6 +12,7 @@ import {
   Play,
 } from 'lucide-react'
 
+import { DATA_CATEGORIES, matchAnalyses } from '@/lib/mcp/prompts'
 import type { DesignBrief } from '@/lib/trialCorpus'
 import { wcg } from './wcgTheme'
 
@@ -27,105 +28,6 @@ export interface ShippedDecision {
 }
 
 export type BriefMode = 'hero' | 'corpus' | 'blank'
-
-/**
- * The corpus's data categories, as checkable boxes. Checking one or more tees
- * up the analytics that relate those categories, so a first-time user browses
- * by what data exists rather than by a flat list of tool names.
- */
-const DATA_CATEGORIES: Array<{ key: string; label: string }> = [
-  { key: 'eligibility', label: 'Eligibility & screening' },
-  { key: 'procedures', label: 'Procedures & visits' },
-  { key: 'enrollment', label: 'Enrollment & timelines' },
-  { key: 'sites', label: 'Sites & geography' },
-  { key: 'endpoints', label: 'Endpoints & data' },
-  { key: 'amendments', label: 'Amendments & cost' },
-]
-
-/**
- * One-click analytics, each tagged with the data categories it relates. With
- * nothing checked, the single-category starters show; checking categories
- * surfaces the analytics that explore those relationships. Prompts are phrased
- * to steer the model at the matching tool (and its chart) without naming it.
- */
-const ANALYTICS: Array<{ label: string; chart: string; categories: string[]; prompt: string }> = [
-  {
-    label: 'Screening burden by criterion',
-    chart: 'Criteria-burden waterfall',
-    categories: ['eligibility'],
-    prompt: 'Which criteria in this draft will cost us the most eligible patients?',
-  },
-  {
-    label: 'Added-procedure what-if',
-    chart: 'Sensitivity comparison',
-    categories: ['procedures'],
-    prompt:
-      'If we added a confirmatory screening procedure for our most burdensome eligibility criterion, how would it hit the enrollment timeline? Give me options with tradeoffs.',
-  },
-  {
-    label: 'Amendment risk',
-    chart: 'Amendment-risk view',
-    categories: ['amendments'],
-    prompt:
-      'Before this goes to writing, which elements are most likely to force an amendment, and what would one cost us?',
-  },
-  {
-    label: 'Endpoint timeline impact',
-    chart: 'Endpoint timeline chart',
-    categories: ['endpoints'],
-    prompt:
-      'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
-  },
-  {
-    label: 'Restrictiveness vs screen failure',
-    chart: 'Relationship chart',
-    categories: ['eligibility', 'enrollment'],
-    prompt:
-      'How does eligibility restrictiveness relate to screen-fail rate and enrollment duration across comparable trials? Quantify the relationship and chart it.',
-  },
-  {
-    label: 'Criteria vs enrolled diversity',
-    chart: 'Generated chart',
-    categories: ['eligibility', 'sites'],
-    prompt:
-      'How do restrictive eligibility criteria interact with site geography and the enrolled population’s composition in comparable trials? Scope the comparison to one country and chart it.',
-  },
-  {
-    label: 'Comparator landscape',
-    chart: 'Comparator scatter',
-    categories: ['procedures', 'enrollment'],
-    prompt:
-      'Place this design against comparable trials — is it more burdensome than the trials that enrolled fastest?',
-  },
-  {
-    label: 'Slip drivers by site type',
-    chart: 'Generated site-level chart',
-    categories: ['procedures', 'sites'],
-    prompt:
-      'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
-  },
-  {
-    label: 'Site mix vs enrollment velocity',
-    chart: 'Generated chart',
-    categories: ['sites', 'enrollment'],
-    prompt:
-      'Which site types enrolled fastest in comparable trials, and what does the planned site mix imply for our velocity? Chart the comparison.',
-  },
-  {
-    label: 'Amendment cost vs timeline',
-    chart: 'Generated chart',
-    categories: ['amendments', 'enrollment'],
-    prompt:
-      'When comparable trials amended mid-flight, what did each amendment cost in months and dollars, and how did that hit enrollment timelines? Chart timing against cost.',
-  },
-  {
-    label: 'Endpoint load vs database lock',
-    chart: 'Endpoint timeline chart',
-    categories: ['endpoints', 'enrollment'],
-    prompt:
-      'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
-  },
-]
 
 /**
  * The document under review. Two tabs: the brief itself (elements are
@@ -296,13 +198,7 @@ function AnalyticsExplorer({ onRunAnalysis }: { onRunAnalysis: (prompt: string) 
       return next
     })
 
-  const exact = ANALYTICS.filter((a) => a.categories.every((c) => checked.has(c)))
-  const shown =
-    checked.size === 0
-      ? ANALYTICS.filter((a) => a.categories.length === 1)
-      : exact.length
-        ? [...exact].sort((a, b) => b.categories.length - a.categories.length)
-        : ANALYTICS.filter((a) => a.categories.some((c) => checked.has(c)))
+  const shown = matchAnalyses(Array.from(checked))
 
   const labelFor = (key: string) => DATA_CATEGORIES.find((c) => c.key === key)?.label ?? key
 
