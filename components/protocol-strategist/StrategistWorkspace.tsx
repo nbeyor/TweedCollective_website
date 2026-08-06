@@ -6,6 +6,7 @@ import { CheckCircle2, ExternalLink, FileUp, Loader2, RotateCcw, Send, Wrench } 
 import type { DesignBrief, ProtocolIndexEntry } from '@/lib/trialCorpus'
 import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
 import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
+import { DataConnectorsPanel } from './DataConnectorsPanel'
 import { InsightPanel, type Insight } from './InsightPanel'
 import { Markdown } from './Markdown'
 import { ProtocolPicker, sourceKey, type BriefSource } from './ProtocolPicker'
@@ -464,6 +465,7 @@ export function StrategistWorkspace({
               docLink={briefDocLink}
             />
           )}
+          <DataConnectorsPanel />
         </div>
       </aside>
 
