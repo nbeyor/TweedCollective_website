@@ -69,6 +69,10 @@ export interface DesignBrief {
   brief_id: string
   title: string
   status: string
+  /** Set when the brief is a corpus protocol loaded as the document under
+   *  review — its measured outcomes are known and should be used over
+   *  estimates wherever a chart or analysis places "the draft". */
+  source_protocol_id?: string
   therapeutic_area: string
   disease_area: string
   indication: string
@@ -210,6 +214,7 @@ export function deriveBriefFromProtocol(protocolId: string): DesignBrief | null 
     brief_id: `${protocolId}-BRIEF`,
     title: `${p.indication} — ${protocolId} (Phase ${p.phase})`,
     status: 'Completed corpus trial, loaded as the document under review',
+    source_protocol_id: protocolId,
     therapeutic_area: ta,
     disease_area: String(p.disease_area),
     indication: String(p.indication),
@@ -896,16 +901,23 @@ export function amendmentRiskSweep(brief: DesignBrief) {
 
 /**
  * Comparator landscape (fixed chart 3). Assessment burden vs enrollment velocity
- * across the comparator cohort, with the draft placed as an estimated point.
- * Conclusion the reader should reach: the draft is more burdensome than the
- * trials that enrolled fastest.
+ * across the comparator cohort, with the document under review highlighted.
+ *
+ * When the document is a corpus protocol that actually ran, its position is its
+ * measured burden and velocity — the same figures benchmark_protocol reports —
+ * and it is excluded from the comparator dots so it is not plotted twice. Only
+ * an unbuilt draft (the hero brief) gets the estimated position.
  */
 export function comparatorLandscape(brief: DesignBrief) {
   const cohort = selectCohort({
     therapeutic_area: brief.comparator_cohort.therapeutic_area,
     phase: brief.comparator_cohort.phase,
   })
+  const source = brief.source_protocol_id
+    ? protocols().find((p) => String(p.protocol_id) === brief.source_protocol_id)
+    : undefined
   const points = cohort
+    .filter((p) => String(p.protocol_id) !== brief.source_protocol_id)
     .map((p) => {
       const months = Number(p.enrollment_duration_months)
       const n = Number(p.number_of_participants)
@@ -920,12 +932,25 @@ export function comparatorLandscape(brief: DesignBrief) {
     })
     .filter(Boolean) as Array<Record<string, unknown>>
 
-  const burdens = cohort.map((p) => Number(p.burden_index)).filter(Number.isFinite)
-  const base = baselineEnrollment(brief)
-  const draft = {
-    burden_index: round(quantile(burdens, 0.7), 1), // estimated — the draft is not yet built
-    enrollment_velocity: round(brief.target_enrollment / base.baseline_enrollment_months, 1),
-    estimated: true,
+  const srcBurden = source ? Number(source.burden_index) : NaN
+  const srcMonths = source ? Number(source.enrollment_duration_months) : NaN
+  const measured = Number.isFinite(srcBurden) && Number.isFinite(srcMonths) && srcMonths > 0
+
+  let draft: { burden_index: number; enrollment_velocity: number; estimated: boolean }
+  if (measured) {
+    draft = {
+      burden_index: round(srcBurden, 1),
+      enrollment_velocity: round(Number(source!.number_of_participants) / srcMonths, 1),
+      estimated: false,
+    }
+  } else {
+    const burdens = cohort.map((p) => Number(p.burden_index)).filter(Number.isFinite)
+    const base = baselineEnrollment(brief)
+    draft = {
+      burden_index: round(quantile(burdens, 0.7), 1), // estimated — the draft is not yet built
+      enrollment_velocity: round(brief.target_enrollment / base.baseline_enrollment_months, 1),
+      estimated: true,
+    }
   }
 
   return {
@@ -933,6 +958,8 @@ export function comparatorLandscape(brief: DesignBrief) {
     comparator_n: points.length,
     points,
     draft,
-    note: 'The draft position is estimated (70th-percentile burden of the comparator cohort at the brief\'s implied velocity), not measured — the design is not yet built.',
+    note: measured
+      ? 'The highlighted position is the loaded protocol\'s measured burden index and enrollment velocity (participants / enrollment month); it is excluded from the comparator dots.'
+      : 'The draft position is estimated (70th-percentile burden of the comparator cohort at the brief\'s implied velocity), not measured — the design is not yet built.',
   }
 }
