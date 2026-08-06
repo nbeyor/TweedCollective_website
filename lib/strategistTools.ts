@@ -23,10 +23,13 @@ import {
   procedureSensitivity,
   protocolDetail,
   selectCohort,
+  siteFootprint,
   summarize,
+  trialCostModel,
   vocabularies,
   type CohortFilter,
   type DesignBrief,
+  type FootprintOptions,
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
@@ -253,6 +256,35 @@ export const TOOLS = [
     description:
       "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter unless context_only is set.",
     input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
+  },
+  {
+    name: 'trial_cost',
+    description:
+      "Build the study's cost: a per-patient cost linked to the schedule of assessments, split into direct (procedures + visit overhead) and indirect (data management, site activation and maintenance), rolled to a total. Returns three scenarios at the comparator cohort's p25 / median / p75 SoA intensity, so the answer is a grounded range — 'lean vs as-drafted vs rich' — not a single figure. Use this for 'what will this cost?', 'per-patient cost', 'direct vs indirect', 'total study cost', or any cost sensitivity. Every dollar traces to procedure_operations and assessment_operations. Renders the cost-breakdown chart unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
+  },
+  {
+    name: 'site_footprint',
+    description:
+      "Recommend a country and site-count footprint for the trial and price the site-count sensitivity. Allocates sites across the countries the corpus carries using each country's measured per-site enrollment rate and startup time, meeting regulatory region floors first (e.g. ≥20% North America enrollment), then filling with the fastest enrollers. Returns a recommended per-country allocation plus lean / planned / aggressive scenarios, each with recruit timeline and activation cost. Use this for 'where should I run this?', 'how many sites?', 'country footprint', 'hit my US enrollment target', or a sites-vs-timeline what-if. Renders the footprint chart unless context_only is set.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        ...CONTEXT_ONLY_SCHEMA,
+        region_floors: {
+          type: 'object',
+          description:
+            'Minimum share of enrollment per region, e.g. {"North America": 0.2} for a 20% US target. Regions: North America, Europe, Asia-Pacific, Latin America. Defaults to 20% North America.',
+          additionalProperties: { type: 'number' },
+        },
+        restrict_countries: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Restrict the footprint to these countries, for a domestic-only or region-limited scenario, e.g. ["United States"].',
+        },
+      },
+      required: [],
+    },
   },
   {
     name: 'amendment_risk_sweep',
@@ -598,6 +630,26 @@ export async function runTool(
       const data = comparatorLandscape(brief)
       if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'comparator_scatter', data } }
+    }
+
+    case 'trial_cost': {
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
+      const data = trialCostModel(brief)
+      if (input.context_only === true) return data
+      return { ...data, _panel: { chart: 'cost_breakdown', data } }
+    }
+
+    case 'site_footprint': {
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
+      const opts: FootprintOptions = {
+        region_floors: input.region_floors as Record<string, number> | undefined,
+        restrict_countries: input.restrict_countries as string[] | undefined,
+      }
+      const data = siteFootprint(brief, opts)
+      if (input.context_only === true || 'error' in data) return data
+      return { ...data, _panel: { chart: 'site_footprint', data } }
     }
 
     case 'amendment_risk_sweep': {

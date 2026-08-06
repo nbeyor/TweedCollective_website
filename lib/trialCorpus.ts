@@ -963,3 +963,338 @@ export function comparatorLandscape(brief: DesignBrief) {
       : 'The draft position is estimated (70th-percentile burden of the comparator cohort at the brief\'s implied velocity), not measured — the design is not yet built.',
   }
 }
+
+// ==================================================================== cost ===
+//
+// Trial cost buildup (UC — "what will this study cost?"). The most-asked
+// question in the interviews and the one the tools did not answer: a per-patient
+// cost linked to the schedule of assessments, split into direct and indirect,
+// rolled to a total — and run as a sensitivity so the team sees a range, not a
+// single number that governance will later blow through.
+//
+// Every dollar traces to a corpus parameter: per-procedure unit costs from
+// procedure_operations (weighted by the brief's site mix), per-assessment
+// data-management minutes from assessment_operations, and the comparator
+// cohort's own SoA intensity (procedures and visits per patient). The
+// coefficients below convert operational effort into dollars and are named so a
+// reader can see exactly how a figure was built. Synthetic throughout.
+
+const COST = {
+  craHourlyUsd: 145, // loaded cost of monitoring / data-management labour
+  perVisitOverheadUsd: 380, // site coordinator + facility time per patient visit
+  siteActivationUsd: 42000, // one-time startup per activated site (regulatory, contracting, IMV)
+  siteMaintenanceUsdPerMonth: 5200, // ongoing site management per active site per month
+}
+
+/** Site-mix-weighted mean unit cost of one procedure, from procedure_operations. */
+function blendedProcedureCost(brief: DesignBrief): number {
+  const weights = mixWeights(brief)
+  // Mean unit cost across all procedures, per site type.
+  const sumBySite = new Map<string, number>()
+  const countBySite = new Map<string, number>()
+  for (const r of procedureOperations()) {
+    const st = String(r.site_type)
+    sumBySite.set(st, (sumBySite.get(st) ?? 0) + Number(r.unit_cost_usd))
+    countBySite.set(st, (countBySite.get(st) ?? 0) + 1)
+  }
+  let blended = 0
+  let wsum = 0
+  for (const [st, w] of weights) {
+    const sum = sumBySite.get(st)
+    const count = countBySite.get(st)
+    if (sum == null || !count) continue
+    blended += w * (sum / count)
+    wsum += w
+  }
+  return wsum ? blended / wsum : 0
+}
+
+/** Per-patient data-management cost from the assessment operations table. */
+function dataManagementPerPatient(): number {
+  const rows = assessmentOperations()
+  if (!rows.length) return 0
+  const minutes = rows.reduce(
+    (a, r) => a + Number(r.site_entry_minutes) + Number(r.monitoring_minutes),
+    0
+  )
+  return (minutes / 60) * COST.craHourlyUsd
+}
+
+/**
+ * Cost buildup for the brief at three SoA intensities, drawn from the
+ * comparator cohort's own distribution of procedures and visits per patient.
+ * "As drafted" is the cohort median; "lean" and "rich" are the p25 and p75, so
+ * the range is grounded in what comparable trials actually ran rather than
+ * assumed. Direct = per-patient procedures + visit overhead; indirect = data
+ * management, site activation, and site maintenance over the enrollment window.
+ */
+export function trialCostModel(brief: DesignBrief) {
+  const cohort = selectCohort({
+    therapeutic_area: brief.comparator_cohort.therapeutic_area,
+    phase: brief.comparator_cohort.phase,
+  })
+  const procCounts = cohort.map((p) => Number(p.procedure_count)).filter(Number.isFinite)
+  const visitCounts = cohort.map((p) => Number(p.total_visit_count)).filter(Number.isFinite)
+  const perProcedure = blendedProcedureCost(brief)
+  const dataMgmt = dataManagementPerPatient()
+  const base = baselineEnrollment(brief)
+  const n = brief.target_enrollment
+  const sites = brief.planned_sites || 1
+  const months = base.baseline_enrollment_months
+
+  // Indirect that does not scale with SoA intensity: activation once per site,
+  // maintenance per site across the enrollment window. Spread over N per-patient.
+  const activation = sites * COST.siteActivationUsd
+  const maintenance = sites * COST.siteMaintenanceUsdPerMonth * months
+  const sitePerPatient = n ? (activation + maintenance) / n : 0
+
+  const intensity: Array<{ key: string; label: string; q: number; note: string }> = [
+    { key: 'lean', label: 'Lean SoA (p25 procedures)', q: 0.25, note: 'Trimmed schedule — fewer procedures per visit than the typical comparator.' },
+    { key: 'drafted', label: 'As drafted (cohort median)', q: 0.5, note: 'Procedure and visit load at the comparator-cohort median.' },
+    { key: 'rich', label: 'Rich SoA (p75 procedures)', q: 0.75, note: 'Heavier schedule — more confirmatory and exploratory assessments.' },
+  ]
+
+  const scenarios = intensity.map((it) => {
+    const procs = procCounts.length ? Math.round(quantile(procCounts, it.q)) : 0
+    const visits = visitCounts.length ? Math.round(quantile(visitCounts, it.q)) : 0
+    const procedureCost = procs * perProcedure
+    const visitOverhead = visits * COST.perVisitOverheadUsd
+    const directPerPatient = procedureCost + visitOverhead
+    const indirectPerPatient = dataMgmt + sitePerPatient
+    const perPatient = directPerPatient + indirectPerPatient
+    return {
+      key: it.key,
+      label: it.label,
+      procedures_per_patient: procs,
+      visits_per_patient: visits,
+      direct_per_patient_usd: Math.round(directPerPatient),
+      indirect_per_patient_usd: Math.round(indirectPerPatient),
+      per_patient_usd: Math.round(perPatient),
+      direct_total_usd: Math.round(directPerPatient * n),
+      indirect_total_usd: Math.round(indirectPerPatient * n),
+      total_study_cost_usd: Math.round(perPatient * n),
+      note: it.note,
+    }
+  })
+
+  const drafted = scenarios.find((s) => s.key === 'drafted') ?? scenarios[0]
+  return {
+    brief_id: brief.brief_id,
+    target_enrollment: n,
+    planned_sites: sites,
+    enrollment_window_months: months,
+    comparator_n: cohort.length,
+    cost_drivers: {
+      blended_procedure_cost_usd: Math.round(perProcedure),
+      data_management_per_patient_usd: Math.round(dataMgmt),
+      site_activation_usd_each: COST.siteActivationUsd,
+      site_maintenance_usd_per_month: COST.siteMaintenanceUsdPerMonth,
+      per_visit_overhead_usd: COST.perVisitOverheadUsd,
+    },
+    headline: {
+      per_patient_usd: drafted.per_patient_usd,
+      total_study_cost_usd: drafted.total_study_cost_usd,
+      direct_share_pct: drafted.total_study_cost_usd
+        ? pct(drafted.direct_total_usd / drafted.total_study_cost_usd)
+        : 0,
+    },
+    scenarios,
+    note: 'Per-patient direct cost from procedure_operations unit costs (site-mix weighted) × the comparator SoA intensity, plus per-visit overhead; indirect from assessment data-management minutes and per-site activation/maintenance over the enrollment window. Synthetic ~fair-market scaffolding — illustrative of the buildup, not a quote.',
+  }
+}
+
+// ================================================================ footprint ===
+//
+// Site-and-country footprint (UC — "where should I run this, and how many
+// sites?"). The other headline question the tools did not answer. Given a target
+// N, a site count, and regulatory region floors (e.g. ≥20% US enrollment), it
+// allocates sites across the countries the corpus actually carries, using each
+// country's measured per-site enrollment rate and startup time, and estimates
+// months-to-target. Run as a site-count sensitivity so the team sees how the
+// recruit timeline and activation cost move as they add or cut sites.
+
+/** Region grouping for the countries present in the corpus. */
+const COUNTRY_REGION: Record<string, string> = {
+  'United States': 'North America',
+  Canada: 'North America',
+  Germany: 'Europe',
+  Poland: 'Europe',
+  Spain: 'Europe',
+  'United Kingdom': 'Europe',
+  Hungary: 'Europe',
+  Czechia: 'Europe',
+  'South Korea': 'Asia-Pacific',
+  Japan: 'Asia-Pacific',
+  Australia: 'Asia-Pacific',
+  Brazil: 'Latin America',
+}
+
+interface CountryOps {
+  country: string
+  region: string
+  sites_observed: number
+  subjects_per_site: number
+  mean_startup_days: number
+}
+
+/** Per-country enrollment rate and startup, measured across the cohort's sites. */
+function countryOperations(cohort: Protocol[]): CountryOps[] {
+  const ids = new Set(cohort.map((p) => String(p.protocol_id)))
+  let rows = sites().filter((s) => ids.has(String(s.protocol_id)))
+  // Fall back to the whole corpus when the cohort is too thin to be stable.
+  if (rows.length < 200) rows = sites()
+
+  const agg = new Map<string, { sites: number; subjects: number; startup: number[] }>()
+  for (const s of rows) {
+    const c = String(s.country || 'Unknown')
+    if (!agg.has(c)) agg.set(c, { sites: 0, subjects: 0, startup: [] })
+    const g = agg.get(c)!
+    g.sites += 1
+    g.subjects += Number(s.subjects_randomized_treated) || 0
+    const st = Number(s.startup_days)
+    if (Number.isFinite(st)) g.startup.push(st)
+  }
+  return Array.from(agg.entries())
+    .filter(([c]) => c !== 'Unknown')
+    .map(([country, g]) => ({
+      country,
+      region: COUNTRY_REGION[country] ?? 'Other',
+      sites_observed: g.sites,
+      subjects_per_site: round(g.subjects / Math.max(1, g.sites), 1),
+      mean_startup_days: Math.round(g.startup.length ? quantile(g.startup, 0.5) : 90),
+    }))
+    .sort((a, b) => b.subjects_per_site - a.subjects_per_site)
+}
+
+/** Months to reach N with `siteCount` sites enrolling in parallel. */
+function monthsToTarget(
+  n: number,
+  siteCount: number,
+  subjectsPerSitePerMonth: number,
+  meanStartupDays: number
+): number {
+  const rate = Math.max(0.1, siteCount * subjectsPerSitePerMonth)
+  return round(meanStartupDays / 30.4 + n / rate, 1)
+}
+
+export interface FootprintOptions {
+  /** Region enrollment floors, e.g. { "North America": 0.2 }. */
+  region_floors?: Record<string, number>
+  /** Countries to restrict to (domestic-only scenarios). */
+  restrict_countries?: string[]
+}
+
+/**
+ * Recommend a country/site allocation for the brief and price the site-count
+ * sensitivity. The recommendation satisfies the region floors first (so a US
+ * regulatory target is met), then fills remaining capacity with the
+ * fastest-enrolling countries. Scenarios sweep site count — lean, planned,
+ * aggressive — reporting recruit timeline and activation cost for each.
+ */
+export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
+  const cohort = selectCohort({
+    therapeutic_area: brief.comparator_cohort.therapeutic_area,
+    phase: brief.comparator_cohort.phase,
+  })
+  let ops = countryOperations(cohort)
+  if (opts.restrict_countries?.length) {
+    const keep = new Set(opts.restrict_countries)
+    ops = ops.filter((o) => keep.has(o.country))
+  }
+  if (!ops.length) {
+    return { brief_id: brief.brief_id, error: 'No site operations data for the requested countries.' }
+  }
+
+  const n = brief.target_enrollment
+  const planned = brief.planned_sites || Math.max(ops.length, 12)
+  // Corpus enrollment window sets a per-site monthly rate for each country.
+  const base = baselineEnrollment(brief)
+  const windowMonths = Math.max(1, base.baseline_enrollment_months)
+  const perSitePerMonth = (o: CountryOps) => o.subjects_per_site / windowMonths
+
+  const floors = opts.region_floors ?? { 'North America': 0.2 }
+
+  // --- Recommended allocation at the planned site count ---------------------
+  const allocate = (siteCount: number) => {
+    const alloc = new Map<string, number>() // country -> sites
+    let remaining = siteCount
+
+    // Meet region floors first: enough subjects from the region to clear the
+    // floor, converted to sites via that region's best per-site rate.
+    for (const [region, floor] of Object.entries(floors)) {
+      const inRegion = ops.filter((o) => o.region === region)
+      if (!inRegion.length) continue
+      const subjectsNeeded = n * floor
+      const best = inRegion[0] // highest subjects_per_site
+      const sitesNeeded = Math.min(
+        remaining,
+        Math.max(1, Math.ceil(subjectsNeeded / Math.max(1, best.subjects_per_site)))
+      )
+      alloc.set(best.country, (alloc.get(best.country) ?? 0) + sitesNeeded)
+      remaining -= sitesNeeded
+    }
+    // Fill the rest with the fastest enrollers overall.
+    let i = 0
+    while (remaining > 0 && ops.length) {
+      const o = ops[i % ops.length]
+      alloc.set(o.country, (alloc.get(o.country) ?? 0) + 1)
+      remaining -= 1
+      i += 1
+    }
+    return alloc
+  }
+
+  const allocationTable = (siteCount: number) => {
+    const alloc = allocate(siteCount)
+    const opByCountry = new Map(ops.map((o) => [o.country, o]))
+    const rows = Array.from(alloc.entries())
+      .map(([country, s]) => {
+        const o = opByCountry.get(country)!
+        const subjects = Math.round(s * o.subjects_per_site)
+        return {
+          country,
+          region: o.region,
+          sites: s,
+          expected_subjects: subjects,
+          mean_startup_days: o.mean_startup_days,
+        }
+      })
+      .sort((a, b) => b.expected_subjects - a.expected_subjects)
+    const totalSubjects = rows.reduce((a, r) => a + r.expected_subjects, 0) || 1
+    return rows.map((r) => ({ ...r, share_of_enrollment_pct: pct(r.expected_subjects / totalSubjects) }))
+  }
+
+  // Blended per-site monthly rate and startup across the recommended mix, for
+  // the timeline estimate.
+  const blendedRate =
+    ops.reduce((a, o) => a + perSitePerMonth(o), 0) / ops.length
+  const blendedStartup = Math.round(
+    ops.reduce((a, o) => a + o.mean_startup_days, 0) / ops.length
+  )
+
+  const scenarioCounts = [
+    { key: 'lean', label: 'Lean footprint', sites: Math.max(4, Math.round(planned * 0.6)) },
+    { key: 'planned', label: 'Planned footprint', sites: planned },
+    { key: 'aggressive', label: 'Aggressive footprint', sites: Math.round(planned * 1.6) },
+  ]
+  const scenarios = scenarioCounts.map((sc) => ({
+    key: sc.key,
+    label: sc.label,
+    sites: sc.sites,
+    enrollment_months: monthsToTarget(n, sc.sites, blendedRate, blendedStartup),
+    activation_cost_usd: sc.sites * COST.siteActivationUsd,
+    countries: allocationTable(sc.sites).length,
+  }))
+
+  return {
+    brief_id: brief.brief_id,
+    target_enrollment: n,
+    comparator_n: cohort.length,
+    region_floors: floors,
+    countries_available: ops.map((o) => o.country),
+    country_operations: ops,
+    recommended_allocation: allocationTable(planned),
+    scenarios,
+    note: 'Per-site enrollment rate and startup measured from the cohort site table; allocation meets region floors first, then fills with the fastest-enrolling countries. The corpus carries 12 countries — China is not among them, so a China floor cannot be grounded here. Synthetic; illustrative of the mechanism.',
+  }
+}

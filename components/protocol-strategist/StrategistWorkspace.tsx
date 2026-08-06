@@ -22,6 +22,8 @@ const TOOL_LABELS: Record<string, string> = {
   draft_criteria_burden: 'Ranking criteria by screening burden',
   procedure_sensitivity: 'Running the sensitivity analysis',
   endpoint_timeline_sensitivity: 'Modelling endpoint timeline impact',
+  trial_cost: 'Building the cost model',
+  site_footprint: 'Building the site & country footprint',
   site_level_breakdown: 'Cutting the slip by site type',
   comparator_landscape: 'Placing the draft against comparators',
   amendment_risk_sweep: 'Sweeping amendment history',
@@ -36,18 +38,20 @@ const TOOL_LABELS: Record<string, string> = {
 
 const SUGGESTIONS: Record<BriefMode, string[]> = {
   hero: [
-    'Which criteria in this draft will cost us the most eligible patients?',
+    'What will this study cost per patient and all-in — direct vs indirect?',
+    'Build me a site and country footprint that hits a 20% US enrollment target.',
     'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
     'Before this goes to writing, which elements are most likely to force an amendment?',
   ],
   corpus: [
-    'Which criteria in this protocol cost the most eligible patients?',
+    'What did this trial cost per patient, and how does the SoA drive it?',
+    'What site and country footprint would hit this enrollment target fastest?',
     'How did this trial actually perform against its peers?',
     'Which elements of this protocol were amended mid-flight, and what did that cost?',
   ],
   blank: [
-    'I want to design a Phase 2 trial — what should I decide first, and what does the corpus say about comparable studies?',
-    'Which eligibility criteria are standard for trials like mine, and which drive screen failure?',
+    'I want to design a Phase 2 oncology trial — what should I decide first, and what does the corpus say about comparable studies?',
+    'What would a study like this cost per patient, and what drives it?',
     'Help me set a realistic target enrollment, duration, and site mix for a new study.',
   ],
 }
