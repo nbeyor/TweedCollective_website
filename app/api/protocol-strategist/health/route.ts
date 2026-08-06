@@ -11,7 +11,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 
-import { googleCredentialStatus } from '@/lib/googleDocs'
+import { checkDriveAccess } from '@/lib/googleDocs'
 import { runTool } from '@/lib/strategistTools'
 import { manifest, selectCohort } from '@/lib/trialCorpus'
 
@@ -77,8 +77,13 @@ export async function GET() {
     }
   }
 
-  // --- google (credentials only; no API call, no document created) ---
-  checks.google = googleCredentialStatus()
+  // --- google (live: authenticates and confirms the folder is writable) ---
+  try {
+    const t = Date.now()
+    checks.google = { ...(await checkDriveAccess()), ms: Date.now() - t }
+  } catch (err) {
+    checks.google = { ok: false, detail: err instanceof Error ? err.message : String(err) }
+  }
 
   const ok = Object.values(checks).every((c) => c.ok)
   return new Response(

@@ -84,6 +84,71 @@ export function googleCredentialStatus(): { ok: boolean; detail: string } {
   }
 }
 
+/**
+ * Live end-to-end check: authenticate, then confirm the destination folder is
+ * reachable AND writable by the service account.
+ *
+ * Credential parsing alone proves nothing useful — the common failures are a
+ * mistyped folder ID, a share that never applied, or a domain policy blocking
+ * external sharing. All of those parse fine and fail at write time.
+ */
+export async function checkDriveAccess(): Promise<{ ok: boolean; detail: string }> {
+  const creds = googleCredentialStatus()
+  if (!creds.ok) return creds
+
+  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID as string
+  const key = loadKey()
+
+  try {
+    const res = await driveFetch(
+      `${DRIVE}/files/${encodeURIComponent(folderId)}?supportsAllDrives=true` +
+        `&fields=${encodeURIComponent('id,name,mimeType,capabilities(canAddChildren)')}`
+    )
+    const f = (await res.json()) as {
+      name: string
+      mimeType: string
+      capabilities?: { canAddChildren?: boolean }
+    }
+
+    if (f.mimeType !== 'application/vnd.google-apps.folder') {
+      return {
+        ok: false,
+        detail: `GOOGLE_DRIVE_FOLDER_ID points at "${f.name}", which is a ${f.mimeType}, not a folder. Use the ID from a folder URL.`,
+      }
+    }
+    if (!f.capabilities?.canAddChildren) {
+      return {
+        ok: false,
+        detail: `Folder "${f.name}" is visible but read-only to ${key.client_email}. Re-share it as Editor (Content Manager on a Shared Drive).`,
+      }
+    }
+    return { ok: true, detail: `authenticated as ${key.client_email}; can write to folder "${f.name}"` }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    // Drive returns 404 for "does not exist" and "you cannot see it" alike, so
+    // the useful message covers both.
+    if (msg.includes('404')) {
+      return {
+        ok: false,
+        detail: `Folder ${folderId} not found, or not shared with ${key.client_email}. Check the ID and confirm the share went through.`,
+      }
+    }
+    if (msg.includes('403')) {
+      return {
+        ok: false,
+        detail: `Drive API refused the request. Usually the Drive API is not enabled on the project, or a domain policy is blocking it. (${msg.slice(0, 160)})`,
+      }
+    }
+    if (msg.includes('invalid_grant') || msg.includes('401')) {
+      return {
+        ok: false,
+        detail: `Service account key rejected. Re-check GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 decodes to the key file. (${msg.slice(0, 160)})`,
+      }
+    }
+    return { ok: false, detail: msg.slice(0, 300) }
+  }
+}
+
 let cachedClient: JWT | null = null
 
 async function auth(): Promise<JWT> {
