@@ -9,8 +9,9 @@ export const metadata = {
   description: 'Pressure-test a drafted trial design against operational history, before the protocol is written.',
 }
 
-// Gated by Clerk via middleware, like everything under /clients. The brief and
-// corpus stats are read at build time.
+// The brief and corpus stats are read at build time. Access is per user, not
+// just per sign-in: the layout requires the 'protocol-strategist' workspace
+// grant, and the API routes behind this page check the same grant.
 export default function ProtocolStrategistPage() {
   const brief = designBrief()
   const m = manifest() as Record<string, number | string>

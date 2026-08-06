@@ -12,12 +12,16 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest } from 'next/server'
 
+import { clientAccessError } from '@/lib/client-access'
 import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
 import { TOOLS, runTool } from '@/lib/strategistTools'
 import { designBrief, manifest } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
+
+/** Workspace this endpoint belongs to — callers need it granted in Clerk. */
+const WORKSPACE_SLUG = 'protocol-strategist'
 
 const MODEL = 'claude-opus-5'
 const EFFORT = process.env.STRATEGIST_EFFORT ?? 'medium'
@@ -73,6 +77,9 @@ function stripAux(output: unknown): unknown {
 }
 
 export async function POST(req: NextRequest) {
+  const denied = await clientAccessError(WORKSPACE_SLUG)
+  if (denied) return denied
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response(
       JSON.stringify({ error: 'ANTHROPIC_API_KEY is not configured for this deployment.' }),
