@@ -1,6 +1,7 @@
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { CLIENT_CONFIGS } from '@/content/clients'
+import { isAdminUser } from '@/lib/client-access'
 
 export async function POST(request: Request) {
   try {
@@ -16,11 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if current user is admin (managed via Clerk Dashboard)
-    const isAdmin = currentUserData.privateMetadata?.isAdmin === true ||
-                    currentUserData.publicMetadata?.role === 'admin'
-
-    if (!isAdmin) {
+    if (!isAdminUser(currentUserData)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

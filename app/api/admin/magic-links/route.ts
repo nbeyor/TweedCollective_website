@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { Resend } from 'resend'
 import { getDocumentTitle } from '@/content/documents'
+import { isAdminUser } from '@/lib/client-access'
 
 interface MagicLink {
   documentId: string
@@ -31,10 +32,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if current user is admin
-    const isAdmin = user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin'
-
-    if (!isAdmin) {
+    if (!isAdminUser(user)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -82,10 +80,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if current user is admin
-    const isAdmin = user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin'
-
-    if (!isAdmin) {
+    if (!isAdminUser(user)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -270,10 +265,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if current user is admin
-    const isAdmin = user.privateMetadata?.isAdmin === true || user.publicMetadata?.role === 'admin'
-
-    if (!isAdmin) {
+    if (!isAdminUser(user)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

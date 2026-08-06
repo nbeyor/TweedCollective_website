@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { getDocumentConfigById } from '@/content/documents'
+import { isAdminUser } from '@/lib/client-access'
 
 export async function POST(request: Request) {
   try {
@@ -30,10 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Admins have access to all documents
-    const isAdmin = user.privateMetadata?.isAdmin === true ||
-                    user.publicMetadata?.role === 'admin'
-
-    if (isAdmin) {
+    if (isAdminUser(user)) {
       return NextResponse.json({ hasAccess: true, userId })
     }
 

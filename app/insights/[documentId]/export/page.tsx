@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { auth, currentUser } from '@clerk/nextjs/server'
+import { isAdminUser } from '@/lib/client-access'
 
 // Import document registry
 import { DOCUMENT_CONFIGS } from '@/content/documents'
@@ -61,10 +62,7 @@ export default async function DocumentExportPage({
     redirect('/login')
   }
 
-  const isAdmin = user.privateMetadata?.isAdmin === true ||
-                  user.publicMetadata?.role === 'admin'
-
-  if (!isAdmin) {
+  if (!isAdminUser(user)) {
     redirect('/login')
   }
 

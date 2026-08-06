@@ -4,6 +4,7 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
+import { isAdminUser } from '@/lib/client-access'
 
 function getResend() {
   if (!process.env.RESEND_API_KEY) {
@@ -23,10 +24,7 @@ async function getAdminEmails(): Promise<string[]> {
       const usersResponse = await client.users.getUserList({ limit, offset })
       
       for (const user of usersResponse.data) {
-        const isAdmin = user.privateMetadata?.isAdmin === true || 
-                       user.publicMetadata?.role === 'admin'
-        
-        if (isAdmin && user.primaryEmailAddress?.emailAddress) {
+        if (isAdminUser(user) && user.primaryEmailAddress?.emailAddress) {
           adminEmails.push(user.primaryEmailAddress.emailAddress)
         }
       }
