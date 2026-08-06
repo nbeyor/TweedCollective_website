@@ -28,24 +28,32 @@ New tool and chart. It builds a **per-patient cost from the schedule of assessme
 
 New tool and chart. Given a target N, a site count, and **regulatory region floors** (default ≥20% North America, the FDA US-enrollment target she cited), it recommends a **country allocation** using each country's measured per-site enrollment rate and startup time from the site table, meeting the floors first and then filling with the fastest enrollers. It prices the **site-count sensitivity** — lean / planned / aggressive — reporting recruit timeline and activation cost for each, which is the "10 vs 20 vs 50 sites" ask almost verbatim. The chart plots expected subjects by country (the "he can't map it, there's no geography" gap) plus the per-scenario timeline. Honest limit surfaced in the tool output: the corpus carries 12 countries and no China, so a China floor can't be grounded here.
 
-### 3. Left controls reorganized around the four decisions, and made to work on a blank page
+### 3. Left controls reorganized around exactly the four key questions, and made to work on a blank page
 
-The "Analyses" panel was a flat set of data-category checkboxes. It's now a **decision funnel**: five collapsible questions — **Cost, Site footprint, Timelines, Endpoints, Eligibility & risk** — each expanding to a short list of grounded, chart-backed analyses. This maps the controls to the decisions the directors said they make, instead of to raw data categories.
+The "Analyses" panel was a flat set of data-category checkboxes. It's now a **decision funnel** organized around exactly the four questions the directors named — **Cost, Site footprint, Timelines, Endpoints** — each a collapsible group expanding to a short list of grounded, chart-backed analyses. The eligibility and amendment analyses were folded into the four (screening burden under Timelines, amendment cost under Cost) rather than given their own bucket, so the funnel stays at four.
 
-Crucially, the **blank / net-new mode** previously showed *no* controls at all — just a "nothing drafted yet" message, which is the blank-whiteboard problem at its worst. It now shows the same decision funnel, with each analysis phrased at the comparator-cohort level ("what does a trial like this typically cost?"), so a team starting from scratch gets the same substrate to dig in.
+Crucially, the **blank / net-new mode** previously showed *no* controls at all — just a "nothing drafted yet" message, which is the blank-whiteboard problem at its worst. It now shows the same four-question funnel, with each analysis phrased at the comparator-cohort level ("what does a trial like this typically cost?"), so a team starting from scratch gets the same substrate to dig in.
 
-### 4. New data-source connectors: regulatory, cost/FMV, expert interviews
+### 4. Data connectors bucketed to declutter
 
-Two new connector groups in the panel — **Regulatory & competitive** (FDA/EMA guidance & precedent, AdComm/CRL history, registries) and **Cost & fair-market value** (FMV benchmarks, grant-plan budgets, portfolio finance like Planisware/RAPID) — and the internal "KOL & advisory input" connector is reframed as **Expert & KOL interviews** (investigator calls, ad boards, congress feedback) to name the capture gap both directors described. These are still preview affordances, provisioned per engagement, consistent with the existing panel.
+The connector list had grown crowded — every source in every category listed flat. It's now four **collapsed buckets** — Licensed & real-world data, Regulatory & competitive, Cost & fair-market value, Internal — each showing a source count and how many are requested, and breaking out to its example sources only when opened. The new sources answer point 4 of the feedback: **Regulatory & competitive** (FDA/EMA guidance & precedent, AdComm/CRL history, registries), **Cost & fair-market value** (FMV benchmarks, grant-plan budgets, portfolio finance like Planisware/RAPID), and the internal "KOL & advisory input" reframed as **Expert & KOL interviews**. Still preview affordances, provisioned per engagement.
 
-### 5. Model guidance
+### 5. Charts default to showing the sensitivity
 
-The system prompt now names the four headline questions, points the model at `trial_cost` and `site_footprint`, and states the standing preference to answer each as a sensitivity range. Blank-mode guidance lists the new brief-scoped tools as unavailable until a design exists.
+Encoded a charting policy so the visuals match the range-based questions: **line** charts carry a low / medium / high band across a continuous knob, **bar** charts compare discrete scenarios, and **heatmaps** explore two parameters at once (e.g. site count × country, or eligibility strictness × endpoint load) — the default when the user varies two knobs together or crosses multiple selected options. The generated-chart engine now renders heatmaps inline (self-contained SVG, no external requests), and the model is instructed to reach for them over several separate charts when two dimensions matter.
+
+### 6. Site footprint shows a map
+
+The footprint panel now leads with an **inline SVG proportional-symbol world map** — continent silhouettes drawn from coarse polygons, country bubbles placed at real lat/long and sized by expected enrollment, colored by region, with a size legend and the scenario timeline below. It is fully self-contained (no tile server, no external request), so it renders within the page CSP that blocks the usual mapping libraries. This is the "he can't map it, there's no geography" gap from the Pfizer call, now closed.
+
+### 7. Model guidance
+
+The system prompt names the four headline questions, points the model at `trial_cost` and `site_footprint`, states the standing preference to answer each as a sensitivity range, and carries the charting policy above. Blank-mode guidance lists the new brief-scoped tools as unavailable until a design exists.
 
 ## Deliberately deferred
 
 - **Probability of hitting the target.** Both directors wanted a confidence number on the blueprint ("what is my probability of hitting my target"). This needs a calibrated model of enrollment variance; the honest version is more than a coefficient, so it's not in this pass. The footprint timeline is a point estimate for now.
-- **A true geographic map.** The footprint chart is a country-level bar, not a chorophleth — a real map is a heavier dependency and the network policy blocks tile servers. The data supports it when we want it.
+- **A survey-grade choropleth map.** The footprint map is a proportional-symbol map on coarse continent silhouettes — recognizable and self-contained, but not a precise country-shape choropleth. A real basemap is a heavier asset; the data supports upgrading it when we want it.
 - **Endpoint regulatory acceptability.** HiBio wanted "have all the endpoints been acceptable to all the regulatory bodies … which studies failed and why." That's a regulatory-precedent dataset we don't hold in the corpus; the new Regulatory connector is where it would plug in.
 - **Voice input and an in-Gemini/Copilot agent surface.** Both raised the "another portal" concern and asked for voice and native-agent embedding. That's a distribution decision above this demo, noted in the PRD's platform vision.
 - **Delivery-phase tooling** (medical monitoring, data review). Explicitly out of scope — this demo stays upstream, which both directors agreed is the right entry point.
