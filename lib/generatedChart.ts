@@ -12,7 +12,7 @@
  * "malformed chart breaks the page" is designed out rather than guarded against.
  */
 
-export type GeneratedChartType = 'bar' | 'grouped-bar' | 'line' | 'scatter'
+export type GeneratedChartType = 'bar' | 'grouped-bar' | 'line' | 'scatter' | 'heatmap'
 
 export interface GeneratedChartSpec {
   title: string
@@ -163,6 +163,60 @@ function scatterChart(spec: GeneratedChartSpec): string {
   return out
 }
 
+/**
+ * Heatmap for exploring two parameters at once — the x axis is `categories`,
+ * each series is a y-row (its `name` labels the row, `values` run across x), and
+ * cell colour encodes the value on a light→teal→navy scale. This is the default
+ * visual when the user is varying two knobs together (e.g. site count × country,
+ * or eligibility strictness × endpoint load).
+ */
+function heatColor(t: number): string {
+  const u = Math.max(0, Math.min(1, t))
+  const light = [234, 247, 245]
+  const teal = [31, 176, 166]
+  const navy = [10, 37, 64]
+  const lerp = (a: number[], b: number[], k: number) => a.map((x, i) => Math.round(x + (b[i] - x) * k))
+  const c = u < 0.5 ? lerp(light, teal, u / 0.5) : lerp(teal, navy, (u - 0.5) / 0.5)
+  return `rgb(${c[0]},${c[1]},${c[2]})`
+}
+
+function short(s: string, n = 14): string {
+  const str = String(s)
+  return str.length > n ? str.slice(0, n - 1) + '…' : str
+}
+
+function heatmapChart(spec: GeneratedChartSpec): string {
+  const cats = spec.categories ?? []
+  const rows = spec.series
+  const nx = cats.length
+  const ny = rows.length
+  const vals = rows.flatMap((r) => (r.values ?? []).map((v) => num(v)))
+  const min = Math.min(0, ...vals)
+  const max = Math.max(1, ...vals)
+  const gridLeft = PAD.left + 44
+  const gridW = W - gridLeft - PAD.right
+  const gridTop = PAD.top
+  const gridH = PLOT_H
+  const cw = gridW / Math.max(1, nx)
+  const ch = gridH / Math.max(1, ny)
+
+  let out = ''
+  rows.forEach((r, ri) => {
+    out += `<text x="${gridLeft - 8}" y="${(gridTop + ch * ri + ch / 2 + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="${MUTED}">${esc(short(r.name))}</text>`
+    ;(r.values ?? []).forEach((v, ci) => {
+      const t = (num(v) - min) / (max - min || 1)
+      const x = gridLeft + cw * ci
+      const y = gridTop + ch * ri
+      out += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(cw - 1.5).toFixed(1)}" height="${(ch - 1.5).toFixed(1)}" rx="2" fill="${heatColor(t)}"><title>${esc(cats[ci])} × ${esc(r.name)}: ${esc(v)}</title></rect>`
+      out += `<text x="${(x + cw / 2).toFixed(1)}" y="${(y + ch / 2 + 3.5).toFixed(1)}" text-anchor="middle" font-size="10" fill="${t > 0.55 ? '#fff' : INK}">${esc(formatTick(num(v)))}</text>`
+    })
+  })
+  cats.forEach((c, ci) => {
+    out += `<text x="${(gridLeft + cw * ci + cw / 2).toFixed(1)}" y="${gridTop + gridH + 16}" text-anchor="middle" font-size="11" fill="${MUTED}">${esc(short(c, 12))}</text>`
+  })
+  return out
+}
+
 function wrapLabel(s: string): string[] {
   const words = String(s).split(' ')
   const lines: string[] = []
@@ -205,6 +259,7 @@ export function buildChartHtml(spec: GeneratedChartSpec): string {
     }
     if (spec.type === 'line') body = lineChart(spec)
     else if (spec.type === 'scatter') body = scatterChart(spec)
+    else if (spec.type === 'heatmap') body = heatmapChart(spec)
     else body = barChart(spec, spec.type === 'grouped-bar')
   } catch {
     return fallbackHtml(spec?.title)
@@ -228,7 +283,7 @@ export function buildChartHtml(spec: GeneratedChartSpec): string {
   </style></head><body><div class="wrap">
     <h3>${esc(spec.title)}</h3>
     ${spec.unit ? `<div class="unit">${esc(spec.unit)}</div>` : ''}
-    ${legendHtml(spec.series.map((s) => s.name))}
+    ${spec.type === 'heatmap' ? '' : legendHtml(spec.series.map((s) => s.name))}
     <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.title)}">${body}${yLabel}</svg>
     ${spec.caption ? `<p class="cap">${esc(spec.caption)}</p>` : ''}
   </div></body></html>`

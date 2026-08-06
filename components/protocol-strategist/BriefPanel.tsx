@@ -9,7 +9,6 @@ import {
   Coins,
   FileText,
   FlaskConical,
-  GitBranch,
   HelpCircle,
   MapPin,
   MessageSquare,
@@ -86,9 +85,9 @@ const QUESTION_GROUPS: QuestionGroup[] = [
         label: 'What an amendment costs',
         chart: 'Amendment-risk view',
         prompt:
-          'If we have to amend after first-patient-in, what does that typically cost in dollars and months for trials like this?',
+          'If we have to amend after first-patient-in, what does that typically cost in dollars and months, and which elements are most likely to force one?',
         blankPrompt:
-          'What do mid-flight amendments typically cost in dollars and months for comparable trials?',
+          'What do mid-flight amendments typically cost in dollars and months for comparable trials, and which elements force them?',
       },
     ],
   },
@@ -100,21 +99,21 @@ const QUESTION_GROUPS: QuestionGroup[] = [
     analyses: [
       {
         label: 'Recommended country footprint',
-        chart: 'Site & country footprint',
+        chart: 'Site & country map',
         prompt:
-          'Build me a country and site footprint that hits my enrollment target with a 20% US floor. Show the allocation and the recruit timeline.',
+          'Build me a country and site footprint that hits my enrollment target with a 20% US floor. Show the allocation on a map and the recruit timeline.',
         blankPrompt:
           'For a trial like this, what country and site footprint would hit enrollment with a 20% US floor, based on where comparable trials ran?',
       },
       {
         label: 'Sites vs recruit timeline',
-        chart: 'Site & country footprint',
+        chart: 'Scenario bars',
         prompt:
           'How does the recruit timeline and activation cost move if we run a lean vs planned vs aggressive site count? Give me the sensitivity.',
       },
       {
         label: 'Slip drivers by site type',
-        chart: 'Generated site-level chart',
+        chart: 'Site-level bars',
         prompt:
           'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
       },
@@ -128,9 +127,14 @@ const QUESTION_GROUPS: QuestionGroup[] = [
     analyses: [
       {
         label: 'Added-procedure what-if',
-        chart: 'Sensitivity comparison',
+        chart: 'Scenario bars',
         prompt:
           'If we added a confirmatory screening procedure for our most burdensome eligibility criterion, how would it hit the enrollment timeline? Give me options with tradeoffs.',
+      },
+      {
+        label: 'Screening burden by criterion',
+        chart: 'Criteria waterfall',
+        prompt: 'Which criteria in this draft will cost us the most eligible patients?',
       },
       {
         label: 'Enrollment vs comparators',
@@ -142,7 +146,7 @@ const QUESTION_GROUPS: QuestionGroup[] = [
       },
       {
         label: 'Restrictiveness vs enrollment',
-        chart: 'Relationship chart',
+        chart: 'Relationship line',
         prompt:
           'How does eligibility restrictiveness relate to screen-fail rate and enrollment duration across comparable trials? Quantify the relationship and chart it.',
         blankPrompt:
@@ -158,42 +162,15 @@ const QUESTION_GROUPS: QuestionGroup[] = [
     analyses: [
       {
         label: 'Endpoint timeline impact',
-        chart: 'Endpoint timeline chart',
+        chart: 'Endpoint timeline',
         prompt:
           'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
       },
       {
         label: 'Endpoint load vs database lock',
-        chart: 'Endpoint timeline chart',
+        chart: 'Endpoint timeline',
         prompt:
           'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
-      },
-    ],
-  },
-  {
-    key: 'eligibility',
-    label: 'Eligibility & risk',
-    question: 'What in the design is most likely to bite us?',
-    icon: <GitBranch {...iconProps} style={{ color: wcg.purple }} />,
-    analyses: [
-      {
-        label: 'Screening burden by criterion',
-        chart: 'Criteria-burden waterfall',
-        prompt: 'Which criteria in this draft will cost us the most eligible patients?',
-      },
-      {
-        label: 'Amendment risk sweep',
-        chart: 'Amendment-risk view',
-        prompt:
-          'Before this goes to writing, which elements are most likely to force an amendment, and what would one cost us?',
-      },
-      {
-        label: 'Which criteria are standard',
-        chart: 'Generated chart',
-        prompt:
-          'Which of my eligibility criteria are standard for this indication, and which are outliers that drive screen failure?',
-        blankPrompt:
-          'Which eligibility criteria are standard for trials like this, and which drive screen failure?',
       },
     ],
   },

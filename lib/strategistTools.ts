@@ -295,16 +295,17 @@ export const TOOLS = [
   {
     name: 'render_chart',
     description:
-      "Emit a generated chart to the side panel for a view no fixed chart covers. Supply data you retrieved from other tools — do not invent numbers. The chart renders in a sandboxed panel. Use for bespoke second-order cuts.",
+      "Emit a generated chart to the side panel for a view no fixed chart covers. Supply data you retrieved from other tools — do not invent numbers. The chart renders in a sandboxed panel. Default to the chart that shows the sensitivity: use `line` for a low / medium / high band across a continuous knob (one series per scenario, e.g. lean/base/aggressive over a range); use `bar` or `grouped-bar` to compare discrete scenarios side by side; use `heatmap` to explore TWO parameters at once (x = `categories`, one series per y-row with `values` across x — e.g. site count × country, or eligibility strictness × endpoint load). Reach for the heatmap whenever the user is varying two knobs together or has selected multiple options to cross.",
     input_schema: {
       type: 'object' as const,
       properties: {
         title: { type: 'string' },
-        type: { type: 'string', enum: ['bar', 'grouped-bar', 'line', 'scatter'] },
-        categories: { type: 'array', items: { type: 'string' }, description: 'x-axis labels for bar/line charts.' },
+        type: { type: 'string', enum: ['bar', 'grouped-bar', 'line', 'scatter', 'heatmap'] },
+        categories: { type: 'array', items: { type: 'string' }, description: 'x-axis labels for bar/line charts, or the x parameter for a heatmap.' },
         series: {
           type: 'array',
-          description: 'One or more data series. Use values[] for bar/line, points[] for scatter.',
+          description:
+            'One or more data series. Use values[] for bar/line (for a line sensitivity band, one series per scenario: low, medium, high). Use points[] for scatter. For a heatmap, one series per y-row, name = row label, values[] aligned to categories (x).',
           items: {
             type: 'object',
             properties: {
