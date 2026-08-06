@@ -266,6 +266,106 @@ function EndpointTimeline({ data, expanded }: ChartProps) {
   )
 }
 
+// ------------------------------------------------------------ cost breakdown -
+
+function CostBreakdown({ data, expanded }: ChartProps) {
+  const scenarios = (data.scenarios as Array<Record<string, unknown>>) ?? []
+  const labels = scenarios.map((s) => shorten(String(s.label), expanded ? 40 : 22))
+  const direct = scenarios.map((s) => Number(s.direct_per_patient_usd))
+  const indirect = scenarios.map((s) => Number(s.indirect_per_patient_usd))
+  const headline = (data.headline as Record<string, unknown>) ?? {}
+  const perPt = Number(headline.per_patient_usd)
+  const total = Number(headline.total_study_cost_usd)
+  const directShare = Number(headline.direct_share_pct)
+
+  return (
+    <ChartFrame
+      title="Cost buildup"
+      conclusion={
+        Number.isFinite(perPt)
+          ? `As drafted, ~${money(perPt)}/patient — ${money(total)} all-in, ${directShare.toFixed(0)}% direct. The range is the SoA you choose.`
+          : 'Per-patient cost, split into direct and indirect, across three SoA intensities.'
+      }
+      height={expanded ? 380 : 210}
+    >
+      <Bar
+        data={{
+          labels,
+          datasets: [
+            { label: 'Direct / patient', data: direct, backgroundColor: wcg.teal, borderRadius: 3, stack: 'c' },
+            { label: 'Indirect / patient', data: indirect, backgroundColor: wcg.sky, borderRadius: 3, stack: 'c' },
+          ],
+        }}
+        options={baseChartOptions({
+          scales: {
+            x: { ...axisScale(), stacked: true },
+            y: { ...axisScale('$ per patient'), stacked: true },
+          },
+        })}
+      />
+      <div className="mt-3 space-y-1.5">
+        {scenarios.map((s, i) => (
+          <div key={i} className="flex items-baseline justify-between gap-2 text-[12px]" style={{ color: wcg.body }}>
+            <span className="truncate" style={{ color: wcg.ink }}>
+              {String(s.label)}
+            </span>
+            <span className="shrink-0 tabular-nums" style={{ color: wcg.muted }}>
+              {money(Number(s.per_patient_usd))}/pt · {money(Number(s.total_study_cost_usd))} total
+            </span>
+          </div>
+        ))}
+      </div>
+    </ChartFrame>
+  )
+}
+
+// --------------------------------------------------------------- footprint ---
+
+function SiteFootprint({ data, expanded }: ChartProps) {
+  const alloc = (data.recommended_allocation as Array<Record<string, unknown>>) ?? []
+  const scenarios = (data.scenarios as Array<Record<string, unknown>>) ?? []
+  const labels = alloc.map((a) => String(a.country))
+  const subjects = alloc.map((a) => Number(a.expected_subjects))
+  const planned = scenarios.find((s) => String(s.key) === 'planned') ?? scenarios[1] ?? scenarios[0]
+  const conclusion = planned
+    ? `Recommended footprint: ${labels.length} countries, ~${Number(planned.sites)} sites, enrolling in ~${Number(planned.enrollment_months)} months.`
+    : 'Recommended per-country allocation across the corpus footprint.'
+
+  return (
+    <ChartFrame
+      title="Site & country footprint"
+      conclusion={conclusion}
+      height={Math.max(expanded ? 380 : 200, labels.length * (expanded ? 34 : 24))}
+    >
+      <Bar
+        data={{
+          labels,
+          datasets: [
+            { label: 'Expected subjects', data: subjects, backgroundColor: wcg.teal, borderRadius: 3 },
+          ],
+        }}
+        options={baseChartOptions({
+          indexAxis: 'y' as const,
+          plugins: { legend: { display: false } },
+          scales: { x: axisScale('expected subjects'), y: axisScale() },
+        })}
+      />
+      <div className="mt-3 space-y-1.5">
+        {scenarios.map((s, i) => (
+          <div key={i} className="flex items-baseline justify-between gap-2 text-[12px]" style={{ color: wcg.body }}>
+            <span className="truncate" style={{ color: wcg.ink }}>
+              {String(s.label)} · {Number(s.sites)} sites
+            </span>
+            <span className="shrink-0 tabular-nums" style={{ color: wcg.muted }}>
+              ~{Number(s.enrollment_months)} mo · {money(Number(s.activation_cost_usd))} activation
+            </span>
+          </div>
+        ))}
+      </div>
+    </ChartFrame>
+  )
+}
+
 // ---------------------------------------------------------------- dispatch ---
 
 interface ChartProps {
@@ -286,6 +386,10 @@ export function FixedChart({ panel, expanded = false }: { panel: PanelDescriptor
       return <AmendmentRisk data={panel.data} expanded={expanded} />
     case 'endpoint_timeline':
       return <EndpointTimeline data={panel.data} expanded={expanded} />
+    case 'cost_breakdown':
+      return <CostBreakdown data={panel.data} expanded={expanded} />
+    case 'site_footprint':
+      return <SiteFootprint data={panel.data} expanded={expanded} />
     default:
       return null
   }

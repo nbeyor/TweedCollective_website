@@ -3,13 +3,18 @@
 import React, { useState } from 'react'
 import {
   BarChart3,
-  Check,
   CheckCircle2,
-  FilePlus2,
+  ChevronRight,
+  ClipboardList,
+  Coins,
   FileText,
+  FlaskConical,
+  GitBranch,
   HelpCircle,
+  MapPin,
   MessageSquare,
   Play,
+  Timer,
 } from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
@@ -29,101 +34,168 @@ export interface ShippedDecision {
 export type BriefMode = 'hero' | 'corpus' | 'blank'
 
 /**
- * The corpus's data categories, as checkable boxes. Checking one or more tees
- * up the analytics that relate those categories, so a first-time user browses
- * by what data exists rather than by a flat list of tool names.
+ * The controls are organised around the decisions a protocol lead actually
+ * needs to make — cost, site footprint, timelines, endpoints — not around a
+ * flat list of tools or raw data categories. This is the answer to the
+ * blank-whiteboard problem: the panel funnels the user from "what do I even
+ * ask?" to a short list of grounded, chart-backed questions per decision.
+ *
+ * Each analysis carries a brief-scoped `prompt` (used with a draft loaded) and,
+ * where the same question makes sense before any design exists, a `blankPrompt`
+ * phrased at the comparator-cohort level so the groups also work in blank mode.
  */
-const DATA_CATEGORIES: Array<{ key: string; label: string }> = [
-  { key: 'eligibility', label: 'Eligibility & screening' },
-  { key: 'procedures', label: 'Procedures & visits' },
-  { key: 'enrollment', label: 'Enrollment & timelines' },
-  { key: 'sites', label: 'Sites & geography' },
-  { key: 'endpoints', label: 'Endpoints & data' },
-  { key: 'amendments', label: 'Amendments & cost' },
-]
+interface Analysis {
+  label: string
+  chart: string
+  prompt: string
+  blankPrompt?: string
+}
 
-/**
- * One-click analytics, each tagged with the data categories it relates. With
- * nothing checked, the single-category starters show; checking categories
- * surfaces the analytics that explore those relationships. Prompts are phrased
- * to steer the model at the matching tool (and its chart) without naming it.
- */
-const ANALYTICS: Array<{ label: string; chart: string; categories: string[]; prompt: string }> = [
+interface QuestionGroup {
+  key: string
+  label: string
+  question: string
+  icon: React.ReactNode
+  analyses: Analysis[]
+}
+
+const iconProps = { className: 'w-3.5 h-3.5', strokeWidth: 2 }
+
+const QUESTION_GROUPS: QuestionGroup[] = [
   {
-    label: 'Screening burden by criterion',
-    chart: 'Criteria-burden waterfall',
-    categories: ['eligibility'],
-    prompt: 'Which criteria in this draft will cost us the most eligible patients?',
+    key: 'cost',
+    label: 'Cost',
+    question: 'What will this study cost?',
+    icon: <Coins {...iconProps} style={{ color: wcg.teal }} />,
+    analyses: [
+      {
+        label: 'Per-patient & total cost',
+        chart: 'Cost buildup',
+        prompt:
+          'What will this study cost per patient and all-in? Break out direct vs indirect and show the range across SoA intensity.',
+        blankPrompt:
+          'What does a trial like this typically cost per patient and all-in, direct vs indirect, based on comparable studies in the corpus?',
+      },
+      {
+        label: 'How the SoA drives cost',
+        chart: 'Cost buildup',
+        prompt:
+          'How much of the per-patient cost is the schedule of assessments? Show lean vs as-drafted vs rich.',
+      },
+      {
+        label: 'What an amendment costs',
+        chart: 'Amendment-risk view',
+        prompt:
+          'If we have to amend after first-patient-in, what does that typically cost in dollars and months for trials like this?',
+        blankPrompt:
+          'What do mid-flight amendments typically cost in dollars and months for comparable trials?',
+      },
+    ],
   },
   {
-    label: 'Added-procedure what-if',
-    chart: 'Sensitivity comparison',
-    categories: ['procedures'],
-    prompt:
-      'If we added a confirmatory screening procedure for our most burdensome eligibility criterion, how would it hit the enrollment timeline? Give me options with tradeoffs.',
+    key: 'sites',
+    label: 'Site footprint',
+    question: 'Where should we run it, and how many sites?',
+    icon: <MapPin {...iconProps} style={{ color: wcg.blue }} />,
+    analyses: [
+      {
+        label: 'Recommended country footprint',
+        chart: 'Site & country footprint',
+        prompt:
+          'Build me a country and site footprint that hits my enrollment target with a 20% US floor. Show the allocation and the recruit timeline.',
+        blankPrompt:
+          'For a trial like this, what country and site footprint would hit enrollment with a 20% US floor, based on where comparable trials ran?',
+      },
+      {
+        label: 'Sites vs recruit timeline',
+        chart: 'Site & country footprint',
+        prompt:
+          'How does the recruit timeline and activation cost move if we run a lean vs planned vs aggressive site count? Give me the sensitivity.',
+      },
+      {
+        label: 'Slip drivers by site type',
+        chart: 'Generated site-level chart',
+        prompt:
+          'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
+      },
+    ],
   },
   {
-    label: 'Amendment risk',
-    chart: 'Amendment-risk view',
-    categories: ['amendments'],
-    prompt:
-      'Before this goes to writing, which elements are most likely to force an amendment, and what would one cost us?',
+    key: 'timelines',
+    label: 'Timelines',
+    question: 'How fast can we realistically enroll?',
+    icon: <Timer {...iconProps} style={{ color: wcg.amber }} />,
+    analyses: [
+      {
+        label: 'Added-procedure what-if',
+        chart: 'Sensitivity comparison',
+        prompt:
+          'If we added a confirmatory screening procedure for our most burdensome eligibility criterion, how would it hit the enrollment timeline? Give me options with tradeoffs.',
+      },
+      {
+        label: 'Enrollment vs comparators',
+        chart: 'Comparator scatter',
+        prompt:
+          'Place this design against comparable trials — is it more burdensome than the trials that enrolled fastest?',
+        blankPrompt:
+          'How fast did comparable trials enroll, and what enrollment duration is realistic for a trial like this?',
+      },
+      {
+        label: 'Restrictiveness vs enrollment',
+        chart: 'Relationship chart',
+        prompt:
+          'How does eligibility restrictiveness relate to screen-fail rate and enrollment duration across comparable trials? Quantify the relationship and chart it.',
+        blankPrompt:
+          'Across comparable trials, how does eligibility restrictiveness relate to screen-fail rate and enrollment duration? Chart it.',
+      },
+    ],
   },
   {
-    label: 'Endpoint timeline impact',
-    chart: 'Endpoint timeline chart',
-    categories: ['endpoints'],
-    prompt:
-      'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
+    key: 'endpoints',
+    label: 'Endpoints',
+    question: 'Which endpoints, at what timeline cost?',
+    icon: <FlaskConical {...iconProps} style={{ color: wcg.magenta }} />,
+    analyses: [
+      {
+        label: 'Endpoint timeline impact',
+        chart: 'Endpoint timeline chart',
+        prompt:
+          'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
+      },
+      {
+        label: 'Endpoint load vs database lock',
+        chart: 'Endpoint timeline chart',
+        prompt:
+          'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
+      },
+    ],
   },
   {
-    label: 'Restrictiveness vs screen failure',
-    chart: 'Relationship chart',
-    categories: ['eligibility', 'enrollment'],
-    prompt:
-      'How does eligibility restrictiveness relate to screen-fail rate and enrollment duration across comparable trials? Quantify the relationship and chart it.',
-  },
-  {
-    label: 'Criteria vs enrolled diversity',
-    chart: 'Generated chart',
-    categories: ['eligibility', 'sites'],
-    prompt:
-      'How do restrictive eligibility criteria interact with site geography and the enrolled population’s composition in comparable trials? Scope the comparison to one country and chart it.',
-  },
-  {
-    label: 'Comparator landscape',
-    chart: 'Comparator scatter',
-    categories: ['procedures', 'enrollment'],
-    prompt:
-      'Place this design against comparable trials — is it more burdensome than the trials that enrolled fastest?',
-  },
-  {
-    label: 'Slip drivers by site type',
-    chart: 'Generated site-level chart',
-    categories: ['procedures', 'sites'],
-    prompt:
-      'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
-  },
-  {
-    label: 'Site mix vs enrollment velocity',
-    chart: 'Generated chart',
-    categories: ['sites', 'enrollment'],
-    prompt:
-      'Which site types enrolled fastest in comparable trials, and what does the planned site mix imply for our velocity? Chart the comparison.',
-  },
-  {
-    label: 'Amendment cost vs timeline',
-    chart: 'Generated chart',
-    categories: ['amendments', 'enrollment'],
-    prompt:
-      'When comparable trials amended mid-flight, what did each amendment cost in months and dollars, and how did that hit enrollment timelines? Chart timing against cost.',
-  },
-  {
-    label: 'Endpoint load vs database lock',
-    chart: 'Endpoint timeline chart',
-    categories: ['endpoints', 'enrollment'],
-    prompt:
-      'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
+    key: 'eligibility',
+    label: 'Eligibility & risk',
+    question: 'What in the design is most likely to bite us?',
+    icon: <GitBranch {...iconProps} style={{ color: wcg.purple }} />,
+    analyses: [
+      {
+        label: 'Screening burden by criterion',
+        chart: 'Criteria-burden waterfall',
+        prompt: 'Which criteria in this draft will cost us the most eligible patients?',
+      },
+      {
+        label: 'Amendment risk sweep',
+        chart: 'Amendment-risk view',
+        prompt:
+          'Before this goes to writing, which elements are most likely to force an amendment, and what would one cost us?',
+      },
+      {
+        label: 'Which criteria are standard',
+        chart: 'Generated chart',
+        prompt:
+          'Which of my eligibility criteria are standard for this indication, and which are outliers that drive screen failure?',
+        blankPrompt:
+          'Which eligibility criteria are standard for trials like this, and which drive screen failure?',
+      },
+    ],
   },
 ]
 
@@ -160,19 +232,20 @@ export function BriefPanel({
             New protocol · blank
           </p>
           <h2 className="text-[15px] font-semibold leading-snug" style={{ color: wcg.ink }}>
-            Nothing drafted yet
+            Start from a decision
           </h2>
         </div>
         <div
           className="rounded-lg border px-3 py-3 text-[12.5px] leading-relaxed"
           style={{ background: wcg.surface, borderColor: wcg.border, color: wcg.body }}
         >
-          <FilePlus2 className="w-4 h-4 mb-2" style={{ color: wcg.blue }} />
-          Start in the chat: name an indication and phase, and the strategist will
-          ground every design choice — target enrollment, site mix, eligibility,
-          endpoints — in what comparable trials in the corpus actually did. The
-          design takes shape here as decisions are shipped.
+          <ClipboardList className="w-4 h-4 mb-2" style={{ color: wcg.blue }} />
+          No blank page — pick a question below to see what comparable trials in
+          the corpus did, or name an indication and phase in the chat. Every
+          answer is grounded in the operations data; the design takes shape here
+          as decisions are shipped.
         </div>
+        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} />
         <DecisionLog decisions={decisions} onReviewInChat={onRunAnalysis} />
       </div>
     )
@@ -213,7 +286,7 @@ export function BriefPanel({
       </div>
 
       {tab === 'analyses' ? (
-        <AnalyticsExplorer onRunAnalysis={onRunAnalysis} />
+        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} />
       ) : (
         <>
           <Section label="Arms">
@@ -279,94 +352,86 @@ export function BriefPanel({
 }
 
 /**
- * Browse the corpus by data category. Nothing checked → the four
- * single-category starters. Checked categories surface the analytics that
- * relate them (cross-category relationships first); if no analysis covers the
- * exact combination, anything touching a checked category shows instead of an
- * empty list.
+ * Browse the corpus by decision. Each headline question (cost, site footprint,
+ * timelines, endpoints, eligibility & risk) expands to a short list of grounded,
+ * chart-backed analyses. This is the funnel that answers the blank-whiteboard
+ * problem — the user starts from a decision they have to make, not an empty
+ * prompt. In blank mode only the analyses phrased at the cohort level show, so
+ * the same panel works before any design exists.
  */
-function AnalyticsExplorer({ onRunAnalysis }: { onRunAnalysis: (prompt: string) => void }) {
-  const [checked, setChecked] = useState<Set<string>>(new Set())
+function QuestionExplorer({
+  mode,
+  onRunAnalysis,
+}: {
+  mode: BriefMode
+  onRunAnalysis: (prompt: string) => void
+}) {
+  // In blank mode, first group open; with a draft loaded, cost leads.
+  const [open, setOpen] = useState<string | null>('cost')
 
-  const toggle = (key: string) =>
-    setChecked((prev) => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
-
-  const exact = ANALYTICS.filter((a) => a.categories.every((c) => checked.has(c)))
-  const shown =
-    checked.size === 0
-      ? ANALYTICS.filter((a) => a.categories.length === 1)
-      : exact.length
-        ? [...exact].sort((a, b) => b.categories.length - a.categories.length)
-        : ANALYTICS.filter((a) => a.categories.some((c) => checked.has(c)))
-
-  const labelFor = (key: string) => DATA_CATEGORIES.find((c) => c.key === key)?.label ?? key
+  const groups = QUESTION_GROUPS.map((g) => {
+    const analyses =
+      mode === 'blank' ? g.analyses.filter((a) => a.blankPrompt) : g.analyses
+    return { ...g, analyses }
+  }).filter((g) => g.analyses.length)
 
   return (
-    <div className="space-y-3">
-      <div>
-        <p className="text-[11.5px] leading-snug mb-2" style={{ color: wcg.muted }}>
-          Check the data you want to relate — matching analyses tee up below.
-        </p>
-        <div className="grid grid-cols-2 gap-1.5">
-          {DATA_CATEGORIES.map((c) => {
-            const on = checked.has(c.key)
-            return (
-              <button
-                key={c.key}
-                onClick={() => toggle(c.key)}
-                aria-pressed={on}
-                className="flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-left transition-colors"
-                style={{
-                  background: on ? '#ECFBF6' : wcg.surface,
-                  borderColor: on ? wcg.teal : wcg.border,
-                }}
-              >
-                <span
-                  className="w-3.5 h-3.5 shrink-0 rounded-[4px] border flex items-center justify-center"
-                  style={{
-                    background: on ? wcg.teal : wcg.surface,
-                    borderColor: on ? wcg.teal : wcg.borderStrong,
-                  }}
-                >
-                  {on && <Check className="w-2.5 h-2.5" style={{ color: '#fff' }} strokeWidth={3} />}
+    <div className="space-y-2">
+      <p className="text-[11.5px] leading-snug" style={{ color: wcg.muted }}>
+        {mode === 'blank'
+          ? 'Pick the decision you want to explore — each pulls from comparable trials.'
+          : 'Pick the decision you want to pressure-test — each runs a grounded, chart-backed analysis.'}
+      </p>
+      {groups.map((g) => {
+        const isOpen = open === g.key
+        return (
+          <div key={g.key} className="rounded-lg border" style={{ background: wcg.surface, borderColor: wcg.border }}>
+            <button
+              onClick={() => setOpen(isOpen ? null : g.key)}
+              aria-expanded={isOpen}
+              className="w-full flex items-center gap-2 px-2.5 py-2 text-left"
+            >
+              <span className="shrink-0">{g.icon}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[12.5px] font-semibold leading-snug" style={{ color: wcg.ink }}>
+                  {g.label}
                 </span>
-                <span className="text-[11.5px] leading-tight" style={{ color: wcg.ink }}>
-                  {c.label}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="space-y-1.5">
-        {shown.map((a) => (
-          <button
-            key={a.label}
-            onClick={() => onRunAnalysis(a.prompt)}
-            className="w-full text-left rounded-lg border px-2.5 py-2 transition-colors"
-            style={{ background: wcg.surface, borderColor: wcg.border }}
-          >
-            <span className="flex items-start gap-2">
-              <Play className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: wcg.teal }} />
-              <span className="min-w-0">
-                <span className="block text-[12.5px] font-medium leading-snug" style={{ color: wcg.ink }}>
-                  {a.label}
-                </span>
-                <span className="flex items-center gap-1 text-[10.5px] mt-0.5 flex-wrap" style={{ color: wcg.muted }}>
-                  <BarChart3 className="w-3 h-3 shrink-0" /> {a.chart} ·{' '}
-                  {a.categories.map(labelFor).join(' × ')}
+                <span className="block text-[10.5px] leading-snug" style={{ color: wcg.muted }}>
+                  {g.question}
                 </span>
               </span>
-            </span>
-          </button>
-        ))}
-      </div>
+              <ChevronRight
+                className="w-4 h-4 shrink-0 transition-transform"
+                style={{ color: wcg.muted, transform: isOpen ? 'rotate(90deg)' : undefined }}
+              />
+            </button>
+            {isOpen && (
+              <div className="border-t px-2 pb-2 pt-1.5 space-y-1" style={{ borderColor: wcg.border }}>
+                {g.analyses.map((a) => (
+                  <button
+                    key={a.label}
+                    onClick={() => onRunAnalysis(mode === 'blank' ? a.blankPrompt! : a.prompt)}
+                    className="w-full text-left rounded-md border px-2.5 py-1.5 transition-colors"
+                    style={{ background: wcg.surfaceMuted, borderColor: wcg.border }}
+                  >
+                    <span className="flex items-start gap-2">
+                      <Play className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: wcg.teal }} />
+                      <span className="min-w-0">
+                        <span className="block text-[12px] font-medium leading-snug" style={{ color: wcg.ink }}>
+                          {a.label}
+                        </span>
+                        <span className="flex items-center gap-1 text-[10.5px] mt-0.5" style={{ color: wcg.muted }}>
+                          <BarChart3 className="w-3 h-3 shrink-0" /> {a.chart}
+                        </span>
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }

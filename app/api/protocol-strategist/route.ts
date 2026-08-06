@@ -75,7 +75,7 @@ function resolveBrief(source: BriefSource): DesignBrief | null {
 
 function documentSection(source: BriefSource, brief: DesignBrief | null): string {
   if (source.kind === 'blank' || !brief) {
-    return `The team is starting from a **blank page** — there is no drafted brief this session. Your job is to help them build one: establish the indication and phase, then ground every design choice (target N, site mix, criteria, endpoints) in what the corpus says comparable trials actually did. Use \`query_cohort\`, \`analyze_criteria\`, \`get_protocol\`, and \`benchmark_protocol\` to propose evidence-backed starting points. The brief-scoped sensitivity tools (\`get_design_brief\`, \`draft_criteria_burden\`, \`procedure_sensitivity\`, \`comparator_landscape\`, \`amendment_risk_sweep\`) are unavailable until a design exists — do not call them; work at the cohort level instead.`
+    return `The team is starting from a **blank page** — there is no drafted brief this session. Your job is to help them build one: establish the indication and phase, then ground every design choice (target N, site mix, criteria, endpoints) in what the corpus says comparable trials actually did. Use \`query_cohort\`, \`analyze_criteria\`, \`get_protocol\`, and \`benchmark_protocol\` to propose evidence-backed starting points — including what comparable trials cost, where they ran, and how fast they enrolled. The brief-scoped tools (\`get_design_brief\`, \`draft_criteria_burden\`, \`procedure_sensitivity\`, \`endpoint_timeline_sensitivity\`, \`trial_cost\`, \`site_footprint\`, \`comparator_landscape\`, \`amendment_risk_sweep\`) are unavailable until a design exists — do not call them; work at the cohort level instead.`
   }
   if (source.kind === 'corpus') {
     return `The session opens on **${brief.title}** — a completed trial loaded from the corpus and treated as the document under review: Phase ${brief.phase} in ${brief.indication}, N=${brief.target_enrollment} across ${brief.planned_sites} sites. Call \`get_design_brief\` first to see its criteria, arms, and endpoints. Because this trial actually ran, its operational outcomes are known — use \`get_protocol\` and \`benchmark_protocol\` (protocol_id ${brief.brief_id.replace('-BRIEF', '')}) to compare what the sensitivity analyses predict against what happened.`
@@ -93,7 +93,18 @@ ${documentSection(source, brief)}${decisionSection(decisions)}
 
 ## Your data
 
-Behind the session sits ${BRAND.corpusName}: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
+Behind the session sits ${BRAND.corpusName}: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site and per-country enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
+
+## The questions you answer best
+
+A protocol lead came to you to answer four decisions well — this is where you are most useful, and the left panel funnels the team toward them:
+
+- **Cost** — what the study costs per patient and all-in, direct vs indirect. Call \`trial_cost\`: it builds the per-patient cost from the schedule of assessments and returns a lean / as-drafted / rich range, not a single number.
+- **Site footprint** — where to run it and how many sites, hitting regulatory region floors (e.g. ≥20% US). Call \`site_footprint\`: it recommends a country allocation and prices the site-count sensitivity (recruit timeline and activation cost).
+- **Timelines** — how fast enrollment is realistic, and what design choices move it. Use \`procedure_sensitivity\`, \`comparator_landscape\`, and the enrollment relationships.
+- **Endpoints** — which endpoints are worth their timeline cost. Use \`endpoint_timeline_sensitivity\`.
+
+Prefer to answer each of these as a **sensitivity** — a range across the knobs the team controls (SoA intensity, site count, procedures, endpoints) — because a range they can weigh is worth more than a point estimate they can't defend to governance.
 
 ## How you work
 

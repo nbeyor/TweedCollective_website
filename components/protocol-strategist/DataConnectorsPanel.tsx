@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Check, ChevronDown, Database, FolderLock, Plus } from 'lucide-react'
+import { Check, ChevronDown, Coins, Database, FolderLock, Landmark, Plus } from 'lucide-react'
 
 import { wcg } from './wcgTheme'
 
@@ -32,6 +32,18 @@ const LICENSED: Connector[] = [
   { key: 'definitive', label: 'Definitive Healthcare', note: 'Site, provider & referral analytics' },
 ]
 
+const REGULATORY: Connector[] = [
+  { key: 'fda-guidance', label: 'FDA / EMA guidance & precedent', note: 'Guidance docs, prior approvals & endpoint acceptability' },
+  { key: 'adcomm', label: 'AdComm & CRL history', note: 'Advisory committee minutes & complete-response letters' },
+  { key: 'ct-registries', label: 'ClinicalTrials.gov / EudraCT', note: 'Registered designs, endpoints & enrollment status' },
+]
+
+const COSTS: Connector[] = [
+  { key: 'fmv', label: 'Fair Market Value benchmarks', note: 'Per-procedure & per-visit FMV rates by geography' },
+  { key: 'grant-plan', label: 'Grant-plan / study budgets', note: 'Investigator grant models · direct & indirect cost' },
+  { key: 'planisware', label: 'Portfolio finance (Planisware, RAPID)', note: 'Program cost planning & scenario budgets' },
+]
+
 const INTERNAL: Connector[] = [
   { key: 'protocols', label: 'Past protocols & amendments', note: 'Prior studies, amendment history & rationale' },
   { key: 'feasibility', label: 'Feasibility studies', note: 'Site surveys & country feasibility assessments' },
@@ -39,7 +51,7 @@ const INTERNAL: Connector[] = [
   { key: 'csr', label: 'Clinical study reports', note: 'CSRs · realized enrollment, deviations & outcomes' },
   { key: 'site-performance', label: 'Site & CRO performance', note: 'Activation, screen-fail & enrollment metrics' },
   { key: 'libraries', label: 'Criteria & SoA libraries', note: 'Standard eligibility language & visit schedules' },
-  { key: 'advisory', label: 'KOL & advisory input', note: 'Ad board minutes & investigator feedback' },
+  { key: 'interviews', label: 'Expert & KOL interviews', note: 'Investigator calls, ad boards & congress feedback' },
 ]
 
 export function DataConnectorsPanel() {
@@ -89,6 +101,20 @@ export function DataConnectorsPanel() {
               icon={<Database className="w-3.5 h-3.5" style={{ color: wcg.teal }} />}
               title="Licensed & real-world data"
               connectors={LICENSED}
+              requested={requested}
+              onToggle={toggle}
+            />
+            <ConnectorGroup
+              icon={<Landmark className="w-3.5 h-3.5" style={{ color: wcg.purple }} />}
+              title="Regulatory & competitive"
+              connectors={REGULATORY}
+              requested={requested}
+              onToggle={toggle}
+            />
+            <ConnectorGroup
+              icon={<Coins className="w-3.5 h-3.5" style={{ color: wcg.amber }} />}
+              title="Cost & fair-market value"
+              connectors={COSTS}
               requested={requested}
               onToggle={toggle}
             />
