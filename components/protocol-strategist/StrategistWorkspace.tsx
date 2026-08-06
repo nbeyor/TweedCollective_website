@@ -1,11 +1,14 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { CheckCircle2, Loader2, Send, Wrench } from 'lucide-react'
+import { CheckCircle2, ExternalLink, FileUp, Loader2, RotateCcw, Send, Wrench } from 'lucide-react'
 
-import type { DesignBrief } from '@/lib/trialCorpus'
-import { BriefPanel, type ShippedDecision } from './BriefPanel'
+import type { DesignBrief, ProtocolIndexEntry } from '@/lib/trialCorpus'
+import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
+import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
 import { InsightPanel, type Insight } from './InsightPanel'
+import { Markdown } from './Markdown'
+import { ProtocolPicker, sourceKey, type BriefSource } from './ProtocolPicker'
 import { wcg } from './wcgTheme'
 
 interface Message {
@@ -30,18 +33,45 @@ const TOOL_LABELS: Record<string, string> = {
   analyze_criteria: 'Analyzing eligibility criteria',
 }
 
-const SUGGESTIONS = [
-  'Which criteria in this draft will cost us the most eligible patients?',
-  'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
-  'Before this goes to writing, which elements are most likely to force an amendment?',
-]
+const SUGGESTIONS: Record<BriefMode, string[]> = {
+  hero: [
+    'Which criteria in this draft will cost us the most eligible patients?',
+    'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
+    'Before this goes to writing, which elements are most likely to force an amendment?',
+  ],
+  corpus: [
+    'Which criteria in this protocol cost the most eligible patients?',
+    'How did this trial actually perform against its peers?',
+    'Which elements of this protocol were amended mid-flight, and what did that cost?',
+  ],
+  blank: [
+    'I want to design a Phase 2 trial — what should I decide first, and what does the corpus say about comparable studies?',
+    'Which eligibility criteria are standard for trials like mine, and which drive screen failure?',
+    'Help me set a realistic target enrollment, duration, and site mix for a new study.',
+  ],
+}
+
+const PLACEHOLDERS: Record<BriefMode, string> = {
+  hero: 'Ask a what-if, or select an element from the brief…',
+  corpus: 'Ask a what-if about this protocol…',
+  blank: 'Describe the trial you want to design…',
+}
+
+/** Shared width for everything in the chat column. */
+const COL = 'max-w-3xl mx-auto'
+
+const PANEL_MIN = 320
+const PANEL_MAX = 720
+const PANEL_KEY = 'strategist.panelWidth'
 
 export function StrategistWorkspace({
   brief,
   briefDocLink,
+  protocols,
 }: {
   brief: DesignBrief
   briefDocLink?: string | null
+  protocols: ProtocolIndexEntry[]
 }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -54,11 +84,53 @@ export function StrategistWorkspace({
   const [decisions, setDecisions] = useState<ShippedDecision[]>([])
   const [shipNotice, setShipNotice] = useState<string | null>(null)
 
+  // Document under review.
+  const [source, setSource] = useState<BriefSource>({ kind: 'hero' })
+  const [activeBrief, setActiveBrief] = useState<DesignBrief | null>(brief)
+  const [briefLoading, setBriefLoading] = useState(false)
+
+  // Publish to Google Doc.
+  const [publishing, setPublishing] = useState(false)
+  const [publishedDoc, setPublishedDoc] = useState<{ webViewLink?: string } | null>(null)
+  const [publishError, setPublishError] = useState<string | null>(null)
+  const [docsReady, setDocsReady] = useState<{ ok: boolean; detail: string } | null>(null)
+
+  // Resizable insight panel.
+  const [panelWidth, setPanelWidth] = useState(400)
+  const drag = useRef<{ startX: number; startW: number } | null>(null)
+
   const endRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const seq = useRef(0)
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, reply, tools])
+
+  // Auto-grow the composer with its content, up to ~9 rows, then scroll inside.
+  useEffect(() => {
+    const el = inputRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${Math.min(el.scrollHeight, 220)}px`
+  }, [input])
+
+  useEffect(() => {
+    const saved = Number(localStorage.getItem(PANEL_KEY))
+    if (saved >= PANEL_MIN && saved <= PANEL_MAX) setPanelWidth(saved)
+  }, [])
+
+  // One live probe of the Drive folder so Publish fails fast with a reason
+  // instead of after a 30-second model call.
+  useEffect(() => {
+    fetch('/api/protocol-strategist/health?scope=google')
+      .then((r) => r.json())
+      .then((d) => {
+        const g = d?.checks?.google
+        if (g && typeof g.ok === 'boolean') setDocsReady({ ok: g.ok, detail: String(g.detail ?? '') })
+      })
+      .catch(() => {})
+  }, [])
 
   const send = useCallback(
     async (text: string) => {
@@ -71,6 +143,7 @@ export function StrategistWorkspace({
       setReply('')
       setTools([])
       setError(null)
+      setShipNotice(null)
       setStreaming(true)
 
       let accumulated = ''
@@ -78,7 +151,7 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next }),
+          body: JSON.stringify({ messages: next, context: source }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -171,33 +244,206 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming]
+    [messages, streaming, source]
   )
 
+  const clearConversation = useCallback(() => {
+    setMessages([])
+    setReply('')
+    setTools([])
+    setError(null)
+    setInsights([])
+    setDecisions([])
+    setShipNotice(null)
+    setPublishedDoc(null)
+    setPublishError(null)
+  }, [])
+
+  const reset = useCallback(() => {
+    if (streaming) return
+    if (messages.length && !window.confirm('Clear this conversation and its charts?')) return
+    clearConversation()
+  }, [messages.length, streaming, clearConversation])
+
+  const switchSource = useCallback(
+    async (next: BriefSource) => {
+      if (sourceKey(next) === sourceKey(source) || streaming) return
+      if (
+        messages.length &&
+        !window.confirm('Switching the document under review resets this conversation. Continue?')
+      ) {
+        return
+      }
+      clearConversation()
+      setSource(next)
+      if (next.kind === 'hero') {
+        setActiveBrief(brief)
+        return
+      }
+      if (next.kind === 'blank') {
+        setActiveBrief(null)
+        return
+      }
+      setActiveBrief(null)
+      setBriefLoading(true)
+      try {
+        const res = await fetch(
+          `/api/protocol-strategist/brief?protocol_id=${encodeURIComponent(next.protocolId)}`
+        )
+        if (!res.ok) throw new Error(`Could not load ${next.protocolId} (${res.status}).`)
+        setActiveBrief((await res.json()) as DesignBrief)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err))
+        setSource({ kind: 'hero' })
+        setActiveBrief(brief)
+      } finally {
+        setBriefLoading(false)
+      }
+    },
+    [source, streaming, messages.length, clearConversation, brief]
+  )
+
+  const publish = useCallback(async () => {
+    if (!messages.length || streaming || publishing) return
+    setPublishing(true)
+    setPublishError(null)
+    setPublishedDoc(null)
+    try {
+      const res = await fetch('/api/protocol-strategist/codify', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ messages }),
+      })
+      const data = (await res.json()) as { webViewLink?: string; error?: string }
+      if (!res.ok) throw new Error(data.error ?? `Publish failed (${res.status}).`)
+      setPublishedDoc(data)
+    } catch (err) {
+      setPublishError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setPublishing(false)
+    }
+  }, [messages, streaming, publishing])
+
+  const startDrag = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.currentTarget.setPointerCapture(e.pointerId)
+      drag.current = { startX: e.clientX, startW: panelWidth }
+    },
+    [panelWidth]
+  )
+  const moveDrag = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current) return
+    const dx = drag.current.startX - e.clientX
+    setPanelWidth(Math.min(PANEL_MAX, Math.max(PANEL_MIN, drag.current.startW + dx)))
+  }, [])
+  const endDrag = useCallback(() => {
+    if (!drag.current) return
+    drag.current = null
+    setPanelWidth((w) => {
+      localStorage.setItem(PANEL_KEY, String(w))
+      return w
+    })
+  }, [])
+
+  const mode: BriefMode = source.kind
   const empty = messages.length === 0
+  const publishDisabled =
+    !messages.length || streaming || publishing || (docsReady !== null && !docsReady.ok)
 
   return (
-    <div className="h-full flex flex-col lg:flex-row" style={{ background: wcg.page }}>
+    <div
+      className="h-full flex flex-col lg:flex-row"
+      style={{ background: wcg.page, ['--panel-w' as string]: `${panelWidth}px` } as React.CSSProperties}
+    >
       {/* Brief panel */}
       <aside
         className="w-full lg:w-80 shrink-0 border-b lg:border-b-0 lg:border-r max-h-72 lg:max-h-none"
         style={{ background: wcg.surface, borderColor: wcg.border }}
       >
-        <BriefPanel brief={brief} decisions={decisions} onPickElement={setInput} docLink={briefDocLink} />
+        <div className="h-full overflow-y-auto">
+          <div className="px-4 pt-4">
+            <ProtocolPicker
+              source={source}
+              heroLabel={`${brief.indication} — drafted brief`}
+              examples={EXAMPLE_PROTOCOLS}
+              protocols={protocols}
+              onSelect={switchSource}
+            />
+          </div>
+          {briefLoading ? (
+            <div className="flex items-center gap-2 px-4 py-6 text-[12.5px]" style={{ color: wcg.muted }}>
+              <Loader2 className="w-4 h-4 animate-spin" /> Loading protocol…
+            </div>
+          ) : (
+            <BriefPanel
+              brief={activeBrief}
+              mode={mode}
+              decisions={decisions}
+              onPickElement={setInput}
+              onRunAnalysis={send}
+              docLink={briefDocLink}
+            />
+          )}
+        </div>
       </aside>
 
       {/* Chat */}
       <section className="flex-1 min-w-0 flex flex-col">
+        <div
+          className="border-b px-5 py-2 flex items-center justify-end gap-2 shrink-0"
+          style={{ background: wcg.surface, borderColor: wcg.border }}
+        >
+          {publishedDoc?.webViewLink && (
+            <a
+              href={publishedDoc.webViewLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-medium"
+              style={{ background: '#ECFBF6', borderColor: wcg.teal, color: wcg.navy }}
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Open in Google Docs
+            </a>
+          )}
+          {publishError && (
+            <span className="text-[11.5px] truncate max-w-[40ch]" style={{ color: wcg.bad }} title={publishError}>
+              {publishError}
+            </span>
+          )}
+          <button
+            onClick={reset}
+            disabled={streaming || (!messages.length && !insights.length)}
+            title="Clear the conversation and charts"
+            className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-medium disabled:opacity-40 transition-colors"
+            style={{ background: wcg.surface, borderColor: wcg.borderStrong, color: wcg.body }}
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Reset
+          </button>
+          <button
+            onClick={publish}
+            disabled={publishDisabled}
+            title={
+              docsReady && !docsReady.ok
+                ? `Google Docs is not available: ${docsReady.detail}`
+                : 'Turn this conversation into a formatted Google Doc'
+            }
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-white disabled:opacity-40 transition-colors"
+            style={{ background: wcg.navy }}
+          >
+            {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileUp className="w-3.5 h-3.5" />}
+            {publishing ? 'Publishing…' : 'Publish to Doc'}
+          </button>
+        </div>
+
         <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
           {empty && (
-            <div className="max-w-2xl mx-auto pt-4">
+            <div className={`${COL} pt-4`}>
               <p className="text-[14px] leading-relaxed mb-5" style={{ color: wcg.body }}>
-                The document on the left is a drafted trial design. Select an element to interrogate it, or
-                ask a what-if below. Every figure traces to WCG IntelX operations data — sensitivity
-                answers come back as options with tradeoffs, and charts render on the right.
+                {mode === 'blank'
+                  ? 'Nothing is drafted yet. Describe the trial you have in mind and the strategist will ground every design choice in the operations corpus — or start from one of the questions below.'
+                  : 'The document on the left is under review. Select an element to interrogate it, run a standard analysis from the Analyses tab, or ask a what-if below. Every figure traces to the operations corpus — sensitivity answers come back as options with tradeoffs, and charts render on the right.'}
               </p>
               <div className="space-y-2">
-                {SUGGESTIONS.map((s) => (
+                {SUGGESTIONS[mode].map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
@@ -212,7 +458,7 @@ export function StrategistWorkspace({
           )}
 
           {messages.map((m, i) => (
-            <div key={i} className="max-w-2xl mx-auto">
+            <div key={i} className={COL}>
               {m.role === 'user' ? (
                 <div className="flex justify-end">
                   <div
@@ -223,15 +469,13 @@ export function StrategistWorkspace({
                   </div>
                 </div>
               ) : (
-                <div className="text-[14.5px] leading-relaxed whitespace-pre-wrap" style={{ color: wcg.body }}>
-                  {m.content}
-                </div>
+                <Markdown>{m.content}</Markdown>
               )}
             </div>
           ))}
 
           {(tools.length > 0 || thinking) && streaming && (
-            <div className="max-w-2xl mx-auto space-y-1.5">
+            <div className={`${COL} space-y-1.5`}>
               {thinking && (
                 <div className="flex items-center gap-2 text-[12px]" style={{ color: wcg.muted }}>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -248,17 +492,14 @@ export function StrategistWorkspace({
           )}
 
           {reply && (
-            <div
-              className="max-w-2xl mx-auto text-[14.5px] leading-relaxed whitespace-pre-wrap"
-              style={{ color: wcg.body }}
-            >
-              {reply}
+            <div className={COL}>
+              <Markdown>{reply}</Markdown>
             </div>
           )}
 
           {shipNotice && (
             <div
-              className="max-w-2xl mx-auto flex items-center gap-2 rounded-lg border px-4 py-2.5 text-[13px]"
+              className={`${COL} flex items-center gap-2 rounded-lg border px-4 py-2.5 text-[13px]`}
               style={{ background: '#ECFBF6', borderColor: wcg.teal, color: wcg.navy }}
             >
               <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: wcg.good }} />
@@ -268,7 +509,7 @@ export function StrategistWorkspace({
 
           {error && (
             <div
-              className="max-w-2xl mx-auto rounded-lg border px-4 py-3 text-[13px]"
+              className={`${COL} rounded-lg border px-4 py-3 text-[13px]`}
               style={{ background: '#FDECE7', borderColor: wcg.bad, color: '#8A3520' }}
             >
               {error}
@@ -284,9 +525,10 @@ export function StrategistWorkspace({
               e.preventDefault()
               send(input)
             }}
-            className="max-w-2xl mx-auto flex items-end gap-3"
+            className={`${COL} flex items-end gap-3`}
           >
             <textarea
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -296,10 +538,10 @@ export function StrategistWorkspace({
                 }
               }}
               rows={1}
-              placeholder="Ask a what-if, or select an element from the brief…"
+              placeholder={PLACEHOLDERS[mode]}
               disabled={streaming}
-              className="flex-1 resize-none rounded-lg border px-4 py-3 text-[14px] focus:outline-none disabled:opacity-50"
-              style={{ background: wcg.surface, borderColor: wcg.borderStrong, color: wcg.ink }}
+              className="flex-1 resize-none overflow-y-auto rounded-lg border px-4 py-3 text-[14px] focus:outline-none disabled:opacity-50"
+              style={{ background: wcg.surface, borderColor: wcg.borderStrong, color: wcg.ink, maxHeight: 220 }}
             />
             <button
               type="submit"
@@ -314,9 +556,22 @@ export function StrategistWorkspace({
         </div>
       </section>
 
+      {/* Resize handle */}
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize insight panel"
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        className="hidden lg:block w-1.5 shrink-0 cursor-col-resize transition-colors hover:bg-[#CBD5E1]"
+        style={{ background: wcg.border, touchAction: 'none' }}
+      />
+
       {/* Insight panel */}
       <aside
-        className="w-full lg:w-[400px] shrink-0 border-t lg:border-t-0 lg:border-l max-h-96 lg:max-h-none"
+        className="w-full lg:w-[var(--panel-w)] shrink-0 border-t lg:border-t-0 max-h-96 lg:max-h-none"
         style={{ background: wcg.page, borderColor: wcg.border }}
       >
         <InsightPanel insights={insights} />

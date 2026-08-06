@@ -53,9 +53,9 @@ function money(n: number): string {
 
 // ------------------------------------------------------------ waterfall ------
 
-function CriteriaWaterfall({ data }: { data: Record<string, unknown> }) {
+function CriteriaWaterfall({ data, expanded }: ChartProps) {
   const criteria = (data.criteria as Array<Record<string, unknown>>) ?? []
-  const labels = criteria.map((c) => shorten(String(c.corpus_criterion ?? c.criterion)))
+  const labels = criteria.map((c) => shorten(String(c.corpus_criterion ?? c.criterion), expanded ? 56 : 32))
   const values = criteria.map((c) => Number(c.share_of_draft_burden_pct))
   const topShare = Number(data.top_two_share_pct ?? 0)
   const lead = String(data.lead_criterion ?? 'the top criterion')
@@ -64,7 +64,7 @@ function CriteriaWaterfall({ data }: { data: Record<string, unknown> }) {
     <ChartFrame
       title="Criteria-burden waterfall"
       conclusion={`Two criteria carry ${topShare.toFixed(0)}% of the draft's screening burden — ${shorten(lead, 40)} leads.`}
-      height={Math.max(220, labels.length * 30)}
+      height={Math.max(expanded ? 420 : 220, labels.length * (expanded ? 38 : 30))}
     >
       <Bar
         data={{
@@ -90,9 +90,9 @@ function CriteriaWaterfall({ data }: { data: Record<string, unknown> }) {
 
 // -------------------------------------------------- sensitivity comparison ---
 
-function SensitivityComparison({ data }: { data: Record<string, unknown> }) {
+function SensitivityComparison({ data, expanded }: ChartProps) {
   const scenarios = (data.scenarios as Array<Record<string, unknown>>) ?? []
-  const labels = scenarios.map((s) => shorten(String(s.label), 26))
+  const labels = scenarios.map((s) => shorten(String(s.label), expanded ? 48 : 26))
   const slips = scenarios.map((s) => Number(s.enrollment_slip_months))
   // Colour by rank: lowest slip = good, highest = bad.
   const max = Math.max(...slips, 0.001)
@@ -103,7 +103,7 @@ function SensitivityComparison({ data }: { data: Record<string, unknown> }) {
     <ChartFrame
       title="Sensitivity comparison"
       conclusion="Each option is the same decision priced differently — months of enrollment slip, patients at risk, and incremental cost."
-      height={210}
+      height={expanded ? 400 : 210}
     >
       <Bar
         data={{
@@ -136,7 +136,7 @@ function SensitivityComparison({ data }: { data: Record<string, unknown> }) {
 
 // ---------------------------------------------------- comparator scatter -----
 
-function ComparatorScatter({ data }: { data: Record<string, unknown> }) {
+function ComparatorScatter({ data, expanded }: ChartProps) {
   const points = (data.points as Array<Record<string, unknown>>) ?? []
   const draft = (data.draft as Record<string, unknown>) ?? {}
 
@@ -144,7 +144,7 @@ function ComparatorScatter({ data }: { data: Record<string, unknown> }) {
     <ChartFrame
       title="Comparator landscape"
       conclusion="The draft (highlighted) sits among trials that carry more assessment burden than the fastest enrollers."
-      height={260}
+      height={expanded ? 480 : 260}
     >
       <Scatter
         data={{
@@ -177,7 +177,7 @@ function ComparatorScatter({ data }: { data: Record<string, unknown> }) {
 
 // -------------------------------------------------------- amendment risk -----
 
-function AmendmentRisk({ data }: { data: Record<string, unknown> }) {
+function AmendmentRisk({ data, expanded }: ChartProps) {
   const risk = (data.brief_element_risk as Array<Record<string, unknown>>) ?? []
   const labels = risk.map((r) => String(r.element))
   const values = risk.map((r) => Number(r.pct_of_cohort_amended))
@@ -186,7 +186,7 @@ function AmendmentRisk({ data }: { data: Record<string, unknown> }) {
     <ChartFrame
       title="Amendment-risk view"
       conclusion="The elements least settled in the draft are the ones comparator trials most often had to amend mid-flight."
-      height={Math.max(200, labels.length * 34)}
+      height={Math.max(expanded ? 380 : 200, labels.length * (expanded ? 56 : 34))}
     >
       <Bar
         data={{
@@ -220,9 +220,9 @@ function AmendmentRisk({ data }: { data: Record<string, unknown> }) {
 
 // ------------------------------------------------------- endpoint timeline ---
 
-function EndpointTimeline({ data }: { data: Record<string, unknown> }) {
+function EndpointTimeline({ data, expanded }: ChartProps) {
   const options = (data.options as Array<Record<string, unknown>>) ?? []
-  const labels = options.map((o) => shorten(String(o.label), 24))
+  const labels = options.map((o) => shorten(String(o.label), expanded ? 44 : 24))
   const values = options.map((o) => Number(o.added_db_lock_days))
   const max = Math.max(...values, 0.001)
   const colors = values.map((v) => (v >= max ? wcg.bad : v === 0 ? wcg.good : wcg.warn))
@@ -231,7 +231,7 @@ function EndpointTimeline({ data }: { data: Record<string, unknown> }) {
     <ChartFrame
       title="Endpoint timeline impact"
       conclusion="Every added secondary endpoint pushes database lock — the question is which are worth the days."
-      height={200}
+      height={expanded ? 380 : 200}
     >
       <Bar
         data={{
@@ -259,18 +259,24 @@ function EndpointTimeline({ data }: { data: Record<string, unknown> }) {
 
 // ---------------------------------------------------------------- dispatch ---
 
-export function FixedChart({ panel }: { panel: PanelDescriptor }) {
+interface ChartProps {
+  data: Record<string, unknown>
+  /** Lightbox mode: taller frames and longer labels. */
+  expanded?: boolean
+}
+
+export function FixedChart({ panel, expanded = false }: { panel: PanelDescriptor; expanded?: boolean }) {
   switch (panel.chart) {
     case 'criteria_waterfall':
-      return <CriteriaWaterfall data={panel.data} />
+      return <CriteriaWaterfall data={panel.data} expanded={expanded} />
     case 'sensitivity_comparison':
-      return <SensitivityComparison data={panel.data} />
+      return <SensitivityComparison data={panel.data} expanded={expanded} />
     case 'comparator_scatter':
-      return <ComparatorScatter data={panel.data} />
+      return <ComparatorScatter data={panel.data} expanded={expanded} />
     case 'amendment_risk':
-      return <AmendmentRisk data={panel.data} />
+      return <AmendmentRisk data={panel.data} expanded={expanded} />
     case 'endpoint_timeline':
-      return <EndpointTimeline data={panel.data} />
+      return <EndpointTimeline data={panel.data} expanded={expanded} />
     default:
       return null
   }

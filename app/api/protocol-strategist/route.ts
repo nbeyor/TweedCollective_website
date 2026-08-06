@@ -14,8 +14,9 @@ import { NextRequest } from 'next/server'
 
 import { clientAccessError } from '@/lib/client-access'
 import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
+import { BRAND } from '@/lib/strategistBrand'
 import { TOOLS, runTool } from '@/lib/strategistTools'
-import { designBrief, manifest } from '@/lib/trialCorpus'
+import { deriveBriefFromProtocol, designBrief, manifest, type DesignBrief } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -27,18 +28,36 @@ const MODEL = 'claude-opus-5'
 const EFFORT = process.env.STRATEGIST_EFFORT ?? 'medium'
 const MAX_TOOL_ROUNDS = 12
 
-function systemPrompt(): string {
+/** Which document the session is anchored on. Sent by the client per request. */
+export type BriefSource = { kind: 'hero' } | { kind: 'corpus'; protocolId: string } | { kind: 'blank' }
+
+function resolveBrief(source: BriefSource): DesignBrief | null {
+  if (source.kind === 'blank') return null
+  if (source.kind === 'corpus') return deriveBriefFromProtocol(source.protocolId)
+  return designBrief()
+}
+
+function documentSection(source: BriefSource, brief: DesignBrief | null): string {
+  if (source.kind === 'blank' || !brief) {
+    return `The team is starting from a **blank page** — there is no drafted brief this session. Your job is to help them build one: establish the indication and phase, then ground every design choice (target N, site mix, criteria, endpoints) in what the corpus says comparable trials actually did. Use \`query_cohort\`, \`analyze_criteria\`, \`get_protocol\`, and \`benchmark_protocol\` to propose evidence-backed starting points. The brief-scoped sensitivity tools (\`get_design_brief\`, \`draft_criteria_burden\`, \`procedure_sensitivity\`, \`comparator_landscape\`, \`amendment_risk_sweep\`) are unavailable until a design exists — do not call them; work at the cohort level instead.`
+  }
+  if (source.kind === 'corpus') {
+    return `The session opens on **${brief.title}** — a completed trial loaded from the corpus and treated as the document under review: Phase ${brief.phase} in ${brief.indication}, N=${brief.target_enrollment} across ${brief.planned_sites} sites. Call \`get_design_brief\` first to see its criteria, arms, and endpoints. Because this trial actually ran, its operational outcomes are known — use \`get_protocol\` and \`benchmark_protocol\` (protocol_id ${brief.brief_id.replace('-BRIEF', '')}) to compare what the sensitivity analyses predict against what happened.`
+  }
+  return `The session opens on a pre-drafted design brief: **${brief.title}** — a Phase ${brief.phase} study in ${brief.line_of_treatment.toLowerCase()} ${brief.indication}, target enrollment ${brief.target_enrollment} across ~${brief.planned_sites} sites. It already has arms, a primary endpoint, draft eligibility criteria, and a schedule sketch. Call \`get_design_brief\` first to see it. The team is not starting from a blank page — they are stress-testing a starting point, and one eligibility element (GI-comorbidity verification) is deliberately unresolved.`
+}
+
+function systemPrompt(source: BriefSource, brief: DesignBrief | null): string {
   const m = manifest() as Record<string, unknown>
-  const brief = designBrief()
-  return `You are WCG IntelX, an AI clinical trial strategist. A study team has a drafted trial design in front of them and is pressure-testing its elements one at a time, before the protocol is written. You help them interrogate the draft, run sensitivity analyses against operational history, and record decisions back into the document.
+  return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions back into the document.
 
 ## The document under review
 
-The session opens on a pre-drafted design brief: **${brief.title}** — a Phase ${brief.phase} study in ${brief.line_of_treatment.toLowerCase()} ${brief.indication}, target enrollment ${brief.target_enrollment} across ~${brief.planned_sites} sites. It already has arms, a primary endpoint, draft eligibility criteria, and a schedule sketch. Call \`get_design_brief\` first to see it. The team is not starting from a blank page — they are stress-testing a starting point, and one eligibility element (GI-comorbidity verification) is deliberately unresolved.
+${documentSection(source, brief)}
 
 ## Your data
 
-Behind the brief sits the WCG IntelX corpus: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
+Behind the session sits ${BRAND.corpusName}: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
 
 ## How you work
 
@@ -54,11 +73,11 @@ Behind the brief sits the WCG IntelX corpus: ${m.protocolCount} synthetic protoc
 
 ## What this data is
 
-Entirely **synthetic** — generated for a WCG IntelX demonstration, no real molecule, sponsor, site, or participant, and no empirical calibration behind the operational layer. Its structure and encoded mechanisms make it sound for reasoning about method and mechanism, not as evidence about any real indication. If the user starts treating a figure as an empirical fact, say so once, plainly, and continue.
+Entirely **synthetic** — generated for this demonstration, no real molecule, sponsor, site, or participant, and no empirical calibration behind the operational layer. Its structure and encoded mechanisms make it sound for reasoning about method and mechanism, not as evidence about any real indication. If the user starts treating a figure as an empirical fact, say so once, plainly, and continue.
 
 ## Voice
 
-Write like a seasoned trial strategist, not a report generator. Complete sentences, technical terms spelled out, no arrow chains or invented shorthand. Lead with the finding, then the figures. Keep it to the length the question needs.`
+Be pithy. Markdown renders in this chat — use it. Lead with the answer: your first line is the finding with its headline figure, no preamble and no restating of the question. Then at most 5 bullets, each carrying one figure or tradeoff, no more than two lines each. When comparing two or more options, use a markdown table — one row per option, consistent units (months, patients, dollars). Bold the numbers that drive the decision. Technical terms spelled out on first use; no arrow chains or invented shorthand. No closing summary — stop when the answer is delivered.`
 }
 
 interface ClientMessage {
@@ -87,7 +106,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  let body: { messages?: ClientMessage[] }
+  let body: { messages?: ClientMessage[]; context?: BriefSource }
   try {
     body = await req.json()
   } catch {
@@ -99,6 +118,20 @@ export async function POST(req: NextRequest) {
   )
   if (!incoming.length) {
     return new Response(JSON.stringify({ error: 'No messages supplied.' }), { status: 400 })
+  }
+
+  const source: BriefSource =
+    body.context?.kind === 'corpus' && typeof body.context.protocolId === 'string'
+      ? { kind: 'corpus', protocolId: body.context.protocolId }
+      : body.context?.kind === 'blank'
+        ? { kind: 'blank' }
+        : { kind: 'hero' }
+  const activeBrief = resolveBrief(source)
+  if (source.kind === 'corpus' && !activeBrief) {
+    return new Response(
+      JSON.stringify({ error: `Unknown protocol "${source.protocolId}".` }),
+      { status: 400 }
+    )
   }
 
   const client = new Anthropic()
@@ -130,7 +163,7 @@ export async function POST(req: NextRequest) {
             system: [
               {
                 type: 'text',
-                text: systemPrompt(),
+                text: systemPrompt(source, activeBrief),
                 cache_control: { type: 'ephemeral' },
               },
             ],
@@ -178,10 +211,10 @@ export async function POST(req: NextRequest) {
           for (const call of toolUses) {
             send('tool', { name: call.name, input: call.input })
             try {
-              const output = (await runTool(
-                call.name,
-                call.input as Record<string, unknown>
-              )) as Record<string, unknown>
+              const output = (await runTool(call.name, call.input as Record<string, unknown>, {
+                brief: activeBrief,
+                isHero: source.kind === 'hero',
+              })) as Record<string, unknown>
               send('tool_result', { name: call.name, ok: true })
 
               // Aux fields drive UI surfaces (fixed panel charts, generated
