@@ -56,6 +56,44 @@ export const amendments = () => readTable('description_of_change.json')
 export const prohibitedMeds = () => readTable('prohibited_medications.json')
 export const soaEvents = () => readTable('soa_events.json')
 
+// v0.2 sensitivity layer.
+export const procedureOperations = () => readTable('procedure_operations.json')
+export const assessmentOperations = () => readTable('assessment_operations.json')
+export const criterionAttribution = () => readTable('criterion_attribution.json')
+
+export interface DesignBrief {
+  brief_id: string
+  title: string
+  status: string
+  therapeutic_area: string
+  disease_area: string
+  indication: string
+  line_of_treatment: string
+  phase: string
+  comparator_cohort: { therapeutic_area?: string; disease_area?: string; phase?: string[] }
+  target_enrollment: number
+  planned_sites: number
+  site_mix: Record<string, number>
+  arms: Array<{ id: string; name: string }>
+  randomization: string
+  primary_endpoint: { id: string; text: string; assessment: string }
+  secondary_endpoints: Array<{ id: string; text: string; assessment: string; status: string }>
+  candidate_secondary_endpoints: Array<{ id: string; text: string; assessment: string }>
+  criteria: Array<{
+    id: string
+    type: string
+    category: string
+    text: string
+    corpus_criterion: string
+    hero_hook?: boolean
+    open_question?: string
+  }>
+  soa_sketch: string[]
+  disclaimer: string
+}
+
+export const designBrief = () => readJson<DesignBrief>('design_brief.json')
+
 // --------------------------------------------------------------- filtering ---
 
 export interface CohortFilter {
@@ -321,4 +359,425 @@ export function designOutcomeCorrelations(cohort: Protocol[]) {
     ),
     n: cohort.length,
   }))
+}
+
+// ============================================================ sensitivity ===
+//
+// The sensitivity engine. Every figure a what-if answer returns has to trace to
+// a corpus parameter, not to a number the model invented — that is the line
+// between a defensible analysis and a plausible hallucination. So the arithmetic
+// lives here, reading procedure_operations, assessment_operations, amendment
+// economics, and the comparator cohort. The model's job is to pick scenarios and
+// narrate them; it does not do the math.
+//
+// The coefficients below are the model of how operational friction converts into
+// months and patients. They are deliberately simple and named, so a reader can
+// see exactly how a slip was built. Synthetic throughout.
+
+const SLIP = {
+  screeningLagToMonths: 0.55, // share of the added screening window that shows up as calendar slip
+  refusalToDuration: 0.9, // how hard lost screens stretch enrollment duration
+  unavailabilityDrag: 0.15, // capacity friction per unit of sites that must refer out
+  referralLagPenalty: 0.8, // extra scheduling lag multiplier at sites lacking the procedure in-house
+}
+
+function pct(n: number, dp = 1) {
+  return round(n * 100, dp)
+}
+
+/** Normalised site-mix weights for the brief. */
+function mixWeights(brief: DesignBrief): Array<[string, number]> {
+  const entries = Object.entries(brief.site_mix)
+  const total = entries.reduce((a, [, w]) => a + w, 0) || 1
+  return entries.map(([st, w]) => [st, w / total])
+}
+
+/** procedure_operations indexed as procedure -> site_type -> row. */
+function procedureOpsIndex(): Map<string, Map<string, Row>> {
+  const idx = new Map<string, Map<string, Row>>()
+  for (const r of procedureOperations()) {
+    const name = String(r.procedure_name)
+    if (!idx.has(name)) idx.set(name, new Map())
+    idx.get(name)!.set(String(r.site_type), r)
+  }
+  return idx
+}
+
+/**
+ * Baseline enrollment for the brief, taken from the comparator cohort rather
+ * than assumed: the median enrollment duration of like trials, and the implied
+ * monthly rate needed to hit the brief's target N.
+ */
+export function baselineEnrollment(brief: DesignBrief) {
+  const cohort = selectCohort({
+    therapeutic_area: brief.comparator_cohort.therapeutic_area,
+    disease_area: brief.comparator_cohort.disease_area,
+    phase: brief.comparator_cohort.phase,
+  })
+  const durations = cohort.map((p) => Number(p.enrollment_duration_months)).filter(Number.isFinite)
+  const screenFails = cohort.map((p) => Number(p.screen_fail_rate)).filter(Number.isFinite)
+  const months = durations.length ? quantile(durations, 0.5) : 14
+  const screenFail = screenFails.length ? quantile(screenFails, 0.5) : 0.35
+  return {
+    comparator_n: cohort.length,
+    baseline_enrollment_months: round(months, 1),
+    cohort_median_screen_fail_pct: pct(screenFail),
+    monthly_enrollment_rate: round(brief.target_enrollment / Math.max(1, months), 1),
+    screened_estimate: Math.round(brief.target_enrollment / Math.max(0.2, 1 - screenFail)),
+  }
+}
+
+/**
+ * Criteria-burden waterfall (UC1). Each of the brief's criteria carries the mean
+ * screen-fail attribution measured across comparator protocols that use it — an
+ * additive share of the eligible population lost. Ordered largest first, with a
+ * running cumulative, so "our pool shrinks X% before we screen anyone, and two
+ * criteria do most of the damage" reads straight off the data.
+ */
+export function criteriaWaterfall(brief: DesignBrief) {
+  const ta = brief.comparator_cohort.therapeutic_area ?? brief.therapeutic_area
+  const attr = criterionAttribution().filter((r) => r.therapeutic_area === ta)
+  const byName = new Map(attr.map((r) => [String(r.criterion), r]))
+
+  const items = brief.criteria.map((c) => {
+    const row = byName.get(c.corpus_criterion)
+    const attribution = row ? Number(row.mean_screen_fail_attribution_pct) : 0
+    return {
+      element_id: c.id,
+      criterion: c.text,
+      corpus_criterion: c.corpus_criterion,
+      criterion_type: c.type,
+      category: c.category,
+      screen_fail_attribution_pct: round(attribution, 2),
+      protocols_evidencing: row ? Number(row.protocols_using) : 0,
+      hero_hook: Boolean(c.hero_hook),
+    }
+  })
+  items.sort((a, b) => b.screen_fail_attribution_pct - a.screen_fail_attribution_pct)
+
+  const total = items.reduce((a, it) => a + it.screen_fail_attribution_pct, 0)
+  let cumulative = 0
+  const withShare = items.map((it) => {
+    cumulative += it.screen_fail_attribution_pct
+    return {
+      ...it,
+      // Each criterion's share of the burden carried by the draft's own criteria,
+      // so the waterfall reads as "which of our criteria dominate".
+      share_of_draft_burden_pct: total ? round((it.screen_fail_attribution_pct / total) * 100, 1) : 0,
+      cumulative_pct: round(cumulative, 2),
+    }
+  })
+  const topTwo = withShare.slice(0, 2).reduce((a, it) => a + it.screen_fail_attribution_pct, 0)
+
+  return {
+    brief_id: brief.brief_id,
+    total_attributable_screen_fail_pct: round(total, 2),
+    top_two_share_pct: total ? pct(topTwo / total) : 0,
+    lead_criterion: withShare[0]?.corpus_criterion ?? null,
+    criteria: withShare,
+    note: 'Each criterion carries the mean screen-fail attribution measured across comparator protocols that use it; share_of_draft_burden_pct is its slice of the burden across the draft\'s own criteria. Association across protocols, not an isolated causal effect.',
+  }
+}
+
+export type SensitivityMode = 'required_all' | 'accepted_where_available' | 'accepted_prior'
+
+export interface SensitivityScenario {
+  key: string
+  label: string
+  procedure: string
+  mode: SensitivityMode
+  alt_procedure?: string
+  note?: string
+}
+
+/** Per-site-type operational effect of one scenario, before weighting. */
+function scenarioPerSite(
+  scn: SensitivityScenario,
+  idx: Map<string, Map<string, Row>>,
+  siteType: string
+) {
+  const prim = idx.get(scn.procedure)?.get(siteType)
+  if (!prim) return null
+  const lagP = Number(prim.scheduling_lag_days)
+  const refP = Number(prim.patient_refusal_rate)
+  const availP = Number(prim.in_house_availability_pct)
+  const costP = Number(prim.unit_cost_usd)
+
+  if (scn.mode === 'required_all') {
+    // Required everywhere; sites without it in-house refer out, paying a lag and
+    // cost penalty proportional to how far availability falls short.
+    const shortfall = 1 - availP
+    return {
+      coverage: 1,
+      lag: lagP * (1 + shortfall * SLIP.referralLagPenalty),
+      refusal: refP,
+      cost: costP * (1 + shortfall * 0.15),
+      in_house_availability_pct: pct(availP),
+    }
+  }
+
+  // accepted_where_available / accepted_prior: an alternative applies where it is
+  // available; elsewhere the primary (heavier) procedure is the fallback.
+  const altName = scn.alt_procedure ?? scn.procedure
+  const alt = idx.get(altName)?.get(siteType) ?? prim
+  const cov = Number(alt.in_house_availability_pct)
+  const lagA = Number(alt.scheduling_lag_days)
+  const refA = Number(alt.patient_refusal_rate)
+  const costA = Number(alt.unit_cost_usd)
+  return {
+    coverage: cov,
+    lag: cov * lagA + (1 - cov) * lagP,
+    refusal: cov * refA + (1 - cov) * refP,
+    cost: cov * costA + (1 - cov) * costP,
+    in_house_availability_pct: pct(cov),
+  }
+}
+
+/**
+ * Turn one scenario into an operational verdict for the brief: weighted
+ * scheduling lag, screen-refusal, site coverage, incremental cost, and the
+ * enrollment slip it implies — in months and patients.
+ */
+export function evaluateScenario(brief: DesignBrief, scn: SensitivityScenario) {
+  const idx = procedureOpsIndex()
+  const base = baselineEnrollment(brief)
+  const weights = mixWeights(brief)
+
+  let wLag = 0
+  let wRef = 0
+  let wCost = 0
+  let wCov = 0
+  const bySite: Array<Record<string, unknown>> = []
+  for (const [st, w] of weights) {
+    const eff = scenarioPerSite(scn, idx, st)
+    if (!eff) continue
+    wLag += w * eff.lag
+    wRef += w * eff.refusal
+    wCost += w * eff.cost
+    wCov += w * eff.coverage
+    bySite.push({
+      site_type: st,
+      mix_pct: pct(w),
+      scheduling_lag_days: round(eff.lag, 1),
+      screen_refusal_pct: pct(eff.refusal),
+      site_coverage_pct: eff.in_house_availability_pct,
+    })
+  }
+
+  const unavailDrag = (1 - wCov) * SLIP.unavailabilityDrag
+  const effectiveLoss = wRef + unavailDrag
+  const slipMonths =
+    (wLag / 30.4) * SLIP.screeningLagToMonths +
+    base.baseline_enrollment_months * effectiveLoss * SLIP.refusalToDuration
+  const patientsAtRisk = Math.round(brief.target_enrollment * effectiveLoss)
+  const incrementalCost = Math.round((wCost * base.screened_estimate) / 1000) * 1000
+
+  // Name the driver: which site type contributes the most slip.
+  const worst = [...bySite].sort(
+    (a, b) => Number(b.scheduling_lag_days) - Number(a.scheduling_lag_days)
+  )[0]
+
+  return {
+    key: scn.key,
+    label: scn.label,
+    procedure: scn.procedure,
+    alt_procedure: scn.alt_procedure ?? null,
+    weighted_scheduling_lag_days: round(wLag, 1),
+    screen_refusal_pct: pct(wRef),
+    site_coverage_pct: pct(wCov),
+    enrollment_slip_months: round(slipMonths, 1),
+    patients_at_risk: patientsAtRisk,
+    incremental_cost_usd: incrementalCost,
+    per_patient_cost_usd: Math.round(wCost),
+    by_site_type: bySite,
+    primary_driver: worst
+      ? `${worst.site_type}: ${worst.scheduling_lag_days} day scheduling lag, ${worst.site_coverage_pct}% in-house coverage`
+      : null,
+    note: scn.note ?? null,
+  }
+}
+
+export function procedureSensitivity(brief: DesignBrief, scenarios: SensitivityScenario[]) {
+  const base = baselineEnrollment(brief)
+  return {
+    brief_id: brief.brief_id,
+    baseline: base,
+    scenarios: scenarios.map((s) => evaluateScenario(brief, s)),
+    note: 'Slip and patient figures compose from procedure_operations against the brief site mix and the comparator baseline. Synthetic; illustrative of mechanism.',
+  }
+}
+
+/**
+ * Endpoint timeline sensitivity (UC3). Maps candidate secondary endpoints to
+ * their assessment burden and the time-to-database-lock they add, then returns
+ * options: add all, a timeline-protecting subset, or defer to exploratory.
+ */
+export function endpointSensitivity(brief: DesignBrief, assessmentNames: string[]) {
+  const ops = new Map(assessmentOperations().map((r) => [String(r.assessment_name), r]))
+  const items = assessmentNames.map((name) => {
+    const r = ops.get(name)
+    return {
+      assessment: name,
+      endpoint_domain: r ? String(r.endpoint_domain) : 'Unknown',
+      crf_data_points: r ? Number(r.crf_data_points) : 0,
+      site_entry_minutes: r ? Number(r.site_entry_minutes) : 0,
+      query_resolution_lag_days: r ? Number(r.query_resolution_lag_days) : 0,
+      db_lock_contribution_days: r ? Number(r.db_lock_contribution_days) : 0,
+      operational_requirement: r ? String(r.operational_requirement) : '',
+      resolved: Boolean(r),
+    }
+  })
+
+  const totalLock = items.reduce((a, it) => a + it.db_lock_contribution_days, 0)
+  const ranked = [...items].sort((a, b) => a.db_lock_contribution_days - b.db_lock_contribution_days)
+  // Timeline-protecting subset: keep endpoints until the added lock crosses a
+  // three-week budget, defer the rest.
+  const budgetDays = 21
+  const subset: typeof items = []
+  let acc = 0
+  for (const it of ranked) {
+    if (acc + it.db_lock_contribution_days <= budgetDays) {
+      subset.push(it)
+      acc += it.db_lock_contribution_days
+    }
+  }
+  const deferred = items.filter((it) => !subset.includes(it))
+
+  return {
+    brief_id: brief.brief_id,
+    per_endpoint: items,
+    options: [
+      {
+        key: 'all',
+        label: 'Add all proposed secondary endpoints',
+        endpoints: items.map((i) => i.assessment),
+        added_db_lock_days: round(totalLock, 0),
+        tradeoff: 'Maximum evidence; largest hit to database-lock timeline and site data-entry load.',
+      },
+      {
+        key: 'subset',
+        label: 'Prioritised subset that protects the lock timeline',
+        endpoints: subset.map((i) => i.assessment),
+        added_db_lock_days: round(acc, 0),
+        tradeoff: `Keeps the added lock under a ${budgetDays}-day budget; defers the heaviest endpoints.`,
+      },
+      {
+        key: 'defer',
+        label: 'Defer to exploratory / optional collection',
+        endpoints: deferred.map((i) => i.assessment),
+        added_db_lock_days: round(totalLock - acc, 0),
+        tradeoff: 'Protects the primary timeline fully; loses powered secondary evidence.',
+      },
+    ],
+    note: 'db_lock_contribution_days from assessment_operations, additive at the margin. Synthetic.',
+  }
+}
+
+/**
+ * Amendment-risk sweep (UC6). Which protocol element types get amended in the
+ * comparator indication, how often, when (months from FPI), and at what cost —
+ * then flags the brief's element categories against that history.
+ */
+export function amendmentRiskSweep(brief: DesignBrief) {
+  const cohort = selectCohort({
+    therapeutic_area: brief.comparator_cohort.therapeutic_area,
+    phase: brief.comparator_cohort.phase,
+  })
+  const ids = new Set(cohort.map((p) => String(p.protocol_id)))
+  const rows = amendments().filter((r) => ids.has(String(r.protocol_id)))
+
+  const groups = new Map<
+    string,
+    { protocols: Set<string>; count: number; months: number[]; costs: number[] }
+  >()
+  for (const r of rows) {
+    const type = String(r['description_of_change[].amendment_type'])
+    if (!groups.has(type)) groups.set(type, { protocols: new Set(), count: 0, months: [], costs: [] })
+    const g = groups.get(type)!
+    g.protocols.add(String(r.protocol_id))
+    g.count += 1
+    g.months.push(Number(r.timing_months_from_fpi))
+    g.costs.push(Number(r.cost_estimate_usd))
+  }
+
+  const cohortN = cohort.length || 1
+  const byType = Array.from(groups.entries())
+    .map(([type, g]) => ({
+      amendment_type: type,
+      protocols_affected: g.protocols.size,
+      pct_of_cohort: pct(g.protocols.size / cohortN),
+      amendment_count: g.count,
+      median_timing_months_from_fpi: round(quantile(g.months.filter(Number.isFinite), 0.5), 1),
+      median_cost_usd: Math.round(quantile(g.costs.filter(Number.isFinite), 0.5)),
+    }))
+    .sort((a, b) => b.protocols_affected - a.protocols_affected)
+
+  // Map brief element categories to the amendment types that touch them.
+  const elementFlags = [
+    { element: 'Eligibility criteria', types: ['Eligibility Criteria Change'] },
+    { element: 'Schedule of assessments', types: ['Schedule of Assessments Change'] },
+    { element: 'Endpoints', types: ['Endpoint Change'] },
+    { element: 'Dosing regimen', types: ['Dosing Regimen Change'] },
+    { element: 'Statistical analysis', types: ['Statistical Analysis Change', 'Statistical Analysis Plan Change'] },
+  ].map((e) => {
+    const matched = byType.filter((t) => e.types.includes(t.amendment_type))
+    const affected = matched.reduce((a, t) => a + t.protocols_affected, 0)
+    return {
+      element: e.element,
+      pct_of_cohort_amended: matched.length ? pct(affected / cohortN) : 0,
+      median_timing_months_from_fpi: matched.length ? matched[0].median_timing_months_from_fpi : null,
+      median_cost_usd: matched.length ? matched[0].median_cost_usd : null,
+    }
+  }).sort((a, b) => b.pct_of_cohort_amended - a.pct_of_cohort_amended)
+
+  return {
+    brief_id: brief.brief_id,
+    comparator_n: cohort.length,
+    amendment_types: byType,
+    brief_element_risk: elementFlags,
+    note: 'Amendment history for comparator protocols. Timing is months from first-patient-in; cost is a synthetic ~$500K-scale estimate.',
+  }
+}
+
+/**
+ * Comparator landscape (fixed chart 3). Assessment burden vs enrollment velocity
+ * across the comparator cohort, with the draft placed as an estimated point.
+ * Conclusion the reader should reach: the draft is more burdensome than the
+ * trials that enrolled fastest.
+ */
+export function comparatorLandscape(brief: DesignBrief) {
+  const cohort = selectCohort({
+    therapeutic_area: brief.comparator_cohort.therapeutic_area,
+    phase: brief.comparator_cohort.phase,
+  })
+  const points = cohort
+    .map((p) => {
+      const months = Number(p.enrollment_duration_months)
+      const n = Number(p.number_of_participants)
+      const burden = Number(p.burden_index)
+      if (!Number.isFinite(months) || !Number.isFinite(burden) || months <= 0) return null
+      return {
+        protocol_id: String(p.protocol_id),
+        burden_index: round(burden, 1),
+        enrollment_velocity: round(n / months, 1), // participants / month
+        indication: String(p.indication),
+      }
+    })
+    .filter(Boolean) as Array<Record<string, unknown>>
+
+  const burdens = cohort.map((p) => Number(p.burden_index)).filter(Number.isFinite)
+  const base = baselineEnrollment(brief)
+  const draft = {
+    burden_index: round(quantile(burdens, 0.7), 1), // estimated — the draft is not yet built
+    enrollment_velocity: round(brief.target_enrollment / base.baseline_enrollment_months, 1),
+    estimated: true,
+  }
+
+  return {
+    brief_id: brief.brief_id,
+    comparator_n: points.length,
+    points,
+    draft,
+    note: 'The draft position is estimated (70th-percentile burden of the comparator cohort at the brief\'s implied velocity), not measured — the design is not yet built.',
+  }
 }

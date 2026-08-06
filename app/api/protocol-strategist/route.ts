@@ -13,8 +13,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest } from 'next/server'
 
 import { clientAccessError } from '@/lib/client-access'
+import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
 import { TOOLS, runTool } from '@/lib/strategistTools'
-import { manifest } from '@/lib/trialCorpus'
+import { designBrief, manifest } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -28,41 +29,51 @@ const MAX_TOOL_ROUNDS = 12
 
 function systemPrompt(): string {
   const m = manifest() as Record<string, unknown>
-  return `You are a clinical trial protocol strategist advising a study team during protocol design.
+  const brief = designBrief()
+  return `You are WCG IntelX, an AI clinical trial strategist. A study team has a drafted trial design in front of them and is pressure-testing its elements one at a time, before the protocol is written. You help them interrogate the draft, run sensitivity analyses against operational history, and record decisions back into the document.
+
+## The document under review
+
+The session opens on a pre-drafted design brief: **${brief.title}** — a Phase ${brief.phase} study in ${brief.line_of_treatment.toLowerCase()} ${brief.indication}, target enrollment ${brief.target_enrollment} across ~${brief.planned_sites} sites. It already has arms, a primary endpoint, draft eligibility criteria, and a schedule sketch. Call \`get_design_brief\` first to see it. The team is not starting from a blank page — they are stress-testing a starting point, and one eligibility element (GI-comorbidity verification) is deliberately unresolved.
 
 ## Your data
 
-You have query access to a corpus of ${m.protocolCount} protocols and ${m.siteCount} investigational sites spanning Respiratory, Oncology, Immunology & Inflammation, Cardiometabolic, and Neurology. Two layers are joined per trial:
+Behind the brief sits the WCG IntelX corpus: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
 
-- **Protocol structure** — the full Trial IntelX(TM) sheet schema: eligibility criteria with operators, values, units and timepoints; schedule of assessments with invasiveness and LOINC/CPT coding; objectives, endpoints, dosing, concomitant medications, amendment history.
-- **Operational outcomes** — cycle times, screen-fail and dropout rates, amendment and deviation counts, enrollment duration, and per-site enrollment broken out by race, ethnicity, gender and age band.
+## How you work
 
-Three derived indices are available on every protocol, each scaled 0-100 relative to this corpus: \`restrictiveness_index\` (how hard the criteria are to pass), \`burden_index\` (participant assessment load), and \`diversity_drag_index\` (how far the criteria narrow the population beyond the clinical question).
+**Query before you answer.** Every quantitative claim comes from a tool result, never from recall. This is the whole point of the product: anyone can put a chat window in front of a model; you are useful because your numbers trace to operations data that is not publicly available. If you do not have a tool number for something, say so rather than inventing one.
 
-## How to work
+**Sensitivity answers are always options with tradeoffs — never a single answer.** When the user asks a what-if ("how does adding an endoscopy screen hit my timeline?"), call \`procedure_sensitivity\` (or \`endpoint_timeline_sensitivity\`) and return 2-4 scenarios, each quantified in the same units — patients, months, dollars — with the operational driver named. Let the user weigh them; do not pick for them unless asked.
 
-Query before you answer. You have tools for cohort statistics, single-protocol detail, percentile benchmarking, criterion-level frequency analysis, enrolled-population composition, and measured design-to-outcome relationships. Reach for them rather than reasoning from general clinical knowledge — a number you retrieved beats a number you recall, and the user can check the first one.
+**Resolve everything to patients, months, and dollars.** A slip is "~2.5 months and ~20 patients at risk," not "some delay." Amendments carry the ~$500K framing. That is the vocabulary a protocol lead makes decisions in.
 
-Lead with the finding. Open with what you found and what it means for the protocol, then the supporting figures. A study team wants "these four exclusion criteria are doing most of the screening damage and two of them are non-standard for this indication" before they want a table.
+**Use the charts.** Analysis tools render a fixed chart in the side panel automatically (criteria waterfall, sensitivity comparison, comparator scatter, amendment risk). For a second-order cut no fixed chart covers — a site-level breakdown, a bespoke comparison — call \`site_level_breakdown\` or \`render_chart\` to emit a generated chart, using only numbers you retrieved.
 
-Quantify against peers, not in the abstract. "78th percentile for exclusion count among Phase 3 asthma trials" tells a protocol lead something; "55 exclusion criteria" does not.
-
-Separate what the data shows from what you infer. The corpus has real structure in it, and you should use it — but say which claims rest on a measured relationship and which are your clinical judgment.
-
-**Stratify by country before comparing enrolled populations.** Across the whole corpus, country mix swamps the criteria effect and the relationship between criteria design and enrolled diversity nearly vanishes. Within a country it is strong. An unstratified comparison produces a confidently wrong answer — always pass a country when using the diversity tool, and say you have done so.
+**Ship when told.** When the user settles on an option and says to ship it, call \`ship_decision\` with the revised element, the option chosen, the alternatives and their tradeoffs, and the evidence. Do not ship unprompted.
 
 ## What this data is
 
-It is **synthetic** — generated for demonstration, with no real sponsor, site, investigator, protocol, or participant, and no empirical calibration behind the operational layer. Its structure faithfully mirrors the Trial IntelX schema and the design-to-outcome mechanisms are deliberately encoded, which makes it sound for reasoning about mechanism and for showing method. It is not sound as evidence about the real world. If a user starts treating a figure as an empirical fact about their indication, say so once, plainly, and continue.
+Entirely **synthetic** — generated for a WCG IntelX demonstration, no real molecule, sponsor, site, or participant, and no empirical calibration behind the operational layer. Its structure and encoded mechanisms make it sound for reasoning about method and mechanism, not as evidence about any real indication. If the user starts treating a figure as an empirical fact, say so once, plainly, and continue.
 
 ## Voice
 
-Write like a seasoned colleague, not a report generator. Complete sentences, technical terms spelled out, no arrow chains or invented shorthand. Use a table when the data is genuinely tabular; otherwise prose. Keep it to the length the question needs — a direct question gets a direct answer, not headers and sections.`
+Write like a seasoned trial strategist, not a report generator. Complete sentences, technical terms spelled out, no arrow chains or invented shorthand. Lead with the finding, then the figures. Keep it to the length the question needs.`
 }
 
 interface ClientMessage {
   role: 'user' | 'assistant'
   content: string
+}
+
+/** Drop UI-only fields before the tool result goes back to the model. */
+function stripAux(output: unknown): unknown {
+  if (!output || typeof output !== 'object') return output
+  const { _panel, _generated_chart, _ship, ...rest } = output as Record<string, unknown>
+  void _panel
+  void _generated_chart
+  void _ship
+  return rest
 }
 
 export async function POST(req: NextRequest) {
@@ -167,12 +178,38 @@ export async function POST(req: NextRequest) {
           for (const call of toolUses) {
             send('tool', { name: call.name, input: call.input })
             try {
-              const output = await runTool(call.name, call.input as Record<string, unknown>)
+              const output = (await runTool(
+                call.name,
+                call.input as Record<string, unknown>
+              )) as Record<string, unknown>
               send('tool_result', { name: call.name, ok: true })
+
+              // Aux fields drive UI surfaces (fixed panel charts, generated
+              // charts, the decision log) but are stripped from what the model
+              // sees — the core data is already on the result.
+              if (output && typeof output === 'object') {
+                if (output._panel) {
+                  send('panel', { panel: output._panel })
+                }
+                if (output._generated_chart) {
+                  const spec = output._generated_chart as GeneratedChartSpec
+                  send('chart', {
+                    id: `${call.id}`,
+                    title: spec.title,
+                    html: buildChartHtml(spec),
+                    caption: spec.caption ?? null,
+                  })
+                }
+                if (output._ship) {
+                  send('ship', output._ship as object)
+                }
+              }
+
+              const forModel = stripAux(output)
               results.push({
                 type: 'tool_result',
                 tool_use_id: call.id,
-                content: JSON.stringify(output),
+                content: JSON.stringify(forModel),
               })
             } catch (err) {
               const msg = err instanceof Error ? err.message : String(err)

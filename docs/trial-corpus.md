@@ -1,9 +1,27 @@
 # Synthetic Trial Corpus — Schema, Provenance, and Encoded Signal
 
-**Generator:** `pipeline/generate_trial_corpus.py` (+ `pipeline/trial_corpus_content.py`)
-**Output:** `public/data/trial-corpus/` — 13 JSON files, ~6.0 MB
+**Generator:** `pipeline/generate_trial_corpus.py` (+ `trial_corpus_content.py`, `trial_corpus_sensitivity.py`)
+**Output:** `public/data/trial-corpus/` — 17 JSON files, ~7.4 MB
 **Regenerate:** `python3 pipeline/generate_trial_corpus.py --out public/data/trial-corpus`
 **Seed:** `20260806` — fixed. Reruns are byte-identical.
+**Version:** `2.0.0` — 150 protocols (30 NSCLC), weighted toward thoracic oncology for the hero flow; adds the v0.2 sensitivity layer.
+
+## v0.2 sensitivity layer (new in 2.0.0)
+
+Four artefacts carry the PRD's sensitivity flow. All deterministic, all synthetic.
+
+| File | Grain | Carries |
+|---|---|---|
+| `procedure_operations.json` | one row per (procedure × site type) | scheduling lag, in-house availability, patient refusal, unit cost, staffing dependency — the numbers a procedure what-if (UC2/UC4) reads |
+| `assessment_operations.json` | one row per assessment | CRF data points, site entry minutes, query lag, database-lock contribution — the endpoint what-if (UC3) |
+| `criterion_attribution.json` | one row per (TA × criterion) | mean screen-fail attribution across protocols using it — the criteria-burden waterfall (UC1) |
+| `design_brief.json` | one object | the pre-drafted Phase 2 2L NSCLC brief the demo opens on, with selectable element ids and the GI-verification hook |
+
+`description_of_change.json` gains `timing_months_from_fpi` and `cost_estimate_usd`
+(the ~$500K framing) so the amendment-risk sweep (UC6) resolves to months and
+dollars. The engine that composes these into scenarios lives in
+`lib/trialCorpus.ts` — the model constructs scenarios and narrates; the arithmetic
+is all in the data it retrieves.
 
 > **Entirely synthetic.** No real sponsor, site, investigator, protocol, or participant.
 > Generated for demonstration only. Not fit for any clinical, regulatory, or operational
@@ -27,10 +45,10 @@ The join is the point. Trial IntelX describes what a protocol *demands*; KMR des
 
 | | |
 |---|---|
-| Protocols | 120 |
-| Sites | 2,361 |
-| Eligibility criteria rows | 7,827 (median 65 per protocol) |
-| SOA time-and-event rows | 7,649 (median 62 per protocol) |
+| Protocols | 150 (v2.0.0; 30 in NSCLC) |
+| Sites | 3,040 |
+| Eligibility criteria rows | 9,592 |
+| SOA time-and-event rows | 9,304 |
 
 Criteria and SOA row counts per protocol were tuned to match the supplied sample
 (64–73 criteria, 62 SOA rows).

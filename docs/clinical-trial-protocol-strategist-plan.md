@@ -150,7 +150,34 @@ whether the demo should present a Tweed-named schema that happens to be compatib
 
 ---
 
-## Build Status (2026-08-06)
+## Build Status (2026-08-06, v0.2 — PRD-aligned)
+
+The PRD v0.2 hero flow is built end to end: the demo opens on a pre-drafted NSCLC
+design brief, the user pressure-tests its elements, sensitivity analyses return
+options with tradeoffs (patients / months / dollars), fixed and generated charts
+render in the side panel, and shipped decisions write back to the brief. Branding
+is WCG IntelX (deep navy + teal, light clinical surface), with a "powered by
+Tweed Collective" mark. The WCG palette is a reconstruction — the sandbox network
+blocked wcgclinical.com — and lives as one swappable constant in
+`components/protocol-strategist/wcgTheme.ts` (mirrored in `lib/generatedChart.ts`)
+for exact hexes to drop in.
+
+| Piece | Path | State |
+|---|---|---|
+| Corpus v2.0.0 (NSCLC depth) | `pipeline/generate_trial_corpus.py` + `trial_corpus_sensitivity.py` | 150 protocols (30 NSCLC), 3,040 sites; new tables: procedure_operations, assessment_operations, criterion_attribution, design_brief; amendment economics (timing + ~$500K cost) |
+| Sensitivity engine | `lib/trialCorpus.ts` | Deterministic, corpus-sourced: criteria waterfall, procedure sensitivity (scenarios in patients/months/dollars), endpoint timeline, amendment-risk sweep, comparator landscape, site-level breakdown |
+| Tool surface | `lib/strategistTools.ts` | +8 hero tools incl. `render_chart` and `ship_decision`; existing corpus tools retained |
+| Chat route | `app/api/protocol-strategist/route.ts` | System prompt scoped to the brief + sensitivity loop; forwards `panel`/`chart`/`ship` SSE events |
+| Generated charts | `lib/generatedChart.ts` | Self-contained inline-SVG (no script), sandboxed iframe, fallback on malformed spec |
+| Ship-it | `lib/googleDocs.ts` `shipDecisionToBrief` | Docs API append to the brief's decision log; degrades to on-page log when creds/doc id absent |
+| Page + workspace | `app/clients/protocol-strategist/page.tsx`, `components/protocol-strategist/*` | Brief panel · chat · insight side panel; fixed charts (Chart.js, WCG theme) + generated charts |
+| Pre-seeded brief doc | Google Drive | Created in Nate's Drive: `1nfCiXxjQ0TiYVhV_CKbg66bkeVlFMvwngc_loDBNqZM` |
+
+**To wire ship-it to the real doc:** set `STRATEGIST_BRIEF_DOC_ID` to the doc id
+above and share that doc with the service account as Editor. Without it, ship-it
+still demos — decisions land in the on-page decision log.
+
+### Earlier plumbing (v0.1)
 
 Plumbing is in. Hero visualization and system-prompt specialization wait on the PRD.
 
@@ -172,8 +199,9 @@ Plumbing is in. Hero visualization and system-prompt specialization wait on the 
 | Var | Status |
 |---|---|
 | `ANTHROPIC_API_KEY` | ✅ set |
-| `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | ⏳ pending — base64 of the service account key file |
-| `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder or Shared Drive folder |
+| `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | ⏳ pending — base64 of the service account key file (needed for codify/review + ship-it) |
+| `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder for codify/review docs |
+| `STRATEGIST_BRIEF_DOC_ID` | ⏳ pending — the pre-seeded brief doc id (`1nfCiXxjQ0TiYVhV_CKbg66bkeVlFMvwngc_loDBNqZM`); ship-it appends here. Share the doc with the service account as Editor. |
 | `STRATEGIST_EFFORT` | optional — defaults to `medium`; raise to `high` for depth over latency |
 
 **Note on testing.** `/api/protocol-strategist/health` requires the `protocol-strategist` workspace grant (it makes a billed model call, so it must not be open). It has to be opened from a signed-in, authorized browser — it cannot be reached from a Claude Code session.

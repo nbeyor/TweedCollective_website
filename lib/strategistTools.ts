@@ -7,19 +7,29 @@
  */
 
 import {
+  amendmentRiskSweep,
   benchmarkProtocol,
+  comparatorLandscape,
   countriesInCohort,
   criteriaFrequency,
+  criteriaWaterfall,
+  designBrief,
   designOutcomeCorrelations,
+  endpointSensitivity,
   enrolledComposition,
+  evaluateScenario,
   manifest,
+  procedureOperations,
+  procedureSensitivity,
   protocolDetail,
   selectCohort,
   summarize,
   vocabularies,
   type CohortFilter,
   type Protocol,
+  type SensitivityScenario,
 } from './trialCorpus'
+import { shipDecisionToBrief, type ShipEntry } from './googleDocs'
 
 const COHORT_FILTER_SCHEMA = {
   therapeutic_area: {
@@ -128,6 +138,162 @@ export const TOOLS = [
     description:
       'Return measured correlations between protocol design choices (restrictiveness, assessment burden) and operational outcomes (screen-fail rate, dropout, amendments, enrollment duration) for a cohort. Call this to support a causal claim with the relationship actually present in the data rather than asserting it.',
     input_schema: { type: 'object' as const, properties: COHORT_FILTER_SCHEMA, required: [] },
+  },
+
+  // ---- v0.2 hero flow: the pre-drafted brief and its sensitivity analyses ----
+  {
+    name: 'get_design_brief',
+    description:
+      'Return the pre-drafted design brief the session opens on: indication, arms, endpoints, draft eligibility criteria (each with an element id), the schedule sketch, target enrollment, planned site mix, and the open questions the team flagged. Call this first, before pressure-testing anything, to know what is on the table and which element the user is asking about.',
+    input_schema: { type: 'object' as const, properties: {}, required: [] },
+  },
+  {
+    name: 'draft_criteria_burden',
+    description:
+      "Rank the brief's own eligibility criteria by screen-fail attribution — the share of the eligible population each one costs — drawn from comparator protocols that use the same criterion. Call this for first-order questions like 'which criteria will cost us the most patients?'. Renders the criteria-burden waterfall.",
+    input_schema: { type: 'object' as const, properties: {}, required: [] },
+  },
+  {
+    name: 'procedure_sensitivity',
+    description:
+      "The core what-if for an added or changed screening/assessment procedure. Given a procedure, returns 2-4 scenarios (e.g. required at all sites; a lighter alternative accepted where available; accept a recent prior result), each quantified in enrollment slip (months), patients at risk, site coverage, and incremental cost, with the operational driver named. Use this for 'how does adding <procedure> hit my timeline?'. Never returns a single answer — always options with tradeoffs. Renders the sensitivity comparison.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        added_procedure: {
+          type: 'string',
+          description:
+            'The procedure being added or changed. Must be a procedure in the operations table, e.g. "Upper gastrointestinal endoscopy (EGD)", "Tumor biopsy", "Positron emission tomography (PET) scan".',
+        },
+        alternatives: {
+          type: 'array',
+          description:
+            'Optional lighter alternatives to compare against requiring the procedure everywhere. Each becomes an "accepted where available" scenario.',
+          items: {
+            type: 'object',
+            properties: {
+              procedure: { type: 'string', description: 'Alternative procedure name from the operations table.' },
+              label: { type: 'string' },
+              mode: { type: 'string', enum: ['accepted_where_available', 'accepted_prior'] },
+            },
+            required: ['procedure'],
+          },
+        },
+      },
+      required: ['added_procedure'],
+    },
+  },
+  {
+    name: 'endpoint_timeline_sensitivity',
+    description:
+      "Map proposed secondary endpoints to their assessment burden and the time-to-database-lock they add, then return options: add all, a timeline-protecting subset, or defer to exploratory. Use this for 'how would adding these endpoints hit data collection timelines?'. State honestly what each option gives up.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        assessments: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Assessment names from the operations table, e.g. "Patient-reported outcomes (EORTC QLQ-C30)", "Circulating tumor DNA (ctDNA) dynamics", "Pharmacokinetic exposure (Cmax, AUC)".',
+        },
+      },
+      required: ['assessments'],
+    },
+  },
+  {
+    name: 'site_level_breakdown',
+    description:
+      "Second-order cut: for one procedure scenario, break the enrollment slip down by site type and emit a generated chart to the side panel. Use this to answer 'which sites drive the slip?' after a procedure_sensitivity call. Proves the long tail — no fixed chart covers this view.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        procedure: { type: 'string', description: 'Procedure name from the operations table.' },
+        mode: {
+          type: 'string',
+          enum: ['required_all', 'accepted_where_available', 'accepted_prior'],
+          description: 'Which scenario to decompose. Default required_all.',
+        },
+        alt_procedure: { type: 'string', description: 'Alternative procedure, for the accepted_where_available mode.' },
+      },
+      required: ['procedure'],
+    },
+  },
+  {
+    name: 'comparator_landscape',
+    description:
+      "Place the draft design against the comparator cohort on assessment burden versus enrollment velocity, draft highlighted. Call this to answer whether the draft is more or less burdensome than the trials that enrolled fastest. Renders the comparator scatter.",
+    input_schema: { type: 'object' as const, properties: {}, required: [] },
+  },
+  {
+    name: 'amendment_risk_sweep',
+    description:
+      "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view.",
+    input_schema: { type: 'object' as const, properties: {}, required: [] },
+  },
+  {
+    name: 'render_chart',
+    description:
+      "Emit a generated chart to the side panel for a view no fixed chart covers. Supply data you retrieved from other tools — do not invent numbers. The chart renders in a sandboxed panel. Use for bespoke second-order cuts.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        title: { type: 'string' },
+        type: { type: 'string', enum: ['bar', 'grouped-bar', 'line', 'scatter'] },
+        categories: { type: 'array', items: { type: 'string' }, description: 'x-axis labels for bar/line charts.' },
+        series: {
+          type: 'array',
+          description: 'One or more data series. Use values[] for bar/line, points[] for scatter.',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              values: { type: 'array', items: { type: 'number' } },
+              points: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: { x: { type: 'number' }, y: { type: 'number' }, label: { type: 'string' } },
+                  required: ['x', 'y'],
+                },
+              },
+            },
+            required: ['name'],
+          },
+        },
+        unit: { type: 'string', description: 'What the values are measured in, e.g. "months" or "USD".' },
+        caption: { type: 'string', description: 'One line stating the conclusion the reader should reach.' },
+      },
+      required: ['title', 'type', 'series'],
+    },
+  },
+  {
+    name: 'ship_decision',
+    description:
+      "Record a decision on a brief element: write the revised element, the option chosen, the alternatives considered with their tradeoffs, and the corpus evidence into the design brief's decision log. Call this only when the user settles on an option and says to ship it. The entry must be self-contained — a teammate not in the session should understand why the choice was made.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        element_id: { type: 'string', description: 'The brief element id being decided, e.g. "cri-gi".' },
+        element_label: { type: 'string', description: 'Short human label for the element.' },
+        decision: { type: 'string', description: 'The option chosen, stated as the revised element text.' },
+        rationale: { type: 'string', description: 'Why this option, in one or two sentences.' },
+        alternatives_considered: {
+          type: 'array',
+          description: 'The other options and the quantified tradeoff each carried.',
+          items: {
+            type: 'object',
+            properties: { option: { type: 'string' }, tradeoff: { type: 'string' } },
+            required: ['option', 'tradeoff'],
+          },
+        },
+        evidence: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Corpus figures behind the decision, e.g. "endoscopy adds ~2.5mo enrollment slip at 12% refusal".',
+        },
+      },
+      required: ['element_id', 'decision'],
+    },
   },
 ] as const
 
@@ -288,7 +454,157 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
       }
     }
 
+    // ---- v0.2 hero flow ----------------------------------------------------
+    case 'get_design_brief': {
+      const brief = designBrief()
+      return {
+        ...brief,
+        note: 'This is the pre-drafted document under review. Pressure-test its elements; do not rewrite it wholesale.',
+      }
+    }
+
+    case 'draft_criteria_burden': {
+      const brief = designBrief()
+      const data = criteriaWaterfall(brief)
+      return { ...data, _panel: { chart: 'criteria_waterfall', data } }
+    }
+
+    case 'procedure_sensitivity': {
+      const brief = designBrief()
+      const added = String(input.added_procedure)
+      const known = new Set(procedureOperations().map((r) => String(r.procedure_name)))
+      if (!known.has(added)) {
+        return {
+          error: `No operations data for "${added}". Available procedures: ${Array.from(known).join('; ')}`,
+        }
+      }
+      const scenarios: SensitivityScenario[] = [
+        {
+          key: 'required_all',
+          label: `${added} required at all sites`,
+          procedure: added,
+          mode: 'required_all',
+          note: 'Every site must perform or refer out for the procedure.',
+        },
+      ]
+      const alts = Array.isArray(input.alternatives) ? input.alternatives : COMPANIONS[added] ?? []
+      for (const a of alts as Array<Record<string, unknown>>) {
+        const proc = String(a.procedure)
+        if (!known.has(proc)) continue
+        scenarios.push({
+          key: `alt_${scenarios.length}`,
+          label: String(a.label ?? `${proc} accepted where available`),
+          procedure: added,
+          alt_procedure: proc,
+          mode: (a.mode as SensitivityScenario['mode']) ?? 'accepted_where_available',
+          note: String(a.note ?? ''),
+        })
+      }
+      const data = procedureSensitivity(brief, scenarios)
+      return { ...data, _panel: { chart: 'sensitivity_comparison', data } }
+    }
+
+    case 'endpoint_timeline_sensitivity': {
+      const brief = designBrief()
+      const assessments = (input.assessments as string[] | undefined) ?? []
+      const data = endpointSensitivity(brief, assessments)
+      return { ...data, _panel: { chart: 'endpoint_timeline', data } }
+    }
+
+    case 'site_level_breakdown': {
+      const brief = designBrief()
+      const scn: SensitivityScenario = {
+        key: 'drill',
+        label: 'Site-level breakdown',
+        procedure: String(input.procedure),
+        mode: (input.mode as SensitivityScenario['mode']) ?? 'required_all',
+        alt_procedure: input.alt_procedure ? String(input.alt_procedure) : undefined,
+      }
+      const known = new Set(procedureOperations().map((r) => String(r.procedure_name)))
+      if (!known.has(scn.procedure)) return { error: `No operations data for "${scn.procedure}".` }
+      const result = evaluateScenario(brief, scn)
+      const bySite = result.by_site_type
+      const chartSpec = {
+        title: `Enrollment friction by site type — ${scn.procedure}`,
+        type: 'grouped-bar' as const,
+        categories: bySite.map((r) => String(r.site_type)),
+        series: [
+          { name: 'Scheduling lag (days)', values: bySite.map((r) => Number(r.scheduling_lag_days)) },
+          { name: 'Screen refusal (%)', values: bySite.map((r) => Number(r.screen_refusal_pct)) },
+        ],
+        unit: 'days / percent',
+        caption: result.primary_driver
+          ? `Driver: ${result.primary_driver}.`
+          : 'Community and lower-resource sites carry the longest lags.',
+      }
+      return { ...result, _generated_chart: chartSpec }
+    }
+
+    case 'comparator_landscape': {
+      const brief = designBrief()
+      const data = comparatorLandscape(brief)
+      return { ...data, _panel: { chart: 'comparator_scatter', data } }
+    }
+
+    case 'amendment_risk_sweep': {
+      const brief = designBrief()
+      const data = amendmentRiskSweep(brief)
+      return { ...data, _panel: { chart: 'amendment_risk', data } }
+    }
+
+    case 'render_chart': {
+      const spec = {
+        title: String(input.title ?? 'Chart'),
+        type: (input.type as 'bar' | 'grouped-bar' | 'line' | 'scatter') ?? 'bar',
+        categories: input.categories as string[] | undefined,
+        series: (input.series as GeneratedSeries[]) ?? [],
+        unit: input.unit as string | undefined,
+        caption: input.caption as string | undefined,
+      }
+      return { ok: true, rendered: spec.title, _generated_chart: spec }
+    }
+
+    case 'ship_decision': {
+      const brief = designBrief()
+      const entry: ShipEntry = {
+        brief_id: brief.brief_id,
+        element_id: String(input.element_id),
+        element_label: String(input.element_label ?? input.element_id),
+        decision: String(input.decision),
+        rationale: String(input.rationale ?? ''),
+        alternatives_considered:
+          (input.alternatives_considered as Array<{ option: string; tradeoff: string }>) ?? [],
+        evidence: (input.evidence as string[]) ?? [],
+      }
+      const outcome = await shipDecisionToBrief(entry)
+      return { ok: true, entry, ...outcome, _ship: { entry, ...outcome } }
+    }
+
     default:
       return { error: `Unknown tool: ${name}` }
   }
+}
+
+interface GeneratedSeries {
+  name: string
+  values?: number[]
+  points?: Array<{ x: number; y: number; label?: string }>
+}
+
+// Default lighter alternatives when the user names a heavy procedure but does
+// not spell out the softer options. Keeps the hero endoscopy what-if a single
+// call while leaving the model free to override.
+const COMPANIONS: Record<string, Array<{ procedure: string; label: string; mode: string }>> = {
+  'Upper gastrointestinal endoscopy (EGD)': [
+    {
+      procedure: 'Central read of existing cross-sectional imaging',
+      label: 'Central read of existing imaging accepted where available',
+      mode: 'accepted_where_available',
+    },
+    {
+      procedure: 'Records retrieval of prior endoscopy (within 6 months)',
+      label: 'Prior endoscopy within 6 months accepted',
+      mode: 'accepted_prior',
+    },
+  ],
 }
