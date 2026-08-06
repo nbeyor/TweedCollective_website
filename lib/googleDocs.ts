@@ -14,8 +14,24 @@
  * can only see files and folders explicitly shared with it, so the drive scope
  * below has a blast radius of exactly what you share.
  *
+ * IMPORTANT — where documents can land. Service accounts have no Drive storage
+ * quota of their own, so they cannot OWN files. Sharing a My Drive folder with
+ * the service account is enough to READ it but file creation there fails with
+ * 403 storageQuotaExceeded. Two working layouts:
+ *
+ *   1. Impersonation (recommended for Workspace): set GOOGLE_IMPERSONATE_USER
+ *      to a Workspace user (e.g. nate.beyor@tweedcollective.ai) and grant the
+ *      service account domain-wide delegation for the two scopes below (Admin
+ *      console → Security → API controls → Domain-wide delegation, using the
+ *      service account's client ID). Documents are then created AS that user,
+ *      owned by them, in their own folder — no sharing needed.
+ *   2. Shared Drive: point GOOGLE_DRIVE_FOLDER_ID at a folder inside a Shared
+ *      Drive the service account is a Content Manager of. The Shared Drive owns
+ *      the files, so the quota problem never arises.
+ *
  *   GOOGLE_SERVICE_ACCOUNT_JSON_BASE64  base64 of the service account key file
  *   GOOGLE_DRIVE_FOLDER_ID              destination folder (or Shared Drive folder)
+ *   GOOGLE_IMPERSONATE_USER             optional Workspace user to act as (layout 1)
  */
 
 import { JWT } from 'google-auth-library'
@@ -79,9 +95,10 @@ export function googleCredentialStatus(): { ok: boolean; detail: string } {
   }
   try {
     const key = loadKey()
+    const sub = process.env.GOOGLE_IMPERSONATE_USER
     return {
       ok: true,
-      detail: `service account ${key.client_email} (project ${key.project_id ?? 'unknown'}); folder ${process.env.GOOGLE_DRIVE_FOLDER_ID}`,
+      detail: `service account ${key.client_email} (project ${key.project_id ?? 'unknown'})${sub ? ` impersonating ${sub}` : ''}; folder ${process.env.GOOGLE_DRIVE_FOLDER_ID}`,
     }
   } catch (err) {
     return { ok: false, detail: err instanceof Error ? err.message : String(err) }
@@ -102,15 +119,18 @@ export async function checkDriveAccess(): Promise<{ ok: boolean; detail: string 
 
   const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID as string
   const key = loadKey()
+  const sub = process.env.GOOGLE_IMPERSONATE_USER
+  const identity = sub ?? key.client_email
 
   try {
     const res = await driveFetch(
       `${DRIVE}/files/${encodeURIComponent(folderId)}?supportsAllDrives=true` +
-        `&fields=${encodeURIComponent('id,name,mimeType,capabilities(canAddChildren)')}`
+        `&fields=${encodeURIComponent('id,name,mimeType,driveId,capabilities(canAddChildren)')}`
     )
     const f = (await res.json()) as {
       name: string
       mimeType: string
+      driveId?: string
       capabilities?: { canAddChildren?: boolean }
     }
 
@@ -123,10 +143,23 @@ export async function checkDriveAccess(): Promise<{ ok: boolean; detail: string 
     if (!f.capabilities?.canAddChildren) {
       return {
         ok: false,
-        detail: `Folder "${f.name}" is visible but read-only to ${key.client_email}. Re-share it as Editor (Content Manager on a Shared Drive).`,
+        detail: `Folder "${f.name}" is visible but read-only to ${identity}. Re-share it as Editor (Content Manager on a Shared Drive).`,
       }
     }
-    return { ok: true, detail: `authenticated as ${key.client_email}; can write to folder "${f.name}"` }
+    // A My Drive folder (no driveId) is writable in name only for a bare service
+    // account: service accounts have no storage quota, so file creation there
+    // fails with 403 storageQuotaExceeded even though this probe passes. Catch
+    // it here so Publish greys out with the reason instead of failing later.
+    if (!f.driveId && !sub) {
+      return {
+        ok: false,
+        detail:
+          `Folder "${f.name}" is in a My Drive, and service accounts cannot own files there (no storage quota) — publishing would fail with a 403. ` +
+          `Either set GOOGLE_IMPERSONATE_USER to the folder owner's Workspace address (requires domain-wide delegation for the Drive and Docs scopes), ` +
+          `or point GOOGLE_DRIVE_FOLDER_ID at a Shared Drive folder.`,
+      }
+    }
+    return { ok: true, detail: `authenticated as ${identity}; can write to folder "${f.name}"` }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     // Drive returns 404 for "does not exist" and "you cannot see it" alike, so
@@ -134,7 +167,7 @@ export async function checkDriveAccess(): Promise<{ ok: boolean; detail: string 
     if (msg.includes('404')) {
       return {
         ok: false,
-        detail: `Folder ${folderId} not found, or not shared with ${key.client_email}. Check the ID and confirm the share went through.`,
+        detail: `Folder ${folderId} not found, or not visible to ${identity}. Check the ID and confirm the share went through.`,
       }
     }
     if (msg.includes('403')) {
@@ -143,10 +176,20 @@ export async function checkDriveAccess(): Promise<{ ok: boolean; detail: string 
         detail: `Drive API refused the request. Usually the Drive API is not enabled on the project, or a domain policy is blocking it. (${msg.slice(0, 160)})`,
       }
     }
+    if (msg.includes('unauthorized_client')) {
+      return {
+        ok: false,
+        detail:
+          `Google rejected impersonation of ${sub}. Domain-wide delegation for the Drive and Docs scopes must be granted to this service account's client ID ` +
+          `in the Workspace Admin console (Security → API controls → Domain-wide delegation). (${msg.slice(0, 160)})`,
+      }
+    }
     if (msg.includes('invalid_grant') || msg.includes('401')) {
       return {
         ok: false,
-        detail: `Service account key rejected. Re-check GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 decodes to the key file. (${msg.slice(0, 160)})`,
+        detail: sub
+          ? `Google rejected the token for ${sub}. Confirm the address exists in the Workspace and domain-wide delegation covers the Drive and Docs scopes. (${msg.slice(0, 160)})`
+          : `Service account key rejected. Re-check GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 decodes to the key file. (${msg.slice(0, 160)})`,
       }
     }
     return { ok: false, detail: msg.slice(0, 300) }
@@ -162,6 +205,10 @@ async function auth(): Promise<JWT> {
       email: key.client_email,
       key: key.private_key,
       scopes: SCOPES,
+      // With domain-wide delegation, act as this Workspace user: documents are
+      // created as them, owned by them, in their Drive — which also sidesteps
+      // the service account's zero storage quota.
+      subject: process.env.GOOGLE_IMPERSONATE_USER || undefined,
     })
   }
   await cachedClient.authorize()
@@ -183,6 +230,12 @@ async function driveFetch(url: string, init: RequestInit = {}): Promise<Response
   })
   if (!res.ok) {
     const body = await res.text()
+    if (res.status === 403 && body.includes('storageQuotaExceeded')) {
+      throw new Error(
+        'Google Drive refused to create the file: service accounts have no Drive storage of their own, so they cannot own files in a My Drive folder. ' +
+          'Set GOOGLE_IMPERSONATE_USER to the folder owner\'s Workspace address (with domain-wide delegation), or use a Shared Drive folder.'
+      )
+    }
     throw new Error(`Google Drive API ${res.status}: ${body.slice(0, 500)}`)
   }
   return res

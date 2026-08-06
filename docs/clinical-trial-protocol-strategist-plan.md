@@ -90,7 +90,7 @@ The Drive connection available in the Claude session is authorized to that sessi
 | **Per-user Google OAuth** | Doc lands in the client's own Drive. Better story. Real OAuth work plus a consent screen. | Production path; wrong trade for demo timeline |
 | **Pre-seeded** | Button renders the doc in-page and links to one created out of band. Reads identically on screen. | Fallback if credentials don't land in time |
 
-Note: account is a personal Gmail, not Workspace — so no shared-drive folder. The service account creates docs in its own Drive and shares them out. That works.
+Note (updated): a bare service account **cannot own files anywhere** — Google removed service-account My Drive storage quota, so creating a doc in a shared My Drive folder fails with `403 storageQuotaExceeded` even when the folder is shared as Editor. The working setup on the tweedcollective.ai Workspace is **domain-wide delegation + impersonation**: set `GOOGLE_IMPERSONATE_USER=nate.beyor@tweedcollective.ai` and grant the service account's client ID the Drive + Docs scopes in the Admin console (Security → API controls → Domain-wide delegation). Docs are then created *as Nate*, owned by Nate, in whatever folder `GOOGLE_DRIVE_FOLDER_ID` names in his Drive. Alternative: point `GOOGLE_DRIVE_FOLDER_ID` at a Shared Drive folder where the service account is Content Manager.
 
 ### Demo-day choreography warning
 The review loop is inherently asynchronous — a human has to go edit the doc. Live, that is dead air. Build the real loop, but have a **pre-commented Doc A** ready so the payoff shows in ten seconds, then let the client try the slow path themselves.
@@ -200,7 +200,8 @@ Plumbing is in. Hero visualization and system-prompt specialization wait on the 
 |---|---|
 | `ANTHROPIC_API_KEY` | ✅ set |
 | `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | ⏳ pending — base64 of the service account key file (needed for codify/review + ship-it) |
-| `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder for codify/review docs |
+| `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder for codify/review docs. Must be a Shared Drive folder **unless** `GOOGLE_IMPERSONATE_USER` is set (see note above — a bare service account cannot create files in a My Drive folder) |
+| `GOOGLE_IMPERSONATE_USER` | optional — Workspace user the service account acts as (e.g. `nate.beyor@tweedcollective.ai`). Requires domain-wide delegation for the Drive + Docs scopes. With it set, published docs land in that user's Drive folder, owned by them |
 | `STRATEGIST_BRIEF_DOC_ID` | ⏳ pending — the pre-seeded brief doc id (`1nfCiXxjQ0TiYVhV_CKbg66bkeVlFMvwngc_loDBNqZM`); ship-it appends here. Share the doc with the service account as Editor. |
 | `STRATEGIST_EFFORT` | optional — defaults to `medium`; raise to `high` for depth over latency |
 

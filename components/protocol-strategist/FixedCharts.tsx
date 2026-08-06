@@ -139,11 +139,20 @@ function SensitivityComparison({ data, expanded }: ChartProps) {
 function ComparatorScatter({ data, expanded }: ChartProps) {
   const points = (data.points as Array<Record<string, unknown>>) ?? []
   const draft = (data.draft as Record<string, unknown>) ?? {}
+  const estimated = draft.estimated !== false
+  const draftB = Number(draft.burden_index)
+  const draftV = Number(draft.enrollment_velocity)
+  const medB = median(points.map((p) => Number(p.burden_index)))
+  const medV = median(points.map((p) => Number(p.enrollment_velocity)))
+  const conclusion =
+    Number.isFinite(draftB) && Number.isFinite(medB)
+      ? `The ${estimated ? 'draft (estimated)' : 'loaded protocol (measured)'} sits at burden ${draftB.toFixed(1)} vs a cohort median of ${medB.toFixed(1)}, enrolling ${draftV.toFixed(1)} pts/mo vs a median of ${medV.toFixed(1)}.`
+      : 'The document under review (highlighted) placed against the comparator cohort.'
 
   return (
     <ChartFrame
       title="Comparator landscape"
-      conclusion="The draft (highlighted) sits among trials that carry more assessment burden than the fastest enrollers."
+      conclusion={conclusion}
       height={expanded ? 480 : 260}
     >
       <Scatter
@@ -156,7 +165,7 @@ function ComparatorScatter({ data, expanded }: ChartProps) {
               pointRadius: 4,
             },
             {
-              label: 'This draft (estimated)',
+              label: estimated ? 'This draft (estimated)' : 'This protocol (measured)',
               data: [{ x: Number(draft.burden_index), y: Number(draft.enrollment_velocity) }],
               backgroundColor: wcg.bad,
               pointRadius: 8,
@@ -284,6 +293,13 @@ export function FixedChart({ panel, expanded = false }: { panel: PanelDescriptor
 
 function shorten(s: string, n = 32): string {
   return s.length > n ? s.slice(0, n - 1) + '…' : s
+}
+
+function median(values: number[]): number {
+  const v = values.filter(Number.isFinite).sort((a, b) => a - b)
+  if (!v.length) return NaN
+  const mid = Math.floor(v.length / 2)
+  return v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2
 }
 
 // Keep the palette import referenced for future series-coloured charts.
