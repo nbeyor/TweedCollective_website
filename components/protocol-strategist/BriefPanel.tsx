@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { BarChart3, CheckCircle2, FilePlus2, FileText, HelpCircle, Play } from 'lucide-react'
+import { BarChart3, Check, CheckCircle2, FilePlus2, FileText, HelpCircle, Play } from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
 import { wcg } from './wcgTheme'
@@ -20,46 +20,101 @@ export interface ShippedDecision {
 export type BriefMode = 'hero' | 'corpus' | 'blank'
 
 /**
- * The standard analyses: one-click entry points that each land a known chart in
- * the insight panel, so a first-time user gets a chart-backed answer without
- * composing a prompt. Prompts are phrased to steer the model at the matching
- * tool (and its fixed chart) without naming the tool.
+ * The corpus's data categories, as checkable boxes. Checking one or more tees
+ * up the analytics that relate those categories, so a first-time user browses
+ * by what data exists rather than by a flat list of tool names.
  */
-const STANDARD_ANALYSES: Array<{ label: string; chart: string; prompt: string }> = [
+const DATA_CATEGORIES: Array<{ key: string; label: string }> = [
+  { key: 'eligibility', label: 'Eligibility & screening' },
+  { key: 'procedures', label: 'Procedures & visits' },
+  { key: 'enrollment', label: 'Enrollment & timelines' },
+  { key: 'sites', label: 'Sites & geography' },
+  { key: 'endpoints', label: 'Endpoints & data' },
+  { key: 'amendments', label: 'Amendments & cost' },
+]
+
+/**
+ * One-click analytics, each tagged with the data categories it relates. With
+ * nothing checked, the single-category starters show; checking categories
+ * surfaces the analytics that explore those relationships. Prompts are phrased
+ * to steer the model at the matching tool (and its chart) without naming it.
+ */
+const ANALYTICS: Array<{ label: string; chart: string; categories: string[]; prompt: string }> = [
   {
     label: 'Screening burden by criterion',
     chart: 'Criteria-burden waterfall',
+    categories: ['eligibility'],
     prompt: 'Which criteria in this draft will cost us the most eligible patients?',
   },
   {
     label: 'Added-procedure what-if',
     chart: 'Sensitivity comparison',
+    categories: ['procedures'],
     prompt:
       'If we added a confirmatory screening procedure for our most burdensome eligibility criterion, how would it hit the enrollment timeline? Give me options with tradeoffs.',
   },
   {
-    label: 'Slip drivers by site type',
-    chart: 'Generated site-level chart',
-    prompt:
-      'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
-  },
-  {
-    label: 'Comparator landscape',
-    chart: 'Comparator scatter',
-    prompt:
-      'Place this design against comparable trials — is it more burdensome than the trials that enrolled fastest?',
-  },
-  {
     label: 'Amendment risk',
     chart: 'Amendment-risk view',
+    categories: ['amendments'],
     prompt:
       'Before this goes to writing, which elements are most likely to force an amendment, and what would one cost us?',
   },
   {
     label: 'Endpoint timeline impact',
     chart: 'Endpoint timeline chart',
+    categories: ['endpoints'],
     prompt:
       'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
+  },
+  {
+    label: 'Restrictiveness vs screen failure',
+    chart: 'Relationship chart',
+    categories: ['eligibility', 'enrollment'],
+    prompt:
+      'How does eligibility restrictiveness relate to screen-fail rate and enrollment duration across comparable trials? Quantify the relationship and chart it.',
+  },
+  {
+    label: 'Criteria vs enrolled diversity',
+    chart: 'Generated chart',
+    categories: ['eligibility', 'sites'],
+    prompt:
+      'How do restrictive eligibility criteria interact with site geography and the enrolled population’s composition in comparable trials? Scope the comparison to one country and chart it.',
+  },
+  {
+    label: 'Comparator landscape',
+    chart: 'Comparator scatter',
+    categories: ['procedures', 'enrollment'],
+    prompt:
+      'Place this design against comparable trials — is it more burdensome than the trials that enrolled fastest?',
+  },
+  {
+    label: 'Slip drivers by site type',
+    chart: 'Generated site-level chart',
+    categories: ['procedures', 'sites'],
+    prompt:
+      'Which site types would drive enrollment slip if we required additional screening procedures at every site? Break the friction down by site type.',
+  },
+  {
+    label: 'Site mix vs enrollment velocity',
+    chart: 'Generated chart',
+    categories: ['sites', 'enrollment'],
+    prompt:
+      'Which site types enrolled fastest in comparable trials, and what does the planned site mix imply for our velocity? Chart the comparison.',
+  },
+  {
+    label: 'Amendment cost vs timeline',
+    chart: 'Generated chart',
+    categories: ['amendments', 'enrollment'],
+    prompt:
+      'When comparable trials amended mid-flight, what did each amendment cost in months and dollars, and how did that hit enrollment timelines? Chart timing against cost.',
+  },
+  {
+    label: 'Endpoint load vs database lock',
+    chart: 'Endpoint timeline chart',
+    categories: ['endpoints', 'enrollment'],
+    prompt:
+      'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
   },
 ]
 
@@ -149,33 +204,7 @@ export function BriefPanel({
       </div>
 
       {tab === 'analyses' ? (
-        <div>
-          <p className="text-[11.5px] leading-snug mb-2" style={{ color: wcg.muted }}>
-            Standard first questions — one click runs the analysis and lands its chart on the right.
-          </p>
-          <div className="space-y-1.5">
-            {STANDARD_ANALYSES.map((a) => (
-              <button
-                key={a.label}
-                onClick={() => onRunAnalysis(a.prompt)}
-                className="w-full text-left rounded-lg border px-2.5 py-2 transition-colors"
-                style={{ background: wcg.surface, borderColor: wcg.border }}
-              >
-                <span className="flex items-start gap-2">
-                  <Play className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: wcg.teal }} />
-                  <span className="min-w-0">
-                    <span className="block text-[12.5px] font-medium leading-snug" style={{ color: wcg.ink }}>
-                      {a.label}
-                    </span>
-                    <span className="flex items-center gap-1 text-[10.5px] mt-0.5" style={{ color: wcg.muted }}>
-                      <BarChart3 className="w-3 h-3" /> {a.chart}
-                    </span>
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <AnalyticsExplorer onRunAnalysis={onRunAnalysis} />
       ) : (
         <>
           <Section label="Arms">
@@ -236,6 +265,99 @@ export function BriefPanel({
       )}
 
       <DecisionLog decisions={decisions} />
+    </div>
+  )
+}
+
+/**
+ * Browse the corpus by data category. Nothing checked → the four
+ * single-category starters. Checked categories surface the analytics that
+ * relate them (cross-category relationships first); if no analysis covers the
+ * exact combination, anything touching a checked category shows instead of an
+ * empty list.
+ */
+function AnalyticsExplorer({ onRunAnalysis }: { onRunAnalysis: (prompt: string) => void }) {
+  const [checked, setChecked] = useState<Set<string>>(new Set())
+
+  const toggle = (key: string) =>
+    setChecked((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+
+  const exact = ANALYTICS.filter((a) => a.categories.every((c) => checked.has(c)))
+  const shown =
+    checked.size === 0
+      ? ANALYTICS.filter((a) => a.categories.length === 1)
+      : exact.length
+        ? [...exact].sort((a, b) => b.categories.length - a.categories.length)
+        : ANALYTICS.filter((a) => a.categories.some((c) => checked.has(c)))
+
+  const labelFor = (key: string) => DATA_CATEGORIES.find((c) => c.key === key)?.label ?? key
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <p className="text-[11.5px] leading-snug mb-2" style={{ color: wcg.muted }}>
+          Check the data you want to relate — matching analyses tee up below.
+        </p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {DATA_CATEGORIES.map((c) => {
+            const on = checked.has(c.key)
+            return (
+              <button
+                key={c.key}
+                onClick={() => toggle(c.key)}
+                aria-pressed={on}
+                className="flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-left transition-colors"
+                style={{
+                  background: on ? '#ECFBF6' : wcg.surface,
+                  borderColor: on ? wcg.teal : wcg.border,
+                }}
+              >
+                <span
+                  className="w-3.5 h-3.5 shrink-0 rounded-[4px] border flex items-center justify-center"
+                  style={{
+                    background: on ? wcg.teal : wcg.surface,
+                    borderColor: on ? wcg.teal : wcg.borderStrong,
+                  }}
+                >
+                  {on && <Check className="w-2.5 h-2.5" style={{ color: '#fff' }} strokeWidth={3} />}
+                </span>
+                <span className="text-[11.5px] leading-tight" style={{ color: wcg.ink }}>
+                  {c.label}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        {shown.map((a) => (
+          <button
+            key={a.label}
+            onClick={() => onRunAnalysis(a.prompt)}
+            className="w-full text-left rounded-lg border px-2.5 py-2 transition-colors"
+            style={{ background: wcg.surface, borderColor: wcg.border }}
+          >
+            <span className="flex items-start gap-2">
+              <Play className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: wcg.teal }} />
+              <span className="min-w-0">
+                <span className="block text-[12.5px] font-medium leading-snug" style={{ color: wcg.ink }}>
+                  {a.label}
+                </span>
+                <span className="flex items-center gap-1 text-[10.5px] mt-0.5 flex-wrap" style={{ color: wcg.muted }}>
+                  <BarChart3 className="w-3 h-3 shrink-0" /> {a.chart} ·{' '}
+                  {a.categories.map(labelFor).join(' × ')}
+                </span>
+              </span>
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

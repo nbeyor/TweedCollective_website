@@ -46,8 +46,8 @@ function num(n: unknown, fallback = 0): number {
 }
 
 const W = 640
-const H = 380
-const PAD = { top: 44, right: 24, bottom: 64, left: 60 }
+const H = 360
+const PAD = { top: 28, right: 24, bottom: 64, left: 60 }
 const PLOT_W = W - PAD.left - PAD.right
 const PLOT_H = H - PAD.top - PAD.bottom
 
@@ -109,7 +109,7 @@ function barChart(spec: GeneratedChartSpec, grouped: boolean): string {
     })
   })
 
-  return yAxis(maxVal) + bars + (grouped ? legend(series.map((s) => s.name)) : '')
+  return yAxis(maxVal) + bars
 }
 
 function lineChart(spec: GeneratedChartSpec): string {
@@ -136,7 +136,7 @@ function lineChart(spec: GeneratedChartSpec): string {
   cats.forEach((cat, i) => {
     out += `<text x="${(PAD.left + stepX * i).toFixed(1)}" y="${PAD.top + PLOT_H + 18}" text-anchor="middle" font-size="11" fill="${MUTED}">${esc(cat)}</text>`
   })
-  return out + legend(series.map((s) => s.name))
+  return out
 }
 
 function scatterChart(spec: GeneratedChartSpec): string {
@@ -160,7 +160,7 @@ function scatterChart(spec: GeneratedChartSpec): string {
       out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${color}" fill-opacity="0.75"><title>${esc(p.label ?? '')} (${esc(p.x)}, ${esc(p.y)})</title></circle>`
     })
   })
-  return out + legend(series.map((s) => s.name))
+  return out
 }
 
 function wrapLabel(s: string): string[] {
@@ -179,18 +179,21 @@ function wrapLabel(s: string): string[] {
   return lines.slice(0, 2)
 }
 
-function legend(names: string[]): string {
+/**
+ * HTML legend above the SVG. An in-SVG legend advances x by name length and
+ * silently pushes later entries off the 640px canvas — with three or more
+ * long series names the last series renders unlabeled. HTML flex-wrap makes
+ * every series keep its label no matter how many or how long.
+ */
+function legendHtml(names: string[]): string {
   if (names.length <= 1) return ''
-  let out = ''
-  const y = 22
-  let x = PAD.left
-  names.forEach((n, i) => {
-    const color = PALETTE[i % PALETTE.length]
-    out += `<rect x="${x}" y="${y - 9}" width="11" height="11" rx="2" fill="${color}"/>`
-    out += `<text x="${x + 16}" y="${y}" font-size="11" fill="${INK}">${esc(n)}</text>`
-    x += 28 + n.length * 6.5
-  })
-  return out
+  const items = names
+    .map(
+      (n, i) =>
+        `<span class="li"><span class="sw" style="background:${PALETTE[i % PALETTE.length]}"></span>${esc(n)}</span>`
+    )
+    .join('')
+  return `<div class="legend">${items}</div>`
 }
 
 /** Build the sandboxed HTML document for one generated chart. */
@@ -219,9 +222,13 @@ export function buildChartHtml(spec: GeneratedChartSpec): string {
     .cap{font-size:11.5px;color:${MUTED};margin:6px 2px 0;line-height:1.45}
     svg{width:100%;height:auto;display:block}
     .unit{font-size:11px;color:${MUTED};margin:0 0 6px}
+    .legend{display:flex;flex-wrap:wrap;gap:3px 14px;margin:6px 0 4px;font-size:11px;color:${INK}}
+    .li{display:inline-flex;align-items:center;white-space:nowrap}
+    .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
   </style></head><body><div class="wrap">
     <h3>${esc(spec.title)}</h3>
     ${spec.unit ? `<div class="unit">${esc(spec.unit)}</div>` : ''}
+    ${legendHtml(spec.series.map((s) => s.name))}
     <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.title)}">${body}${yLabel}</svg>
     ${spec.caption ? `<p class="cap">${esc(spec.caption)}</p>` : ''}
   </div></body></html>`

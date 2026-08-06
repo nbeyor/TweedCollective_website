@@ -64,6 +64,39 @@ const PANEL_MIN = 320
 const PANEL_MAX = 720
 const PANEL_KEY = 'strategist.panelWidth'
 
+/**
+ * Everything a document's session carries. Conversations are scoped to one
+ * document under review: switching documents parks the current session and
+ * restores the target's, so the model never sees two protocols' histories
+ * interleaved and nothing is destroyed by browsing.
+ */
+interface DocSession {
+  messages: Message[]
+  insights: Insight[]
+  decisions: ShippedDecision[]
+  publishedDoc: { webViewLink?: string } | null
+}
+
+/** Decision logs persist per document across reloads; chat is session-only. */
+const decisionsStorageKey = (k: string) => `strategist.decisions.${k}`
+
+function loadStoredDecisions(k: string): ShippedDecision[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(decisionsStorageKey(k)) ?? '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function storeDecisions(k: string, decisions: ShippedDecision[]) {
+  try {
+    localStorage.setItem(decisionsStorageKey(k), JSON.stringify(decisions))
+  } catch {
+    // Storage full or blocked — the on-page log still works for this session.
+  }
+}
+
 export function StrategistWorkspace({
   brief,
   briefDocLink,
@@ -102,6 +135,14 @@ export function StrategistWorkspace({
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const seq = useRef(0)
+
+  // Parked sessions for documents browsed earlier this visit, by source key.
+  const parked = useRef(new Map<string, DocSession>())
+
+  // Restore this document's persisted decision log on first load.
+  useEffect(() => {
+    setDecisions(loadStoredDecisions(sourceKey({ kind: 'hero' })))
+  }, [])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -219,7 +260,11 @@ export function StrategistWorkspace({
                 const entry = (evt.entry ?? {}) as ShippedDecision
                 const written = Boolean(evt.written)
                 const doc = (evt.doc ?? null) as ShippedDecision['doc']
-                setDecisions((prev) => [...prev, { ...entry, written, doc }])
+                setDecisions((prev) => {
+                  const next = [...prev, { ...entry, written, doc }]
+                  storeDecisions(sourceKey(source), next)
+                  return next
+                })
                 setShipNotice(
                   written
                     ? `Shipped “${entry.element_label}” — written to the brief.`
@@ -247,13 +292,13 @@ export function StrategistWorkspace({
     [messages, streaming, source]
   )
 
+  /** Clear the current document's conversation and charts. Its decision log stays. */
   const clearConversation = useCallback(() => {
     setMessages([])
     setReply('')
     setTools([])
     setError(null)
     setInsights([])
-    setDecisions([])
     setShipNotice(null)
     setPublishedDoc(null)
     setPublishError(null)
@@ -261,20 +306,35 @@ export function StrategistWorkspace({
 
   const reset = useCallback(() => {
     if (streaming) return
-    if (messages.length && !window.confirm('Clear this conversation and its charts?')) return
+    if (
+      messages.length &&
+      !window.confirm('Clear this conversation and its charts? The decision log is kept.')
+    ) {
+      return
+    }
     clearConversation()
-  }, [messages.length, streaming, clearConversation])
+    parked.current.delete(sourceKey(source))
+  }, [messages.length, streaming, clearConversation, source])
 
   const switchSource = useCallback(
     async (next: BriefSource) => {
       if (sourceKey(next) === sourceKey(source) || streaming) return
-      if (
-        messages.length &&
-        !window.confirm('Switching the document under review resets this conversation. Continue?')
-      ) {
-        return
-      }
-      clearConversation()
+
+      // Park this document's session, restore the target's. Nothing is lost by
+      // browsing, and each conversation stays scoped to one document — the
+      // model never sees two protocols' histories mixed together.
+      parked.current.set(sourceKey(source), { messages, insights, decisions, publishedDoc })
+      const restored = parked.current.get(sourceKey(next))
+      setMessages(restored?.messages ?? [])
+      setInsights(restored?.insights ?? [])
+      setDecisions(restored?.decisions ?? loadStoredDecisions(sourceKey(next)))
+      setPublishedDoc(restored?.publishedDoc ?? null)
+      setReply('')
+      setTools([])
+      setError(null)
+      setShipNotice(null)
+      setPublishError(null)
+
       setSource(next)
       if (next.kind === 'hero') {
         setActiveBrief(brief)
@@ -300,7 +360,7 @@ export function StrategistWorkspace({
         setBriefLoading(false)
       }
     },
-    [source, streaming, messages.length, clearConversation, brief]
+    [source, streaming, messages, insights, decisions, publishedDoc, brief]
   )
 
   const publish = useCallback(async () => {
@@ -439,8 +499,8 @@ export function StrategistWorkspace({
             <div className={`${COL} pt-4`}>
               <p className="text-[14px] leading-relaxed mb-5" style={{ color: wcg.body }}>
                 {mode === 'blank'
-                  ? 'Nothing is drafted yet. Describe the trial you have in mind and the strategist will ground every design choice in the operations corpus — or start from one of the questions below.'
-                  : 'The document on the left is under review. Select an element to interrogate it, run a standard analysis from the Analyses tab, or ask a what-if below. Every figure traces to the operations corpus — sensitivity answers come back as options with tradeoffs, and charts render on the right.'}
+                  ? 'Describe the trial you have in mind — every design choice gets grounded in the operations corpus — or start from a question below.'
+                  : 'Pick data categories in the Analyses tab to tee up chart-backed questions, click any element of the brief, or ask a what-if below. Charts land on the right.'}
               </p>
               <div className="space-y-2">
                 {SUGGESTIONS[mode].map((s) => (
