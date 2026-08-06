@@ -190,7 +190,7 @@ Plumbing is in. Hero visualization and system-prompt specialization wait on the 
 | Google Docs bridge | `lib/googleDocs.ts` | Create from HTML, export text, **read comment threads with anchored text**, share |
 | Codify → Doc A | `app/api/protocol-strategist/codify/route.ts` | Conversation → HTML → Google Doc |
 | Review → Doc B | `app/api/protocol-strategist/review/route.ts` | Reads Doc A + open comments → revision with change log keyed to each comment |
-| Demo page | `app/clients/protocol-strategist/page.tsx` | Chat + tool activity + codify |
+| Demo page | `app/clients/protocol-strategist/page.tsx` | Chat + tool activity + protocol picker; toolbar wires codify to a "Publish to Doc" button (added in the blind-test UX pass, which also de-branded the UI/prompt via `lib/strategistBrand.ts`) |
 | Access gate | `app/clients/protocol-strategist/layout.tsx`, `content/clients.ts` | Registered workspace slug `protocol-strategist`; page and all four API routes require the per-user grant, managed from `/admin` |
 | Corpus tracing | `next.config.js` | `outputFileTracingIncludes` — `public/` is CDN-served and not bundled into lambdas by default; verified 14 corpus files traced |
 

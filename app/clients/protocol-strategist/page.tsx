@@ -2,10 +2,11 @@ import React from 'react'
 
 import { StrategistWorkspace } from '@/components/protocol-strategist/StrategistWorkspace'
 import { wcg } from '@/components/protocol-strategist/wcgTheme'
-import { designBrief, manifest } from '@/lib/trialCorpus'
+import { BRAND } from '@/lib/strategistBrand'
+import { designBrief, manifest, protocolIndex } from '@/lib/trialCorpus'
 
 export const metadata = {
-  title: 'WCG IntelX — Clinical Trial Strategist',
+  title: `${BRAND.name} — ${BRAND.tagline}`,
   description: 'Pressure-test a drafted trial design against operational history, before the protocol is written.',
 }
 
@@ -15,6 +16,7 @@ export const metadata = {
 export default function ProtocolStrategistPage() {
   const brief = designBrief()
   const m = manifest() as Record<string, number | string>
+  const protocols = protocolIndex()
   const briefDocLink = process.env.STRATEGIST_BRIEF_DOC_ID
     ? `https://docs.google.com/document/d/${process.env.STRATEGIST_BRIEF_DOC_ID}/edit`
     : null
@@ -24,25 +26,27 @@ export default function ProtocolStrategistPage() {
       <header className="border-b px-6 py-3.5 shrink-0" style={{ background: wcg.navy, borderColor: wcg.navyDeep }}>
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-baseline gap-3">
-            <span className="text-[17px] font-semibold tracking-tight text-white">WCG IntelX</span>
+            <span className="text-[17px] font-semibold tracking-tight text-white">{BRAND.name}</span>
             <span className="text-[12px]" style={{ color: '#9DB2C6' }}>
-              Clinical Trial Strategist
+              {BRAND.tagline}
             </span>
           </div>
           <div className="flex items-center gap-4">
             <p className="text-[11px]" style={{ color: '#9DB2C6' }}>
               {m.protocolCount} protocols · {m.siteCount} sites · synthetic corpus v{m.corpusVersion}
             </p>
-            <span className="text-[10.5px] flex items-center gap-1.5" style={{ color: '#7C93AA' }}>
-              <span className="w-1 h-1 rounded-full" style={{ background: wcg.teal }} />
-              powered by Tweed Collective
-            </span>
+            {BRAND.showPoweredBy && (
+              <span className="text-[10.5px] flex items-center gap-1.5" style={{ color: '#7C93AA' }}>
+                <span className="w-1 h-1 rounded-full" style={{ background: wcg.teal }} />
+                powered by Tweed Collective
+              </span>
+            )}
           </div>
         </div>
       </header>
 
       <main className="flex-1 min-h-0">
-        <StrategistWorkspace brief={brief} briefDocLink={briefDocLink} />
+        <StrategistWorkspace brief={brief} briefDocLink={briefDocLink} protocols={protocols} />
       </main>
 
       <footer className="border-t px-6 py-2 shrink-0" style={{ background: wcg.surface, borderColor: wcg.border }}>

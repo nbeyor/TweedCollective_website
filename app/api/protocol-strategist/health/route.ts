@@ -7,9 +7,13 @@
  * rather than mid-demo.
  *
  * GET /api/protocol-strategist/health
+ * GET /api/protocol-strategist/health?scope=google  (Drive probe only — no
+ *   model call, cheap enough for the workspace to run on mount so the Publish
+ *   button can grey out with a reason instead of failing after a long wait)
  */
 
 import Anthropic from '@anthropic-ai/sdk'
+import { NextRequest } from 'next/server'
 
 import { clientAccessError } from '@/lib/client-access'
 import { checkDriveAccess } from '@/lib/googleDocs'
@@ -24,15 +28,16 @@ const WORKSPACE_SLUG = 'protocol-strategist'
 
 type Check = { ok: boolean; detail: string; ms?: number }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const denied = await clientAccessError(WORKSPACE_SLUG)
   if (denied) return denied
 
   const checks: Record<string, Check> = {}
   const started = Date.now()
+  const googleOnly = req.nextUrl.searchParams.get('scope') === 'google'
 
   // --- corpus ---
-  try {
+  if (!googleOnly) try {
     const t = Date.now()
     const m = manifest() as Record<string, unknown>
     const cohort = selectCohort({ therapeutic_area: 'Respiratory' })
@@ -46,7 +51,7 @@ export async function GET() {
   }
 
   // --- tool execution ---
-  try {
+  if (!googleOnly) try {
     const t = Date.now()
     const out = (await runTool('query_cohort', { therapeutic_area: 'Oncology', phase: ['3'] })) as {
       matched?: number
@@ -61,7 +66,7 @@ export async function GET() {
   }
 
   // --- v0.2 sensitivity layer: brief loads and a scenario computes ---
-  try {
+  if (!googleOnly) try {
     const t = Date.now()
     const brief = (await runTool('get_design_brief', {})) as { indication?: string }
     const ps = (await runTool('procedure_sensitivity', {
@@ -80,7 +85,9 @@ export async function GET() {
   }
 
   // --- anthropic ---
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (googleOnly) {
+    // skip — the google-only scope avoids the model call entirely
+  } else if (!process.env.ANTHROPIC_API_KEY) {
     checks.anthropic = { ok: false, detail: 'ANTHROPIC_API_KEY is not set in this environment.' }
   } else {
     try {

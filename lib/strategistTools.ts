@@ -26,6 +26,7 @@ import {
   summarize,
   vocabularies,
   type CohortFilter,
+  type DesignBrief,
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
@@ -52,7 +53,7 @@ export const TOOLS = [
   {
     name: 'describe_corpus',
     description:
-      'Return the shape of the available trial data: counts, therapeutic areas, phases, controlled vocabularies, and which fields are Trial IntelX schema versus Tweed extensions. Call this first when you need to know what dimensions exist before filtering, or when the user asks what data you have.',
+      'Return the shape of the available trial data: counts, therapeutic areas, phases, controlled vocabularies, and which fields are base schema versus extension fields. Call this first when you need to know what dimensions exist before filtering, or when the user asks what data you have.',
     input_schema: { type: 'object' as const, properties: {}, required: [] },
   },
   {
@@ -337,7 +338,26 @@ function cohortStats(cohort: Protocol[]) {
   )
 }
 
-export async function runTool(name: string, input: Record<string, unknown>): Promise<unknown> {
+export interface ToolContext {
+  /** The document under review; null when the session is in net-new mode. */
+  brief: DesignBrief | null
+  /**
+   * Only the drafted hero brief has a pre-seeded Google Doc behind it, so
+   * ship_decision writes to Docs in hero mode and logs on-page otherwise.
+   */
+  isHero: boolean
+}
+
+const NO_BRIEF = {
+  error:
+    'No design brief is active — the session is building a protocol from scratch. Use the cohort tools (query_cohort, analyze_criteria, benchmark_protocol, get_protocol) to ground the design, or ask the user to select a protocol from the picker.',
+}
+
+export async function runTool(
+  name: string,
+  input: Record<string, unknown>,
+  ctx: ToolContext = { brief: designBrief(), isHero: true }
+): Promise<unknown> {
   switch (name) {
     case 'describe_corpus': {
       const m = manifest()
@@ -456,7 +476,8 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
 
     // ---- v0.2 hero flow ----------------------------------------------------
     case 'get_design_brief': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       return {
         ...brief,
         note: 'This is the pre-drafted document under review. Pressure-test its elements; do not rewrite it wholesale.',
@@ -464,13 +485,15 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
     }
 
     case 'draft_criteria_burden': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const data = criteriaWaterfall(brief)
       return { ...data, _panel: { chart: 'criteria_waterfall', data } }
     }
 
     case 'procedure_sensitivity': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const added = String(input.added_procedure)
       const known = new Set(procedureOperations().map((r) => String(r.procedure_name)))
       if (!known.has(added)) {
@@ -505,14 +528,16 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
     }
 
     case 'endpoint_timeline_sensitivity': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const assessments = (input.assessments as string[] | undefined) ?? []
       const data = endpointSensitivity(brief, assessments)
       return { ...data, _panel: { chart: 'endpoint_timeline', data } }
     }
 
     case 'site_level_breakdown': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const scn: SensitivityScenario = {
         key: 'drill',
         label: 'Site-level breakdown',
@@ -541,13 +566,15 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
     }
 
     case 'comparator_landscape': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const data = comparatorLandscape(brief)
       return { ...data, _panel: { chart: 'comparator_scatter', data } }
     }
 
     case 'amendment_risk_sweep': {
-      const brief = designBrief()
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
       const data = amendmentRiskSweep(brief)
       return { ...data, _panel: { chart: 'amendment_risk', data } }
     }
@@ -565,9 +592,8 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
     }
 
     case 'ship_decision': {
-      const brief = designBrief()
       const entry: ShipEntry = {
-        brief_id: brief.brief_id,
+        brief_id: ctx.brief?.brief_id ?? 'NET-NEW',
         element_id: String(input.element_id),
         element_label: String(input.element_label ?? input.element_id),
         decision: String(input.decision),
@@ -576,7 +602,11 @@ export async function runTool(name: string, input: Record<string, unknown>): Pro
           (input.alternatives_considered as Array<{ option: string; tradeoff: string }>) ?? [],
         evidence: (input.evidence as string[]) ?? [],
       }
-      const outcome = await shipDecisionToBrief(entry)
+      // Only the hero brief has a pre-seeded Google Doc; other sources keep
+      // the decision in the on-page log.
+      const outcome = ctx.isHero
+        ? await shipDecisionToBrief(entry)
+        : { written: false, detail: 'Decision logged on-page; only the drafted brief has a linked Google Doc.' }
       return { ok: true, entry, ...outcome, _ship: { entry, ...outcome } }
     }
 

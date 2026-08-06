@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
-import { BarChart3 } from 'lucide-react'
+import React, { useState } from 'react'
+import { BarChart3, Maximize2 } from 'lucide-react'
 
+import { ChartLightbox } from './ChartLightbox'
 import { FixedChart, type PanelDescriptor } from './FixedCharts'
 import { wcg } from './wcgTheme'
 
@@ -20,10 +21,13 @@ export type Insight =
 /**
  * The insight side panel. Fixed charts (pre-built, wired to corpus data the tool
  * retrieved) and generated charts (self-contained SVG in a sandboxed iframe)
- * stack here, newest first. The iframe carries no script — sandbox is fully
- * locked — so a malformed chart can never reach the page.
+ * stack here, newest first. Every card can expand into a full-screen lightbox.
+ * The iframe carries no script — sandbox is fully locked — so a malformed chart
+ * can never reach the page.
  */
 export function InsightPanel({ insights }: { insights: Insight[] }) {
+  const [expanded, setExpanded] = useState<Insight | null>(null)
+
   if (!insights.length) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-8" style={{ color: wcg.faint }}>
@@ -39,13 +43,21 @@ export function InsightPanel({ insights }: { insights: Insight[] }) {
 
   return (
     <div className="h-full overflow-y-auto px-4 py-4 space-y-4">
-      {insights.map((it) =>
-        it.kind === 'fixed' ? (
-          <FixedChart key={it.key} panel={it.panel} />
-        ) : (
-          <GeneratedChartCard key={it.key} chart={it.chart} />
-        )
-      )}
+      {insights.map((it) => (
+        <div key={it.key} className="relative group">
+          <button
+            onClick={() => setExpanded(it)}
+            aria-label="Expand chart"
+            title="Expand"
+            className="absolute top-2.5 right-2.5 z-10 rounded-md p-1.5 opacity-60 group-hover:opacity-100 transition-opacity"
+            style={{ background: wcg.surfaceMuted, color: wcg.muted, border: `1px solid ${wcg.border}` }}
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+          </button>
+          {it.kind === 'fixed' ? <FixedChart panel={it.panel} /> : <GeneratedChartCard chart={it.chart} />}
+        </div>
+      ))}
+      <ChartLightbox insight={expanded} onClose={() => setExpanded(null)} />
     </div>
   )
 }

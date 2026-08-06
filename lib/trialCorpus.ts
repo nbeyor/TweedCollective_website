@@ -11,6 +11,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { debrand } from './strategistBrand'
+
 const CORPUS_DIR = path.join(process.cwd(), 'public', 'data', 'trial-corpus')
 
 type Columnar = { columns: string[]; rows: unknown[][]; rowCount: number }
@@ -23,7 +25,9 @@ const cache = new Map<string, unknown>()
 function readJson<T>(file: string): T {
   const key = `raw:${file}`
   if (!cache.has(key)) {
-    cache.set(key, JSON.parse(fs.readFileSync(path.join(CORPUS_DIR, file), 'utf-8')))
+    // debrand() runs on the raw text so every corpus string a tool result could
+    // echo to the model is sanitized at one choke point; files stay untouched.
+    cache.set(key, JSON.parse(debrand(fs.readFileSync(path.join(CORPUS_DIR, file), 'utf-8'))))
   }
   return cache.get(key) as T
 }
@@ -93,6 +97,157 @@ export interface DesignBrief {
 }
 
 export const designBrief = () => readJson<DesignBrief>('design_brief.json')
+
+// ------------------------------------------------- corpus-derived briefs ---
+
+export interface ProtocolIndexEntry {
+  protocol_id: string
+  indication: string
+  therapeutic_area: string
+  disease_area: string
+  phase: string
+  number_of_participants: number
+  sites_initiated: number
+}
+
+/** Light listing of every corpus protocol, for the picker UI. */
+export function protocolIndex(): ProtocolIndexEntry[] {
+  const key = 'derived:index'
+  if (!cache.has(key)) {
+    cache.set(
+      key,
+      protocols().map((p) => ({
+        protocol_id: String(p.protocol_id),
+        indication: String(p.indication),
+        therapeutic_area: String(p.therapeutic_area),
+        disease_area: String(p.disease_area),
+        phase: String(p.phase),
+        number_of_participants: Number(p.number_of_participants),
+        sites_initiated: Number(p.sites_initiated),
+      }))
+    )
+  }
+  return cache.get(key) as ProtocolIndexEntry[]
+}
+
+const MAX_DERIVED_CRITERIA = 20
+
+/**
+ * Build a DesignBrief view of one corpus protocol so the whole sensitivity
+ * engine — waterfall, procedure sensitivity, amendment sweep, comparator
+ * landscape — runs against it unmodified. The protocol's own eligibility rows
+ * join criterion_attribution on std_eligibility_criteria = criterion, and its
+ * site rows supply a real site mix (hero mix as fallback when a protocol has
+ * no site rows).
+ */
+export function deriveBriefFromProtocol(protocolId: string): DesignBrief | null {
+  const key = `derived:brief:${protocolId}`
+  if (cache.has(key)) return cache.get(key) as DesignBrief | null
+
+  const p = protocols().find((x) => String(x.protocol_id) === protocolId)
+  if (!p) {
+    cache.set(key, null)
+    return null
+  }
+  const match = (r: Row) => String(r.protocol_id) === protocolId
+  const ta = String(p.therapeutic_area)
+
+  // Criteria: dedupe by standard name, rank by screen-fail attribution in this
+  // TA so the waterfall leads with the criteria that actually cost patients.
+  const attribution = new Map(
+    criterionAttribution()
+      .filter((r) => r.therapeutic_area === ta)
+      .map((r) => [String(r.criterion), Number(r.mean_screen_fail_attribution_pct)])
+  )
+  const seen = new Map<string, Row>()
+  for (const r of eligibility().filter(match)) {
+    const name = String(r.std_eligibility_criteria)
+    if (!seen.has(name)) seen.set(name, r)
+  }
+  const criteria = Array.from(seen.entries())
+    .sort(([a], [b]) => (attribution.get(b) ?? 0) - (attribution.get(a) ?? 0))
+    .slice(0, MAX_DERIVED_CRITERIA)
+    .map(([name, r], i) => ({
+      id: `cri-${protocolId.toLowerCase()}-${i}`,
+      type: String(r.criterion_type),
+      category: String(r.eligibility_categorization),
+      text: name,
+      corpus_criterion: name,
+    }))
+
+  // Endpoints by tier. Primary first as drafted; a few tertiary rows stand in
+  // as "candidates" so endpoint-timeline questions have material to work with.
+  const eps = endpoints().filter(match)
+  const timeframe = (r: Row) =>
+    r.time_value ? `${r.std_endpoint} at ${r.time_value} ${r.time_unit ?? ''}`.trim() : String(r.std_endpoint)
+  const primary = eps.find((r) => r.tier === 'Primary')
+  const secondary = eps.filter((r) => r.tier === 'Secondary').slice(0, 4)
+  const tertiary = eps.filter((r) => r.tier === 'Tertiary').slice(0, 3)
+
+  // Site mix measured from this protocol's own site rows.
+  const siteRows = sites().filter(match)
+  let siteMix: Record<string, number>
+  if (siteRows.length) {
+    const counts = new Map<string, number>()
+    for (const s of siteRows) {
+      const t = String(s.sponsor_site_type)
+      counts.set(t, (counts.get(t) ?? 0) + 1)
+    }
+    siteMix = Object.fromEntries(
+      Array.from(counts.entries()).map(([t, n]) => [t, round(n / siteRows.length, 3)])
+    )
+  } else {
+    siteMix = designBrief().site_mix
+  }
+
+  const arms = String(p.study_arms ?? '')
+    .split(',')
+    .map((a) => a.trim())
+    .filter(Boolean)
+    .map((name, i) => ({ id: `arm-${i}`, name }))
+
+  const brief: DesignBrief = {
+    brief_id: `${protocolId}-BRIEF`,
+    title: `${p.indication} — ${protocolId} (Phase ${p.phase})`,
+    status: 'Completed corpus trial, loaded as the document under review',
+    therapeutic_area: ta,
+    disease_area: String(p.disease_area),
+    indication: String(p.indication),
+    line_of_treatment: String(p.line_of_treatment ?? 'Not Specified'),
+    phase: String(p.phase),
+    comparator_cohort: { therapeutic_area: ta, phase: [String(p.phase)] },
+    target_enrollment: Number(p.number_of_participants),
+    planned_sites: Number(p.sites_initiated),
+    site_mix: siteMix,
+    arms: arms.length ? arms : [{ id: 'arm-0', name: 'Single arm' }],
+    randomization: String(p.randomization_scheme ?? 'Not specified'),
+    primary_endpoint: {
+      id: `ep-${protocolId.toLowerCase()}-primary`,
+      text: primary ? timeframe(primary) : 'Primary endpoint not recorded',
+      assessment: primary ? String(primary.std_endpoint) : '',
+    },
+    secondary_endpoints: secondary.map((r, i) => ({
+      id: `ep-${protocolId.toLowerCase()}-sec-${i}`,
+      text: timeframe(r),
+      assessment: String(r.std_endpoint),
+      status: 'included',
+    })),
+    candidate_secondary_endpoints: tertiary.map((r, i) => ({
+      id: `ep-${protocolId.toLowerCase()}-cand-${i}`,
+      text: timeframe(r),
+      assessment: String(r.std_endpoint),
+    })),
+    criteria,
+    soa_sketch: [
+      `${p.total_visit_count} visits · ${p.procedure_count} procedures · treatment ${p.treatment_duration_weeks} weeks`,
+      `Screened ${p.subjects_screened} · randomized ${p.subjects_randomized} · screen-fail ${round(Number(p.screen_fail_rate) * 100, 1)}%`,
+    ],
+    disclaimer:
+      'Synthetic corpus protocol rendered as a design brief for demonstration. No real molecule, sponsor, site, or participant.',
+  }
+  cache.set(key, brief)
+  return brief
+}
 
 // --------------------------------------------------------------- filtering ---
 
