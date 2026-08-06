@@ -123,11 +123,22 @@ These two are the only items with external lead time. Everything else can start 
 | 3 | **Hero use case** | "Clinical trial protocol strategist" is a category, not a demo. Candidates raised: eligibility-criteria burden, protocol complexity / amendment risk, enrollment feasibility by site, endpoint selection vs. what has succeeded in the indication. Open-ended chat with no hero job demos badly. |
 | 4 | **Visualization spec** | Must state what the reader *concludes*, not just what is on the axes. Suggested hero: criteria-burden waterfall (eligible population shrinking criterion by criterion), plus a comparator-landscape scatter. |
 
-### Coming with the sample data
-| # | Gap | Note |
+### ~~Coming with the sample data~~ — CLOSED 2026-08-06
+| # | Gap | Resolution |
 |---|---|---|
-| 5 | **Data schema and vocabulary** | 3–5 real records is enough; corpus gets synthesized from them. Need: unit of record (protocol / arm / criterion / site), fields, and provenance (CT.gov extract? client protocols? Airtable?). |
-| 6 | **Confidentiality confirmation** | Explicit confirmation the sample is non-identifiable. If any of it is client-confidential or patient-level, the build goes fully synthetic and the page is labeled as such. |
+| 5 | ~~Data schema and vocabulary~~ | **Closed.** Three files supplied: Trial IntelX Data Dictionary v1.1 summary exhibit, Trial IntelX sample output (2 Phase 2 asthma protocols across all 15 sheets), and the KMR Clinical Data Workbook field list. Corpus generated — 120 protocols, 2,361 sites. See `docs/trial-corpus.md`. |
+| 6 | ~~Confidentiality confirmation~~ | **Closed by inspection.** The sample protocols are de-identified (`acuteasthma1/2`, `protocol_number: N/A`, no sponsor or NCT identifiers) and contain no patient-level data. The generated corpus is fully synthetic regardless. |
+
+**Decisions taken on the corpus** (2026-08-06):
+- Mixed therapeutic areas, deep in Respiratory and Oncology
+- Full join: protocol structure + trial operational + site level
+- ~120 protocols / ~2,400 sites
+- `criterion_type` added as a documented Tweed extension
+
+**Standing note on the Trial IntelX schema.** The Data Dictionary is a WCG contract exhibit
+and the sample output is a WCG deliverable. The demo reproduces that schema's *shape* for a
+different client audience. Worth a decision on how visibly Trial IntelX is credited — or
+whether the demo should present a Tweed-named schema that happens to be compatible.
 
 ### Unresolved, not yet assigned
 | # | Gap | Note |
@@ -135,7 +146,36 @@ These two are the only items with external lead time. Everything else can start 
 | 7 | **Client identity and demo date** | Drives scope and how much polish is affordable. |
 | 8 | **Demo format** | Live-driven by Nate, or clickable by the client? Changes how much guardrailing the chat needs. |
 | 9 | **Demo access mechanism** | Clerk account per attendee, or magic link (infrastructure already exists)? |
-| 10 | **Auto-merge posture** | Pushing to `claude/**` merges to `main` and deploys. Allow it for this work, or gate the workflow for the duration? |
+| ~~10~~ | ~~Auto-merge posture~~ | **Closed 2026-08-06 — auto-merge to `main` approved.** |
+
+---
+
+## Build Status (2026-08-06)
+
+Plumbing is in. Hero visualization and system-prompt specialization wait on the PRD.
+
+| Piece | Path | State |
+|---|---|---|
+| Corpus query layer | `lib/trialCorpus.ts` | Cohort filtering, percentile benchmarking, criteria frequency, enrolled-population composition, design→outcome correlations |
+| Strategist tool surface | `lib/strategistTools.ts` | 7 tools; descriptions state *when* to call, not just what they do |
+| Streaming chat | `app/api/protocol-strategist/route.ts` | SSE; server-side tool loop; `claude-opus-5`, adaptive thinking summarized, prompt caching on the system prefix |
+| Health check | `app/api/protocol-strategist/health/route.ts` | Verifies key, corpus, tools, Google credentials in one request |
+| Google Docs bridge | `lib/googleDocs.ts` | Create from HTML, export text, **read comment threads with anchored text**, share |
+| Codify → Doc A | `app/api/protocol-strategist/codify/route.ts` | Conversation → HTML → Google Doc |
+| Review → Doc B | `app/api/protocol-strategist/review/route.ts` | Reads Doc A + open comments → revision with change log keyed to each comment |
+| Demo page | `app/clients/protocol-strategist/page.tsx` | Clerk-gated via existing middleware; chat + tool activity + codify |
+| Corpus tracing | `next.config.js` | `outputFileTracingIncludes` — `public/` is CDN-served and not bundled into lambdas by default; verified 14 corpus files traced |
+
+**Env vars required in Vercel:**
+
+| Var | Status |
+|---|---|
+| `ANTHROPIC_API_KEY` | ✅ set |
+| `GOOGLE_SERVICE_ACCOUNT_JSON_BASE64` | ⏳ pending — base64 of the service account key file |
+| `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder or Shared Drive folder |
+| `STRATEGIST_EFFORT` | optional — defaults to `medium`; raise to `high` for depth over latency |
+
+**Note on testing.** `/api/protocol-strategist/health` sits behind Clerk (it makes a billed model call, so it must not be open). It has to be opened from a signed-in browser — it cannot be reached from a Claude Code session.
 
 ### Framing question still open
 > What is the one insight you want the client to walk away repeating?
