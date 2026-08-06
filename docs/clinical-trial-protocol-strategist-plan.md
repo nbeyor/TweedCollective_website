@@ -163,7 +163,8 @@ Plumbing is in. Hero visualization and system-prompt specialization wait on the 
 | Google Docs bridge | `lib/googleDocs.ts` | Create from HTML, export text, **read comment threads with anchored text**, share |
 | Codify → Doc A | `app/api/protocol-strategist/codify/route.ts` | Conversation → HTML → Google Doc |
 | Review → Doc B | `app/api/protocol-strategist/review/route.ts` | Reads Doc A + open comments → revision with change log keyed to each comment |
-| Demo page | `app/clients/protocol-strategist/page.tsx` | Clerk-gated via existing middleware; chat + tool activity + codify |
+| Demo page | `app/clients/protocol-strategist/page.tsx` | Chat + tool activity + codify |
+| Access gate | `app/clients/protocol-strategist/layout.tsx`, `content/clients.ts` | Registered workspace slug `protocol-strategist`; page and all four API routes require the per-user grant, managed from `/admin` |
 | Corpus tracing | `next.config.js` | `outputFileTracingIncludes` — `public/` is CDN-served and not bundled into lambdas by default; verified 14 corpus files traced |
 
 **Env vars required in Vercel:**
@@ -175,7 +176,7 @@ Plumbing is in. Hero visualization and system-prompt specialization wait on the 
 | `GOOGLE_DRIVE_FOLDER_ID` | ⏳ pending — destination folder or Shared Drive folder |
 | `STRATEGIST_EFFORT` | optional — defaults to `medium`; raise to `high` for depth over latency |
 
-**Note on testing.** `/api/protocol-strategist/health` sits behind Clerk (it makes a billed model call, so it must not be open). It has to be opened from a signed-in browser — it cannot be reached from a Claude Code session.
+**Note on testing.** `/api/protocol-strategist/health` requires the `protocol-strategist` workspace grant (it makes a billed model call, so it must not be open). It has to be opened from a signed-in, authorized browser — it cannot be reached from a Claude Code session.
 
 ### Framing question still open
 > What is the one insight you want the client to walk away repeating?

@@ -45,6 +45,21 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
       },
     ],
   },
+  {
+    // A demonstration workspace rather than a client engagement, but it gates
+    // the same way: an entry here is what puts it in the admin console's
+    // workspace list, so access can be granted per user.
+    slug: 'protocol-strategist',
+    name: 'Clinical Trial Protocol Strategist',
+    deliverables: [
+      {
+        title: 'Clinical Trial Protocol Strategist',
+        description: 'Interrogate protocol design against the synthetic trial corpus.',
+        href: '/clients/protocol-strategist',
+        kind: 'dashboard',
+      },
+    ],
+  },
   // Additional clients land here as slugs are assigned, for example:
   // mercury-buyer-ai-diligence, ai-opportunity-roadmap (MKG),
   // salmon-ai-genomics, ai-adoption-by-function-health-tech

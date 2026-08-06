@@ -8,8 +8,9 @@ export const metadata = {
   description: 'Strategize protocol design against a structured trial corpus.',
 }
 
-// Corpus stats are read at build time; the route is gated by Clerk via
-// middleware, like everything else under /clients.
+// Corpus stats are read at build time. Access is per user, not just per
+// sign-in: the layout requires the 'protocol-strategist' workspace grant, and
+// the API routes behind this page check the same grant.
 export default function ProtocolStrategistPage() {
   const m = manifest() as Record<string, number | string>
 

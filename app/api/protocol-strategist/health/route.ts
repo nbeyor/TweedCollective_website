@@ -11,6 +11,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 
+import { clientAccessError } from '@/lib/client-access'
 import { checkDriveAccess } from '@/lib/googleDocs'
 import { runTool } from '@/lib/strategistTools'
 import { manifest, selectCohort } from '@/lib/trialCorpus'
@@ -18,9 +19,15 @@ import { manifest, selectCohort } from '@/lib/trialCorpus'
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
+/** Workspace this endpoint belongs to — callers need it granted in Clerk. */
+const WORKSPACE_SLUG = 'protocol-strategist'
+
 type Check = { ok: boolean; detail: string; ms?: number }
 
 export async function GET() {
+  const denied = await clientAccessError(WORKSPACE_SLUG)
+  if (denied) return denied
+
   const checks: Record<string, Check> = {}
   const started = Date.now()
 
