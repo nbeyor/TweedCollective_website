@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Check, ChevronDown, Database, FolderLock, Plus } from 'lucide-react'
+import { Check, ChevronDown, Coins, Database, FolderLock, Landmark, Plus } from 'lucide-react'
 
 import { wcg } from './wcgTheme'
 
@@ -32,6 +32,18 @@ const LICENSED: Connector[] = [
   { key: 'definitive', label: 'Definitive Healthcare', note: 'Site, provider & referral analytics' },
 ]
 
+const REGULATORY: Connector[] = [
+  { key: 'fda-guidance', label: 'FDA / EMA guidance & precedent', note: 'Guidance docs, prior approvals & endpoint acceptability' },
+  { key: 'adcomm', label: 'AdComm & CRL history', note: 'Advisory committee minutes & complete-response letters' },
+  { key: 'ct-registries', label: 'ClinicalTrials.gov / EudraCT', note: 'Registered designs, endpoints & enrollment status' },
+]
+
+const COSTS: Connector[] = [
+  { key: 'fmv', label: 'Fair Market Value benchmarks', note: 'Per-procedure & per-visit FMV rates by geography' },
+  { key: 'grant-plan', label: 'Grant-plan / study budgets', note: 'Investigator grant models · direct & indirect cost' },
+  { key: 'planisware', label: 'Portfolio finance (Planisware, RAPID)', note: 'Program cost planning & scenario budgets' },
+]
+
 const INTERNAL: Connector[] = [
   { key: 'protocols', label: 'Past protocols & amendments', note: 'Prior studies, amendment history & rationale' },
   { key: 'feasibility', label: 'Feasibility studies', note: 'Site surveys & country feasibility assessments' },
@@ -39,11 +51,40 @@ const INTERNAL: Connector[] = [
   { key: 'csr', label: 'Clinical study reports', note: 'CSRs · realized enrollment, deviations & outcomes' },
   { key: 'site-performance', label: 'Site & CRO performance', note: 'Activation, screen-fail & enrollment metrics' },
   { key: 'libraries', label: 'Criteria & SoA libraries', note: 'Standard eligibility language & visit schedules' },
-  { key: 'advisory', label: 'KOL & advisory input', note: 'Ad board minutes & investigator feedback' },
+  { key: 'interviews', label: 'Expert & KOL interviews', note: 'Investigator calls, ad boards & congress feedback' },
+]
+
+/** Buckets, each breaking out to its example sources on expand. */
+const BUCKETS: Array<{ key: string; title: string; icon: React.ReactNode; connectors: Connector[] }> = [
+  {
+    key: 'rwd',
+    title: 'Licensed & real-world data',
+    icon: <Database className="w-3.5 h-3.5" style={{ color: wcg.teal }} />,
+    connectors: LICENSED,
+  },
+  {
+    key: 'reg',
+    title: 'Regulatory & competitive',
+    icon: <Landmark className="w-3.5 h-3.5" style={{ color: wcg.purple }} />,
+    connectors: REGULATORY,
+  },
+  {
+    key: 'cost',
+    title: 'Cost & fair-market value',
+    icon: <Coins className="w-3.5 h-3.5" style={{ color: wcg.amber }} />,
+    connectors: COSTS,
+  },
+  {
+    key: 'internal',
+    title: 'Internal',
+    icon: <FolderLock className="w-3.5 h-3.5" style={{ color: wcg.blue }} />,
+    connectors: INTERNAL,
+  },
 ]
 
 export function DataConnectorsPanel() {
   const [open, setOpen] = useState(true)
+  const [openBucket, setOpenBucket] = useState<string | null>(null)
   const [requested, setRequested] = useState<Set<string>>(new Set())
 
   const toggle = (key: string) =>
@@ -53,6 +94,9 @@ export function DataConnectorsPanel() {
       else next.add(key)
       return next
     })
+
+  const requestedIn = (connectors: Connector[]) =>
+    connectors.filter((c) => requested.has(c.key)).length
 
   return (
     <div className="px-4 pb-4">
@@ -80,25 +124,25 @@ export function DataConnectorsPanel() {
         </button>
 
         {open && (
-          <div className="border-t px-3 pb-3 pt-2.5 space-y-3" style={{ borderColor: wcg.border }}>
+          <div className="border-t px-3 pb-3 pt-2.5 space-y-2" style={{ borderColor: wcg.border }}>
             <p className="text-[11.5px] leading-snug" style={{ color: wcg.muted }}>
               Ground every analysis in your licensed and internal data alongside the operations corpus.
+              Open a bucket to pick sources.
             </p>
 
-            <ConnectorGroup
-              icon={<Database className="w-3.5 h-3.5" style={{ color: wcg.teal }} />}
-              title="Licensed & real-world data"
-              connectors={LICENSED}
-              requested={requested}
-              onToggle={toggle}
-            />
-            <ConnectorGroup
-              icon={<FolderLock className="w-3.5 h-3.5" style={{ color: wcg.blue }} />}
-              title="Internal"
-              connectors={INTERNAL}
-              requested={requested}
-              onToggle={toggle}
-            />
+            {BUCKETS.map((b) => (
+              <ConnectorBucket
+                key={b.key}
+                icon={b.icon}
+                title={b.title}
+                connectors={b.connectors}
+                open={openBucket === b.key}
+                requestedCount={requestedIn(b.connectors)}
+                onToggleOpen={() => setOpenBucket((k) => (k === b.key ? null : b.key))}
+                requested={requested}
+                onToggle={toggle}
+              />
+            ))}
 
             <p className="text-[10.5px] leading-snug" style={{ color: wcg.faint }}>
               Connectors are provisioned per engagement against your existing licenses. Requesting one
@@ -111,26 +155,61 @@ export function DataConnectorsPanel() {
   )
 }
 
-function ConnectorGroup({
+/**
+ * One collapsible bucket. Collapsed, it shows the category, a source count, and
+ * how many are requested — so the panel reads as four tidy buckets instead of a
+ * long flat wall. Expanding breaks it out into its example sources.
+ */
+function ConnectorBucket({
   icon,
   title,
   connectors,
+  open,
+  requestedCount,
+  onToggleOpen,
   requested,
   onToggle,
 }: {
   icon: React.ReactNode
   title: string
   connectors: Connector[]
+  open: boolean
+  requestedCount: number
+  onToggleOpen: () => void
   requested: Set<string>
   onToggle: (key: string) => void
 }) {
   return (
-    <div>
-      <p className="flex items-center gap-1.5 pb-1 text-[10.5px] uppercase tracking-[0.14em]" style={{ color: wcg.muted }}>
-        {icon}
-        {title}
-      </p>
-      <div className="space-y-1">
+    <div className="rounded-md border" style={{ background: wcg.surface, borderColor: open ? wcg.teal : wcg.border }}>
+      <button
+        onClick={onToggleOpen}
+        aria-expanded={open}
+        className="w-full flex items-center gap-2 px-2.5 py-2 text-left"
+      >
+        <span className="shrink-0">{icon}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[12px] font-medium leading-snug" style={{ color: wcg.ink }}>
+            {title}
+          </span>
+          <span className="block text-[10.5px] leading-snug" style={{ color: wcg.muted }}>
+            {connectors.length} sources{requestedCount ? ` · ${requestedCount} requested` : ''}
+          </span>
+        </span>
+        {requestedCount > 0 && (
+          <span
+            className="inline-flex items-center justify-center shrink-0 w-5 h-5 rounded-full text-[10px] font-semibold text-white"
+            style={{ background: wcg.teal }}
+          >
+            {requestedCount}
+          </span>
+        )}
+        <ChevronDown
+          className="w-4 h-4 shrink-0 transition-transform"
+          style={{ color: wcg.muted, transform: open ? 'rotate(180deg)' : undefined }}
+        />
+      </button>
+      {open && (
+        <div className="border-t px-2 pb-2 pt-1.5 space-y-1" style={{ borderColor: wcg.border }}>
         {connectors.map((c) => {
           const isRequested = requested.has(c.key)
           return (
@@ -171,7 +250,8 @@ function ConnectorGroup({
             </button>
           )
         })}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

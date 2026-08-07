@@ -18,6 +18,7 @@ export type StrategistMode = 'hero' | 'corpus' | 'blank'
  * by what data exists rather than by a flat list of tool names.
  */
 export const DATA_CATEGORIES: Array<{ key: string; label: string }> = [
+  { key: 'cost', label: 'Cost & budget' },
   { key: 'eligibility', label: 'Eligibility & screening' },
   { key: 'procedures', label: 'Procedures & visits' },
   { key: 'enrollment', label: 'Enrollment & timelines' },
@@ -42,6 +43,38 @@ export interface AnalysisEntry {
  * to steer the model at the matching tool (and its chart) without naming it.
  */
 export const ANALYTICS: AnalysisEntry[] = [
+  {
+    id: 'per-patient-and-total-cost',
+    label: 'Per-patient & total cost',
+    chart: 'Cost buildup',
+    categories: ['cost'],
+    prompt:
+      'What will this study cost per patient and all-in? Break out direct vs indirect and show the range across SoA intensity.',
+  },
+  {
+    id: 'how-the-soa-drives-cost',
+    label: 'How the SoA drives cost',
+    chart: 'Cost buildup',
+    categories: ['cost', 'procedures'],
+    prompt:
+      'How much of the per-patient cost is the schedule of assessments? Show lean vs as-drafted vs rich.',
+  },
+  {
+    id: 'recommended-country-footprint',
+    label: 'Recommended country footprint',
+    chart: 'Site & country map',
+    categories: ['sites'],
+    prompt:
+      'Build me a country and site footprint that hits my enrollment target with a 20% US floor. Show the allocation on a map and the recruit timeline.',
+  },
+  {
+    id: 'sites-vs-recruit-timeline',
+    label: 'Sites vs recruit timeline',
+    chart: 'Scenario bars',
+    categories: ['sites', 'enrollment'],
+    prompt:
+      'How does the recruit timeline and activation cost move if we run a lean vs planned vs aggressive site count? Give me the sensitivity.',
+  },
   {
     id: 'screening-burden-by-criterion',
     label: 'Screening burden by criterion',
@@ -134,18 +167,20 @@ export const ANALYTICS: AnalysisEntry[] = [
 /** Per-mode starter questions shown under the composer (and as MCP prompts). */
 export const SUGGESTIONS: Record<StrategistMode, string[]> = {
   hero: [
-    'Which criteria in this draft will cost us the most eligible patients?',
+    'What will this study cost per patient and all-in — direct vs indirect?',
+    'Build me a site and country footprint that hits a 20% US enrollment target.',
     'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
     'Before this goes to writing, which elements are most likely to force an amendment?',
   ],
   corpus: [
-    'Which criteria in this protocol cost the most eligible patients?',
+    'What did this trial cost per patient, and how does the SoA drive it?',
+    'What site and country footprint would hit this enrollment target fastest?',
     'How did this trial actually perform against its peers?',
     'Which elements of this protocol were amended mid-flight, and what did that cost?',
   ],
   blank: [
-    'I want to design a Phase 2 trial — what should I decide first, and what does the corpus say about comparable studies?',
-    'Which eligibility criteria are standard for trials like mine, and which drive screen failure?',
+    'I want to design a Phase 2 oncology trial — what should I decide first, and what does the corpus say about comparable studies?',
+    'What would a study like this cost per patient, and what drives it?',
     'Help me set a realistic target enrollment, duration, and site mix for a new study.',
   ],
 }

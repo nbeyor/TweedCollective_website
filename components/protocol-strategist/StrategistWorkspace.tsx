@@ -23,6 +23,8 @@ const TOOL_LABELS: Record<string, string> = {
   draft_criteria_burden: 'Ranking criteria by screening burden',
   procedure_sensitivity: 'Running the sensitivity analysis',
   endpoint_timeline_sensitivity: 'Modelling endpoint timeline impact',
+  trial_cost: 'Building the cost model',
+  site_footprint: 'Building the site & country footprint',
   site_level_breakdown: 'Cutting the slip by site type',
   comparator_landscape: 'Placing the draft against comparators',
   amendment_risk_sweep: 'Sweeping amendment history',

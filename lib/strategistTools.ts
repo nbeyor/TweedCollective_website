@@ -23,10 +23,13 @@ import {
   procedureSensitivity,
   protocolDetail,
   selectCohort,
+  siteFootprint,
   summarize,
+  trialCostModel,
   vocabularies,
   type CohortFilter,
   type DesignBrief,
+  type FootprintOptions,
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
@@ -255,6 +258,35 @@ export const TOOLS = [
     input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
   },
   {
+    name: 'trial_cost',
+    description:
+      "Build the study's cost: a per-patient cost linked to the schedule of assessments, split into direct (procedures + visit overhead) and indirect (data management, site activation and maintenance), rolled to a total. Returns three scenarios at the comparator cohort's p25 / median / p75 SoA intensity, so the answer is a grounded range — 'lean vs as-drafted vs rich' — not a single figure. Use this for 'what will this cost?', 'per-patient cost', 'direct vs indirect', 'total study cost', or any cost sensitivity. Every dollar traces to procedure_operations and assessment_operations. Renders the cost-breakdown chart unless context_only is set.",
+    input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
+  },
+  {
+    name: 'site_footprint',
+    description:
+      "Recommend a country and site-count footprint for the trial and price the site-count sensitivity. Allocates sites across the countries the corpus carries using each country's measured per-site enrollment rate and startup time, meeting regulatory region floors first (e.g. ≥20% North America enrollment), then filling with the fastest enrollers. Returns a recommended per-country allocation plus lean / planned / aggressive scenarios, each with recruit timeline and activation cost. Use this for 'where should I run this?', 'how many sites?', 'country footprint', 'hit my US enrollment target', or a sites-vs-timeline what-if. Renders the footprint chart unless context_only is set.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        ...CONTEXT_ONLY_SCHEMA,
+        region_floors: {
+          type: 'object',
+          description:
+            'Minimum share of enrollment per region, e.g. {"North America": 0.2} for a 20% US target. Regions: North America, Europe, Asia-Pacific, Latin America. Defaults to 20% North America.',
+          additionalProperties: { type: 'number' },
+        },
+        restrict_countries: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Restrict the footprint to these countries, for a domestic-only or region-limited scenario, e.g. ["United States"].',
+        },
+      },
+      required: [],
+    },
+  },
+  {
     name: 'amendment_risk_sweep',
     description:
       "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view unless context_only is set.",
@@ -263,16 +295,17 @@ export const TOOLS = [
   {
     name: 'render_chart',
     description:
-      "Emit a generated chart to the side panel for a view no fixed chart covers. Supply data you retrieved from other tools — do not invent numbers. The chart renders in a sandboxed panel. Use for bespoke second-order cuts.",
+      "Emit a generated chart to the side panel for a view no fixed chart covers. Supply data you retrieved from other tools — do not invent numbers. The chart renders in a sandboxed panel. Default to the chart that shows the sensitivity: use `line` for a low / medium / high band across a continuous knob (one series per scenario, e.g. lean/base/aggressive over a range); use `bar` or `grouped-bar` to compare discrete scenarios side by side; use `heatmap` to explore TWO parameters at once (x = `categories`, one series per y-row with `values` across x — e.g. site count × country, or eligibility strictness × endpoint load). Reach for the heatmap whenever the user is varying two knobs together or has selected multiple options to cross.",
     input_schema: {
       type: 'object' as const,
       properties: {
         title: { type: 'string' },
-        type: { type: 'string', enum: ['bar', 'grouped-bar', 'line', 'scatter'] },
-        categories: { type: 'array', items: { type: 'string' }, description: 'x-axis labels for bar/line charts.' },
+        type: { type: 'string', enum: ['bar', 'grouped-bar', 'line', 'scatter', 'heatmap'] },
+        categories: { type: 'array', items: { type: 'string' }, description: 'x-axis labels for bar/line charts, or the x parameter for a heatmap.' },
         series: {
           type: 'array',
-          description: 'One or more data series. Use values[] for bar/line, points[] for scatter.',
+          description:
+            'One or more data series. Use values[] for bar/line (for a line sensitivity band, one series per scenario: low, medium, high). Use points[] for scatter. For a heatmap, one series per y-row, name = row label, values[] aligned to categories (x).',
           items: {
             type: 'object',
             properties: {
@@ -598,6 +631,26 @@ export async function runTool(
       const data = comparatorLandscape(brief)
       if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'comparator_scatter', data } }
+    }
+
+    case 'trial_cost': {
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
+      const data = trialCostModel(brief)
+      if (input.context_only === true) return data
+      return { ...data, _panel: { chart: 'cost_breakdown', data } }
+    }
+
+    case 'site_footprint': {
+      const brief = ctx.brief
+      if (!brief) return NO_BRIEF
+      const opts: FootprintOptions = {
+        region_floors: input.region_floors as Record<string, number> | undefined,
+        restrict_countries: input.restrict_countries as string[] | undefined,
+      }
+      const data = siteFootprint(brief, opts)
+      if (input.context_only === true || 'error' in data) return data
+      return { ...data, _panel: { chart: 'site_footprint', data } }
     }
 
     case 'amendment_risk_sweep': {
