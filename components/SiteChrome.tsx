@@ -7,11 +7,16 @@ import Footer from '@/components/Footer'
 
 /**
  * Wraps pages in the marketing header and footer, except in the client
- * workspace (/clients), which renders its own minimal chrome.
+ * workspace (/clients) and the standalone chart viewers (/charts, opened
+ * from MCP chart links), which render their own minimal chrome.
  */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isClientWorkspace = pathname === '/clients' || pathname.startsWith('/clients/')
+  const isClientWorkspace =
+    pathname === '/clients' ||
+    pathname.startsWith('/clients/') ||
+    pathname === '/charts' ||
+    pathname.startsWith('/charts/')
 
   if (isClientWorkspace) {
     return <main className="flex-grow">{children}</main>

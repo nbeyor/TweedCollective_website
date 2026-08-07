@@ -18,6 +18,11 @@ const isPublicRoute = createRouteMatcher([
   '/api/document-access(.*)',
   '/api/admin(.*)',
   '/api/magic-link(.*)',
+  // MCP endpoint: external agents have no Clerk session — it enforces its own
+  // bearer key (lib/mcp/auth.ts). Chart viewers are integrity-checked by the
+  // HMAC inside each chart token.
+  '/api/mcp(.*)',
+  '/charts(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

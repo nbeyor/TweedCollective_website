@@ -9,6 +9,8 @@ const nextConfig = {
     // corpus with fs at request time, so it has to be traced in explicitly.
     outputFileTracingIncludes: {
       '/api/protocol-strategist/**': ['./public/data/trial-corpus/**'],
+      // The MCP endpoint runs the same corpus-backed tools server-side.
+      '/api/mcp/**': ['./public/data/trial-corpus/**'],
     },
   },
   async redirects() {

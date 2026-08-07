@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2, ExternalLink, FileUp, Loader2, RotateCcw, Send, Wrench } from 'lucide-react'
 
+import { SUGGESTIONS } from '@/lib/mcp/prompts'
 import type { DesignBrief, ProtocolIndexEntry } from '@/lib/trialCorpus'
 import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
 import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
@@ -34,26 +35,6 @@ const TOOL_LABELS: Record<string, string> = {
   get_protocol: 'Pulling protocol detail',
   benchmark_protocol: 'Benchmarking against peers',
   analyze_criteria: 'Analyzing eligibility criteria',
-}
-
-const SUGGESTIONS: Record<BriefMode, string[]> = {
-  hero: [
-    'What will this study cost per patient and all-in — direct vs indirect?',
-    'Build me a site and country footprint that hits a 20% US enrollment target.',
-    'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
-    'Before this goes to writing, which elements are most likely to force an amendment?',
-  ],
-  corpus: [
-    'What did this trial cost per patient, and how does the SoA drive it?',
-    'What site and country footprint would hit this enrollment target fastest?',
-    'How did this trial actually perform against its peers?',
-    'Which elements of this protocol were amended mid-flight, and what did that cost?',
-  ],
-  blank: [
-    'I want to design a Phase 2 oncology trial — what should I decide first, and what does the corpus say about comparable studies?',
-    'What would a study like this cost per patient, and what drives it?',
-    'Help me set a realistic target enrollment, duration, and site mix for a new study.',
-  ],
 }
 
 const PLACEHOLDERS: Record<BriefMode, string> = {
