@@ -694,7 +694,12 @@ def compute_copilot_pr_correlation(prs, copilot_df):
     """
     mature_start_ts = pd.Timestamp(MATURE_START)
 
-    prs = prs.copy()
+    # reset_index is load-bearing: merge() below returns a fresh RangeIndex,
+    # and the assignments back onto `prs` align by index label. Upstream drops
+    # (null-key rows, partial-week rows) leave `prs` with a gappy index, so
+    # without the reset the merged suggestion counts land on the wrong PRs
+    # and scramble the assisted/non-assisted classification.
+    prs = prs.reset_index(drop=True)
     prs['PREnd'] = pd.to_datetime(prs['PREnd']).dt.normalize()
     # Mon-Sun ISO calendar week (must match aggregate_to_tickets).
     prs['WeekEnding'] = prs['PREnd'].dt.to_period('W-SUN').dt.end_time.dt.normalize()
