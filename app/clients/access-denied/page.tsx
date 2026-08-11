@@ -6,6 +6,7 @@ import { SignOutButton } from '@clerk/nextjs'
 import { getClientConfig } from '@/content/clients'
 import { clientSlugsForUser } from '@/lib/client-access'
 import { CONTACT_EMAIL } from '@/lib/site'
+import { AccessRecheck } from '@/components/AccessRecheck'
 
 export default async function AccessDeniedPage({
   searchParams,
@@ -28,6 +29,10 @@ export default async function AccessDeniedPage({
 
   return (
     <div className="container mx-auto px-6 py-16">
+      {/* The guard sometimes evaluates stale auth on the first request after
+          sign-in; a browser-side recheck moments later sees the real grant
+          and sends the visitor into the workspace they were denied. */}
+      {config && <AccessRecheck slug={config.slug} />}
       <div className="max-w-xl">
         <div className="mb-6 inline-flex p-3 rounded-lg bg-sage/10">
           <Lock className="w-6 h-6 text-sage" />

@@ -39,11 +39,19 @@ export default function AdminPage() {
   // Check if current user is admin
   useEffect(() => {
     async function checkAdmin() {
-      if (!isLoaded || !userId) {
+      // Clerk still initializing: no verdict yet. Recording `false` here made
+      // the Access Denied screen flash on every load — the denial rendered the
+      // moment Clerk finished loading, then flipped once /api/admin/check
+      // answered. Stay on the spinner (isAdmin === null) until we truly know.
+      if (!isLoaded) return
+
+      if (!userId) {
         setIsAdmin(false)
         setLoading(false)
         return
       }
+
+      setIsAdmin(null)
 
       try {
         const response = await fetch('/api/admin/check')

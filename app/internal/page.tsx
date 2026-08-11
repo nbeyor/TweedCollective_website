@@ -37,10 +37,16 @@ export default function InternalPage() {
 
   useEffect(() => {
     async function checkAccess() {
-      if (!isLoaded || !userId) {
+      // Clerk still initializing: keep hasAccess === null (spinner) rather
+      // than flashing the signed-out/denied state before the check has run.
+      if (!isLoaded) return
+
+      if (!userId) {
         setHasAccess(false)
         return
       }
+
+      setHasAccess(null)
 
       try {
         // Check admin status
