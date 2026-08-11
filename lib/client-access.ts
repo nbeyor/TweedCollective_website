@@ -72,10 +72,24 @@ export async function requireClientAccess(slug: string): Promise<void> {
     redirect(`/sign-in?redirect_url=${encodeURIComponent(`/clients/${slug}`)}`)
   }
 
-  const slugs = await getClientSlugs()
+  const slugs = clientSlugsForUser(user)
   if (!slugs.includes(slug)) {
+    logDenied(user, slug, slugs)
     redirect(`/clients/access-denied?client=${encodeURIComponent(slug)}`)
   }
+}
+
+/**
+ * Every denial names the account and the grants it actually carried at request
+ * time. "The admin panel says she has access but she's locked out" is only
+ * diagnosable from this line: it shows whether the denied session belongs to
+ * a different account than the one that was granted.
+ */
+function logDenied(user: User, requestedSlug: string, grantedSlugs: string[]): void {
+  console.warn(
+    `[client-access] denied user=${user.id} email=${user.primaryEmailAddress?.emailAddress ?? 'none'} ` +
+      `requested=${requestedSlug} granted=[${grantedSlugs.join(', ')}]`
+  )
 }
 
 /**
@@ -92,7 +106,9 @@ export async function clientAccessError(slug: string): Promise<Response | null> 
     return Response.json({ error: 'Sign in to use this workspace.' }, { status: 401 })
   }
 
-  if (!clientSlugsForUser(user).includes(slug)) {
+  const slugs = clientSlugsForUser(user)
+  if (!slugs.includes(slug)) {
+    logDenied(user, slug, slugs)
     return Response.json(
       { error: 'Your account is not authorized for this workspace.' },
       { status: 403 }
