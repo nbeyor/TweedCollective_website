@@ -60,6 +60,21 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
       },
     ],
   },
+  {
+    // Demonstration workspace: chat-mediated protocol authoring over the
+    // HORIZON-Lung-301 draft, with the authoring analytics library and the
+    // multi-lens review board.
+    slug: 'protocol-authoring',
+    name: 'Protocol Foundry — AI Protocol Authoring',
+    deliverables: [
+      {
+        title: 'Protocol Foundry',
+        description: 'Author and pressure-test a Phase III protocol draft with grounded analytics and a review board.',
+        href: '/clients/protocol-authoring',
+        kind: 'dashboard',
+      },
+    ],
+  },
   // Additional clients land here as slugs are assigned, for example:
   // mercury-buyer-ai-diligence, ai-opportunity-roadmap (MKG),
   // salmon-ai-genomics, ai-adoption-by-function-health-tech
