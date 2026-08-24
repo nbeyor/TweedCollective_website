@@ -4,10 +4,19 @@ Place your most recent xlsx export here. The `refresh_copilot.py` pipeline reads
 directory and writes `public/data/copilot-dashboard-data.json`, which is the **only** data
 file the live eCS SDLC dashboard (`/clients/ecs/sdlc-dashboard`) renders.
 
+`content/documents/uploads/` is also accepted, so a file dropped there via the GitHub web
+UI is still picked up. Either way the upload alone changes nothing on the dashboard — the
+site serves the generated JSON, so you must run the pipeline and commit the regenerated
+`public/data/copilot-dashboard-data.json`.
+
+The newest export wins, decided by the date in the filename (mtime only breaks ties among
+undated files). Filename dates matter: a fresh clone stamps every export with the same
+mtime, so an undated file can lose to a dated one regardless of when you uploaded it.
+
 **Usage:**
 ```bash
 python pipeline/refresh_copilot.py
-# Uses the latest xlsx (by modification time); auto-detects the Pull sheet
+# Uses the latest xlsx from exports/ or content/documents/uploads/; auto-detects the Pull sheet
 # and the Copilot/AI telemetry sheet (AI All, or legacy Copilot_All)
 
 python pipeline/refresh_copilot.py --input "pipeline/data/exports/your_file.xlsx" --sheet "Pull 02_11_26"
