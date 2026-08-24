@@ -55,6 +55,11 @@ FILES_LABELS = [f'1-{FILES_CUT}', f'{FILES_CUT + 1}+']
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PIPELINE_DIR.parent
 EXPORTS_DIR = PIPELINE_DIR / "data" / "exports"
+# Second accepted drop location. The GitHub web UI makes it easy to land a weekly
+# export here instead of exports/, so both are searched rather than silently
+# ignoring a file that was uploaded to the "wrong" folder.
+UPLOADS_DIR = PROJECT_ROOT / "content" / "documents" / "uploads"
+INPUT_DIRS = [EXPORTS_DIR, UPLOADS_DIR]
 JSON_OUTPUT = PROJECT_ROOT / "public" / "data" / "copilot-dashboard-data.json"
 # Non-served output: the alias->UUID map for per-user drill-down. The UUID is also
 # shipped inline on each per_user record (identities are surfaced in the individual
@@ -67,11 +72,41 @@ AI_ALL_PATTERN = re.compile(r"^AI\s+All\s+\d{2}_\d{2}_\d{2}$", re.I)
 PROJECT_KEY_PATTERN = re.compile(r"^([A-Za-z][A-Za-z0-9_]+)-\d+")
 
 
+def export_sort_key(path: Path) -> tuple[date, float]:
+    """Recency of an export: date in the filename first, mtime as the tiebreak.
+
+    mtime alone is not enough. A fresh clone stamps every export with the same
+    checkout time, so ordering by mtime there is arbitrary and the pipeline can
+    silently rebuild the dashboard from a months-old export. The filename date
+    is the durable signal; mtime only breaks ties among undated files.
+    """
+    mtime = os.path.getmtime(path)
+    parsed = parse_filename_date(path.stem)
+    return (parsed or datetime.fromtimestamp(mtime).date(), mtime)
+
+
+def parse_filename_date(stem: str) -> date | None:
+    """Extract a date from an export filename, or None if it has none.
+
+    Accepts the conventions actually in use: 20260805, 2026-08-05, 2026_08_05,
+    and the space-separated "2026 08 05" that GitHub web uploads tend to carry.
+    """
+    m = re.search(r"(20\d{2})[-_ ]?(\d{2})[-_ ]?(\d{2})", stem)
+    if not m:
+        return None
+    try:
+        return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    except ValueError:
+        return None
+
+
 def find_latest_xlsx() -> Path:
-    xlsx_files = sorted(EXPORTS_DIR.glob("*.xlsx"), key=os.path.getmtime, reverse=True)
+    """Newest xlsx across every accepted drop location (exports/ or uploads/)."""
+    xlsx_files = [f for d in INPUT_DIRS if d.exists() for f in d.glob("*.xlsx")]
     if not xlsx_files:
-        raise FileNotFoundError(f"No xlsx files in {EXPORTS_DIR}")
-    return xlsx_files[0]
+        searched = " or ".join(str(d) for d in INPUT_DIRS)
+        raise FileNotFoundError(f"No xlsx files in {searched}")
+    return max(xlsx_files, key=export_sort_key)
 
 
 def find_pull_sheet(xl) -> str | None:
@@ -106,14 +141,11 @@ def find_copilot_sheet(xl) -> tuple[str, str] | None:
 
 def find_copilot_file() -> Path | None:
     """Auto-detect copilot data file in uploads or exports."""
-    search_dirs = [
-        PROJECT_ROOT / "content" / "documents" / "uploads",
-        EXPORTS_DIR,
-    ]
+    search_dirs = [UPLOADS_DIR, EXPORTS_DIR]
     for d in search_dirs:
         if not d.exists():
             continue
-        for f in sorted(d.glob("*.xlsx"), key=os.path.getmtime, reverse=True):
+        for f in sorted(d.glob("*.xlsx"), key=export_sort_key, reverse=True):
             try:
                 xl = pd.ExcelFile(f)
                 if find_copilot_sheet(xl) is not None:
