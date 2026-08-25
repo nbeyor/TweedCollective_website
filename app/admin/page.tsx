@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX, LayoutDashboard } from 'lucide-react'
+import { Shield, Users, FileText, Check, RefreshCw, ChevronDown, ChevronUp, Mail, Copy, Trash2, Clock, Send, UserX, LayoutDashboard, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { getGrantablePermissions } from '@/content/documents'
 import { CLIENT_CONFIGS } from '@/content/clients'
@@ -13,7 +13,7 @@ const DOCUMENTS = getGrantablePermissions()
 
 // Client workspaces (dashboards under /clients/[slug]) — gated separately
 // from documents via Clerk public metadata clientSlugs
-const WORKSPACES = CLIENT_CONFIGS.map(c => ({ slug: c.slug, name: c.name }))
+const WORKSPACES = CLIENT_CONFIGS.map(c => ({ slug: c.slug, name: c.name, deliverables: c.deliverables }))
 
 export default function AdminPage() {
   const { userId, isLoaded } = useAuth()
@@ -542,10 +542,32 @@ export default function AdminPage() {
                       <div className="flex-grow">
                         <h3 className="font-medium text-charcoal">{ws.name} workspace</h3>
                         <p className="text-sm text-warm-gray">
-                          /clients/{ws.slug} • {usersWithWorkspace.length} user{usersWithWorkspace.length !== 1 ? 's' : ''} with access
+                          <Link
+                            href={`/clients/${ws.slug}`}
+                            target="_blank"
+                            className="text-taupe underline underline-offset-2 hover:text-charcoal"
+                          >
+                            /clients/{ws.slug}
+                          </Link>
+                          {' • '}{usersWithWorkspace.length} user{usersWithWorkspace.length !== 1 ? 's' : ''} with access
                         </p>
                       </div>
                     </div>
+                    {ws.deliverables.length > 0 && (
+                      <div className="mt-3 pl-10 flex flex-wrap gap-x-4 gap-y-1">
+                        {ws.deliverables.map((d) => (
+                          <Link
+                            key={d.href}
+                            href={d.href}
+                            target="_blank"
+                            className="inline-flex items-center gap-1 text-xs text-warm-gray hover:text-charcoal"
+                          >
+                            <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                            {d.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                     {usersWithWorkspace.length > 0 && (
                       <div className="mt-3 pl-10 flex flex-wrap gap-2">
                         {usersWithWorkspace.map((u) => (
