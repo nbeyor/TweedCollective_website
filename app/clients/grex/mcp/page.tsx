@@ -14,7 +14,7 @@ export default function GrexMcpPage() {
       <SurfaceHeader
         kicker="Surface C · AI-generated factual information"
         title="Agent verification (MCP)"
-        description="AI systems call verify_facts to have their own factual output independently checked before presenting it — the same engine, the same score, delivered as structured data an agent can act on."
+        description="The agent answers normally; verify_facts runs between drafting and presenting. The entire product is one quiet score line at the end of the response — and only when the response contains checkable facts."
       />
       <McpSim />
     </div>

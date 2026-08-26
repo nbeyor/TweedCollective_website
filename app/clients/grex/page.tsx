@@ -14,21 +14,21 @@ const SURFACES = [
     kicker: 'Surface A',
     title: 'Browser extension',
     description:
-      'A floating score appears while you read. The page is checked passively — the score is the whole interface until you ask why.',
+      'A floating score appears while you read a real marketing page. The page is checked passively — the score is the whole interface until you ask why.',
   },
   {
     href: '/clients/grex/screenshot',
     kicker: 'Surface B',
     title: 'Screenshot checker',
     description:
-      'Screenshot anything suspicious, share it to GREX from the share sheet, get a score. The image is processed and deleted.',
+      'The normal phone flow: take a screenshot, tap share, send it to GREX, get a score. The image is processed and deleted.',
   },
   {
     href: '/clients/grex/mcp',
     kicker: 'Surface C',
     title: 'Agent verification (MCP)',
     description:
-      'AI systems call verify_facts to have their own factual output independently checked before presenting it.',
+      'One quiet line at the end of an AI response — a score, only when the response contains checkable facts. Ask your own question live.',
   },
 ]
 
@@ -37,13 +37,7 @@ const COMPANIONS = [
     href: '/clients/grex/architecture',
     title: 'How the verifier works',
     description:
-      'The pipeline behind every score: claims → evidence → evaluation → aggregation. One backend, three surfaces, and the build plan.',
-  },
-  {
-    href: '/clients/grex/brand',
-    title: 'Brand exploration',
-    description:
-      'Three trust aesthetics — Signal, Ledger, Meter — applied to the real score components. Pick one; the swap is a single line.',
+      'The pipeline, the scoring math with a worked example, the data model, and the build plan.',
   },
 ]
 
@@ -64,8 +58,8 @@ export default function GrexHubPage() {
         </div>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed">{GREX_BRAND.thesis}</p>
         <p className="mt-2 max-w-2xl text-[13px]" style={{ color: 'var(--grex-muted)' }}>
-          Clickable prototype. The interaction surfaces below are simulations; the “check your own
-          text” modes run a live verification pipeline with real web evidence.
+          Clickable prototype. The interaction surfaces below are simulations; the agent surface is
+          live — ask a question and the answer is verified against real web evidence.
         </p>
       </header>
 
@@ -112,7 +106,7 @@ export default function GrexHubPage() {
         >
           Under the hood
         </h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-1 max-w-xl">
           {COMPANIONS.map((c) => (
             <Link
               key={c.href}
@@ -140,10 +134,11 @@ export default function GrexHubPage() {
         style={{ borderTop: '1px solid var(--grex-border)', color: 'var(--grex-muted)' }}
       >
         <p>
-          All demo content is synthetic and generated for demonstration. Articles, messages,
-          outlets, companies, and evidence sources shown in the canned scenarios are fictional; no
-          real publication, person, or product is represented. Scores are illustrative of the GREX
-          methodology (v0.1), not fact-checks of record.
+          Demo content: the browser scenario recreates public marketing content from
+          functionhealth.com with verdicts grounded in public press coverage (no affiliation); the
+          screenshot and agent scenarios are fully fictional — no real company, product, or person
+          is represented. Scores are illustrative of the GREX methodology (v0.1), not fact-checks
+          of record.
           {GREX_BRAND.showPoweredBy && ' Prototype by Tweed Collective.'}
         </p>
       </footer>
