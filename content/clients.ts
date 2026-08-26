@@ -75,6 +75,23 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
       },
     ],
   },
+  {
+    // Prototype workspace: clickable demo of the GREX consumer fact-checking
+    // product — three surface simulations (browser, screenshot, MCP), a
+    // shared explanation page, brand exploration, and a live verify endpoint.
+    slug: 'grex',
+    name: 'GREX — Consumer Fact-Checking Prototype',
+    deliverables: [
+      {
+        title: 'GREX Prototype Hub',
+        description:
+          'Clickable prototype: browser, screenshot, and agent surfaces sharing one confidence engine.',
+        href: '/clients/grex',
+        kind: 'dashboard',
+        date: '2026-08',
+      },
+    ],
+  },
   // Additional clients land here as slugs are assigned, for example:
   // mercury-buyer-ai-diligence, ai-opportunity-roadmap (MKG),
   // salmon-ai-genomics, ai-adoption-by-function-health-tech
