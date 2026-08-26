@@ -9,6 +9,9 @@ import { LIVE_RESULT_STORAGE_PREFIX } from './ExplanationView'
 export interface VerificationRun {
   state: ProcessingState
   running: boolean
+  /** Streams in during answer_verify mode before verification starts. */
+  answerText: string
+  answerDone: boolean
   result: VerificationResult | null
   error: string | null
   reportHref: string | null
@@ -17,15 +20,18 @@ export interface VerificationRun {
 const IDLE: VerificationRun = {
   state: 'PENDING',
   running: false,
+  answerText: '',
+  answerDone: false,
   result: null,
   error: null,
   reportHref: null,
 }
 
 /**
- * One hook for all three surfaces. Canned scenarios play back their timeline
+ * One hook for every surface. Canned scenarios play back their timeline
  * client-side; live runs stream SSE frames from /api/grex/verify and drive
- * the same processing states, so the UI cannot tell the difference.
+ * the same processing states. answer_verify mode additionally streams a
+ * generated answer before verifying it.
  */
 export function useVerification() {
   const [run, setRun] = useState<VerificationRun>(IDLE)
@@ -55,10 +61,9 @@ export function useVerification() {
         const t = setTimeout(() => {
           if (step.state === 'COMPLETE') {
             setRun({
+              ...IDLE,
               state: 'COMPLETE',
-              running: false,
               result: scenario.result,
-              error: null,
               reportHref: `/clients/grex/report/${scenario.id}`,
             })
           } else {
@@ -72,8 +77,8 @@ export function useVerification() {
     [clear]
   )
 
-  const runLive = useCallback(
-    async (surface: GrexSurface, content: string) => {
+  const streamRequest = useCallback(
+    async (body: { surface: GrexSurface; content: string; mode?: 'verify' | 'answer_verify' }) => {
       clear()
       const controller = new AbortController()
       abort.current = controller
@@ -83,7 +88,7 @@ export function useVerification() {
         const res = await fetch('/api/grex/verify', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ surface, content }),
+          body: JSON.stringify(body),
           signal: controller.signal,
         })
         if (!res.ok || !res.body) {
@@ -115,6 +120,7 @@ export function useVerification() {
             let payload: {
               type: string
               state?: ProcessingState
+              text?: string
               result?: VerificationResult
               error?: string
             }
@@ -123,7 +129,16 @@ export function useVerification() {
             } catch {
               continue
             }
-            if (payload.type === 'state' && payload.state) {
+            if (payload.type === 'answer_delta' && typeof payload.text === 'string') {
+              const text = payload.text
+              setRun((prev) => ({ ...prev, answerText: prev.answerText + text }))
+            } else if (payload.type === 'answer') {
+              setRun((prev) => ({
+                ...prev,
+                answerText: typeof payload.text === 'string' ? payload.text : prev.answerText,
+                answerDone: true,
+              }))
+            } else if (payload.type === 'state' && payload.state) {
               setRun((prev) => ({ ...prev, state: payload.state!, running: true }))
             } else if (payload.type === 'result' && payload.result) {
               sawResult = true
@@ -136,22 +151,30 @@ export function useVerification() {
               } catch {
                 /* storage unavailable — the inline result still renders */
               }
-              setRun({
+              setRun((prev) => ({
+                ...prev,
                 state: 'COMPLETE',
                 running: false,
                 result,
                 error: null,
                 reportHref: `/clients/grex/report/${result.id}`,
-              })
+              }))
             } else if (payload.type === 'error') {
-              setRun({ ...IDLE, error: payload.error ?? 'Verification failed.' })
+              setRun((prev) => ({
+                ...IDLE,
+                answerText: prev.answerText,
+                answerDone: prev.answerDone,
+                error: payload.error ?? 'Verification failed.',
+              }))
               return
             }
           }
         }
         if (!sawResult) {
           setRun((prev) =>
-            prev.result ? prev : { ...IDLE, error: 'The check ended without a result. Try again.' }
+            prev.result
+              ? prev
+              : { ...prev, running: false, error: 'The check ended without a result. Try again.' }
           )
         }
       } catch (err) {
@@ -162,5 +185,16 @@ export function useVerification() {
     [clear]
   )
 
-  return { run, runCanned, runLive, reset }
+  const runLive = useCallback(
+    (surface: GrexSurface, content: string) => streamRequest({ surface, content }),
+    [streamRequest]
+  )
+
+  /** Generate an answer to `question`, then verify the answer (mcp surface). */
+  const runAnswerVerify = useCallback(
+    (question: string) => streamRequest({ surface: 'mcp', content: question, mode: 'answer_verify' }),
+    [streamRequest]
+  )
+
+  return { run, runCanned, runLive, runAnswerVerify, reset }
 }

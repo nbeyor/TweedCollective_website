@@ -14,7 +14,7 @@ export default function GrexBrowserPage() {
       <SurfaceHeader
         kicker="Surface A · Ambient information consumption"
         title="Browser extension"
-        description="You browse normally; GREX checks the page passively. A small floating score is the entire interface — it never obstructs the page, and it never speaks unless asked."
+        description="You browse normally; GREX checks the page passively. Here it reads a recreated snapshot of functionhealth.com — a real Series B health tech marketing page — and a small floating score is the entire interface."
       />
       <BrowserSim />
     </div>

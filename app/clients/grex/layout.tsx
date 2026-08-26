@@ -1,12 +1,10 @@
 import React from 'react'
-import { Fraunces, Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk } from 'next/font/google'
 
 import { requireClientAccess } from '@/lib/client-access'
 import { GREX_THEME, themeVars } from '@/lib/grex/theme'
 
-// Brand-direction fonts (Inter + JetBrains Mono are already global). All
-// directions' faces load here so the brand page renders each faithfully.
-const fraunces = Fraunces({ subsets: ['latin'], variable: '--grex-font-serif', display: 'swap' })
+// GREX's display face (Inter + JetBrains Mono are already global).
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--grex-font-grotesk',
@@ -17,7 +15,7 @@ export default async function GrexLayout({ children }: { children: React.ReactNo
   await requireClientAccess('grex')
   return (
     <div
-      className={`${fraunces.variable} ${spaceGrotesk.variable}`}
+      className={spaceGrotesk.variable}
       style={{
         ...themeVars(GREX_THEME),
         background: 'var(--grex-page)',

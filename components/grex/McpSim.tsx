@@ -1,100 +1,151 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { GREX_BRAND } from '@/lib/grex/brand'
 import { getScenario } from '@/lib/grex/scenarios'
-import { countClaims, type VerificationResult } from '@/lib/grex/types'
-import { SimTab } from './SimChrome'
+import type { VerificationResult } from '@/lib/grex/types'
+import { ScoreLine } from './ScoreLine'
 import { useVerification } from './useVerification'
 
 const SCENARIO = getScenario('mcp-ai-answer')!
 
-type Mode = 'scenario' | 'paste'
-
-function toolResultJson(result: VerificationResult, reportHref: string | null) {
-  const counts = countClaims(result.claims)
-  if (result.score.special === 'NO_VERIFIABLE_CLAIMS') {
-    return JSON.stringify({ status: 'NO_VERIFIABLE_CLAIMS' }, null, 2)
-  }
-  return JSON.stringify(
-    {
-      score: result.score.value,
-      verifiable_claims: counts.verifiable,
-      supported: counts.supported,
-      contradicted: counts.contradicted,
-      insufficient_evidence: counts.insufficient,
-      verification_url: reportHref ?? `/clients/grex/report/${result.id}`,
-    },
-    null,
-    2
-  )
+interface Exchange {
+  id: string
+  question: string
+  answer: string
+  status: 'answering' | 'checking' | 'done'
+  result?: VerificationResult
+  reportHref?: string
+  /** Muted note shown when GREX deliberately adds nothing (or on error). */
+  annotation?: string
 }
 
+const CANNED_CREATIVE: { question: string; answer: string } = {
+  question: 'Write a two-line tagline for our team offsite invite.',
+  answer:
+    'Two days to trade the inbox for the lake.\nCome sharpen the questions we’re too busy to ask.',
+}
+
+const NO_FACTS_NOTE = `No checkable facts in this response — ${GREX_BRAND.name} adds nothing.`
+
 /**
- * Surface C — MCP. An agent transcript showing the ambient pattern: the host
- * agent drafts a factual answer, calls verify_facts before presenting it,
- * and cites the GREX score alongside the response.
+ * Surface C — MCP. A chat player showing the integration as it should feel:
+ * the agent answers normally, verify_facts runs between drafting and
+ * presenting, and the entire product is one quiet score line at the end of
+ * the response — present only when the response contained checkable facts.
+ * The input at the bottom is live: your question gets a real answer, and the
+ * answer (not the question) gets verified.
  */
 export function McpSim() {
-  const [mode, setMode] = useState<Mode>('scenario')
-  const [started, setStarted] = useState(false)
-  const [pasteText, setPasteText] = useState('')
-  const { run, runCanned, runLive, reset } = useVerification()
+  const [exchanges, setExchanges] = useState<Exchange[]>([])
+  const [input, setInput] = useState('')
+  const [liveId, setLiveId] = useState<string | null>(null)
+  const { run, runAnswerVerify } = useVerification()
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
+  const seeded = useRef(false)
 
-  const scenarioContent = SCENARIO.content.kind === 'agent' ? SCENARIO.content : null
-  const userPrompt =
-    mode === 'scenario' ? scenarioContent!.userPrompt : 'Verify this draft answer before I use it.'
-  const draftAnswer = mode === 'scenario' ? scenarioContent!.assistantAnswer : pasteText
+  // Seed playback: the factual exchange (line appears), then the creative
+  // exchange (nothing appears) — the gate is the demo.
+  useEffect(() => {
+    if (seeded.current) return
+    seeded.current = true
+    const scenarioContent = SCENARIO.content.kind === 'agent' ? SCENARIO.content : null
+    if (!scenarioContent) return
+    const at = (ms: number, fn: () => void) => timers.current.push(setTimeout(fn, ms))
 
-  const start = () => {
-    setStarted(true)
-    if (mode === 'scenario') runCanned(SCENARIO)
-    else void runLive('mcp', pasteText)
-  }
-  const restart = () => {
-    setStarted(false)
-    reset()
-  }
-
-  const switchMode = (m: Mode) => {
-    setMode(m)
-    setStarted(false)
-    reset()
-  }
-
-  const finalMessage = (() => {
-    if (!run.result) return null
-    const r = run.result
-    if (r.score.special === 'NO_VERIFIABLE_CLAIMS') {
-      return `${GREX_BRAND.name} found no externally verifiable claims in this content, so there's nothing to independently confirm — presenting as drafted.`
+    at(300, () =>
+      setExchanges([
+        { id: 'canned-1', question: scenarioContent.userPrompt, answer: '', status: 'answering' },
+      ])
+    )
+    at(1100, () =>
+      setExchanges((xs) =>
+        xs.map((x) =>
+          x.id === 'canned-1' ? { ...x, answer: scenarioContent.assistantAnswer, status: 'checking' } : x
+        )
+      )
+    )
+    at(3600, () =>
+      setExchanges((xs) =>
+        xs.map((x) =>
+          x.id === 'canned-1'
+            ? {
+                ...x,
+                status: 'done',
+                result: SCENARIO.result,
+                reportHref: `/clients/grex/report/${SCENARIO.id}`,
+              }
+            : x
+        )
+      )
+    )
+    at(4600, () =>
+      setExchanges((xs) => [
+        ...xs,
+        { id: 'canned-2', question: CANNED_CREATIVE.question, answer: '', status: 'answering' },
+      ])
+    )
+    at(5400, () =>
+      setExchanges((xs) =>
+        xs.map((x) =>
+          x.id === 'canned-2'
+            ? { ...x, answer: CANNED_CREATIVE.answer, status: 'done', annotation: NO_FACTS_NOTE }
+            : x
+        )
+      )
+    )
+    return () => {
+      // Allow re-seeding after a strict-mode unmount/remount cycle.
+      timers.current.forEach(clearTimeout)
+      timers.current = []
+      seeded.current = false
+      setExchanges([])
     }
-    const counts = countClaims(r.claims)
-    const caveats: string[] = []
-    if (counts.contradicted > 0)
-      caveats.push(
-        `${counts.contradicted} ${counts.contradicted === 1 ? 'claim is' : 'claims are'} contradicted by the evidence — I've flagged ${counts.contradicted === 1 ? 'it' : 'them'} below rather than presenting ${counts.contradicted === 1 ? 'it' : 'them'} as fact`
-      )
-    if (counts.insufficient > 0)
-      caveats.push(
-        `${counts.insufficient} couldn't be verified against public sources and should be treated as unconfirmed`
-      )
-    return `Independent verification: ${GREX_BRAND.name} scored this answer ${r.score.value}/100 (${r.score.label.toLowerCase()}). ${counts.supported} of ${counts.verifiable} checked claims are supported${caveats.length ? '; ' + caveats.join('; ') : ''}. Full evidence at the verification link.`
-  })()
+  }, [])
+
+  // Sync the live run into its exchange.
+  useEffect(() => {
+    if (!liveId) return
+    setExchanges((xs) =>
+      xs.map((x) => {
+        if (x.id !== liveId) return x
+        if (run.error) {
+          return { ...x, status: 'done', annotation: run.error }
+        }
+        if (run.result) {
+          const noFacts = run.result.score.special === 'NO_VERIFIABLE_CLAIMS'
+          return {
+            ...x,
+            answer: run.answerText || x.answer,
+            status: 'done',
+            result: noFacts ? undefined : run.result,
+            reportHref: run.reportHref ?? undefined,
+            annotation: noFacts ? NO_FACTS_NOTE : undefined,
+          }
+        }
+        return {
+          ...x,
+          answer: run.answerText,
+          status: run.answerDone ? 'checking' : 'answering',
+        }
+      })
+    )
+  }, [liveId, run])
+
+  const ask = () => {
+    const question = input.trim()
+    if (question.length < 8 || run.running) return
+    const id = `live-${Date.now()}`
+    setExchanges((xs) => [...xs, { id, question, answer: '', status: 'answering' }])
+    setLiveId(id)
+    setInput('')
+    void runAnswerVerify(question)
+  }
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <SimTab active={mode === 'scenario'} onClick={() => switchMode('scenario')}>
-          AI diligence answer
-        </SimTab>
-        <SimTab active={mode === 'paste'} onClick={() => switchMode('paste')}>
-          Verify your own answer · live
-        </SimTab>
-      </div>
-
       <div
         className="p-5 sm:p-7"
         style={{
@@ -103,103 +154,80 @@ export function McpSim() {
           borderRadius: 12,
         }}
       >
-        {mode === 'paste' && !started && (
-          <div className="mb-5">
-            <textarea
-              value={pasteText}
-              onChange={(e) => setPasteText(e.target.value)}
-              rows={5}
-              maxLength={6000}
-              placeholder="Paste an AI-generated factual answer (or any factual paragraph) to run through verify_facts…"
-              className="w-full p-3 text-[13.5px] leading-relaxed outline-none resize-y"
-              style={{
-                background: 'var(--grex-surface-raised)',
-                border: '1px solid var(--grex-border)',
-                borderRadius: 8,
-                color: 'var(--grex-ink)',
-              }}
-            />
-          </div>
-        )}
+        <div className="space-y-5 min-h-[280px]">
+          {exchanges.map((x) => (
+            <div key={x.id} className="space-y-3">
+              <Bubble role="user">{x.question}</Bubble>
+              <Bubble role="assistant">
+                {x.answer ? (
+                  <p className="whitespace-pre-line">{x.answer}</p>
+                ) : (
+                  <ThinkingDots label="answering" />
+                )}
+                {x.status === 'checking' && (
+                  <div className="mt-3 pt-2.5" style={{ borderTop: '1px solid var(--grex-border)' }}>
+                    <ThinkingDots label="checking facts" />
+                  </div>
+                )}
+                {x.status === 'done' && x.result && x.reportHref && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+                    <ScoreLine result={x.result} reportHref={x.reportHref} />
+                  </motion.div>
+                )}
+              </Bubble>
+              {x.status === 'done' && x.annotation && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-[11.5px] italic pl-1"
+                  style={{ color: 'var(--grex-muted)' }}
+                >
+                  {x.annotation}
+                </motion.p>
+              )}
+            </div>
+          ))}
+        </div>
 
-        {!started ? (
+        {/* Live input — the connected part */}
+        <div className="mt-6 flex gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') ask()
+            }}
+            maxLength={500}
+            placeholder="Ask a factual question — the answer gets verified live (30–90s)…"
+            className="flex-1 px-3.5 py-2.5 text-[13.5px] outline-none"
+            style={{
+              background: 'var(--grex-surface-raised)',
+              border: '1px solid var(--grex-border)',
+              borderRadius: 'var(--grex-radius-chip)',
+              color: 'var(--grex-ink)',
+            }}
+          />
           <button
-            onClick={start}
-            disabled={mode === 'paste' && pasteText.trim().length < 40}
-            className="px-5 py-2 text-[13.5px] font-medium disabled:opacity-50"
+            onClick={ask}
+            disabled={run.running || input.trim().length < 8}
+            className="px-5 py-2.5 text-[13.5px] font-medium disabled:opacity-50"
             style={{
               background: 'var(--grex-accent)',
               color: 'var(--grex-accent-ink)',
               borderRadius: 'var(--grex-radius-chip)',
             }}
           >
-            {mode === 'scenario' ? 'Play the exchange' : 'Run verify_facts · live'}
+            Ask
           </button>
-        ) : (
-          <div className="space-y-4">
-            {/* User turn */}
-            <Bubble role="user">{userPrompt}</Bubble>
-
-            {/* Assistant drafts, then verifies */}
-            <Bubble role="assistant">
-              <p className="mb-2">{draftAnswer}</p>
-              <p className="text-[12px] italic" style={{ color: 'var(--grex-muted)' }}>
-                This response contains externally verifiable factual claims — calling{' '}
-                <code style={{ fontFamily: 'var(--grex-font-mono)' }}>verify_facts</code> before
-                presenting it.
-              </p>
-            </Bubble>
-
-            {/* Tool call */}
-            <ToolBlock
-              title={`verify_facts ${run.running ? '· running' : '· complete'}`}
-              running={run.running}
-            >
-              {JSON.stringify({ content: draftAnswer.slice(0, 120) + (draftAnswer.length > 120 ? '…' : '') }, null, 2)}
-            </ToolBlock>
-
-            {run.error && (
-              <p className="text-[13px]" style={{ color: 'var(--grex-contradicted)' }}>
-                {run.error}{' '}
-                <button onClick={restart} className="underline" style={{ color: 'var(--grex-muted)' }}>
-                  Reset
-                </button>
-              </p>
-            )}
-
-            {/* Tool result + final answer */}
-            {run.result && (
-              <>
-                <ToolBlock title="verify_facts → result" running={false}>
-                  {toolResultJson(run.result, run.reportHref)}
-                </ToolBlock>
-                <Bubble role="assistant">
-                  <p>{finalMessage}</p>
-                  {run.reportHref && (
-                    <Link
-                      href={run.reportHref}
-                      className="inline-block mt-2 text-[12.5px] font-medium hover:underline"
-                      style={{ color: 'var(--grex-accent)' }}
-                    >
-                      Open verification report →
-                    </Link>
-                  )}
-                </Bubble>
-                <button onClick={restart} className="text-[12.5px] underline" style={{ color: 'var(--grex-muted)' }}>
-                  Replay
-                </button>
-              </>
-            )}
-          </div>
-        )}
+        </div>
       </div>
 
       <p className="mt-4 text-[12.5px] leading-relaxed max-w-2xl" style={{ color: 'var(--grex-muted)' }}>
-        The MCP server is a thin adapter over the same verification engine: agents call{' '}
-        <code style={{ fontFamily: 'var(--grex-font-mono)' }}>verify_facts</code> explicitly, or
-        their system instructions tell them to verify factual output before presenting it (the
-        ambient pattern shown here). The structured result carries the score, the counts, and the
-        same shared verification URL a human would see.
+        Behind the line: the host agent calls{' '}
+        <code style={{ fontFamily: 'var(--grex-font-mono)' }}>verify_facts</code> between drafting
+        and presenting. A response with checkable facts gets one quiet score line; a response
+        without them gets nothing — the product never explains itself unprompted. The MCP server is
+        a thin adapter over the same engine and the same shared report as every other surface.
       </p>
     </div>
   )
@@ -220,6 +248,7 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
           border: '1px solid var(--grex-border)',
           borderRadius: user ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
           color: 'var(--grex-ink)',
+          minWidth: user ? undefined : 220,
         }}
       >
         {children}
@@ -228,49 +257,19 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
   )
 }
 
-function ToolBlock({
-  title,
-  running,
-  children,
-}: {
-  title: string
-  running: boolean
-  children: string
-}) {
+function ThinkingDots({ label }: { label: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-      <div
-        className="overflow-hidden"
-        style={{
-          border: '1px solid var(--grex-border)',
-          borderRadius: 'var(--grex-radius-chip)',
-        }}
-      >
-        <div
-          className="flex items-center gap-2 px-3 py-1.5 text-[11px] uppercase tracking-[0.1em] font-medium"
-          style={{ background: 'var(--grex-surface-raised)', color: 'var(--grex-muted)' }}
-        >
-          {running && (
-            <motion.span
-              className="w-2 h-2 rounded-full"
-              style={{ background: 'var(--grex-accent)' }}
-              animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-          )}
-          {title}
-        </div>
-        <pre
-          className="px-3 py-2.5 text-[12px] leading-relaxed overflow-x-auto"
-          style={{
-            fontFamily: 'var(--grex-font-mono)',
-            color: 'var(--grex-body)',
-            background: 'var(--grex-surface)',
-          }}
-        >
-          {children}
-        </pre>
-      </div>
-    </motion.div>
+    <span className="inline-flex items-center gap-1.5 text-[11.5px]" style={{ color: 'var(--grex-muted)' }}>
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="w-1 h-1 rounded-full"
+          style={{ background: 'var(--grex-muted)' }}
+          animate={{ opacity: [0.25, 1, 0.25] }}
+          transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.18 }}
+        />
+      ))}
+      {label}
+    </span>
   )
 }

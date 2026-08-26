@@ -1,10 +1,13 @@
 /**
- * Canned demo scenarios. All outlets, companies, people, products, and
- * evidence sources are fictional (same synthetic-content discipline as the
- * protocol workspaces). Evidence URLs use the IANA-reserved example.org.
+ * Canned demo scenarios.
  *
- * Scores follow the v0 methodology exactly (supported=1, insufficient=0.5,
- * contradicted=0, averaged × 100) so the report's math is honest.
+ * The browser scenario recreates the public marketing page of a real company
+ * (Function Health); its claims, verdicts, and evidence are grounded in real
+ * press coverage as of Aug 2026, with real citation URLs — no verdict is
+ * asserted that public reporting doesn't support. The screenshot scenario is
+ * fully fictional (synthetic-content discipline). Scores follow the v0
+ * methodology exactly (supported=1, insufficient=0.5, contradicted=0,
+ * averaged × 100).
  */
 
 import type { GrexSurface, ProcessingState, VerificationResult } from './types'
@@ -12,12 +15,14 @@ import { countClaims, scoreFor, v0Score, type Claim } from './types'
 
 export type ScenarioContent =
   | {
-      kind: 'article'
-      outlet: string
-      headline: string
-      byline: string
-      date: string
-      paragraphs: string[]
+      kind: 'site'
+      brand: string
+      url: string
+      nav: string[]
+      hero: { headline: string; sub: string }
+      stats: { value: string; label: string }[]
+      priceLine: string
+      footnote: string
     }
   | {
       kind: 'messages'
@@ -33,7 +38,6 @@ export type ScenarioContent =
 export interface GrexScenario {
   id: string
   surface: GrexSurface
-  /** Short label for scenario pickers. */
   label: string
   content: ScenarioContent
   /** Playback pacing for the processing animation. */
@@ -61,212 +65,154 @@ function buildResult(
 }
 
 /* ------------------------------------------------------------------ */
-/* 1. Browser — news article, mixed evidence                           */
+/* 1. Browser — Function Health marketing page (real company,          */
+/*    real coverage; verdicts held to what public reporting supports)  */
 /* ------------------------------------------------------------------ */
 
-const newsArticleClaims: Claim[] = [
+const functionHealthClaims: Claim[] = [
   {
-    id: 'na-1',
-    text: 'Nuvessa Health was founded in 2019.',
+    id: 'fh-1',
+    text: 'A Function Health membership includes 160+ lab tests.',
     verifiability: 'VERIFIABLE',
     evaluation: {
       verdict: 'SUPPORTED',
-      confidence: 0.95,
-      rationale: 'The state corporate registry and two independent press archives agree on a 2019 founding.',
+      confidence: 0.93,
+      rationale:
+        'Independent coverage of the company consistently describes the membership as 160+ lab tests across heart, hormones, thyroid, nutrients, cancer signals, and more.',
       evidence: [
         {
-          id: 'na-1a',
-          url: 'https://example.org/registry/nuvessa-health',
-          sourceName: 'State corporate registry',
-          title: 'Entity record — Nuvessa Health, Inc.',
-          snippet: 'Date of incorporation: April 11, 2019.',
-          stance: 'supports',
-        },
-        {
-          id: 'na-1b',
-          url: 'https://example.org/mbj/nuvessa-launch',
-          sourceName: 'Meridian Business Journal',
-          title: 'Nuvessa Health emerges from stealth',
-          snippet: '…the diagnostics startup, founded in 2019 by two former hospital-lab directors…',
+          id: 'fh-1a',
+          url: 'https://www.fiercehealthcare.com/health-tech/function-health-lands-298m-series-b-rolls-out-medical-intelligence-ai-model-health-data',
+          sourceName: 'Fierce Healthcare',
+          title: 'Function Health lands $298M Series B',
+          snippet:
+            'Function Health offers a membership-based platform that gives consumers access to more than 160 biomarker lab tests…',
           stance: 'supports',
         },
       ],
     },
   },
   {
-    id: 'na-2',
-    text: 'Nuvessa raised an $85 million Series B in January.',
+    id: 'fh-2',
+    text: 'Function raised a $298 million Series B at a $2.5 billion valuation in November 2025.',
     verifiability: 'VERIFIABLE',
     evaluation: {
       verdict: 'SUPPORTED',
-      confidence: 0.9,
-      rationale: 'The round is confirmed by the lead investor’s own announcement and independent coverage.',
+      confidence: 0.96,
+      rationale: 'The round, valuation, and lead investor are documented by multiple independent outlets.',
       evidence: [
         {
-          id: 'na-2a',
-          url: 'https://example.org/crestline/portfolio-news',
-          sourceName: 'Crestline Ventures',
-          title: 'Announcing our investment in Nuvessa',
-          snippet: 'We led Nuvessa Health’s $85M Series B alongside existing investors.',
+          id: 'fh-2a',
+          url: 'https://techcrunch.com/2025/11/19/function-health-closes-298m-series-b-at-a-2-5b-valuation-launches-medical-intelligence/',
+          sourceName: 'TechCrunch',
+          title: 'Function Health closes $298M Series B at a $2.5B valuation',
+          snippet: 'Function Health raised a $298M Series B at a $2.5B valuation, led by Redpoint Ventures.',
+          stance: 'supports',
+        },
+        {
+          id: 'fh-2b',
+          url: 'https://www.prnewswire.com/news-releases/with-a-2-5b-valuation-function-becomes-the-new-standard-for-health-and-launches-medical-intelligence-lab-302620193.html',
+          sourceName: 'PR Newswire',
+          title: 'With a $2.5B valuation, Function becomes the new standard for health',
+          snippet: 'The company announced its Series B and Medical Intelligence launch at a $2.5B valuation.',
           stance: 'supports',
         },
       ],
     },
   },
   {
-    id: 'na-3',
-    text: 'The HomePanel test received FDA clearance in 2024.',
+    id: 'fh-3',
+    text: 'Membership starts at $365 per year.',
     verifiability: 'VERIFIABLE',
     evaluation: {
-      verdict: 'CONTRADICTED',
-      confidence: 0.86,
+      verdict: 'SUPPORTED',
+      confidence: 0.85,
       rationale:
-        'The regulatory database lists clearance in March 2025, not 2024. The 2024 date appears only in the article.',
+        'The company’s pricing page lists membership from $365 per year (lowered from $499 in late 2025). Pricing differs in some states, which the evidence notes as context.',
       evidence: [
         {
-          id: 'na-3a',
-          url: 'https://example.org/regdb/homepanel-clearance',
-          sourceName: 'Device clearance database',
-          title: 'Clearance record — HomePanel Dx',
-          snippet: 'Decision date: March 14, 2025.',
-          stance: 'contradicts',
+          id: 'fh-3a',
+          url: 'https://www.functionhealth.com/pricing',
+          sourceName: 'functionhealth.com',
+          title: 'Function Health pricing',
+          snippet: 'Memberships start at $365 per year and include 160+ lab tests and clinician review.',
+          stance: 'supports',
         },
-      ],
-    },
-  },
-  {
-    id: 'na-4',
-    text: 'The company’s tests are used in more than 300 clinics.',
-    verifiability: 'VERIFIABLE',
-    evaluation: {
-      verdict: 'INSUFFICIENT_EVIDENCE',
-      confidence: 0.4,
-      rationale:
-        'The figure appears only in company marketing materials; no independent source states a clinic count.',
-      evidence: [
         {
-          id: 'na-4a',
-          url: 'https://example.org/nuvessa/about',
-          sourceName: 'Nuvessa Health (company site)',
-          title: 'About Nuvessa',
-          snippet: 'Trusted by 300+ clinics nationwide.',
+          id: 'fh-3b',
+          url: 'https://www.bloodtestcomparison.com/function-health',
+          sourceName: 'Blood Test Comparison',
+          title: 'Function Health review (2026)',
+          snippet: 'Pricing is higher in New York and New Jersey, where the plan runs $749 a year.',
           stance: 'context',
         },
       ],
     },
   },
   {
-    id: 'na-5',
-    text: 'HomePanel detected early markers with 97% accuracy in trials.',
-    verifiability: 'VERIFIABLE',
-    evaluation: {
-      verdict: 'INSUFFICIENT_EVIDENCE',
-      confidence: 0.35,
-      rationale:
-        'No published trial data could be located. The accuracy figure is not attributed to a registered study.',
-      evidence: [],
-    },
-  },
-  {
-    id: 'na-6',
-    text: 'Roughly 40% of adults skip recommended screenings each year.',
+    id: 'fh-4',
+    text: 'More than 500,000 members use Function.',
     verifiability: 'VERIFIABLE',
     evaluation: {
       verdict: 'INSUFFICIENT_EVIDENCE',
       confidence: 0.45,
       rationale:
-        'Published estimates range widely by screening type; no source supports a single 40% figure.',
+        'The member count originates from the company and is repeated by reviewers; no independent audit or filing confirms the figure. Recorded as unverified, not false.',
       evidence: [
         {
-          id: 'na-6a',
-          url: 'https://example.org/nhis/screening-summary',
-          sourceName: 'National health survey archive',
-          title: 'Preventive screening participation',
-          snippet: 'Participation varies from 44% to 81% depending on the screening…',
+          id: 'fh-4a',
+          url: 'https://www.prnewswire.com/news-releases/with-a-2-5b-valuation-function-becomes-the-new-standard-for-health-and-launches-medical-intelligence-lab-302620193.html',
+          sourceName: 'PR Newswire (company announcement)',
+          title: 'Function company announcement',
+          snippet: 'The company reports more than 500,000 members.',
           stance: 'context',
         },
       ],
     },
   },
   {
-    id: 'na-7',
-    text: 'Home diagnostics are the most exciting shift in a generation of medicine.',
-    verifiability: 'OPINION',
+    id: 'fh-5',
+    text: 'Function empowers you to live 100 healthy years.',
+    verifiability: 'PREDICTION',
   },
 ]
 
-const newsArticle: GrexScenario = {
-  id: 'news-article',
+const functionHealth: GrexScenario = {
+  id: 'function-health',
   surface: 'browser',
-  label: 'News article',
+  label: 'functionhealth.com',
   content: {
-    kind: 'article',
-    outlet: 'The Meridian Post',
-    headline: 'Nuvessa Health bets big on at-home diagnostics',
-    byline: 'By Dana Whitfield, Health Correspondent',
-    date: 'August 22, 2026',
-    paragraphs: [
-      'Nuvessa Health, the at-home diagnostics company founded in 2019, is expanding its flagship HomePanel test to twelve new states this fall, the company said Tuesday.',
-      'The push follows an $85 million Series B raised in January and comes at a moment of intense investor interest in home testing. The HomePanel test received FDA clearance in 2024, and the company says its tests are used in more than 300 clinics.',
-      'In trials, Nuvessa says, HomePanel detected early markers with 97% accuracy. Executives argue the product meets a real gap: roughly 40% of adults skip recommended screenings each year.',
-      '“Home diagnostics are the most exciting shift in a generation of medicine,” chief executive Mara Okafor said in an interview.',
+    kind: 'site',
+    brand: 'Function',
+    url: 'functionhealth.com',
+    nav: ['What we test', 'How it works', 'Pricing', 'Log in'],
+    hero: {
+      headline: 'Live 100 healthy years',
+      sub: 'The most comprehensive picture of your health — 160+ lab tests, reviewed by clinicians, tracked over your lifetime.',
+    },
+    stats: [
+      { value: '160+', label: 'lab tests in your membership' },
+      { value: '500,000+', label: 'members' },
+      { value: '$2.5B', label: 'valuation · $298M Series B (Nov 2025)' },
     ],
+    priceLine: 'Membership from $365/year',
+    footnote:
+      'Recreated snapshot of public marketing content for demonstration. Not affiliated with Function Health.',
   },
   timeline: TIMELINE,
   result: buildResult({
-    id: 'news-article',
+    id: 'function-health',
     surface: 'browser',
-    contentLabel: 'News article — The Meridian Post',
-    submittedText: 'Nuvessa Health bets big on at-home diagnostics…',
+    contentLabel: 'Marketing page — functionhealth.com',
+    submittedText: 'Live 100 healthy years. 160+ lab tests, reviewed by clinicians…',
     summary:
-      'The article’s corporate facts check out, but its regulatory date is contradicted by the clearance record, and its usage and accuracy figures trace only to company marketing.',
-    claims: newsArticleClaims,
+      'The page’s concrete claims hold up well: the test count, pricing, and funding are confirmed by independent coverage. The member count traces only to the company, and the headline promise is aspiration, not a checkable fact.',
+    claims: functionHealthClaims,
   }),
 }
 
 /* ------------------------------------------------------------------ */
-/* 2. Browser — opinion column, nothing to check                       */
-/* ------------------------------------------------------------------ */
-
-const opinionClaims: Claim[] = [
-  { id: 'op-1', text: 'Remote work is the best thing to happen to family life in decades.', verifiability: 'OPINION' },
-  { id: 'op-2', text: 'Within ten years, the office as we know it will be gone.', verifiability: 'PREDICTION' },
-  { id: 'op-3', text: 'My own commute used to leave me too drained to cook dinner.', verifiability: 'PERSONAL_EXPERIENCE' },
-  { id: 'op-4', text: 'Everyone knows meetings expand to fill the time allotted.', verifiability: 'TOO_VAGUE' },
-]
-
-const opinionColumn: GrexScenario = {
-  id: 'opinion-column',
-  surface: 'browser',
-  label: 'Opinion column',
-  content: {
-    kind: 'article',
-    outlet: 'The Meridian Post',
-    headline: 'The office is over, and good riddance',
-    byline: 'By Theo Brandt, Columnist',
-    date: 'August 23, 2026',
-    paragraphs: [
-      'Remote work is the best thing to happen to family life in decades. I say this without hedging, and I say it as someone whose commute used to leave me too drained to cook dinner.',
-      'Within ten years, the office as we know it will be gone. Not shrunk — gone. Everyone knows meetings expand to fill the time allotted; take away the conference room and watch the calendar heal itself.',
-    ],
-  },
-  timeline: [
-    { state: 'EXTRACTING', ms: 1400 },
-    { state: 'COMPLETE', ms: 0 },
-  ],
-  result: buildResult({
-    id: 'opinion-column',
-    surface: 'browser',
-    contentLabel: 'Opinion column — The Meridian Post',
-    submittedText: 'The office is over, and good riddance…',
-    summary:
-      'This piece is argument and prediction. GREX found no externally verifiable factual claims, so no score is shown — a deliberate product behavior.',
-    claims: opinionClaims,
-  }),
-}
-
-/* ------------------------------------------------------------------ */
-/* 3. Screenshot — forwarded text message, weak evidence               */
+/* 2. Screenshot — forwarded text message (fictional), weak evidence   */
 /* ------------------------------------------------------------------ */
 
 const screenshotClaims: Claim[] = [
@@ -368,7 +314,7 @@ const screenshotText: GrexScenario = {
 }
 
 /* ------------------------------------------------------------------ */
-/* 4. MCP — AI answer with one subtle error, moderate evidence         */
+/* 3. MCP — AI answer with one subtle error (fictional company)        */
 /* ------------------------------------------------------------------ */
 
 const mcpClaims: Claim[] = [
@@ -490,7 +436,7 @@ const mcpAiAnswer: GrexScenario = {
 
 /* ------------------------------------------------------------------ */
 
-export const SCENARIOS: GrexScenario[] = [newsArticle, opinionColumn, screenshotText, mcpAiAnswer]
+export const SCENARIOS: GrexScenario[] = [functionHealth, screenshotText, mcpAiAnswer]
 
 export function getScenario(id: string): GrexScenario | undefined {
   return SCENARIOS.find((s) => s.id === id)
