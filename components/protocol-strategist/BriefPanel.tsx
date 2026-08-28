@@ -10,10 +10,12 @@ import {
   FileText,
   FlaskConical,
   HelpCircle,
+  Landmark,
   MapPin,
   MessageSquare,
   Play,
   Timer,
+  Trash2,
 } from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
@@ -174,6 +176,36 @@ const QUESTION_GROUPS: QuestionGroup[] = [
       },
     ],
   },
+  {
+    key: 'regulatory',
+    label: 'Regulatory',
+    question: 'Will the design hold up with regulators?',
+    icon: <Landmark {...iconProps} style={{ color: wcg.purple }} />,
+    analyses: [
+      {
+        label: 'Regional floor compliance',
+        chart: 'Site & country map',
+        prompt:
+          'Does our footprint clear regulatory regional expectations? Check the recommended country allocation against a 20% North America enrollment floor and state the compliance explicitly.',
+        blankPrompt:
+          'For a trial like this, what regional enrollment mix did comparable trials run, and would a typical footprint clear a 20% North America enrollment floor?',
+      },
+      {
+        label: 'Stricter-floor sensitivity',
+        chart: 'Scenario bars',
+        prompt:
+          'If regulators push for more US enrollment, compare footprints at 20% vs 30% vs 40% North America floors — what does each level cost in recruit timeline and activation?',
+      },
+      {
+        label: 'Amendment exposure',
+        chart: 'Amendment-risk view',
+        prompt:
+          'Which elements of this design are most likely to draw pushback and force an amendment, and what did the historical fixes look like?',
+        blankPrompt:
+          'Which design-element types most often force amendments in comparable trials, and what did the historical fixes look like?',
+      },
+    ],
+  },
 ]
 
 /**
@@ -189,6 +221,7 @@ export function BriefPanel({
   decisions,
   onPickElement,
   onRunAnalysis,
+  onClearDecisions,
   docLink,
 }: {
   brief: DesignBrief | null
@@ -196,9 +229,12 @@ export function BriefPanel({
   decisions: ShippedDecision[]
   onPickElement: (prompt: string) => void
   onRunAnalysis: (prompt: string) => void
+  onClearDecisions?: () => void
   docLink?: string | null
 }) {
-  const [tab, setTab] = useState<'brief' | 'analyses'>('brief')
+  // Analyses lead: the funnel of role-relevant questions is the starting
+  // point; the brief's elements are the subset you drill into from there.
+  const [tab, setTab] = useState<'brief' | 'analyses'>('analyses')
   const decidedIds = new Set(decisions.map((d) => d.element_id))
 
   if (mode === 'blank' || !brief) {
@@ -223,7 +259,12 @@ export function BriefPanel({
           as decisions are shipped.
         </div>
         <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} />
-        <DecisionLog decisions={decisions} onReviewInChat={onRunAnalysis} />
+        <DecisionLog
+          decisions={decisions}
+          docLabel="New protocol"
+          onReviewInChat={onRunAnalysis}
+          onClear={onClearDecisions}
+        />
       </div>
     )
   }
@@ -254,11 +295,11 @@ export function BriefPanel({
       </div>
 
       <div className="flex rounded-lg border p-0.5" style={{ background: wcg.surfaceMuted, borderColor: wcg.border }}>
-        <Tab active={tab === 'brief'} onClick={() => setTab('brief')}>
-          Brief
-        </Tab>
         <Tab active={tab === 'analyses'} onClick={() => setTab('analyses')}>
           Analyses
+        </Tab>
+        <Tab active={tab === 'brief'} onClick={() => setTab('brief')}>
+          Brief
         </Tab>
       </div>
 
@@ -323,7 +364,12 @@ export function BriefPanel({
         </>
       )}
 
-      <DecisionLog decisions={decisions} onReviewInChat={onRunAnalysis} />
+      <DecisionLog
+        decisions={decisions}
+        docLabel={brief.title ?? brief.indication}
+        onReviewInChat={onRunAnalysis}
+        onClear={onClearDecisions}
+      />
     </div>
   )
 }
@@ -415,33 +461,53 @@ function QuestionExplorer({
 
 function DecisionLog({
   decisions,
+  docLabel,
   onReviewInChat,
+  onClear,
 }: {
   decisions: ShippedDecision[]
+  docLabel: string
   onReviewInChat?: (prompt: string) => void
+  onClear?: () => void
 }) {
   if (!decisions.length) return null
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between gap-2 mb-0.5">
         <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: wcg.teal }}>
           Decision log
         </p>
-        {onReviewInChat && (
-          <button
-            onClick={() =>
-              onReviewInChat(
-                'Pull up the decision log — summarize what we have decided so far and what is still open.'
-              )
-            }
-            title="Review the decision log in the chat"
-            className="inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10.5px] font-medium transition-colors"
-            style={{ background: wcg.surface, borderColor: wcg.border, color: wcg.blue }}
-          >
-            <MessageSquare className="w-3 h-3" /> Review in chat
-          </button>
-        )}
+        <span className="flex items-center gap-1 shrink-0">
+          {onReviewInChat && (
+            <button
+              onClick={() =>
+                onReviewInChat(
+                  'Pull up the decision log — summarize what we have decided so far and what is still open.'
+                )
+              }
+              title="Review the decision log in the chat"
+              className="inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10.5px] font-medium transition-colors"
+              style={{ background: wcg.surface, borderColor: wcg.border, color: wcg.blue }}
+            >
+              <MessageSquare className="w-3 h-3" /> Review in chat
+            </button>
+          )}
+          {onClear && (
+            <button
+              onClick={onClear}
+              title={`Clear the decision log for ${docLabel} and start the project fresh`}
+              className="inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10.5px] font-medium transition-colors"
+              style={{ background: wcg.surface, borderColor: wcg.border, color: wcg.bad }}
+            >
+              <Trash2 className="w-3 h-3" /> Clear
+            </button>
+          )}
+        </span>
       </div>
+      {/* The log is a project artifact of THIS document — each protocol keeps its own. */}
+      <p className="text-[10.5px] mb-2 truncate" style={{ color: wcg.muted }} title={docLabel}>
+        {docLabel} · {decisions.length} decision{decisions.length === 1 ? '' : 's'}
+      </p>
       <div className="space-y-2">
         {decisions.map((d, i) => (
           <div

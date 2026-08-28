@@ -9,9 +9,10 @@ import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
 import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
 import { DataConnectorsPanel } from './DataConnectorsPanel'
 import { InsightPanel, type Insight } from './InsightPanel'
+import { DEFAULT_TEMPLATE_KEY } from '@/lib/strategistTemplates'
 import { Markdown } from './Markdown'
+import { OutputTemplatePanel } from './OutputTemplatePanel'
 import { ProtocolPicker, sourceKey, type BriefSource } from './ProtocolPicker'
-import { DEFAULT_FLOORS, RegulatoryFloorsPanel } from './RegulatoryFloorsPanel'
 import { wcg } from './wcgTheme'
 
 interface Message {
@@ -50,7 +51,7 @@ const COL = 'max-w-3xl mx-auto'
 const PANEL_MIN = 320
 const PANEL_MAX = 720
 const PANEL_KEY = 'strategist.panelWidth'
-const FLOORS_KEY = 'strategist.regulatoryFloors'
+const TEMPLATE_KEY = 'strategist.outputTemplate'
 
 /**
  * Everything a document's session carries. Conversations are scoped to one
@@ -105,9 +106,9 @@ export function StrategistWorkspace({
   const [decisions, setDecisions] = useState<ShippedDecision[]>([])
   const [shipNotice, setShipNotice] = useState<string | null>(null)
 
-  // Workspace regulatory floors (percent per region). Applied as the default
-  // hard constraint on every footprint answer; persisted across reloads.
-  const [floors, setFloors] = useState<Record<string, number>>({ ...DEFAULT_FLOORS })
+  // Output template: what shape Publish produces. Persisted across reloads.
+  const [templateKey, setTemplateKey] = useState<string>(DEFAULT_TEMPLATE_KEY)
+  const [customOutline, setCustomOutline] = useState('')
 
   // Document under review.
   const [source, setSource] = useState<BriefSource>({ kind: 'hero' })
@@ -155,17 +156,21 @@ export function StrategistWorkspace({
 
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(FLOORS_KEY) ?? 'null')
-      if (saved && typeof saved === 'object' && !Array.isArray(saved)) setFloors(saved)
+      const saved = JSON.parse(localStorage.getItem(TEMPLATE_KEY) ?? 'null')
+      if (saved && typeof saved === 'object') {
+        if (typeof saved.key === 'string') setTemplateKey(saved.key)
+        if (typeof saved.customOutline === 'string') setCustomOutline(saved.customOutline)
+      }
     } catch {
-      // Corrupt or blocked storage — keep the default floor.
+      // Corrupt or blocked storage — keep the default template.
     }
   }, [])
 
-  const changeFloors = useCallback((next: Record<string, number>) => {
-    setFloors(next)
+  const changeTemplate = useCallback((key: string, outline: string) => {
+    setTemplateKey(key)
+    setCustomOutline(outline)
     try {
-      localStorage.setItem(FLOORS_KEY, JSON.stringify(next))
+      localStorage.setItem(TEMPLATE_KEY, JSON.stringify({ key, customOutline: outline }))
     } catch {
       // Storage blocked — the setting still holds for this session.
     }
@@ -202,7 +207,7 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next, context: source, decisions, floors }),
+          body: JSON.stringify({ messages: next, context: source, decisions }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -313,8 +318,16 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming, source, decisions, floors]
+    [messages, streaming, source, decisions]
   )
+
+  /** Wipe the current document's decision log — a fresh start for this project. */
+  const clearDecisions = useCallback(() => {
+    if (!decisions.length) return
+    if (!window.confirm('Clear the decision log for this document? This cannot be undone.')) return
+    setDecisions([])
+    storeDecisions(sourceKey(source), [])
+  }, [decisions.length, source])
 
   /** Clear the current document's conversation and charts. Its decision log stays. */
   const clearConversation = useCallback(() => {
@@ -393,13 +406,18 @@ export function StrategistWorkspace({
     setPublishError(null)
     setPublishedDoc(null)
     try {
-      // Publishes the updated protocol — the brief with shipped decisions
-      // applied. The decision log itself stays in the workspace; it is never
-      // published as a document.
+      // Publishes the session's grounded content in the selected output
+      // template — the full protocol by default. The decision log itself stays
+      // in the workspace; it is never published as a document.
       const res = await fetch('/api/protocol-strategist/codify', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages, context: source, decisions }),
+        body: JSON.stringify({
+          messages,
+          context: source,
+          decisions,
+          template: { key: templateKey, customOutline },
+        }),
       })
       const data = (await res.json()) as { webViewLink?: string; error?: string }
       if (!res.ok) throw new Error(data.error ?? `Publish failed (${res.status}).`)
@@ -409,7 +427,7 @@ export function StrategistWorkspace({
     } finally {
       setPublishing(false)
     }
-  }, [messages, decisions, source, streaming, publishing])
+  }, [messages, decisions, source, streaming, publishing, templateKey, customOutline])
 
   const startDrag = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -471,10 +489,15 @@ export function StrategistWorkspace({
               decisions={decisions}
               onPickElement={setInput}
               onRunAnalysis={send}
+              onClearDecisions={clearDecisions}
               docLink={briefDocLink}
             />
           )}
-          <RegulatoryFloorsPanel floors={floors} onChange={changeFloors} />
+          <OutputTemplatePanel
+            templateKey={templateKey}
+            customOutline={customOutline}
+            onChange={changeTemplate}
+          />
           <DataConnectorsPanel />
         </div>
       </aside>

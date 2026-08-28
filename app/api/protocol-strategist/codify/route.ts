@@ -15,6 +15,7 @@ import { NextRequest } from 'next/server'
 import { clientAccessError } from '@/lib/client-access'
 import { resolveBrief, type BriefSource } from '@/lib/strategistPrompt'
 import { publishProtocol, PublishError, type PublishDecision } from '@/lib/strategistPublish'
+import { resolveTemplate } from '@/lib/strategistTemplates'
 import { designBrief, type DesignBrief } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
     decisions?: PublishDecision[]
     title?: string
     shareWith?: string
+    template?: { key?: string; customOutline?: string }
   }
   try {
     body = await req.json()
@@ -57,6 +59,7 @@ export async function POST(req: NextRequest) {
 
   const brief = briefFromContext(body.context)
   const decisions = Array.isArray(body.decisions) ? body.decisions.slice(0, 50) : []
+  const template = resolveTemplate(body.template?.key, body.template?.customOutline)
 
   const transcript = (body.messages ?? [])
     .filter((m) => typeof m.content === 'string' && m.content.trim())
@@ -70,6 +73,7 @@ export async function POST(req: NextRequest) {
       transcript,
       title: body.title,
       shareWith: body.shareWith,
+      template,
     })
     return Response.json(result)
   } catch (err) {
