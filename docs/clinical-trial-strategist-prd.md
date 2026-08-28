@@ -1,10 +1,12 @@
 # Clinical Trial Protocol Strategist — PRD
 
-**Status:** v1.0 — Baseline
-**Date:** 2026-08-27
-**Purpose of this version:** The frozen reference point for the next round of user research. It consolidates PRD v0.2 (2026-08-06), the Pfizer/HiBio feedback changes (`strategist-feedback-2026-08.md`), and the post-PRD MCP/Gemini build into one document describing the product as it stands. New research insights get compared against §15 (baseline assumptions) and logged as deltas to this document.
-**Companion docs:** `clinical-trial-protocol-strategist-plan.md` (technical scoping, credentials), `clinical-protocol-strategist-demo.md` (build description), `strategist-feedback-2026-08.md` (interview evidence), `trial-corpus.md` (data)
-**Source research to date:** Trial IntelX 2.0 product-strategy readout (8 expert interviews, 5 personas, June–July 2026); two product-feedback interviews on the working demo (Pfizer clinical-operations director, oncology; HiBio clinical-development director, transplant — 2026-08-06)
+**Status:** v1.1
+**Date:** 2026-08-28
+**Purpose of this version:** v1.0 was the frozen baseline for the round-2 research. This version logs the round-2 deltas against it, per the process §15 defines. The direction holding over the whole revision: **keep the prototype and the PRD simple while the data-science proof work runs** — no new connectors, no artifact-creation build; flexible artifact inputs and outputs stays a design principle, not a build item.
+**Companion docs:** `clinical-trial-protocol-strategist-plan.md` (technical scoping, credentials), `clinical-protocol-strategist-demo.md` (build description), `strategist-feedback-2026-08.md` (round-1 interview evidence), `strategist-recommendations-2026-08-27.md` (round-2 recommendations, the source for the v1.1 deltas), `trial-corpus.md` (data)
+**Source research to date:** Trial IntelX 2.0 product-strategy readout (8 expert interviews, 5 personas, June–July 2026); round-1 product-feedback interviews (Pfizer clinical-operations director, oncology; HiBio clinical-development director, transplant — 2026-08-06); round-2 demo sessions (Regeneron clinical development and clinical operations, Roche, Novartis, Ipsen — August 2026)
+
+**Changed in v1.1:** Round 2 validated the architecture and attacked the numbers; the build priority shifts from adding features to making the existing answers auditable and compliant. Verdict to beat: "This tool is wonderful. It's not ready right now." P0: regulatory floors become hard constraints in the footprint engine with compliance surfaced in the answer (§4, §7.2 — a live demo recommended 7% US and a clin-dev physician caught it); evidence lineage promoted into the demo surface (§7.2); a fourth onboarding mode from a skeletal study schema (§5). P1: probability of success un-deferred in its honest empirical form, sequenced behind the backtest (§14→§4); one interactivity knob on each headline fixed chart (§7.4); study-design structure as a funnel category (§5); oncology-first corpus presentation (§10); innovation-lens probe (§7.3); publish as a version chain, not new copies (§7.5–7.6); a scripted regression set covering the two live round-2 failures (§12). §14 re-scored (artifact export and competitive intelligence recorded but held; RWD-validated proof asset and site-registry data added). §15 deltas logged (A2, A4, A9, A11, A12, new flexible-I/O principle).
 
 **Changed in v1.0:** Folded the August feedback build into the spec (cost and site-footprint as headline questions, the four-question decision funnel, blank mode, connector buckets, sensitivity-first charting policy, the footprint map). Documented the MCP/Gemini surface, which went beyond v0.2's scope. Added UC8–UC9 test cases, the grounding contract as a named requirement, and §15 baseline assumptions for the research comparison.
 
@@ -53,11 +55,17 @@ The demo is a vertical slice through all five layers. Each layer is thin, but th
 The product's decision surface is organized around the four questions the target users make design decisions on. Each is answered as a **sensitivity range with options and tradeoffs**, never a single unqualified number.
 
 1. **Cost.** Per-patient cost built from the schedule of assessments — procedure unit costs weighted by site mix, per-visit overhead, plus indirect (data-management effort, site activation and maintenance over the enrollment window) — split **direct vs indirect**, rolled to a **total study cost**, returned as a lean / as-drafted / rich range anchored to the comparator cohort's p25 / median / p75 SoA intensity.
-2. **Site footprint.** Given a target N, a site count, and regulatory-region floors (default ≥20% North America), a recommended **country allocation** from measured per-site enrollment rates and startup times, plus the site-count sensitivity (lean / planned / aggressive — the "10 vs 20 vs 50 sites" ask) priced in recruit timeline and activation cost, led by a map.
+2. **Site footprint.** Given a target N, a site count, and regulatory-region floors (default ≥20% North America), a recommended **country allocation** from measured per-site enrollment rates and startup times, plus the site-count sensitivity (lean / planned / aggressive — the "10 vs 20 vs 50 sites" ask) priced in recruit timeline and activation cost, led by a map. *(v1.1, P0)* The regulatory floor is a **hard constraint**, not a preference: the allocation satisfies the floors first, then optimizes on enrollment rates. Compliance is surfaced in the answer ("US at 22%, above the 20% regulatory floor"), never left implicit, and the floors are user-editable — real floors differ by indication and agency posture. The round-2 demo recommended 7% US on the NSCLC Phase 2 protocol and a Regeneron clin-dev physician caught it immediately, citing an FDA filing rejected with under 10% US patients; that single grounding-contract failure converted an enthusiastic session into "not ready."
 3. **Timelines.** Recruitment and data-collection timeline impact of design choices: screening burden, added procedures, endpoint load, site mix. Includes the criteria/screening-burden analyses.
 4. **Endpoints.** Assessment burden per endpoint, timeline-to-database-lock impact, and prioritization options (all / prioritized subset / defer to exploratory). Includes amendment-risk economics under the cost lens.
 
 Eligibility-burden and amendment-risk analyses are deliberately folded under these four rather than given their own buckets, so the funnel stays at four.
+
+Three v1.1 extensions to the decision surface, all P1:
+
+- **Probability of success, the honest version** *(P1, un-deferred from §14 — A12 broke: both round-1 testers, Regeneron clin ops in round 2, and the AZ exec KPI frame all asked)*. Not a fitted model: an **empirical percentile against the comparator cohort** ("designs with this burden and footprint completed enrollment on time in 68% of comparator trials"), drivers named, presented as a range like everything else, explicitly labeled for what it is not (no fitted enrollment-variance model yet). Sequenced behind the backtest in the proof plan so the number ships already validated.
+- **Study-design structure as a funnel category** *(P1 — Regeneron clin ops)*. Interrogate design type itself — single-arm vs crossover vs basket, blinding, comparator choice — alongside the four questions. Starts with comparator-cohort evidence ("what designs did similar trials use, with what enrollment outcomes") rather than recommendation logic.
+- **Innovation-lens probe** *(P1 — Ipsen: every trial at his company gets asked "did you consider DCT, wearables, ePRO, biobanking?")*. A canned analysis that sweeps the draft for these options with burden/timeline/cost deltas where the corpus supports them, and honest refusal where it does not.
 
 ## 5. Interaction model
 
@@ -73,10 +81,11 @@ Draft doc → select element → interrogate → sensitivity analysis → explor
 
 **The decision funnel (left controls).** The workspace's left panel is a funnel, not a blank slate: four collapsible question groups — Cost, Site footprint, Timelines, Endpoints — each expanding to a short list of grounded, chart-backed analyses. Interviewees identified this as the differentiator against a raw agent in Gemini/Copilot ("it's like a funnel, it starts narrowing down your thought process"), and the standing directive is to make the controls do more work over time.
 
-**Three modes**, selected via a document picker:
+**Four modes** *(v1.1: Schema added as a P0)*, selected via a document picker:
 
 - **Hero** — the pre-drafted NSCLC design brief (the scripted demo).
-- **Corpus** — any protocol in the corpus opened as a document to interrogate, each in an isolated chat session.
+- **Corpus** — any protocol in the corpus opened as a document to interrogate, each in an isolated chat session. *(v1.1, P1)* For oncology audiences, present an **oncology-only protocol set** and lean on the 30-protocol NSCLC depth — Regeneron clin dev read three protocols spanning oncology and general medicine as "too broad to be accurate" (§10).
+- **Schema** — *(v1.1, P0)* onboard from a study schema, not only a full brief. Paste or upload a skeletal design (indication, phase, arms, endpoints, target N) and get the funnel scoped to it, with honest gaps stated ("no SoA yet, cost answers will be comparator-level"). Pfizer clin ops: "Sometimes all we have is a study-design one-slider. I wouldn't have all this information yet." Roche and Regeneron start from concept sheets.
 - **Blank** — net-new design. Carries the same four-question funnel phrased at the comparator-cohort level ("what does a trial like this typically cost?"), so a team starting from scratch gets the same substrate. Brief-scoped tools are honestly reported unavailable until a design exists.
 
 **Two chart surfaces.**
@@ -108,6 +117,14 @@ What-if answers compose from precomputed operational parameters in the corpus (l
 - **Honest refusal.** When the corpus can't ground an answer (e.g. a China site floor — the corpus carries 12 countries and no China), the tool output says so rather than improvising. Interviewees specifically praised this behavior; it is a feature, not a gap.
 - **Sensitivities, not point estimates.** Headline questions come back as ranges with options and tradeoffs.
 - **Named coefficients.** Where synthetic scaffolding converts effort to dollars (the `COST` coefficients), it is named and flagged as such, never presented as a quote.
+- **Regulatory floors are part of the contract** *(v1.1, P0)*. A recommendation that violates a stated regulatory constraint is a grounding failure, not a tuning issue. The footprint engine enforces the floors as hard constraints (§4.2) and the prompt makes them non-negotiable; the scripted regression set asserts them (§12).
+
+**Evidence lineage in the chat surface** *(v1.1, P0 — promoted from the MVP list into the demo)*. Novartis: "Nowhere here do I see a link or a section in terms of sources... scientists, if there's a number they don't understand, they're not trusting."
+
+- **Per-number source chips** in answers: which corpus tables, how many records, what filters.
+- **A browsable corpus library panel** — Novartis asked to open and inspect the repo protocols.
+- **Scenario definitions on demand**: what lean / as-drafted / rich means and which assessments each includes (Ipsen: "that's the part that will trip people up"). Offer Ipsen's alternative anchor — "benchmark against your own last five trials in this TA" — once internal connectors exist, and say so honestly until then.
+- **Keep the best-guess flag**: when a number is an estimate, say so and ask "would you agree?" (Novartis's collaboration framing).
 
 ### 7.3 Tool surface
 ~15 tools in `lib/strategistTools.ts`, with descriptions that state *when* to call, not just what they do. Headline tools: `trial_cost`, `site_footprint`, procedure sensitivity, endpoint timeline, criteria waterfall, amendment-risk sweep, comparator landscape, site-level breakdown, `render_chart`, `ship_decision`, plus the corpus query tools.
@@ -117,18 +134,21 @@ What-if answers compose from precomputed operational parameters in the corpus (l
 - **Generated charts** render as self-contained inline SVG (no scripts, no external requests) in sandboxed iframes. Chart data is injected from corpus retrievals, not free-typed by the model. Display-only and session-ephemeral. A malformed spec shows a fallback message, never breaks the page.
 - **Charting policy** (encoded in the prompt): **line** charts carry a low/medium/high band across a continuous knob; **bar** charts compare discrete scenarios; **heatmaps** explore two parameters at once (site count × country, eligibility strictness × endpoint load) and are the default when two knobs vary together.
 - **The footprint map:** an inline-SVG proportional-symbol world map — country bubbles at real lat/long sized by expected enrollment, colored by region — fully self-contained under the page CSP.
+- **One knob per headline fixed chart** *(v1.1, P1)*: a single slider or toggle on the two headline fixed charts — site count on the footprint chart, SoA intensity on the cost chart — that re-runs the underlying tool without re-prompting. Regeneron clin ops asked to toggle site count directly; Novartis asked whether charts are editable. Chat stays the general path; this is the cheapest demo-wow per unit of build.
 
 ### 7.5 Ship-it flow
 A shipped decision writes to the output doc via the Docs API: revised element text, chosen option, alternatives with tradeoffs, evidence citations. Each ship appends to a decision log section, written to be self-contained for a teammate who wasn't in the session. Undo is out of scope; re-shipping an element appends a superseding entry. Degrades gracefully to an on-page decision log when credentials or the doc ID are absent.
 
 ### 7.6 Document layer
-The design brief is pre-drafted in Google Docs at session start. Publish/codify converts conversation → HTML → Google Doc (Drive converts, preserving structure). The review loop reads anchored comment threads and produces a second document: the revision with a change log keyed one-to-one to the comments. Native Google Docs suggestion mode is not reachable through the API surface used; the separate-revision design is the design, not a compromise. Credentials: service account with domain-wide delegation, impersonating a Workspace user (see plan doc).
+The design brief is pre-drafted in Google Docs at session start. Publish/codify converts conversation → HTML → Google Doc (Drive converts, preserving structure). *(v1.1, P1)* Publish is a **version chain, not new copies**: Roche named the risk — every publish emitting a fresh Google Doc is exactly the "multiple copies flying around" that document-control cultures fear. Publish updates one canonical doc with a version-history section, and the decision log records the chain. This tees up the SharePoint/M365 direction without building it yet. The review loop reads anchored comment threads and produces a second document: the revision with a change log keyed one-to-one to the comments. Native Google Docs suggestion mode is not reachable through the API surface used; the separate-revision design is the design, not a compromise. Credentials: service account with domain-wide delegation, impersonating a Workspace user (see plan doc).
 
 ### 7.7 Access and security
 Route under `/clients/protocol-strategist`, Clerk-gated plus a per-user workspace grant managed from `/admin`; the page and all API routes enforce the grant. Magic-link fallback exists. A dedicated Anthropic Console project with its own key and spend cap keeps demo cost reportable and the key revocable. A health-check endpoint verifies key, corpus, tools, and Google credentials in one request (itself behind the grant — it makes a billed model call).
 
 ### 7.8 MCP surface (added post-v0.2)
 The strategist is exposed as a remote MCP server at `/api/mcp` (Streamable HTTP, bearer-key auth) so external enterprise agents — Gemini surfaces first — can use it as a tool. The architecture is **grounded-answer**: the full reasoning loop (model + corpus tools + grounding contract) runs server-side inside `ask_strategist`; raw analytics tools and corpus data are deliberately not exposed, and documents are authored server-side, so a client-side model only relays finished, vetted answers. Eight tools exposed, plus MCP prompts that surface as slash commands. A Gemini connection kit (`gemini/`) ships an ADK agent example and agent instructions that keep the outer model from decorating relayed answers with numbers of its own. This answers the "we don't want another portal" concern directly.
+
+*(v1.1)* Delivery keeps **two front doors** per the round-2 split: the hosted workspace (preferred by HiBio, fine for Regeneron clin ops) and the MCP server (Pfizer/Gemini, Regeneron clin dev/Claude). Stop describing MCP as the endgame in demo narration — it is one of two front doors (A11 softened, §15).
 
 ### 7.9 Data connectors panel
 A preview of the sources a real engagement would wire in, in four collapsed buckets: **Licensed & real-world data**, **Regulatory & competitive** (FDA/EMA guidance & precedent, AdComm/CRL history, registries), **Cost & fair-market value** (FMV benchmarks, grant-plan budgets, portfolio finance), and **Internal** (including Expert & KOL interviews). Preview affordances, provisioned per engagement. The bucket list is itself a research probe: which sources users ask to light up is signal.
@@ -186,9 +206,11 @@ Each case has a prompt, expected behavior, data drawn on, and a pass criterion. 
 - **Prompt:** "Build me a site and country footprint — how many sites, in which countries, to hit my sample size and regulatory targets?"
 - **Expected:** A country allocation meeting regulatory floors first (default ≥20% North America), filled with the fastest enrollers; the site-count sensitivity (lean / planned / aggressive) priced in recruit timeline and activation cost; honest limits stated (no China in the corpus).
 - **Data:** Site table (per-site enrollment rates, startup times, by country). **Visual:** Proportional-symbol world map + per-scenario timeline (fixed).
-- **Pass:** Regulatory floor respected, allocation justified by measured rates, three site-count scenarios quantified, map matches the numbers.
+- **Pass:** Regulatory floor respected **as a hard constraint — the recommended allocation's expected North America enrollment share is ≥ the floor, asserted, and the answer states the compliance explicitly ("US at 22%, above the 20% regulatory floor")** *(v1.1, P0 — this is the check the round-2 demo failed)*; allocation justified by measured rates, three site-count scenarios quantified, map matches the numbers.
 
 **Ten-minute demo path:** open the drafted doc → UC2 (endoscopy sensitivity) → UC4 (second-order chain, generated chart) → UC5 (ship it) → UC6 (amendment sweep) → UC7 payoff via the pre-commented doc. UC1, UC3, UC8, UC9 are questions the client can ask live.
+
+**Demo QA regression set** *(v1.1, P1 — from the two live round-2 failures)*: a scripted, UC-level regression run before every demo round. At minimum: (a) the Ipsen ePRO what-if chain, whose timeline chart failed to render live (the fallback held the page, but the moment was lost); (b) a "recommended country footprint" run on **each** hero protocol with regulatory-floor assertions (the 7% US miss, item §4.2).
 
 ## 9. Visualization specification
 
@@ -221,6 +243,8 @@ Units of record:
 | Site operations | One row per site per trial | Screens, screen fails, enrolled, velocity, activation lag, startup days, site type, country |
 | Design brief | One object | The pre-drafted NSCLC brief with selectable element ids |
 
+**Oncology-first depth** *(v1.1, P1)*: for oncology audiences, present an oncology-only protocol set and lean on the 30-protocol NSCLC depth — a mixed-TA picker reads as "too broad to be accurate" (Regeneron clin dev). Oncology has distinct FDA expectations, site dynamics (academic centers refusing Phase 3, community-site identification, population alignment), and vendor precedent (Flatiron and IQVIA split oncology out). Longer term, deepen oncology operational realism in the corpus — the site-type dynamics above, ideally a site-registry layer (§14).
+
 The corpus carries an explicit causal model (restrictiveness → screen-fail r ≈ +0.92; burden → dropout ≈ +0.93; a deliberate Simpson's-paradox trap in the diversity data) so analytics find real structure. Extensions beyond the published schemas are documented and flagged. Known limits — reconstructed enums, two source protocols, no empirical anchor on the operational layer, fictional sites, 12 countries and no China — are in `trial-corpus.md`.
 
 ## 11. Out of scope (current baseline)
@@ -230,8 +254,10 @@ The corpus carries an explicit causal model (restrictiveness → screen-fail r �
 - Native Google Docs suggestion mode. The separate-revision design is the design.
 - **Authoring.** The strategist revises elements and logs decisions. It does not write the protocol.
 - Saved or shareable generated charts (session-ephemeral); undo on shipped decisions (re-ship supersedes).
-- **Probability of hitting the target** — deferred, not rejected (§14).
+- ~~**Probability of hitting the target** — deferred, not rejected (§14).~~ *(v1.1: un-deferred in its honest empirical form — see §4; the fitted enrollment-variance model remains out of scope.)*
 - Delivery-phase tooling (medical monitoring, data review). The product stays upstream.
+- *(v1.1, held by direction to keep the prototype simple)* **Artifact export** (PPT/Excel chart export, session-to-deck compilation) and the **competitive-intelligence layer** — demand is real and recorded in §14; HTML charts carry testing for now.
+- *(v1.1)* **Multi-user sessions** (Roche, Novartis) — a distinct product problem; hold the line at the shared-doc boundary, with the publish version chain (§7.6) as the bridge.
 
 ## 12. Success criteria
 
@@ -242,6 +268,8 @@ The corpus carries an explicit causal model (restrictiveness → screen-fail r �
 5. At least one generated chart renders live during the demo and matches its narrative.
 6. A client driving the page unassisted ships a decision within three prompts.
 7. *(post-feedback)* A user who names one of the four headline questions gets a grounded, chart-backed range answer from the funnel without free-typing a prompt.
+8. *(v1.1)* The demo QA regression set (§8) passes before every demo round: the footprint answer on each hero protocol satisfies and states its regulatory floor, and the Ipsen ePRO chain renders its chart.
+9. *(v1.1)* Every quantitative claim in a demo answer is auditable in-surface: source chips resolve to corpus tables, scenario definitions open on demand, estimates carry the best-guess flag.
 
 ## 13. Users
 
@@ -258,17 +286,32 @@ Items user research has already surfaced, deliberately not built. New research t
 
 | Item | Who asked | Why deferred |
 |---|---|---|
-| **Probability of hitting the target** ("what is my probability of hitting my target") | Both feedback interviews | Needs a calibrated enrollment-variance model; the honest version is more than a coefficient. Footprint timeline stays a point estimate. |
+| ~~**Probability of hitting the target**~~ | Both round-1 interviews, Regeneron clin ops (round 2), AZ exec KPI frame | *(v1.1)* **Promoted to P1** in its honest empirical form (§4), sequenced behind the backtest. The fitted enrollment-variance model stays deferred. |
+| **Artifact export** (chart export to PPT/Excel, session-to-deck compilation, decision-log appendix — "that would enthrall me") | Three round-2 users routing outputs to governance decks | *(v1.1, moved from P0 by direction)* Demand is real and recorded; held to keep the prototype simple while the proof plan runs. HTML charts carry testing; flexible inputs-and-outputs lives in §15 as a principle, not a build. |
+| **Competitive intelligence layer** (active trials, competitor site overlap, pipeline moves in the same surface) | Three round-2 requesters | *(v1.1, moved from P1 by direction)* Doing it right means a new data layer; parks with the proof plan's data-sourcing decisions rather than the build list. |
+| **RWD-validated analytic as a proof asset** (run one headline analytic — patient-journey or screen-fail sensitivity — against a real licensed data set and publish the validation) | Two round-2 experts, independently, as the credibility unlock | *(v1.1)* Not a demo feature; candidate for the engagement's data-science track. |
+| **Site-level registry data** (named-site reasoning: US oncology site registry, community-site identification, population alignment) | Regeneron clin dev | *(v1.1)* High value, big data lift; sequence after the oncology-depth work (§10). |
+| **Year-by-year cost phasing** | Ipsen | *(v1.1)* Small extension of the cost tool once budget-cycle framing matters; note it in the cost answer's honest-limits line until then. |
+| **Multi-user sessions** | Roche, Novartis | *(v1.1)* A distinct product problem; hold the line at the shared-doc boundary, with the publish version chain (§7.6) as the bridge. |
 | **Endpoint regulatory acceptability** ("have the endpoints been acceptable to regulators; which studies failed and why") | HiBio | Needs a regulatory-precedent dataset the corpus doesn't hold. The Regulatory & competitive connector is where it plugs in. |
 | **Expert/KOL interview data as a first-class source** ("the bread and butter," captured only ad hoc today) | Pfizer | Represented as a connector preview; ingestion and structuring is an engagement-scale build. |
 | **Fair-market-value benchmark integration** | Pfizer (named internal gap) | Cost model uses flagged synthetic coefficients; a real FMV source plugs into the Cost & FMV connector. |
 | **Survey-grade choropleth map** | (internal) | Proportional-symbol map is recognizable and self-contained; a real basemap is a heavier asset the data already supports. |
-| **Voice input; deeper native-agent embedding** | Both | Distribution decisions above the demo. The MCP server is the first concrete step. |
+| **Voice input; deeper native-agent embedding** | Both round-1 interviews | Unchanged by round 2. Distribution decisions above the demo; the MCP server is the first concrete step, now framed as one of two front doors (§7.8). |
 | **Delivery-phase tooling** | Raised and explicitly declined | Both directors agreed upstream is the right entry. |
 
 ## 15. Baseline assumptions to test in the next research round
 
-The product's load-bearing bets, stated as falsifiable claims with their current evidence strength. Score each new interview against this table; a claim that keeps confirming hardens into principle, a claim that cracks becomes a v1.1 change.
+The product's load-bearing bets, stated as falsifiable claims with their current evidence strength. Score each new interview against this table; a claim that keeps confirming hardens into principle, a claim that cracks becomes a version change.
+
+**v1.1 delta log (round 2 scored against the baseline):**
+
+- **A2 refined.** The starting artifact is often a one-page schema, not a full draft (Pfizer's "study-design one-slider," Roche/Regeneron concept sheets) → the Schema mode, §5.
+- **A4 extended.** The lead question is seat-dependent, and **regulatory alignment** joins the question set (the floor miss and the evidence-lineage asks, §4.2 and §7.2).
+- **A9 validated.** The decision log was confirmed unprompted (Ipsen). Governance-export demand recorded, held in §14 by direction.
+- **A11 softened.** Two delivery doors, not one winner — hosted workspace and MCP are peers (§7.8).
+- **A12 broken.** Probability of success stopped being deferrable; un-deferred in its honest empirical form, sequenced behind the backtest (§4).
+- **New principle to log:** flexible artifact inputs and outputs is a design insight the research keeps confirming. Keep the PRD simple: no new connectors or export builds while the proof plan runs.
 
 | # | Assumption | Evidence today | What would confirm / refute it |
 |---|---|---|---|
