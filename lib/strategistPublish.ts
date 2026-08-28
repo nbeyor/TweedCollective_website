@@ -93,6 +93,8 @@ export async function publishProtocol(opts: {
   transcript?: string
   title?: string
   shareWith?: string
+  /** Optional output template: the document follows this structure instead of the default full protocol. */
+  template?: { label: string; outline: string } | null
 }): Promise<DocRef & { shared: boolean; shareError?: string; usage: unknown }> {
   const { brief, decisions } = opts
   if (!opts.transcript && !decisions.length) {
@@ -106,6 +108,11 @@ export async function publishProtocol(opts: {
       : '## Current design brief\n\nNone — the team started from a blank page; draft the protocol from the conversation.'
   )
   sections.push(`## Decision log (already shipped — apply in place)\n\n${decisionBlock(decisions)}`)
+  if (opts.template?.outline) {
+    sections.push(
+      `## Output template (structure requirement)\n\nThe team selected an output template: **${opts.template.label}**. ${opts.template.outline}\n\nThe template governs STRUCTURE only — every other rule above still holds: decisions applied in place, no session narrative, no invented figures, and the closing "Provenance and limits" section stays.`
+    )
+  }
   if (opts.transcript) sections.push(`## Strategy conversation (context only)\n\n${opts.transcript}`)
 
   const client = new Anthropic()
@@ -129,8 +136,8 @@ export async function publishProtocol(opts: {
   )
   if (!html) throw new PublishError('The model returned no document content.', 502)
 
-  const title =
-    opts.title?.trim() || (brief ? `${brief.title} — Updated Protocol` : 'Updated Protocol Draft')
+  const docKind = opts.template?.label ?? 'Updated Protocol'
+  const title = opts.title?.trim() || (brief ? `${brief.title} — ${docKind}` : `${docKind} — Draft`)
 
   const doc = await createDoc({ title, html })
 

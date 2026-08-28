@@ -168,7 +168,7 @@ export const ANALYTICS: AnalysisEntry[] = [
 export const SUGGESTIONS: Record<StrategistMode, string[]> = {
   hero: [
     'What will this study cost per patient and all-in — direct vs indirect?',
-    'Build me a site and country footprint that hits a 20% US enrollment target.',
+    'Build me a site and country footprint that clears the 20% US regulatory floor — and show the compliance.',
     'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',
     'Before this goes to writing, which elements are most likely to force an amendment?',
   ],
