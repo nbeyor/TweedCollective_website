@@ -1351,3 +1351,141 @@ export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
     note: 'Per-site enrollment rate and startup measured from the cohort site table. Region floors are enforced as hard constraints on expected enrollment share — the allocation satisfies the floors first, then optimizes on enrollment rates; state the compliance explicitly in the answer (see floor_compliance). The corpus carries 12 countries — China is not among them, so a China floor cannot be grounded here. Synthetic; illustrative of the mechanism.',
   }
 }
+
+// ----------------------------------------------------------- design structure ---
+//
+// Study-design structure as a decision surface. The cuts mirror the axes a
+// design lead actually weighs, in rough decision order:
+//   1. control strategy  — randomized concurrent control vs single-arm/open
+//   2. blinding          — double / single / open-label
+//   3. framework         — parallel group vs crossover vs dose-escalation
+//   4. arms & allocation — arm count, randomization scheme (simple/block, stratified)
+//   5. special structures — adaptive elements, basket (master-protocol) designs
+// Every level is joined to the cohort's realized outcomes so the answer is
+// comparator evidence ("what did trials built this way actually do"), not
+// recommendation logic. Associations are observational, and thin subgroups
+// (n < 5) are flagged rather than hidden.
+
+export interface DesignStructureFilter {
+  therapeutic_area?: string
+  phase?: string | string[]
+}
+
+const THIN_EVIDENCE_N = 5
+
+function parseDesign(p: Protocol) {
+  const s = String(p.study_design ?? '')
+  return {
+    framework: s.includes('Parallel Group')
+      ? 'Parallel group'
+      : s.includes('Cross-Over')
+        ? 'Crossover'
+        : s.includes('Dose-Escalation')
+          ? 'Dose-escalation'
+          : 'Unspecified',
+    blinding: s.includes('Double-Blind')
+      ? 'Double-blind'
+      : s.includes('Single-Blind')
+        ? 'Single-blind'
+        : s.includes('Open-Label')
+          ? 'Open-label'
+          : 'Unspecified',
+    control: s.includes('Randomized Controlled Trial')
+      ? 'Randomized controlled'
+      : 'Non-randomized / single-arm',
+    adaptive: p.adaptive_design === 'Yes' || s.includes('Adaptive Design'),
+    basket: p.basket_umbrella_trial === 'Yes' || s.includes('Basket Design'),
+    arms: Number(p.study_arm_count) || 0,
+    randomization_scheme: String(p.randomization_scheme || 'Not Applicable'),
+  }
+}
+
+/** Median realized outcomes for one design subgroup. */
+function designOutcomes(group: Protocol[]) {
+  const med = (vals: number[]) => round(quantile(vals.filter(Number.isFinite), 0.5), 1)
+  const of = (k: string) => med(group.map((p) => Number(p[k])))
+  return {
+    n: group.length,
+    median_enrollment_months: of('enrollment_duration_months'),
+    median_participants: of('number_of_participants'),
+    median_screen_fail_pct: med(group.map((p) => Number(p.screen_fail_rate) * 100)),
+    median_dropout_pct: med(group.map((p) => Number(p.dropout_rate) * 100)),
+    median_major_amendments: of('major_amendments'),
+    evidence:
+      group.length === 0
+        ? 'none in this cohort'
+        : group.length < THIN_EVIDENCE_N
+          ? `thin — only ${group.length} trial(s)`
+          : undefined,
+  }
+}
+
+function cutBy(cohort: Protocol[], level: (p: Protocol) => string) {
+  const groups = new Map<string, Protocol[]>()
+  for (const p of cohort) {
+    const key = level(p)
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key)!.push(p)
+  }
+  return Array.from(groups.entries())
+    .map(([lvl, g]) => ({ level: lvl, ...designOutcomes(g) }))
+    .sort((a, b) => b.n - a.n)
+}
+
+/**
+ * The comparator-evidence view of study-design structure: which designs
+ * comparable trials used — control, blinding, framework, arms, randomization,
+ * adaptive/basket — and the realized outcomes of each. Works with or without
+ * a brief: with one, the cohort defaults to the brief's comparators; without
+ * (blank mode), pass a filter or get the whole corpus, labeled as such.
+ */
+export function designStructure(brief: DesignBrief | null, filter: DesignStructureFilter = {}) {
+  const effective: CohortFilter = {
+    therapeutic_area: filter.therapeutic_area ?? brief?.comparator_cohort.therapeutic_area,
+    phase: filter.phase ?? brief?.comparator_cohort.phase,
+  }
+  let cohort = selectCohort(effective)
+  let scope =
+    [effective.therapeutic_area, effective.phase && `Phase ${[effective.phase].flat().join(' & ')}`]
+      .filter(Boolean)
+      .join(', ') || 'entire corpus'
+  // A thin cohort makes every subgroup noise: widen to the therapeutic area,
+  // then to the corpus, and say so.
+  if (cohort.length < 12 && effective.phase) {
+    cohort = selectCohort({ therapeutic_area: effective.therapeutic_area })
+    scope = `${effective.therapeutic_area ?? 'corpus'} (all phases — the phase-matched cohort was too thin to cut by design)`
+  }
+  if (cohort.length < 12) {
+    cohort = protocols()
+    scope = 'entire corpus (the filtered cohort was too thin to cut by design)'
+  }
+
+  const parsed = cohort.map((p) => ({ p, d: parseDesign(p) }))
+  const adaptive = parsed.filter((x) => x.d.adaptive).map((x) => x.p)
+  const basket = parsed.filter((x) => x.d.basket).map((x) => x.p)
+
+  return {
+    brief_id: brief?.brief_id ?? null,
+    cohort_scope: scope,
+    comparator_n: cohort.length,
+    draft_design: brief
+      ? {
+          arms: brief.arms.length,
+          note: 'Arm count from the draft brief. Interrogate blinding, control, and framework in chat — the draft does not pin them yet.',
+        }
+      : null,
+    by_control: cutBy(cohort, (p) => parseDesign(p).control),
+    by_blinding: cutBy(cohort, (p) => parseDesign(p).blinding),
+    by_framework: cutBy(cohort, (p) => parseDesign(p).framework),
+    by_arm_count: cutBy(cohort, (p) => {
+      const arms = parseDesign(p).arms
+      return `${arms} arm${arms === 1 ? '' : 's'}`
+    }),
+    by_randomization_scheme: cutBy(cohort, (p) => parseDesign(p).randomization_scheme),
+    special_structures: {
+      adaptive: { ...designOutcomes(adaptive), what: 'Trials with adaptive elements' },
+      basket: { ...designOutcomes(basket), what: 'Basket / master-protocol trials' },
+    },
+    note: 'Comparator evidence, not recommendation: medians of realized outcomes per design subgroup. Associations are observational — designs that enrolled faster may differ in indication mix and burden too, so treat differences as hypotheses to pressure-test, not causal effects. Subgroups under 5 trials are flagged as thin. The corpus carries no umbrella or platform trials and no factorial designs; questions about them get an honest refusal. Synthetic; illustrative of the mechanism.',
+  }
+}

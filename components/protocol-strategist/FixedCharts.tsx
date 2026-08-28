@@ -490,6 +490,84 @@ function SiteFootprint({ data, expanded }: ChartProps) {
   )
 }
 
+// --------------------------------------------------------- design structure ---
+
+function DesignStructure({ data, expanded }: ChartProps) {
+  const frameworks = (data.by_framework as Array<Record<string, unknown>>) ?? []
+  const blinding = (data.by_blinding as Array<Record<string, unknown>>) ?? []
+  const control = (data.by_control as Array<Record<string, unknown>>) ?? []
+  const special = (data.special_structures as Record<string, Record<string, unknown>>) ?? {}
+  const cohortN = Number(data.comparator_n ?? 0)
+
+  const modal = frameworks[0]
+  const conclusion = modal
+    ? `${String(modal.level)}, ${String(blinding[0]?.level ?? '').toLowerCase()} is the modal structure (${Number(modal.n)} of ${cohortN} trials). Bars: how fast each framework actually enrolled.`
+    : 'Design structures used across the comparator cohort.'
+
+  const rows = frameworks.filter((r) => Number(r.n) > 0 && Number.isFinite(Number(r.median_enrollment_months)))
+  const labels = rows.map((r) => `${shorten(String(r.level), expanded ? 40 : 24)} (n=${Number(r.n)})`)
+  const values = rows.map((r) => Number(r.median_enrollment_months))
+  const colors = rows.map((r) => (Number(r.n) < 5 ? wcg.borderStrong : wcg.teal))
+
+  const line = (r: Record<string, unknown>) =>
+    `n=${Number(r.n)} · ~${Number(r.median_enrollment_months)} mo · N=${Number(r.median_participants)}${r.evidence ? ' · thin' : ''}`
+
+  // Natural-height card (like the footprint) so the bars and the blinding /
+  // control / special-structure breakdown flow together.
+  return (
+    <div className={CARD} style={cardStyle}>
+      <p className="text-[11px] uppercase tracking-[0.14em] mb-1" style={{ color: wcg.teal }}>
+        Design structures in the cohort
+      </p>
+      <p className="text-[13px] leading-snug mb-3" style={{ color: wcg.ink }}>
+        {conclusion}
+      </p>
+      <div style={{ height: Math.max(120, rows.length * (expanded ? 48 : 40)) }}>
+        <Bar
+          data={{
+            labels,
+            datasets: [
+              {
+                label: 'Median enrollment (months)',
+                data: values,
+                backgroundColor: colors,
+                borderRadius: 3,
+              },
+            ],
+          }}
+          options={baseChartOptions({
+            indexAxis: 'y' as const,
+            plugins: { legend: { display: false } },
+            scales: { x: axisScale('median enrollment, months'), y: axisScale() },
+          })}
+        />
+      </div>
+      <div className="mt-3 space-y-1" style={{ color: wcg.body }}>
+        {[
+          ...blinding.map((r) => ({ label: String(r.level), r })),
+          ...control.map((r) => ({ label: String(r.level), r })),
+          { label: 'Adaptive elements', r: special.adaptive ?? {} },
+          { label: 'Basket / master protocol', r: special.basket ?? {} },
+        ]
+          .filter(({ r }) => Number(r.n) > 0)
+          .map(({ label, r }, i) => (
+            <div key={i} className="flex items-baseline justify-between gap-2 text-[12px]">
+              <span className="truncate" style={{ color: wcg.ink }}>
+                {label}
+              </span>
+              <span className="shrink-0 tabular-nums" style={{ color: wcg.muted }}>
+                {line(r)}
+              </span>
+            </div>
+          ))}
+      </div>
+      <p className="text-[10.5px] mt-2 leading-snug" style={{ color: wcg.faint }}>
+        Comparator evidence, not recommendation — thin subgroups (n&lt;5) shown muted.
+      </p>
+    </div>
+  )
+}
+
 // ---------------------------------------------------------------- dispatch ---
 
 interface ChartProps {
@@ -514,6 +592,8 @@ export function FixedChart({ panel, expanded = false }: { panel: PanelDescriptor
       return <CostBreakdown data={panel.data} expanded={expanded} />
     case 'site_footprint':
       return <SiteFootprint data={panel.data} expanded={expanded} />
+    case 'design_structure':
+      return <DesignStructure data={panel.data} expanded={expanded} />
     default:
       return null
   }
