@@ -15,6 +15,7 @@ import {
   criteriaWaterfall,
   designBrief,
   designOutcomeCorrelations,
+  designStructure,
   endpointSensitivity,
   enrolledComposition,
   evaluateScenario,
@@ -262,6 +263,28 @@ export const TOOLS = [
     description:
       "Build the study's cost: a per-patient cost linked to the schedule of assessments, split into direct (procedures + visit overhead) and indirect (data management, site activation and maintenance), rolled to a total. Returns three scenarios at the comparator cohort's p25 / median / p75 SoA intensity, so the answer is a grounded range — 'lean vs as-drafted vs rich' — not a single figure. Use this for 'what will this cost?', 'per-patient cost', 'direct vs indirect', 'total study cost', or any cost sensitivity. Every dollar traces to procedure_operations and assessment_operations. Renders the cost-breakdown chart unless context_only is set.",
     input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
+  },
+  {
+    name: 'design_structure',
+    description:
+      "Comparator evidence on study-design STRUCTURE: which designs comparable trials used — randomized control vs single-arm, blinding (double/single/open-label), framework (parallel vs crossover vs dose-escalation), arm count, randomization scheme, and adaptive or basket structures — each subgroup joined to its realized outcomes (enrollment months, participants, screen-fail, dropout, major amendments). Call this for 'should this be single-arm or randomized?', '2 vs 3 arms?', 'open-label or blinded?', 'is there precedent for an adaptive or basket design?', or any question about the design type itself. Evidence, not recommendation: present the subgroup outcomes and their thin-evidence flags honestly. Also works with no brief loaded — pass therapeutic_area/phase to scope the cohort. Renders the design-structure chart unless context_only is set.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        ...CONTEXT_ONLY_SCHEMA,
+        therapeutic_area: {
+          type: 'string',
+          description:
+            'Override the cohort therapeutic area (defaults to the brief’s comparator cohort). e.g. Oncology, Respiratory',
+        },
+        phase: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Override the cohort phase(s), e.g. ["2","2/3"].',
+        },
+      },
+      required: [],
+    },
   },
   {
     name: 'site_footprint',
@@ -645,6 +668,15 @@ export async function runTool(
       const data = trialCostModel(brief)
       if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'cost_breakdown', data } }
+    }
+
+    case 'design_structure': {
+      const data = designStructure(ctx.brief, {
+        therapeutic_area: input.therapeutic_area as string | undefined,
+        phase: input.phase as string | string[] | undefined,
+      })
+      if (input.context_only === true) return data
+      return { ...data, _panel: { chart: 'design_structure', data } }
     }
 
     case 'site_footprint': {

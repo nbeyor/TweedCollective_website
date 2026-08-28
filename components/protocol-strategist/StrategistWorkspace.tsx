@@ -27,6 +27,7 @@ const TOOL_LABELS: Record<string, string> = {
   endpoint_timeline_sensitivity: 'Modelling endpoint timeline impact',
   trial_cost: 'Building the cost model',
   site_footprint: 'Building the site & country footprint',
+  design_structure: 'Cutting the cohort by design structure',
   site_level_breakdown: 'Cutting the slip by site type',
   comparator_landscape: 'Placing the draft against comparators',
   amendment_risk_sweep: 'Sweeping amendment history',

@@ -16,6 +16,7 @@ import {
   Play,
   Timer,
   Trash2,
+  Workflow,
 } from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
@@ -63,6 +64,51 @@ interface QuestionGroup {
 const iconProps = { className: 'w-3.5 h-3.5', strokeWidth: 2 }
 
 const QUESTION_GROUPS: QuestionGroup[] = [
+  {
+    // Structure is the upstream decision — everything downstream (cost,
+    // footprint, timeline) is priced against it — so it leads the funnel.
+    // Cuts follow the axes a design lead actually weighs: control strategy,
+    // blinding, framework (parallel/crossover/dose-escalation), arms &
+    // allocation, then the special structures (adaptive, basket).
+    key: 'design',
+    label: 'Study design',
+    question: 'Is this the right structure — arms, control, blinding?',
+    icon: <Workflow {...iconProps} style={{ color: wcg.sky }} />,
+    analyses: [
+      {
+        label: 'Designs comparable trials used',
+        chart: 'Design structures',
+        prompt:
+          'What study-design structures did comparable trials use — randomized vs single-arm, blinding, parallel vs crossover vs dose-escalation — and how did each actually enroll?',
+        blankPrompt:
+          'For a trial like this, what design structures did comparable studies use — control, blinding, framework — and how did each actually enroll?',
+      },
+      {
+        label: 'Single-arm vs randomized, open-label vs blinded',
+        chart: 'Design structures',
+        prompt:
+          'Could this study run single-arm or open-label instead of randomized double-blind? Compare what those designs looked like in comparable trials — enrollment size, duration, amendments — and state the evidence-strength tradeoff.',
+        blankPrompt:
+          'What do single-arm and open-label designs look like operationally in comparable trials versus randomized blinded ones, and what is the evidence-strength tradeoff?',
+      },
+      {
+        label: 'Arm count vs enrollment load',
+        chart: 'Scenario bars',
+        prompt:
+          'How does arm count relate to total enrollment and duration across comparable trials? What would adding a third arm mean for our sample size and timeline?',
+        blankPrompt:
+          'How does arm count relate to total enrollment and duration across comparable trials?',
+      },
+      {
+        label: 'Adaptive & basket precedent',
+        chart: 'Design structures',
+        prompt:
+          'Is there precedent for adaptive or basket designs among comparable trials, and how did those trials perform? Be explicit where the evidence is thin.',
+        blankPrompt:
+          'Is there precedent for adaptive or basket designs in trials like this, and how did those trials perform? Be explicit where the evidence is thin.',
+      },
+    ],
+  },
   {
     key: 'cost',
     label: 'Cost',
@@ -389,8 +435,8 @@ function QuestionExplorer({
   mode: BriefMode
   onRunAnalysis: (prompt: string) => void
 }) {
-  // In blank mode, first group open; with a draft loaded, cost leads.
-  const [open, setOpen] = useState<string | null>('cost')
+  // The first group (study design — the upstream decision) opens by default.
+  const [open, setOpen] = useState<string | null>('design')
 
   const groups = QUESTION_GROUPS.map((g) => {
     const analyses =
