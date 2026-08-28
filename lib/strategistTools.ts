@@ -266,7 +266,7 @@ export const TOOLS = [
   {
     name: 'site_footprint',
     description:
-      "Recommend a country and site-count footprint for the trial and price the site-count sensitivity. Allocates sites across the countries the corpus carries using each country's measured per-site enrollment rate and startup time, meeting regulatory region floors first (e.g. ≥20% North America enrollment), then filling with the fastest enrollers. Returns a recommended per-country allocation plus lean / planned / aggressive scenarios, each with recruit timeline and activation cost. Use this for 'where should I run this?', 'how many sites?', 'country footprint', 'hit my US enrollment target', or a sites-vs-timeline what-if. Renders the footprint chart unless context_only is set.",
+      "Recommend a country and site-count footprint for the trial and price the site-count sensitivity. Allocates sites across the countries the corpus carries using each country's measured per-site enrollment rate and startup time, enforcing regulatory region floors as hard constraints on expected enrollment share (default ≥20% North America), then optimizing with the fastest enrollers. Returns a recommended per-country allocation with a floor_compliance field to cite in the answer, plus lean / planned / aggressive scenarios, each with recruit timeline and activation cost. Use this for 'where should I run this?', 'how many sites?', 'country footprint', 'hit my US enrollment target', or a sites-vs-timeline what-if. Renders the footprint chart unless context_only is set.",
     input_schema: {
       type: 'object' as const,
       properties: {

@@ -1215,25 +1215,22 @@ export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
   const floors = opts.region_floors ?? { 'North America': 0.2 }
 
   // --- Recommended allocation at the planned site count ---------------------
+  // Region floors are a hard constraint on expected enrollment SHARE, not a
+  // seed: an allocation whose floor-region share lands below the floor is a
+  // regulatory-grounding failure however it was built.
+  const opByCountry = new Map(ops.map((o) => [o.country, o]))
   const allocate = (siteCount: number) => {
     const alloc = new Map<string, number>() // country -> sites
     let remaining = siteCount
 
-    // Meet region floors first: enough subjects from the region to clear the
-    // floor, converted to sites via that region's best per-site rate.
-    for (const [region, floor] of Object.entries(floors)) {
-      const inRegion = ops.filter((o) => o.region === region)
-      if (!inRegion.length) continue
-      const subjectsNeeded = n * floor
-      const best = inRegion[0] // highest subjects_per_site
-      const sitesNeeded = Math.min(
-        remaining,
-        Math.max(1, Math.ceil(subjectsNeeded / Math.max(1, best.subjects_per_site)))
-      )
-      alloc.set(best.country, (alloc.get(best.country) ?? 0) + sitesNeeded)
-      remaining -= sitesNeeded
+    // Seed each floor region with a site in its best country, then fill with
+    // the fastest enrollers overall.
+    for (const region of Object.keys(floors)) {
+      const best = ops.find((o) => o.region === region)
+      if (!best || remaining <= 0) continue
+      alloc.set(best.country, (alloc.get(best.country) ?? 0) + 1)
+      remaining -= 1
     }
-    // Fill the rest with the fastest enrollers overall.
     let i = 0
     while (remaining > 0 && ops.length) {
       const o = ops[i % ops.length]
@@ -1241,12 +1238,48 @@ export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
       remaining -= 1
       i += 1
     }
+
+    // Enforce the floors on expected enrollment share: while a floor region
+    // sits below its floor, move a site from the slowest-enrolling non-floor
+    // country (giving up the least enrollment) into the region's best country.
+    const regionShare = (region: string) => {
+      let regionSubjects = 0
+      let total = 0
+      alloc.forEach((s, country) => {
+        const o = opByCountry.get(country)!
+        const subjects = s * o.subjects_per_site
+        total += subjects
+        if (o.region === region) regionSubjects += subjects
+      })
+      return total > 0 ? regionSubjects / total : 0
+    }
+    // Small buffer so per-country rounding in the reported table cannot land
+    // the displayed share back under the floor.
+    const margin = 0.01
+    let moved = true
+    let guard = siteCount * 4
+    while (moved && guard-- > 0) {
+      moved = false
+      for (const [region, floor] of Object.entries(floors)) {
+        const best = ops.find((o) => o.region === region)
+        if (!best || regionShare(region) >= floor + margin) continue
+        const donor = Array.from(alloc.keys())
+          .map((c) => opByCountry.get(c)!)
+          .filter((o) => !(o.region in floors) && (alloc.get(o.country) ?? 0) > 0)
+          .sort((a, b) => a.subjects_per_site - b.subjects_per_site)[0]
+        if (!donor) continue
+        const donorSites = alloc.get(donor.country)!
+        if (donorSites <= 1) alloc.delete(donor.country)
+        else alloc.set(donor.country, donorSites - 1)
+        alloc.set(best.country, (alloc.get(best.country) ?? 0) + 1)
+        moved = true
+      }
+    }
     return alloc
   }
 
   const allocationTable = (siteCount: number) => {
     const alloc = allocate(siteCount)
-    const opByCountry = new Map(ops.map((o) => [o.country, o]))
     const rows = Array.from(alloc.entries())
       .map(([country, s]) => {
         const o = opByCountry.get(country)!
@@ -1286,15 +1319,35 @@ export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
     countries: allocationTable(sc.sites).length,
   }))
 
+  const recommended = allocationTable(planned)
+  // Floor compliance, stated per region so the answer can surface it
+  // ("US at 22%, above the 20% regulatory floor") rather than leave it implicit.
+  const floorCompliance = Object.entries(floors).map(([region, floor]) => {
+    const share = recommended
+      .filter((r) => r.region === region)
+      .reduce((a, r) => a + r.share_of_enrollment_pct, 0)
+    const hasSites = ops.some((o) => o.region === region)
+    return {
+      region,
+      floor_pct: pct(floor),
+      expected_share_pct: round(share, 1),
+      met: hasSites && share >= pct(floor),
+      note: hasSites
+        ? undefined
+        : `No ${region} sites in the corpus cohort — this floor cannot be grounded here.`,
+    }
+  })
+
   return {
     brief_id: brief.brief_id,
     target_enrollment: n,
     comparator_n: cohort.length,
     region_floors: floors,
+    floor_compliance: floorCompliance,
     countries_available: ops.map((o) => o.country),
     country_operations: ops,
-    recommended_allocation: allocationTable(planned),
+    recommended_allocation: recommended,
     scenarios,
-    note: 'Per-site enrollment rate and startup measured from the cohort site table; allocation meets region floors first, then fills with the fastest-enrolling countries. The corpus carries 12 countries — China is not among them, so a China floor cannot be grounded here. Synthetic; illustrative of the mechanism.',
+    note: 'Per-site enrollment rate and startup measured from the cohort site table. Region floors are enforced as hard constraints on expected enrollment share — the allocation satisfies the floors first, then optimizes on enrollment rates; state the compliance explicitly in the answer (see floor_compliance). The corpus carries 12 countries — China is not among them, so a China floor cannot be grounded here. Synthetic; illustrative of the mechanism.',
   }
 }
