@@ -34,6 +34,15 @@ import {
   type Protocol,
   type SensitivityScenario,
 } from './trialCorpus'
+import {
+  accrualSummary,
+  binaryEndpointRate,
+  cohortCharacterization,
+  continuousEndpointSummary,
+  patientJourney,
+  retentionSummary,
+  timeToEventSummary,
+} from './omop/summaries'
 /**
  * A decision recorded against a brief element. Registered in the workspace
  * decision log (client-side, persisted per document) — never written to Drive.
@@ -314,6 +323,44 @@ export const TOOLS = [
     description:
       "Sweep the draft's element types against amendment histories in the comparator indication: which element types get amended, how often, when (months from first-patient-in), and at what cost (~$500K scale). Flags the elements most likely to force an amendment. Use this as the closing pressure test before the protocol goes to writing. Renders the amendment-risk view unless context_only is set.",
     input_schema: { type: 'object' as const, properties: { ...CONTEXT_ONLY_SCHEMA }, required: [] },
+  },
+  {
+    name: 'rwd_summary',
+    description:
+      "Fixed descriptive summaries over the SEPARATE synthetic OMOP CDM v5.4 real-world-data store (10,800 patients — distinct from the trial-operations corpus). Call this to ground a design assumption in observed RWD: control event rates (binary_endpoint_rate: endpoints death_within_followup, hf_hospitalization, asthma_exacerbation, progression_or_death), endpoint variability (continuous_endpoint_summary: fev1_pct_predicted, blood_eosinophils, ntprobnp, lvef, hemoglobin), survival and censoring (time_to_event_summary: overall_survival, progression_free_survival, time_to_first_hf_hospitalization, time_to_first_exacerbation), eligible-patient flow (accrual_summary), follow-up retention (retention_summary), cohort demographics (cohort_characterization), or the patient journey laid against the SoA (patient_journey — renders the journey chart). Cohorts: 101 advanced NSCLC, 102 NSCLC on anti-PD-1, 103 NSCLC chemo-only without anti-PD-1, 201 heart failure, 301 severe asthma, 302 severe eosinophilic asthma. DESCRIPTIVE ONLY: sample-size, power, and boundary calculations are registered analyses that run in the user's Biostatistics panel — point the user there rather than computing any design statistic yourself.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        ...CONTEXT_ONLY_SCHEMA,
+        function_id: {
+          type: 'string',
+          enum: [
+            'cohort_characterization',
+            'binary_endpoint_rate',
+            'continuous_endpoint_summary',
+            'time_to_event_summary',
+            'accrual_summary',
+            'retention_summary',
+            'patient_journey',
+          ],
+          description: 'Which registered RWD summary function to run.',
+        },
+        cohort_definition_id: {
+          type: 'integer',
+          description: 'Predefined OMOP cohort: 101, 102, 103, 201, 301, or 302.',
+        },
+        endpoint_id: {
+          type: 'string',
+          description: 'Registered endpoint id — required for binary_endpoint_rate, continuous_endpoint_summary, and time_to_event_summary.',
+        },
+        followup_months: { type: 'number', description: 'Binary endpoints: follow-up window in months (1-60, default 12).' },
+        baseline_window_days: { type: 'number', description: 'Continuous endpoints: baseline window ± days around index (7-365, default 90).' },
+        horizon_months: { type: 'number', description: 'patient_journey: months charted past index (6-36, default 24).' },
+        target_n: { type: 'number', description: 'accrual_summary: optional enrollment target to translate eligible flow into months-to-target scenarios.' },
+        capture_rate: { type: 'number', description: 'accrual_summary: assumed share of eligible patients who enroll (default 0.05) — an explicit assumption, not an observation.' },
+      },
+      required: ['function_id', 'cohort_definition_id'],
+    },
   },
   {
     name: 'render_chart',
@@ -697,6 +744,51 @@ export async function runTool(
       const data = amendmentRiskSweep(brief)
       if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'amendment_risk', data } }
+    }
+
+    case 'rwd_summary': {
+      const fn = String(input.function_id)
+      const cohortId = Number(input.cohort_definition_id)
+      const bound = (v: unknown, lo: number, hi: number, dflt: number) => {
+        const n = Number(v)
+        return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt
+      }
+      try {
+        switch (fn) {
+          case 'cohort_characterization':
+            return cohortCharacterization(cohortId)
+          case 'binary_endpoint_rate':
+            return binaryEndpointRate(cohortId, String(input.endpoint_id ?? ''), bound(input.followup_months, 1, 60, 12))
+          case 'continuous_endpoint_summary':
+            return continuousEndpointSummary(cohortId, String(input.endpoint_id ?? ''), bound(input.baseline_window_days, 7, 365, 90))
+          case 'time_to_event_summary': {
+            const { km_curve, ...rest } = timeToEventSummary(cohortId, String(input.endpoint_id ?? ''))
+            void km_curve // curve stays out of the model context; the numbers carry the answer
+            return rest
+          }
+          case 'accrual_summary': {
+            const data = accrualSummary(
+              cohortId,
+              input.target_n === undefined ? undefined : bound(input.target_n, 10, 100000, 100),
+              input.capture_rate === undefined ? undefined : bound(input.capture_rate, 0.001, 1, 0.05)
+            )
+            const { by_month, ...rest } = data
+            void by_month
+            return rest
+          }
+          case 'retention_summary':
+            return retentionSummary(cohortId)
+          case 'patient_journey': {
+            const data = patientJourney(cohortId, 'nsclc-2l-brief', bound(input.horizon_months, 6, 36, 24))
+            if (input.context_only === true) return data
+            return { ...data, _panel: { chart: 'patient_journey', data } }
+          }
+          default:
+            return { error: `Unknown RWD summary function "${fn}".` }
+        }
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : String(err) }
+      }
     }
 
     case 'render_chart': {

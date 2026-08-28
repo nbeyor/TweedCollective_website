@@ -10,6 +10,7 @@
     "refresh-dashboard": "python3 pipeline/refresh_copilot.py",
     "setup:pipeline": "bash pipeline/setup.sh",
     "start": "next start",
+    "test:biostats": "tsx scripts/test-biostats.ts",
     "lint": "next lint"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "@types/react-dom": "^18.2.0",
     "eslint": "^8.51.0",
     "eslint-config-next": "^14.0.0",
+    "tsx": "^4.23.12",
     "typescript": "^5.2.0"
   }
 }

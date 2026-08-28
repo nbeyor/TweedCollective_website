@@ -18,6 +18,7 @@ export type StrategistMode = 'hero' | 'corpus' | 'blank'
  * by what data exists rather than by a flat list of tool names.
  */
 export const DATA_CATEGORIES: Array<{ key: string; label: string }> = [
+  { key: 'rwd', label: 'Real-world data (OMOP)' },
   { key: 'cost', label: 'Cost & budget' },
   { key: 'eligibility', label: 'Eligibility & screening' },
   { key: 'procedures', label: 'Procedures & visits' },
@@ -43,6 +44,30 @@ export interface AnalysisEntry {
  * to steer the model at the matching tool (and its chart) without naming it.
  */
 export const ANALYTICS: AnalysisEntry[] = [
+  {
+    id: 'observed-control-event-rate',
+    label: 'Observed control event rate (RWD)',
+    chart: 'RWD summary',
+    categories: ['rwd'],
+    prompt:
+      'From the real-world OMOP cohorts, what control-arm event rate should we assume — with its confidence interval and source cohort — and how would I carry it into the sample-size analysis?',
+  },
+  {
+    id: 'real-world-survival-and-censoring',
+    label: 'Real-world survival & censoring (RWD)',
+    chart: 'RWD summary',
+    categories: ['rwd', 'enrollment'],
+    prompt:
+      'What do the real-world data show for median survival, event rates, and censoring in the comparator population, and what does that imply for our event-driven timeline?',
+  },
+  {
+    id: 'patient-journey-vs-soa',
+    label: 'Patient journey vs the SoA (RWD)',
+    chart: 'Journey timeline',
+    categories: ['rwd', 'procedures'],
+    prompt:
+      'Chart the real-world patient journey against our schedule of assessments — where does observed care cadence and retention diverge from what the protocol asks for?',
+  },
   {
     id: 'per-patient-and-total-cost',
     label: 'Per-patient & total cost',
@@ -167,6 +192,7 @@ export const ANALYTICS: AnalysisEntry[] = [
 /** Per-mode starter questions shown under the composer (and as MCP prompts). */
 export const SUGGESTIONS: Record<StrategistMode, string[]> = {
   hero: [
+    'What control event rate and median survival do the real-world data support for our population — and how should they feed the sample-size run?',
     'What will this study cost per patient and all-in — direct vs indirect?',
     'Build me a site and country footprint that clears the 20% US regulatory floor — and show the compliance.',
     'Medical wants an endoscopy screen to verify GI disease. How does that hit my recruitment timeline?',

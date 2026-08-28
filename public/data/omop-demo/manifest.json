@@ -1,0 +1,49 @@
+{
+ "datasetId": "tweed-omop-demo",
+ "datasetVersion": "1.0.0",
+ "cdm": "OMOP CDM v5.4 (demo subset; dates as integer day offsets)",
+ "epoch": "2019-01-01",
+ "dataEnd": "2025-12-31",
+ "generated": "2026-08-28",
+ "seed": 20260828,
+ "synthetic": true,
+ "separateFrom": "public/data/trial-corpus (the protocol/operations corpus) \u2014 independent asset, independent versioning",
+ "personCount": 10800,
+ "tables": {
+  "concept": 50,
+  "concept_ancestor": 4,
+  "person": 10800,
+  "observation_period": 10800,
+  "visit_occurrence": 165695,
+  "condition_occurrence": 38648,
+  "drug_exposure": 30997,
+  "procedure_occurrence": 38805,
+  "measurement": 120104,
+  "death": 2491,
+  "cohort": 10670,
+  "cohort_definition": 6
+ },
+ "cohortCounts": {
+  "101": 2600,
+  "102": 1397,
+  "103": 1203,
+  "201": 3100,
+  "301": 1671,
+  "302": 699
+ },
+ "fileHashes": {
+  "concept": "b527e91fd7fe0a9e",
+  "concept_ancestor": "68ab03e1766a9dee",
+  "person": "10e758b7780b04c5",
+  "observation_period": "3ed2f39cc9eb57f4",
+  "visit_occurrence": "d465dcdaa891fd25",
+  "condition_occurrence": "3acbe3308a2b87e7",
+  "drug_exposure": "ea0e03837ea21582",
+  "procedure_occurrence": "092119563baa367e",
+  "measurement": "2d1c6f23330ee193",
+  "death": "443e4a0a488864ca",
+  "cohort": "d99243ff5a78d7e6",
+  "cohort_definition": "a1a6fa200570abda"
+ },
+ "caveat": "Entirely synthetic RWD generated for demonstration. No real patient information. Not fit for clinical, regulatory, or operational decisions."
+}

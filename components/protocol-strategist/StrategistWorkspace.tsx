@@ -6,6 +6,7 @@ import { CheckCircle2, ExternalLink, FileUp, Loader2, RotateCcw, Send, Wrench } 
 import { SUGGESTIONS } from '@/lib/mcp/prompts'
 import type { DesignBrief, ProtocolIndexEntry } from '@/lib/trialCorpus'
 import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
+import { BiostatsPanel, type BiostatsRunSummary, type BiostatsSelection } from './BiostatsPanel'
 import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
 import { DataConnectorsPanel } from './DataConnectorsPanel'
 import { InsightPanel, type Insight } from './InsightPanel'
@@ -38,6 +39,7 @@ const TOOL_LABELS: Record<string, string> = {
   get_protocol: 'Pulling protocol detail',
   benchmark_protocol: 'Benchmarking against peers',
   analyze_criteria: 'Analyzing eligibility criteria',
+  rwd_summary: 'Querying the OMOP RWD summaries',
 }
 
 const PLACEHOLDERS: Record<BriefMode, string> = {
@@ -64,6 +66,7 @@ interface DocSession {
   messages: Message[]
   insights: Insight[]
   decisions: ShippedDecision[]
+  biostatsRuns: BiostatsRunSummary[]
   publishedDoc: { webViewLink?: string } | null
 }
 
@@ -105,6 +108,11 @@ export function StrategistWorkspace({
   const [error, setError] = useState<string | null>(null)
   const [insights, setInsights] = useState<Insight[]>([])
   const [decisions, setDecisions] = useState<ShippedDecision[]>([])
+  // Biostatistics workbench: which registered analysis is open, and the runs
+  // completed this session (sent with every chat turn so the model can cite
+  // them without ever choosing the method itself).
+  const [biostats, setBiostats] = useState<BiostatsSelection | null>(null)
+  const [biostatsRuns, setBiostatsRuns] = useState<BiostatsRunSummary[]>([])
   const [shipNotice, setShipNotice] = useState<string | null>(null)
 
   // Output template: what shape Publish produces. Persisted across reloads.
@@ -132,6 +140,23 @@ export function StrategistWorkspace({
 
   // Parked sessions for documents browsed earlier this visit, by source key.
   const parked = useRef(new Map<string, DocSession>())
+
+  /** One card per fixed chart type: unchanged data is dropped, changed data
+   *  replaces the old card at the top. Shared by streamed panel events and the
+   *  biostatistics workbench. */
+  const addFixedInsight = useCallback((panel: { chart: string; data: Record<string, unknown> }) => {
+    seq.current += 1
+    const freshKey = `p${seq.current}`
+    setInsights((prev) => {
+      const idx = prev.findIndex((it) => it.kind === 'fixed' && it.panel.chart === panel.chart)
+      if (idx === -1) return [{ kind: 'fixed', key: freshKey, panel }, ...prev]
+      const existing = prev[idx]
+      if (existing.kind === 'fixed' && JSON.stringify(existing.panel.data) === JSON.stringify(panel.data)) {
+        return prev
+      }
+      return [{ kind: 'fixed', key: freshKey, panel }, ...prev.filter((_, i) => i !== idx)]
+    })
+  }, [])
 
   // Restore this document's persisted decision log on first load.
   useEffect(() => {
@@ -208,7 +233,7 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next, context: source, decisions }),
+          body: JSON.stringify({ messages: next, context: source, decisions, biostats: biostatsRuns }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -250,27 +275,7 @@ export function StrategistWorkspace({
                 setTools((t) => [...t, String(evt.name)])
                 break
               case 'panel': {
-                const panel = evt.panel as { chart: string; data: Record<string, unknown> }
-                seq.current += 1
-                const freshKey = `p${seq.current}`
-                // One card per fixed chart type: a repeat with identical data is
-                // dropped (the model consulted the tool again, nothing new to
-                // show); changed data replaces the old card at the top.
-                setInsights((prev) => {
-                  const idx = prev.findIndex((it) => it.kind === 'fixed' && it.panel.chart === panel.chart)
-                  if (idx === -1) return [{ kind: 'fixed', key: freshKey, panel }, ...prev]
-                  const existing = prev[idx]
-                  if (
-                    existing.kind === 'fixed' &&
-                    JSON.stringify(existing.panel.data) === JSON.stringify(panel.data)
-                  ) {
-                    return prev
-                  }
-                  return [
-                    { kind: 'fixed', key: freshKey, panel },
-                    ...prev.filter((_, i) => i !== idx),
-                  ]
-                })
+                addFixedInsight(evt.panel as { chart: string; data: Record<string, unknown> })
                 break
               }
               case 'chart': {
@@ -319,7 +324,7 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming, source, decisions]
+    [messages, streaming, source, decisions, biostatsRuns, addFixedInsight]
   )
 
   /** Wipe the current document's decision log — a fresh start for this project. */
@@ -337,6 +342,7 @@ export function StrategistWorkspace({
     setTools([])
     setError(null)
     setInsights([])
+    setBiostatsRuns([])
     setShipNotice(null)
     setPublishedDoc(null)
     setPublishError(null)
@@ -361,11 +367,12 @@ export function StrategistWorkspace({
       // Park this document's session, restore the target's. Nothing is lost by
       // browsing, and each conversation stays scoped to one document — the
       // model never sees two protocols' histories mixed together.
-      parked.current.set(sourceKey(source), { messages, insights, decisions, publishedDoc })
+      parked.current.set(sourceKey(source), { messages, insights, decisions, biostatsRuns, publishedDoc })
       const restored = parked.current.get(sourceKey(next))
       setMessages(restored?.messages ?? [])
       setInsights(restored?.insights ?? [])
       setDecisions(restored?.decisions ?? loadStoredDecisions(sourceKey(next)))
+      setBiostatsRuns(restored?.biostatsRuns ?? [])
       setPublishedDoc(restored?.publishedDoc ?? null)
       setReply('')
       setTools([])
@@ -398,7 +405,7 @@ export function StrategistWorkspace({
         setBriefLoading(false)
       }
     },
-    [source, streaming, messages, insights, decisions, publishedDoc, brief]
+    [source, streaming, messages, insights, decisions, biostatsRuns, publishedDoc, brief]
   )
 
   const publish = useCallback(async () => {
@@ -490,6 +497,7 @@ export function StrategistWorkspace({
               decisions={decisions}
               onPickElement={setInput}
               onRunAnalysis={send}
+              onOpenBiostats={setBiostats}
               onClearDecisions={clearDecisions}
               docLink={briefDocLink}
             />
@@ -549,6 +557,22 @@ export function StrategistWorkspace({
             {publishing ? 'Publishing…' : 'Publish updated protocol'}
           </button>
         </div>
+
+        {biostats && (
+          <div className="px-5 pt-4 shrink-0">
+            <div className={COL}>
+              <BiostatsPanel
+                selection={biostats}
+                onClose={() => setBiostats(null)}
+                onInsight={addFixedInsight}
+                onRunRecorded={(run) =>
+                  setBiostatsRuns((prev) => [...prev.filter((r) => r.run_id !== run.run_id), run])
+                }
+                onDiscuss={send}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
           {empty && (

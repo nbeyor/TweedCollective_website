@@ -1,0 +1,319 @@
+{
+ "generated": "2026-08-28",
+ "generator": "pipeline/biostats_reference.py (scipy distributions; independent group-sequential recursion, grid h=0.01)",
+ "tolerances": {
+  "sample_sizes": "exact integer match",
+  "power": "\u00b10.001",
+  "event_probabilities": "\u00b10.005",
+  "gs_z_boundaries": "\u00b10.005",
+  "gs_inflation_factor": "\u00b10.01"
+ },
+ "fixtures": {
+  "ss_continuous_2arm": [
+   {
+    "inputs": {
+     "effect_difference": 0.5,
+     "sd": 1.0,
+     "alpha": 0.05,
+     "power": 0.8,
+     "allocation_ratio": 1.0,
+     "dropout": 0.0
+    },
+    "expect": {
+     "n_control_evaluable": 64,
+     "n_treatment_evaluable": 64
+    }
+   },
+   {
+    "inputs": {
+     "effect_difference": 4.0,
+     "sd": 13.9,
+     "alpha": 0.05,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "dropout": 0.1
+    },
+    "expect": {
+     "n_control_evaluable": 255,
+     "n_treatment_evaluable": 255
+    }
+   },
+   {
+    "inputs": {
+     "effect_difference": 0.4,
+     "sd": 1.2,
+     "alpha": 0.05,
+     "power": 0.85,
+     "allocation_ratio": 2.0,
+     "dropout": 0.15
+    },
+    "expect": {
+     "n_control_evaluable": 123,
+     "n_treatment_evaluable": 244
+    }
+   }
+  ],
+  "ss_binary_2arm": [
+   {
+    "inputs": {
+     "control_rate": 0.3,
+     "treatment_rate": 0.22,
+     "alpha": 0.05,
+     "power": 0.8,
+     "allocation_ratio": 1.0,
+     "dropout": 0.1
+    },
+    "expect": {
+     "n_control_evaluable": 471,
+     "n_treatment_evaluable": 471
+    }
+   },
+   {
+    "inputs": {
+     "control_rate": 0.281,
+     "treatment_rate": 0.2,
+     "alpha": 0.05,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "dropout": 0.0
+    },
+    "expect": {
+     "n_control_evaluable": 583,
+     "n_treatment_evaluable": 583
+    }
+   },
+   {
+    "inputs": {
+     "control_rate": 0.55,
+     "risk_difference": -0.12,
+     "alpha": 0.05,
+     "power": 0.8,
+     "allocation_ratio": 1.5,
+     "dropout": 0.05
+    },
+    "expect": {
+     "n_control_evaluable": 226,
+     "n_treatment_evaluable": 339
+    }
+   }
+  ],
+  "ss_survival_2arm": [
+   {
+    "inputs": {
+     "hazard_ratio": 0.75,
+     "control_median_survival_months": 14.9,
+     "accrual_months": 24,
+     "followup_months": 12,
+     "alpha": 0.05,
+     "power": 0.8,
+     "allocation_ratio": 1.0,
+     "annual_dropout": 0.05
+    },
+    "expect": {
+     "events_required": 380,
+     "n_total_enrolled": 656
+    },
+    "expect_approx": {
+     "expected_event_probability_control": 0.628,
+     "expected_event_probability_treatment": 0.53
+    }
+   },
+   {
+    "inputs": {
+     "hazard_ratio": 0.7,
+     "control_median_survival_months": 12.0,
+     "accrual_months": 18,
+     "followup_months": 18,
+     "alpha": 0.05,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "annual_dropout": 0.1
+    },
+    "expect": {
+     "events_required": 331,
+     "n_total_enrolled": 504
+    },
+    "expect_approx": {
+     "expected_event_probability_control": 0.715,
+     "expected_event_probability_treatment": 0.597
+    }
+   }
+  ],
+  "ss_noninferiority_continuous": [
+   {
+    "inputs": {
+     "ni_margin": 2.0,
+     "true_difference": 0.0,
+     "sd": 7.5,
+     "alpha": 0.025,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "dropout": 0.0
+    },
+    "expect": {
+     "n_control_evaluable": 296,
+     "n_treatment_evaluable": 296
+    }
+   }
+  ],
+  "ss_noninferiority_binary": [
+   {
+    "inputs": {
+     "control_rate": 0.85,
+     "treatment_rate": 0.85,
+     "ni_margin": 0.1,
+     "alpha": 0.025,
+     "power": 0.8,
+     "allocation_ratio": 1.0,
+     "dropout": 0.0
+    },
+    "expect": {
+     "n_control_evaluable": 201,
+     "n_treatment_evaluable": 201
+    }
+   }
+  ],
+  "power_continuous_2arm": [
+   {
+    "inputs": {
+     "n_control": 64,
+     "n_treatment": 64,
+     "effect_difference": 0.5,
+     "sd": 1.0,
+     "alpha": 0.05
+    },
+    "expect": {
+     "power": 0.807
+    }
+   }
+  ],
+  "power_binary_2arm": [
+   {
+    "inputs": {
+     "n_control": 500,
+     "n_treatment": 500,
+     "control_rate": 0.3,
+     "treatment_rate": 0.22,
+     "alpha": 0.05
+    },
+    "expect": {
+     "power": 0.823
+    }
+   }
+  ],
+  "power_survival_2arm": [
+   {
+    "inputs": {
+     "events": 380,
+     "hazard_ratio": 0.75,
+     "alpha": 0.05,
+     "allocation_ratio": 1.0
+    },
+    "expect": {
+     "power": 0.801
+    }
+   }
+  ],
+  "gs_survival_2arm": [
+   {
+    "inputs": {
+     "hazard_ratio": 0.75,
+     "control_median_survival_months": 14.9,
+     "accrual_months": 24,
+     "followup_months": 12,
+     "looks": 2,
+     "spending": "obrien_fleming",
+     "alpha": 0.025,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "annual_dropout": 0.05
+    },
+    "expect_gs": {
+     "info_fractions": [
+      0.5,
+      1.0
+     ],
+     "z_boundaries": [
+      2.9626,
+      1.9687
+     ],
+     "cumulative_alpha": [
+      0.001525,
+      0.025
+     ],
+     "inflation_factor": 1.0008
+    }
+   },
+   {
+    "inputs": {
+     "hazard_ratio": 0.75,
+     "control_median_survival_months": 14.9,
+     "accrual_months": 24,
+     "followup_months": 12,
+     "looks": 3,
+     "spending": "obrien_fleming",
+     "alpha": 0.025,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "annual_dropout": 0.05
+    },
+    "expect_gs": {
+     "info_fractions": [
+      0.3333333333333333,
+      0.6666666666666666,
+      1.0
+     ],
+     "z_boundaries": [
+      3.7103,
+      2.5115,
+      1.9937
+     ],
+     "cumulative_alpha": [
+      0.000104,
+      0.006048,
+      0.025
+     ],
+     "inflation_factor": 1.0063
+    }
+   },
+   {
+    "inputs": {
+     "hazard_ratio": 0.75,
+     "control_median_survival_months": 14.9,
+     "accrual_months": 24,
+     "followup_months": 12,
+     "looks": 5,
+     "spending": "pocock",
+     "alpha": 0.025,
+     "power": 0.9,
+     "allocation_ratio": 1.0,
+     "annual_dropout": 0.05
+    },
+    "expect_gs": {
+     "info_fractions": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+     ],
+     "z_boundaries": [
+      2.438,
+      2.4263,
+      2.4096,
+      2.3949,
+      2.385
+     ],
+     "cumulative_alpha": [
+      0.007385,
+      0.013078,
+      0.017713,
+      0.021621,
+      0.025
+     ],
+     "inflation_factor": 1.2012
+    }
+   }
+  ]
+ }
+}
