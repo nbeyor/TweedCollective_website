@@ -17,6 +17,7 @@ import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
 import {
   resolveBrief,
   sanitizeDecisions,
+  sanitizeFloors,
   stripAux,
   systemPrompt,
   type BriefSource,
@@ -48,13 +49,19 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  let body: { messages?: ClientMessage[]; context?: BriefSource; decisions?: unknown }
+  let body: {
+    messages?: ClientMessage[]
+    context?: BriefSource
+    decisions?: unknown
+    floors?: unknown
+  }
   try {
     body = await req.json()
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), { status: 400 })
   }
   const decisions = sanitizeDecisions(body.decisions)
+  const floors = sanitizeFloors(body.floors)
 
   const incoming = (body.messages ?? []).filter(
     (m) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim()
@@ -106,7 +113,7 @@ export async function POST(req: NextRequest) {
             system: [
               {
                 type: 'text',
-                text: systemPrompt(source, activeBrief, decisions),
+                text: systemPrompt(source, activeBrief, decisions, floors),
                 cache_control: { type: 'ephemeral' },
               },
             ],
@@ -156,6 +163,7 @@ export async function POST(req: NextRequest) {
             try {
               const output = (await runTool(call.name, call.input as Record<string, unknown>, {
                 brief: activeBrief,
+                floors,
               })) as Record<string, unknown>
               send('tool_result', { name: call.name, ok: true })
 

@@ -55,6 +55,31 @@ function decisionSection(decisions: ClientDecision[]): string {
   return `\n\n## Decision log for this document\n\nThese decisions are already shipped and registered in the workspace decision log:\n\n${lines.join('\n')}\n\nTreat the affected elements as revised to their decided form in every analysis. When the user asks to pull up, review, or summarize the decision log, restate it from this list — no tool call needed. Do not re-open a shipped decision unless the user asks to revisit it.`
 }
 
+/** Regions the corpus site table carries; floor keys outside this set are dropped. */
+const FLOOR_REGIONS = ['North America', 'Europe', 'Asia-Pacific', 'Latin America']
+
+/**
+ * Workspace regulatory floors as the client sends them: percent per region.
+ * Returns fractions keyed by known region, ready for `FootprintOptions`, or
+ * undefined when nothing valid was set (the engine then applies its own
+ * ≥20% North America default).
+ */
+export function sanitizeFloors(raw: unknown): Record<string, number> | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined
+  const out: Record<string, number> = {}
+  for (const region of FLOOR_REGIONS) {
+    const n = Number((raw as Record<string, unknown>)[region])
+    if (Number.isFinite(n) && n > 0) out[region] = Math.min(80, Math.round(n)) / 100
+  }
+  return Object.keys(out).length ? out : undefined
+}
+
+function floorsSection(floors?: Record<string, number>): string {
+  if (!floors) return ''
+  const lines = Object.entries(floors).map(([region, f]) => `${region} ≥ ${Math.round(f * 100)}%`)
+  return `\n\n## Workspace regulatory floors\n\nThe team has set regulatory region floors in the workspace panel: **${lines.join(', ')}** of expected enrollment. These are applied to \`site_footprint\` automatically as hard constraints — do not pass \`region_floors\` yourself unless the user asks for different floors in chat, and if they do, remind them the workspace panel still shows the setting it holds. State compliance against the active floors in every footprint answer.`
+}
+
 export function resolveBrief(source: BriefSource): DesignBrief | null {
   if (source.kind === 'blank') return null
   if (source.kind === 'corpus') return deriveBriefFromProtocol(source.protocolId)
@@ -74,14 +99,15 @@ function documentSection(source: BriefSource, brief: DesignBrief | null): string
 export function systemPrompt(
   source: BriefSource,
   brief: DesignBrief | null,
-  decisions: ClientDecision[]
+  decisions: ClientDecision[],
+  floors?: Record<string, number>
 ): string {
   const m = manifest() as Record<string, unknown>
   return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions in the workspace decision log.
 
 ## The document under review
 
-${documentSection(source, brief)}${decisionSection(decisions)}
+${documentSection(source, brief)}${decisionSection(decisions)}${floorsSection(floors)}
 
 ## Your data
 
