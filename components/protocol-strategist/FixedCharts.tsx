@@ -439,6 +439,7 @@ function FootprintMap({ alloc, svgHeight }: { alloc: Array<Record<string, unknow
 function SiteFootprint({ data, expanded }: ChartProps) {
   const alloc = (data.recommended_allocation as Array<Record<string, unknown>>) ?? []
   const scenarios = (data.scenarios as Array<Record<string, unknown>>) ?? []
+  const compliance = (data.floor_compliance as Array<Record<string, unknown>>) ?? []
   const planned = scenarios.find((s) => String(s.key) === 'planned') ?? scenarios[1] ?? scenarios[0]
   const conclusion = planned
     ? `Recommended footprint: ${alloc.length} countries, ~${Number(planned.sites)} sites, enrolling in ~${Number(planned.enrollment_months)} months.`
@@ -454,6 +455,24 @@ function SiteFootprint({ data, expanded }: ChartProps) {
       <p className="text-[13px] leading-snug mb-3" style={{ color: wcg.ink }}>
         {conclusion}
       </p>
+      {compliance.length > 0 && (
+        <div className="mb-3 space-y-1">
+          {compliance.map((c, i) => {
+            const met = Boolean(c.met)
+            return (
+              <p
+                key={i}
+                className="text-[11.5px] leading-snug font-medium"
+                style={{ color: met ? wcg.good : wcg.bad }}
+              >
+                {met ? '✓' : '✕'} {String(c.region)} at {Number(c.expected_share_pct)}% —{' '}
+                {met ? 'above' : 'below'} the {Number(c.floor_pct)}% regulatory floor
+                {c.note ? ` · ${String(c.note)}` : ''}
+              </p>
+            )
+          })}
+        </div>
+      )}
       <FootprintMap alloc={alloc} svgHeight={expanded ? 400 : 250} />
       <div className="mt-3 space-y-1.5">
         {scenarios.map((s, i) => (

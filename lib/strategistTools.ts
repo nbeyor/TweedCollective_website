@@ -403,6 +403,12 @@ function cohortStats(cohort: Protocol[]) {
 export interface ToolContext {
   /** The document under review; null when the session is in net-new mode. */
   brief: DesignBrief | null
+  /**
+   * Workspace regulatory floors (fraction of enrollment per region). The
+   * default hard constraint for `site_footprint` when the model doesn't pass
+   * `region_floors` explicitly — a chat-level ask still wins.
+   */
+  floors?: Record<string, number>
 }
 
 const NO_BRIEF = {
@@ -645,7 +651,7 @@ export async function runTool(
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
       const opts: FootprintOptions = {
-        region_floors: input.region_floors as Record<string, number> | undefined,
+        region_floors: (input.region_floors as Record<string, number> | undefined) ?? ctx.floors,
         restrict_countries: input.restrict_countries as string[] | undefined,
       }
       const data = siteFootprint(brief, opts)

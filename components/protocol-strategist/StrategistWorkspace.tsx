@@ -11,6 +11,7 @@ import { DataConnectorsPanel } from './DataConnectorsPanel'
 import { InsightPanel, type Insight } from './InsightPanel'
 import { Markdown } from './Markdown'
 import { ProtocolPicker, sourceKey, type BriefSource } from './ProtocolPicker'
+import { DEFAULT_FLOORS, RegulatoryFloorsPanel } from './RegulatoryFloorsPanel'
 import { wcg } from './wcgTheme'
 
 interface Message {
@@ -49,6 +50,7 @@ const COL = 'max-w-3xl mx-auto'
 const PANEL_MIN = 320
 const PANEL_MAX = 720
 const PANEL_KEY = 'strategist.panelWidth'
+const FLOORS_KEY = 'strategist.regulatoryFloors'
 
 /**
  * Everything a document's session carries. Conversations are scoped to one
@@ -103,6 +105,10 @@ export function StrategistWorkspace({
   const [decisions, setDecisions] = useState<ShippedDecision[]>([])
   const [shipNotice, setShipNotice] = useState<string | null>(null)
 
+  // Workspace regulatory floors (percent per region). Applied as the default
+  // hard constraint on every footprint answer; persisted across reloads.
+  const [floors, setFloors] = useState<Record<string, number>>({ ...DEFAULT_FLOORS })
+
   // Document under review.
   const [source, setSource] = useState<BriefSource>({ kind: 'hero' })
   const [activeBrief, setActiveBrief] = useState<DesignBrief | null>(brief)
@@ -147,6 +153,24 @@ export function StrategistWorkspace({
     if (saved >= PANEL_MIN && saved <= PANEL_MAX) setPanelWidth(saved)
   }, [])
 
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(FLOORS_KEY) ?? 'null')
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) setFloors(saved)
+    } catch {
+      // Corrupt or blocked storage — keep the default floor.
+    }
+  }, [])
+
+  const changeFloors = useCallback((next: Record<string, number>) => {
+    setFloors(next)
+    try {
+      localStorage.setItem(FLOORS_KEY, JSON.stringify(next))
+    } catch {
+      // Storage blocked — the setting still holds for this session.
+    }
+  }, [])
+
   // One live probe of the Drive folder so Publish fails fast with a reason
   // instead of after a 30-second model call.
   useEffect(() => {
@@ -178,7 +202,7 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next, context: source, decisions }),
+          body: JSON.stringify({ messages: next, context: source, decisions, floors }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -289,7 +313,7 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming, source, decisions]
+    [messages, streaming, source, decisions, floors]
   )
 
   /** Clear the current document's conversation and charts. Its decision log stays. */
@@ -450,6 +474,7 @@ export function StrategistWorkspace({
               docLink={briefDocLink}
             />
           )}
+          <RegulatoryFloorsPanel floors={floors} onChange={changeFloors} />
           <DataConnectorsPanel />
         </div>
       </aside>
