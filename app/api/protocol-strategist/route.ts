@@ -16,6 +16,7 @@ import { clientAccessError } from '@/lib/client-access'
 import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
 import {
   resolveBrief,
+  sanitizeBiostatsRuns,
   sanitizeDecisions,
   sanitizeFloors,
   stripAux,
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
     context?: BriefSource
     decisions?: unknown
     floors?: unknown
+    biostats?: unknown
   }
   try {
     body = await req.json()
@@ -62,6 +64,7 @@ export async function POST(req: NextRequest) {
   }
   const decisions = sanitizeDecisions(body.decisions)
   const floors = sanitizeFloors(body.floors)
+  const biostatsRuns = sanitizeBiostatsRuns(body.biostats)
 
   const incoming = (body.messages ?? []).filter(
     (m) => (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim()
@@ -113,7 +116,7 @@ export async function POST(req: NextRequest) {
             system: [
               {
                 type: 'text',
-                text: systemPrompt(source, activeBrief, decisions, floors),
+                text: systemPrompt(source, activeBrief, decisions, floors, biostatsRuns),
                 cache_control: { type: 'ephemeral' },
               },
             ],

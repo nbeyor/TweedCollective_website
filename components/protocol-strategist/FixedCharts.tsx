@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Bar, Scatter } from 'react-chartjs-2'
+import { Bar, Line, Scatter } from 'react-chartjs-2'
 
 import '@/components/charts/chartSetup'
 import { axisScale, baseChartOptions, wcg, wcgSeries } from './wcgTheme'
@@ -568,6 +568,304 @@ function DesignStructure({ data, expanded }: ChartProps) {
   )
 }
 
+// --------------------------------------------------------- biostats result ---
+
+/**
+ * Result card for a registered biostatistics analysis run (OMOP biostats
+ * module). The shape adapts to the analysis family: group-sequential designs
+ * plot their efficacy boundaries; sample-size runs compare per-arm N; power
+ * runs show the achieved power against the conventional 80/90% marks.
+ */
+function BiostatsResult({ data, expanded }: ChartProps) {
+  const analysisId = String(data.analysis_id ?? '')
+  const outputs = (data.outputs as Record<string, unknown>) ?? {}
+  const summary = (outputs.summary as Record<string, number>) ?? {}
+  const table = (outputs.table as Array<Record<string, number>>) ?? []
+  const interpretation = String(outputs.interpretation ?? '')
+  const warnings = (outputs.warnings as string[]) ?? []
+  const derived = (data.derived_from as Array<Record<string, unknown>>) ?? []
+
+  let body: React.ReactNode = null
+  if (analysisId === 'gs_survival_2arm' && table.length) {
+    body = (
+      <div style={{ height: expanded ? 340 : 220 }}>
+        <Line
+          data={{
+            labels: table.map((r) => `Look ${r.look} (${Math.round(Number(r.information_fraction) * 100)}%)`),
+            datasets: [
+              {
+                label: 'Efficacy boundary (z)',
+                data: table.map((r) => Number(r.efficacy_z)),
+                borderColor: wcg.teal,
+                backgroundColor: wcg.teal,
+                pointRadius: 4,
+                tension: 0.2,
+              },
+              {
+                label: 'Fixed-design z (1.96 ≈ two-sided 5%)',
+                data: table.map(() => 1.96),
+                borderColor: wcg.borderStrong,
+                borderDash: [6, 4],
+                pointRadius: 0,
+              },
+            ],
+          }}
+          options={baseChartOptions({
+            scales: { x: axisScale(), y: axisScale('z at boundary') },
+          })}
+        />
+      </div>
+    )
+  } else if (analysisId.startsWith('power_')) {
+    const power = Number(summary.power)
+    body = (
+      <div style={{ height: expanded ? 200 : 130 }}>
+        <Bar
+          data={{
+            labels: ['Achieved power'],
+            datasets: [
+              {
+                label: 'Power',
+                data: [power],
+                backgroundColor: power >= 0.8 ? wcg.good : power >= 0.7 ? wcg.warn : wcg.bad,
+                borderRadius: 3,
+              },
+            ],
+          }}
+          options={baseChartOptions({
+            indexAxis: 'y' as const,
+            plugins: {
+              legend: { display: false },
+              annotation: {
+                annotations: {
+                  p80: { type: 'line', xMin: 0.8, xMax: 0.8, borderColor: wcg.navy, borderDash: [4, 4], borderWidth: 1 },
+                  p90: { type: 'line', xMin: 0.9, xMax: 0.9, borderColor: wcg.muted, borderDash: [4, 4], borderWidth: 1 },
+                },
+              },
+            },
+            scales: { x: { ...axisScale('power (dashed: 0.80 / 0.90)'), min: 0, max: 1 }, y: axisScale() },
+          })}
+        />
+      </div>
+    )
+  } else {
+    const perArm = [
+      { arm: 'Control', evaluable: summary.n_control_evaluable, enrolled: summary.n_control_enrolled },
+      { arm: 'Treatment', evaluable: summary.n_treatment_evaluable, enrolled: summary.n_treatment_enrolled },
+    ].filter((r) => Number.isFinite(r.evaluable) || Number.isFinite(r.enrolled))
+    body = perArm.length ? (
+      <div style={{ height: expanded ? 260 : 170 }}>
+        <Bar
+          data={{
+            labels: perArm.map((r) => r.arm),
+            datasets: [
+              { label: 'Evaluable', data: perArm.map((r) => Number(r.evaluable)), backgroundColor: wcg.teal, borderRadius: 3 },
+              { label: 'Enrolled (with dropout)', data: perArm.map((r) => Number(r.enrolled ?? r.evaluable)), backgroundColor: wcg.sky, borderRadius: 3 },
+            ],
+          }}
+          options={baseChartOptions({ scales: { x: axisScale(), y: axisScale('participants') } })}
+        />
+      </div>
+    ) : null
+  }
+
+  const stats: Array<[string, unknown]> = Object.entries(summary).slice(0, 8)
+  return (
+    <div className={CARD} style={cardStyle}>
+      <p className="text-[11px] uppercase tracking-[0.14em] mb-1" style={{ color: wcg.purple }}>
+        Biostatistics · {analysisId}
+      </p>
+      <p className="text-[13px] leading-snug mb-3" style={{ color: wcg.ink }}>
+        {interpretation}
+      </p>
+      {body}
+      <div className="mt-3 space-y-1">
+        {stats.map(([k, v]) => (
+          <div key={k} className="flex items-baseline justify-between gap-2 text-[12px]">
+            <span style={{ color: wcg.muted }}>{k.replace(/_/g, ' ')}</span>
+            <span className="tabular-nums font-medium" style={{ color: wcg.ink }}>
+              {String(v)}
+            </span>
+          </div>
+        ))}
+      </div>
+      {derived.length > 0 && (
+        <p className="text-[10.5px] mt-2 leading-snug" style={{ color: wcg.teal }}>
+          RWD-derived inputs: {derived.map((d) => `${String(d.field)} = ${String(d.estimate)} (${String(d.cohort_name)}, est. ${String(d.estimate_date)})`).join('; ')}
+        </p>
+      )}
+      {warnings.map((w, i) => (
+        <p key={i} className="text-[10.5px] mt-1 leading-snug" style={{ color: '#8A6414' }}>
+          ⚠ {w}
+        </p>
+      ))}
+      <p className="text-[10.5px] mt-2 leading-snug" style={{ color: wcg.faint }}>
+        Deterministic registered analysis · run {String(data.run_id ?? '')} · synthetic RWD inputs where labeled.
+      </p>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------- patient journey --
+
+const PJ_W = 640
+const PJ_H = 300
+const PJ_TOP = 46 // SoA marker band
+const PJ_BOTTOM = 34
+
+const SOA_KIND_COLOR: Record<string, string> = {
+  screening: wcg.purple,
+  treatment: wcg.teal,
+  imaging: wcg.blue,
+  followup: wcg.amber,
+}
+
+/**
+ * Trial events over the patient-journey timeline: the protocol's scheduled
+ * assessments (diamonds, top band) laid over what the RWD cohort actually did
+ * month by month — retention (line), care touchpoints (bars) — with observed
+ * milestone medians as vertical markers. Where the observed journey thins out
+ * before the schedule does, the design is asking for visits the real-world
+ * population stops making.
+ */
+function PatientJourney({ data, expanded }: ChartProps) {
+  const months = (data.months as Array<Record<string, number>>) ?? []
+  const soaEvents = (data.soa_events as Array<{ month: number; label: string; kind: string }>) ?? []
+  const milestones = (data.milestones as Array<{ label: string; median_months: number; n: number }>) ?? []
+  const adherence = (data.soa_imaging_adherence as Array<Record<string, unknown>>) ?? []
+  const horizon = Number(data.horizon_months ?? 24)
+
+  const x = (month: number) => 24 + ((month + 1) / (horizon + 1.5)) * (PJ_W - 40)
+  const plotTop = PJ_TOP + 8
+  const plotH = PJ_H - plotTop - PJ_BOTTOM
+  const yRet = (pct: number) => plotTop + (1 - pct / 100) * plotH
+  const maxVisits = Math.max(1.5, ...months.map((m) => Number(m.visits_per_active_patient)))
+  const yVisits = (v: number) => plotTop + (1 - v / (maxVisits * 1.15)) * plotH
+
+  const retPath = months.map((m, i) => `${i ? 'L' : 'M'}${x(m.month + 0.5).toFixed(1)},${yRet(Number(m.retained_pct)).toFixed(1)}`).join(' ')
+  const ret12 = months.find((m) => m.month === 12)
+  const kinds = Array.from(new Set(soaEvents.map((e) => e.kind)))
+
+  const svgHeight = expanded ? 400 : 270
+  return (
+    <div className={CARD} style={cardStyle}>
+      <p className="text-[11px] uppercase tracking-[0.14em] mb-1" style={{ color: wcg.purple }}>
+        Patient journey vs schedule of assessments
+      </p>
+      <p className="text-[13px] leading-snug mb-3" style={{ color: wcg.ink }}>
+        {ret12
+          ? `Scheduled trial events (top) against the real-world journey: ${Number(ret12.retained_pct).toFixed(0)}% of the cohort is still observable at month 12 — every scheduled visit after the journey thins is an operational risk.`
+          : 'Scheduled trial events laid over the observed real-world journey.'}
+      </p>
+      <svg viewBox={`0 0 ${PJ_W} ${PJ_H}`} width="100%" height={svgHeight} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Patient journey timeline">
+        <rect x={0} y={0} width={PJ_W} height={PJ_H} fill={wcg.surfaceMuted} rx={8} />
+        {/* SoA band */}
+        <text x={24} y={16} fontSize={10} fill={wcg.muted}>
+          Protocol SoA (scheduled)
+        </text>
+        <line x1={20} y1={PJ_TOP - 14} x2={PJ_W - 16} y2={PJ_TOP - 14} stroke={wcg.borderStrong} strokeWidth={1} />
+        {soaEvents.map((e, i) => {
+          const cx = x(e.month)
+          const cy = PJ_TOP - 14
+          const c = SOA_KIND_COLOR[e.kind] ?? wcg.muted
+          return (
+            <g key={i}>
+              <path d={`M${cx},${cy - 5} L${cx + 4.5},${cy} L${cx},${cy + 5} L${cx - 4.5},${cy} Z`} fill={c} fillOpacity={0.9}>
+                <title>{`${e.label} — month ${e.month}`}</title>
+              </path>
+            </g>
+          )
+        })}
+        {/* observed care bars */}
+        {months.map((m) => {
+          const bx = x(m.month + 0.08)
+          const bw = Math.max(2, x(m.month + 0.92) - bx)
+          const v = Number(m.visits_per_active_patient)
+          return (
+            <rect key={m.month} x={bx} y={yVisits(v)} width={bw} height={plotTop + plotH - yVisits(v)} fill={wcg.sky} fillOpacity={0.45} rx={1.5}>
+              <title>{`Month ${m.month}: ${v} visits per active patient`}</title>
+            </rect>
+          )
+        })}
+        {/* retention line */}
+        <path d={retPath} fill="none" stroke={wcg.navy} strokeWidth={2.25} />
+        {/* milestones */}
+        {milestones.map((ms, i) => {
+          const mx = x(ms.median_months)
+          if (ms.median_months > horizon) return null
+          return (
+            <g key={i}>
+              <line x1={mx} y1={plotTop} x2={mx} y2={plotTop + plotH} stroke={wcg.magenta} strokeWidth={1} strokeDasharray="4 3" />
+              <text
+                x={mx + 3}
+                y={plotTop + 12 + i * 12}
+                fontSize={9.5}
+                fill={wcg.magenta}
+              >{`${ms.label} ~${ms.median_months}mo`}</text>
+            </g>
+          )
+        })}
+        {/* axes */}
+        {[0, 6, 12, 18, 24, 30, 36]
+          .filter((m) => m <= horizon)
+          .map((m) => (
+            <g key={m}>
+              <line x1={x(m)} y1={plotTop + plotH} x2={x(m)} y2={plotTop + plotH + 4} stroke={wcg.borderStrong} />
+              <text x={x(m)} y={PJ_H - 20} fontSize={10} textAnchor="middle" fill={wcg.muted}>
+                {m}mo
+              </text>
+            </g>
+          ))}
+        <text x={24} y={PJ_H - 6} fontSize={9.5} fill={wcg.muted}>
+          line = % of cohort still observable · bars = care visits per active patient per month
+        </text>
+        {[100, 50, 0].map((pct) => (
+          <text key={pct} x={PJ_W - 14} y={yRet(pct) + 3} fontSize={9} textAnchor="end" fill={wcg.faint}>
+            {pct}%
+          </text>
+        ))}
+      </svg>
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+        {kinds.map((k) => (
+          <span key={k} className="inline-flex items-center gap-1.5 text-[10.5px]" style={{ color: wcg.muted }}>
+            <span className="w-2 h-2 rotate-45" style={{ background: SOA_KIND_COLOR[k] ?? wcg.muted }} />
+            {k}
+          </span>
+        ))}
+      </div>
+      {adherence.length > 0 && (
+        <div className="mt-3">
+          <p className="text-[11px] uppercase tracking-[0.1em] mb-1" style={{ color: wcg.muted }}>
+            Scheduled imaging vs observed RWD imaging (±3 weeks)
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {adherence.map((a, i) => {
+              const p = a.rwd_match_pct === null ? null : Number(a.rwd_match_pct)
+              return (
+                <span
+                  key={i}
+                  className="rounded-md border px-1.5 py-0.5 text-[10.5px] tabular-nums"
+                  style={{
+                    borderColor: wcg.border,
+                    background: wcg.surface,
+                    color: p === null ? wcg.faint : p >= 50 ? wcg.good : p >= 25 ? '#8A6414' : wcg.bad,
+                  }}
+                  title={`${String(a.soa_event)}: ${p ?? '—'}% of still-active patients had a matching scan in RWD`}
+                >
+                  {String(a.soa_event)} {p === null ? '—' : `${p}%`}
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      )}
+      <p className="text-[10.5px] mt-2 leading-snug" style={{ color: wcg.faint }}>
+        Synthetic OMOP RWD — real-world care cadence, not trial-protocol adherence; use as a stress test of the schedule, not a compliance forecast.
+      </p>
+    </div>
+  )
+}
+
 // ---------------------------------------------------------------- dispatch ---
 
 interface ChartProps {
@@ -594,6 +892,10 @@ export function FixedChart({ panel, expanded = false }: { panel: PanelDescriptor
       return <SiteFootprint data={panel.data} expanded={expanded} />
     case 'design_structure':
       return <DesignStructure data={panel.data} expanded={expanded} />
+    case 'biostats_result':
+      return <BiostatsResult data={panel.data} expanded={expanded} />
+    case 'patient_journey':
+      return <PatientJourney data={panel.data} expanded={expanded} />
     default:
       return null
   }

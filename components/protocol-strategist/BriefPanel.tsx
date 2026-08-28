@@ -14,12 +14,14 @@ import {
   MapPin,
   MessageSquare,
   Play,
+  Sigma,
   Timer,
   Trash2,
   Workflow,
 } from 'lucide-react'
 
 import type { DesignBrief } from '@/lib/trialCorpus'
+import type { BiostatsSelection } from './BiostatsPanel'
 import { wcg } from './wcgTheme'
 
 export interface ShippedDecision {
@@ -49,8 +51,15 @@ export type BriefMode = 'hero' | 'corpus' | 'blank'
 interface Analysis {
   label: string
   chart: string
-  prompt: string
+  /** Chat prompt to send — or, when `biostats` is set, ignored. */
+  prompt?: string
   blankPrompt?: string
+  /**
+   * Entries that open the biostatistics workbench instead of sending a chat
+   * prompt: the user, not the model, picks the registered analysis and
+   * confirms every assumption there.
+   */
+  biostats?: { kind: 'analysis'; analysisId: string } | { kind: 'journey' }
 }
 
 interface QuestionGroup {
@@ -63,10 +72,59 @@ interface QuestionGroup {
 
 const iconProps = { className: 'w-3.5 h-3.5', strokeWidth: 2 }
 
+// Funnel order (v1.4): biostatistics leads — the statistical spine (N, power,
+// events) is decided first and everything else is sized against it — then
+// study design, endpoints, regulatory, site footprint, timelines, costs.
 const QUESTION_GROUPS: QuestionGroup[] = [
   {
-    // Structure is the upstream decision — everything downstream (cost,
-    // footprint, timeline) is priced against it — so it leads the funnel.
+    // Biostatistics entries open the workbench (deterministic form over the
+    // registered analysis catalog + synthetic OMOP RWD), not a chat prompt:
+    // the module's guardrail is that no model picks the method or assumptions.
+    key: 'biostats',
+    label: 'Biostatistics',
+    question: 'What N, how powered, on what real-world evidence?',
+    icon: <Sigma {...iconProps} style={{ color: wcg.tealBright }} />,
+    analyses: [
+      {
+        label: 'Sample size — time-to-event endpoint',
+        chart: 'Biostats result',
+        biostats: { kind: 'analysis', analysisId: 'ss_survival_2arm' },
+      },
+      {
+        label: 'Sample size — binary endpoint',
+        chart: 'Biostats result',
+        biostats: { kind: 'analysis', analysisId: 'ss_binary_2arm' },
+      },
+      {
+        label: 'Sample size — continuous endpoint',
+        chart: 'Biostats result',
+        biostats: { kind: 'analysis', analysisId: 'ss_continuous_2arm' },
+      },
+      {
+        label: 'Group-sequential design (interim looks)',
+        chart: 'GS boundaries',
+        biostats: { kind: 'analysis', analysisId: 'gs_survival_2arm' },
+      },
+      {
+        label: 'Power at a fixed N',
+        chart: 'Biostats result',
+        biostats: { kind: 'analysis', analysisId: 'power_binary_2arm' },
+      },
+      {
+        label: 'Noninferiority sample size',
+        chart: 'Biostats result',
+        biostats: { kind: 'analysis', analysisId: 'ss_noninferiority_binary' },
+      },
+      {
+        label: 'Patient journey vs SoA (RWD)',
+        chart: 'Journey timeline',
+        biostats: { kind: 'journey' },
+      },
+    ],
+  },
+  {
+    // Structure is the upstream design decision — cost, footprint, and
+    // timeline are priced against it — so it sits right behind the numbers.
     // Cuts follow the axes a design lead actually weighs: control strategy,
     // blinding, framework (parallel/crossover/dose-escalation), arms &
     // allocation, then the special structures (adaptive, basket).
@@ -110,32 +168,52 @@ const QUESTION_GROUPS: QuestionGroup[] = [
     ],
   },
   {
-    key: 'cost',
-    label: 'Cost',
-    question: 'What will this study cost?',
-    icon: <Coins {...iconProps} style={{ color: wcg.teal }} />,
+    key: 'endpoints',
+    label: 'Endpoints',
+    question: 'Which endpoints, at what timeline cost?',
+    icon: <FlaskConical {...iconProps} style={{ color: wcg.magenta }} />,
     analyses: [
       {
-        label: 'Per-patient & total cost',
-        chart: 'Cost buildup',
+        label: 'Endpoint timeline impact',
+        chart: 'Endpoint timeline',
         prompt:
-          'What will this study cost per patient and all-in? Break out direct vs indirect and show the range across SoA intensity.',
+          'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
+      },
+      {
+        label: 'Endpoint load vs database lock',
+        chart: 'Endpoint timeline',
+        prompt:
+          'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
+      },
+    ],
+  },
+  {
+    key: 'regulatory',
+    label: 'Regulatory',
+    question: 'Will the design hold up with regulators?',
+    icon: <Landmark {...iconProps} style={{ color: wcg.purple }} />,
+    analyses: [
+      {
+        label: 'Regional floor compliance',
+        chart: 'Site & country map',
+        prompt:
+          'Does our footprint clear regulatory regional expectations? Check the recommended country allocation against a 20% North America enrollment floor and state the compliance explicitly.',
         blankPrompt:
-          'What does a trial like this typically cost per patient and all-in, direct vs indirect, based on comparable studies in the corpus?',
+          'For a trial like this, what regional enrollment mix did comparable trials run, and would a typical footprint clear a 20% North America enrollment floor?',
       },
       {
-        label: 'How the SoA drives cost',
-        chart: 'Cost buildup',
+        label: 'Stricter-floor sensitivity',
+        chart: 'Scenario bars',
         prompt:
-          'How much of the per-patient cost is the schedule of assessments? Show lean vs as-drafted vs rich.',
+          'If regulators push for more US enrollment, compare footprints at 20% vs 30% vs 40% North America floors — what does each level cost in recruit timeline and activation?',
       },
       {
-        label: 'What an amendment costs',
+        label: 'Amendment exposure',
         chart: 'Amendment-risk view',
         prompt:
-          'If we have to amend after first-patient-in, what does that typically cost in dollars and months, and which elements are most likely to force one?',
+          'Which elements of this design are most likely to draw pushback and force an amendment, and what did the historical fixes look like?',
         blankPrompt:
-          'What do mid-flight amendments typically cost in dollars and months for comparable trials, and which elements force them?',
+          'Which design-element types most often force amendments in comparable trials, and what did the historical fixes look like?',
       },
     ],
   },
@@ -203,52 +281,32 @@ const QUESTION_GROUPS: QuestionGroup[] = [
     ],
   },
   {
-    key: 'endpoints',
-    label: 'Endpoints',
-    question: 'Which endpoints, at what timeline cost?',
-    icon: <FlaskConical {...iconProps} style={{ color: wcg.magenta }} />,
+    key: 'cost',
+    label: 'Cost',
+    question: 'What will this study cost?',
+    icon: <Coins {...iconProps} style={{ color: wcg.teal }} />,
     analyses: [
       {
-        label: 'Endpoint timeline impact',
-        chart: 'Endpoint timeline',
+        label: 'Per-patient & total cost',
+        chart: 'Cost buildup',
         prompt:
-          'How would adding the candidate secondary endpoints hit data collection and the database-lock timeline?',
-      },
-      {
-        label: 'Endpoint load vs database lock',
-        chart: 'Endpoint timeline',
-        prompt:
-          'Rank the candidate endpoints by the days they add to database lock, and show which subset protects the readout timeline.',
-      },
-    ],
-  },
-  {
-    key: 'regulatory',
-    label: 'Regulatory',
-    question: 'Will the design hold up with regulators?',
-    icon: <Landmark {...iconProps} style={{ color: wcg.purple }} />,
-    analyses: [
-      {
-        label: 'Regional floor compliance',
-        chart: 'Site & country map',
-        prompt:
-          'Does our footprint clear regulatory regional expectations? Check the recommended country allocation against a 20% North America enrollment floor and state the compliance explicitly.',
+          'What will this study cost per patient and all-in? Break out direct vs indirect and show the range across SoA intensity.',
         blankPrompt:
-          'For a trial like this, what regional enrollment mix did comparable trials run, and would a typical footprint clear a 20% North America enrollment floor?',
+          'What does a trial like this typically cost per patient and all-in, direct vs indirect, based on comparable studies in the corpus?',
       },
       {
-        label: 'Stricter-floor sensitivity',
-        chart: 'Scenario bars',
+        label: 'How the SoA drives cost',
+        chart: 'Cost buildup',
         prompt:
-          'If regulators push for more US enrollment, compare footprints at 20% vs 30% vs 40% North America floors — what does each level cost in recruit timeline and activation?',
+          'How much of the per-patient cost is the schedule of assessments? Show lean vs as-drafted vs rich.',
       },
       {
-        label: 'Amendment exposure',
+        label: 'What an amendment costs',
         chart: 'Amendment-risk view',
         prompt:
-          'Which elements of this design are most likely to draw pushback and force an amendment, and what did the historical fixes look like?',
+          'If we have to amend after first-patient-in, what does that typically cost in dollars and months, and which elements are most likely to force one?',
         blankPrompt:
-          'Which design-element types most often force amendments in comparable trials, and what did the historical fixes look like?',
+          'What do mid-flight amendments typically cost in dollars and months for comparable trials, and which elements force them?',
       },
     ],
   },
@@ -267,6 +325,7 @@ export function BriefPanel({
   decisions,
   onPickElement,
   onRunAnalysis,
+  onOpenBiostats,
   onClearDecisions,
   docLink,
 }: {
@@ -275,6 +334,7 @@ export function BriefPanel({
   decisions: ShippedDecision[]
   onPickElement: (prompt: string) => void
   onRunAnalysis: (prompt: string) => void
+  onOpenBiostats: (selection: BiostatsSelection) => void
   onClearDecisions?: () => void
   docLink?: string | null
 }) {
@@ -304,7 +364,7 @@ export function BriefPanel({
           answer is grounded in the operations data; the design takes shape here
           as decisions are shipped.
         </div>
-        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} />
+        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} onOpenBiostats={onOpenBiostats} />
         <DecisionLog
           decisions={decisions}
           docLabel="New protocol"
@@ -350,7 +410,7 @@ export function BriefPanel({
       </div>
 
       {tab === 'analyses' ? (
-        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} />
+        <QuestionExplorer mode={mode} onRunAnalysis={onRunAnalysis} onOpenBiostats={onOpenBiostats} />
       ) : (
         <>
           <Section label="Arms">
@@ -431,16 +491,20 @@ export function BriefPanel({
 function QuestionExplorer({
   mode,
   onRunAnalysis,
+  onOpenBiostats,
 }: {
   mode: BriefMode
   onRunAnalysis: (prompt: string) => void
+  onOpenBiostats: (selection: BiostatsSelection) => void
 }) {
-  // The first group (study design — the upstream decision) opens by default.
-  const [open, setOpen] = useState<string | null>('design')
+  // The first group (biostatistics — the statistical spine) opens by default.
+  const [open, setOpen] = useState<string | null>('biostats')
 
   const groups = QUESTION_GROUPS.map((g) => {
+    // Biostats entries run on the OMOP cohorts, not the brief, so they are
+    // available in every mode, blank included.
     const analyses =
-      mode === 'blank' ? g.analyses.filter((a) => a.blankPrompt) : g.analyses
+      mode === 'blank' ? g.analyses.filter((a) => a.blankPrompt || a.biostats) : g.analyses
     return { ...g, analyses }
   }).filter((g) => g.analyses.length)
 
@@ -479,7 +543,11 @@ function QuestionExplorer({
                 {g.analyses.map((a) => (
                   <button
                     key={a.label}
-                    onClick={() => onRunAnalysis(mode === 'blank' ? a.blankPrompt! : a.prompt)}
+                    onClick={() =>
+                      a.biostats
+                        ? onOpenBiostats(a.biostats)
+                        : onRunAnalysis((mode === 'blank' ? a.blankPrompt : a.prompt) ?? a.prompt ?? '')
+                    }
                     className="w-full text-left rounded-md border px-2.5 py-1.5 transition-colors"
                     style={{ background: wcg.surfaceMuted, borderColor: wcg.border }}
                   >
