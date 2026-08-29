@@ -21,11 +21,11 @@ export const team: TeamMember[] = [
     linkedin: 'https://www.linkedin.com/in/sjuraschka',
   },
   {
-    name: 'Dan Sheikh',
+    name: 'Hans Yang',
     role: 'Operating Partner',
     expertise:
-      'Stands up engineering teams and ships production AI systems — architecture, data pipelines, and program delivery',
-    linkedin: 'https://www.linkedin.com/in/dansheikh',
+      'Takes AI from strategy to production — product judgment, implementation, and adoption that moves the P&L',
+    linkedin: 'https://www.linkedin.com/in/hanscyang',
   },
   {
     name: 'Bob Battista',
