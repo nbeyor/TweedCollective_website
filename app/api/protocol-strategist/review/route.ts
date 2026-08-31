@@ -14,7 +14,7 @@
 
 import { NextRequest } from 'next/server'
 
-import { clientAccessError } from '@/lib/client-access'
+import { clientAccessError, currentUserEmail } from '@/lib/client-access'
 import { PublishError, reviseDoc } from '@/lib/strategistPublish'
 
 export const runtime = 'nodejs'
@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
   if (!fileId) return Response.json({ error: 'fileId is required.' }, { status: 400 })
 
   try {
-    const result = await reviseDoc({ fileId, shareWith: body.shareWith })
+    const shareWith = body.shareWith ?? (await currentUserEmail()) ?? undefined
+    const result = await reviseDoc({ fileId, shareWith })
     return Response.json(result)
   } catch (err) {
     if (err instanceof PublishError) {

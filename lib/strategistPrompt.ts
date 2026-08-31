@@ -9,10 +9,11 @@
  */
 
 import { BRAND } from './strategistBrand'
+import { type BriefSource } from './strategistSource'
 import { deriveBriefFromProtocol, designBrief, manifest, type DesignBrief } from './trialCorpus'
 
-/** Which document the session is anchored on. Sent by the client per request. */
-export type BriefSource = { kind: 'hero' } | { kind: 'corpus'; protocolId: string } | { kind: 'blank' }
+export type { BriefSource }
+export { parseClientSource, sourceKey } from './strategistSource'
 
 export interface ClientMessage {
   role: 'user' | 'assistant'
@@ -121,12 +122,32 @@ function floorsSection(floors?: Record<string, number>): string {
 }
 
 export function resolveBrief(source: BriefSource): DesignBrief | null {
-  if (source.kind === 'blank') return null
+  if (source.kind === 'blank' || source.kind === 'empty' || source.kind === 'upload') return null
   if (source.kind === 'corpus') return deriveBriefFromProtocol(source.protocolId)
   return designBrief()
 }
 
-function documentSection(source: BriefSource, brief: DesignBrief | null): string {
+export function documentSection(
+  source: BriefSource,
+  brief: DesignBrief | null,
+  extra?: { sourceText?: string | null; coverage?: { present: string[]; missing: string[] } | null }
+): string {
+  if (source.kind === 'empty') {
+    return `The session has no document yet. The user may drop a .docx design brief, pick a corpus protocol, or start from a blank page. Until a design exists, work at the cohort level (\`query_cohort\`, \`analyze_criteria\`, \`get_protocol\`, \`benchmark_protocol\`, \`design_structure\`). Do not call brief-scoped tools.`
+  }
+  if (source.kind === 'upload') {
+    if (!brief) {
+      return `The session is on an uploaded brief but the extract did not arrive with this turn. Ask the user to re-upload the .docx. Do not invent a design.`
+    }
+    const cov = extra?.coverage
+    const coverageLine = cov
+      ? `Extract coverage — present: ${cov.present.join(', ') || 'none'}; missing: ${cov.missing.join(', ') || 'none'}.`
+      : ''
+    const thin = extra?.sourceText
+      ? `\n\nThe extract was thin. Remaining source text follows for context. Use it only to answer questions about content that is not in the structured brief. Do not invent figures from it; operational numbers still come from tools.\n\n## Uploaded source text\n\n${extra.sourceText}`
+      : ''
+    return `The session opens on an **uploaded design brief** (ETL extract from the user's .docx, not a corpus protocol): **${brief.title}** — Phase ${brief.phase || '?'} in ${brief.indication || 'an unspecified indication'}, target enrollment ${brief.target_enrollment || '?'}, ~${brief.planned_sites || '?'} sites. ${coverageLine} Call \`get_design_brief\` first to see the structured extract. Gaps listed as missing were not filled in — do not invent them. The working Google Doc is a new copy; the file they dropped was not overwritten.\n\n## Extracted design brief\n\n${JSON.stringify(brief)}${thin}`
+  }
   if (source.kind === 'blank' || !brief) {
     return `The team is starting from a **blank page** — there is no drafted brief this session. Your job is to help them build one: establish the indication and phase, then ground every design choice (target N, site mix, criteria, endpoints) in what the corpus says comparable trials actually did. Use \`query_cohort\`, \`analyze_criteria\`, \`get_protocol\`, \`benchmark_protocol\`, and \`design_structure\` (which works at the cohort level — pass therapeutic_area/phase) to propose evidence-backed starting points — including which design structures comparable trials used, what they cost, where they ran, and how fast they enrolled. The brief-scoped tools (\`get_design_brief\`, \`draft_criteria_burden\`, \`procedure_sensitivity\`, \`endpoint_timeline_sensitivity\`, \`trial_cost\`, \`site_footprint\`, \`comparator_landscape\`, \`amendment_risk_sweep\`) are unavailable until a design exists — do not call them; work at the cohort level instead.`
   }
@@ -136,21 +157,72 @@ function documentSection(source: BriefSource, brief: DesignBrief | null): string
   return `The session opens on a pre-drafted design brief: **${brief.title}** — a Phase ${brief.phase} study in ${brief.line_of_treatment.toLowerCase()} ${brief.indication}, target enrollment ${brief.target_enrollment} across ~${brief.planned_sites} sites. It already has arms, a primary endpoint, draft eligibility criteria, and a schedule sketch. Call \`get_design_brief\` first to see it. The team is not starting from a blank page — they are stress-testing a starting point, and one eligibility element (GI-comorbidity verification) is deliberately unresolved.`
 }
 
+/** Static prefix — cacheable across turns and documents. */
+export function staticSystemPrompt(): string {
+  return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions in the workspace decision log.`
+}
+
+/**
+ * Per-turn / per-document block. Lives AFTER the prompt-cache breakpoint so
+ * an uploaded brief does not bust the static system + tool prefix.
+ */
+export function dynamicSystemPrompt(
+  source: BriefSource,
+  brief: DesignBrief | null,
+  decisions: ClientDecision[],
+  floors?: Record<string, number>,
+  biostatsRuns: ClientBiostatsRun[] = [],
+  extra?: { sourceText?: string | null; coverage?: { present: string[]; missing: string[] } | null }
+): string {
+  return `## The document under review
+
+${documentSection(source, brief, extra)}${decisionSection(decisions)}${biostatsSection(biostatsRuns)}${floorsSection(floors)}`
+}
+
+/** Two system blocks: cached static prefix, then the uploaded/dynamic brief. */
+export function cachedSystemBlocks(
+  source: BriefSource,
+  brief: DesignBrief | null,
+  decisions: ClientDecision[],
+  floors?: Record<string, number>,
+  biostatsRuns: ClientBiostatsRun[] = [],
+  extra?: { sourceText?: string | null; coverage?: { present: string[]; missing: string[] } | null }
+): Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }> {
+  return [
+    {
+      type: 'text',
+      text: `${staticSystemPrompt()}\n\n${systemPromptTail()}`,
+      cache_control: { type: 'ephemeral' },
+    },
+    {
+      type: 'text',
+      text: dynamicSystemPrompt(source, brief, decisions, floors, biostatsRuns, extra),
+    },
+  ]
+}
+
+/** Mark the last tool so the tools prefix is part of the same cache as the static system. */
+export function toolsWithCacheBreakpoint<T extends object>(
+  tools: readonly T[]
+): Array<T & { cache_control?: { type: 'ephemeral' } }> {
+  if (!tools.length) return []
+  return tools.map((t, i) => (i === tools.length - 1 ? { ...t, cache_control: { type: 'ephemeral' as const } } : t))
+}
+
 export function systemPrompt(
   source: BriefSource,
   brief: DesignBrief | null,
   decisions: ClientDecision[],
   floors?: Record<string, number>,
-  biostatsRuns: ClientBiostatsRun[] = []
+  biostatsRuns: ClientBiostatsRun[] = [],
+  extra?: { sourceText?: string | null; coverage?: { present: string[]; missing: string[] } | null }
 ): string {
+  return `${staticSystemPrompt()}\n\n${dynamicSystemPrompt(source, brief, decisions, floors, biostatsRuns, extra)}\n\n${systemPromptTail()}`
+}
+
+function systemPromptTail(): string {
   const m = manifest() as Record<string, unknown>
-  return `You are ${BRAND.name}, an AI clinical trial strategist. A study team is designing or pressure-testing a trial, element by element, before the protocol is written. You help them interrogate the design, run sensitivity analyses against operational history, and record decisions in the workspace decision log.
-
-## The document under review
-
-${documentSection(source, brief)}${decisionSection(decisions)}${biostatsSection(biostatsRuns)}${floorsSection(floors)}
-
-## Your data
+  return `## Your data
 
 Behind the session sits ${BRAND.corpusName}: ${m.protocolCount} synthetic protocols and ${m.siteCount} investigational sites, deep in thoracic oncology / NSCLC. Joined per trial: protocol structure (eligibility, schedule of assessments, endpoints, amendment history) and operational outcomes (screen-fail and dropout rates, amendment timing and cost, enrollment duration, per-site and per-country enrollment). Plus operational reference tables — per-procedure scheduling lag, site availability, refusal and cost by site type; per-assessment data burden and database-lock impact — which are what your sensitivity analyses run on.
 

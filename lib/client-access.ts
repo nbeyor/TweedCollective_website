@@ -117,3 +117,9 @@ export async function clientAccessError(slug: string): Promise<Response | null> 
 
   return null
 }
+
+/** Verified primary email for the signed-in Clerk user, if any. */
+export async function currentUserEmail(): Promise<string | null> {
+  const user = await currentUser()
+  return user?.primaryEmailAddress?.emailAddress ?? null
+}

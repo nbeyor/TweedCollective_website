@@ -1,7 +1,11 @@
 # Starter protocols — publish to Drive
 
-The three "starting point" documents the Protocol Strategist offers at the top of
-its document picker, as standalone HTML ready to become Google Docs:
+The Protocol Strategist picker no longer lists these three starters — users drop
+a .docx instead. The HTML and publish script stay so a hidden Tweed/WCG demo
+can still load TCX-LUNG via `/clients/protocol-strategist?demo=tcx-lung` (the
+hero brief + `STRATEGIST_BRIEF_DOC_ID` working-copy link).
+
+The three documents, as standalone HTML ready to become Google Docs:
 
 | File | Picker item |
 |---|---|

@@ -161,13 +161,11 @@ export function registerStrategist(server: McpServer): void {
       ok({
         what_this_is:
           'An AI clinical trial strategist for pressure-testing protocol designs against operational history. Behind it sits a synthetic corpus of protocols and investigational sites (thoracic oncology / NSCLC focus) joined with operational outcomes: screen-fail and dropout rates, amendment timing and cost, enrollment durations, per-procedure scheduling and refusal data.',
-        modes: (Object.keys(MODE_DESCRIPTIONS) as Array<keyof typeof MODE_DESCRIPTIONS>).map(
-          (mode) => ({
-            brief_source: mode === 'corpus' ? 'a protocol id, e.g. TCX-0042' : mode,
-            description: MODE_DESCRIPTIONS[mode],
-            starter_questions: SUGGESTIONS[mode],
-          })
-        ),
+        modes: (['hero', 'corpus', 'blank'] as const).map((mode) => ({
+          brief_source: mode === 'corpus' ? 'a protocol id, e.g. TCX-0042' : mode,
+          description: MODE_DESCRIPTIONS[mode],
+          starter_questions: SUGGESTIONS[mode],
+        })),
         data_categories: DATA_CATEGORIES,
         analyses: ANALYTICS.map((a) => ({
           id: a.id,

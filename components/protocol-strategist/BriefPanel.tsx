@@ -35,7 +35,7 @@ export interface ShippedDecision {
   doc?: { webViewLink?: string } | null
 }
 
-export type BriefMode = 'hero' | 'corpus' | 'blank'
+export type BriefMode = 'hero' | 'corpus' | 'blank' | 'empty' | 'upload'
 
 /**
  * The controls are organised around the decisions a protocol lead actually
@@ -328,6 +328,7 @@ export function BriefPanel({
   onOpenBiostats,
   onClearDecisions,
   docLink,
+  coverage,
 }: {
   brief: DesignBrief | null
   mode: BriefMode
@@ -337,18 +338,19 @@ export function BriefPanel({
   onOpenBiostats: (selection: BiostatsSelection) => void
   onClearDecisions?: () => void
   docLink?: string | null
+  coverage?: { present: string[]; missing: string[] } | null
 }) {
   // Analyses lead: the funnel of role-relevant questions is the starting
   // point; the brief's elements are the subset you drill into from there.
   const [tab, setTab] = useState<'brief' | 'analyses'>('analyses')
   const decidedIds = new Set(decisions.map((d) => d.element_id))
 
-  if (mode === 'blank' || !brief) {
+  if (mode === 'empty' || mode === 'blank' || !brief) {
     return (
       <div className="px-4 py-4 space-y-4">
         <div>
           <p className="text-[11px] uppercase tracking-[0.14em] mb-1" style={{ color: wcg.blue }}>
-            New protocol · blank
+            {mode === 'empty' ? 'No document yet' : 'New protocol · blank'}
           </p>
           <h2 className="text-[15px] font-semibold leading-snug" style={{ color: wcg.ink }}>
             Start from a decision
@@ -379,7 +381,11 @@ export function BriefPanel({
     <div className="px-4 py-4 space-y-4">
       <div>
         <p className="text-[11px] uppercase tracking-[0.14em] mb-1" style={{ color: wcg.teal }}>
-          {mode === 'hero' ? 'Design brief · draft' : 'Corpus protocol · loaded'}
+          {mode === 'hero'
+            ? 'Design brief · draft'
+            : mode === 'upload'
+              ? 'Uploaded brief · extracted'
+              : 'Corpus protocol · loaded'}
         </p>
         <h2 className="text-[15px] font-semibold leading-snug" style={{ color: wcg.ink }}>
           {brief.indication}
@@ -387,7 +393,7 @@ export function BriefPanel({
         <p className="text-[12px] mt-0.5" style={{ color: wcg.muted }}>
           Phase {brief.phase} · {brief.line_of_treatment} · N={brief.target_enrollment} · ~{brief.planned_sites} sites
         </p>
-        {mode === 'hero' && docLink && (
+        {docLink && (mode === 'hero' || mode === 'upload') && (
           <a
             href={docLink}
             target="_blank"
@@ -395,8 +401,22 @@ export function BriefPanel({
             className="inline-flex items-center gap-1.5 mt-2 text-[12px] underline underline-offset-2"
             style={{ color: wcg.blue }}
           >
-            <FileText className="w-3.5 h-3.5" /> Open the brief in Google Docs
+            <FileText className="w-3.5 h-3.5" /> Open the working copy in Google Docs
           </a>
+        )}
+        {mode === 'upload' && coverage && (coverage.present.length > 0 || coverage.missing.length > 0) && (
+          <div className="mt-2 space-y-1">
+            {coverage.present.length > 0 && (
+              <p className="text-[11px] leading-snug" style={{ color: wcg.muted }}>
+                Present: {coverage.present.join(' · ')}
+              </p>
+            )}
+            {coverage.missing.length > 0 && (
+              <p className="text-[11px] leading-snug" style={{ color: wcg.amber }}>
+                Missing from extract: {coverage.missing.join(' · ')}
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -504,14 +524,16 @@ function QuestionExplorer({
     // Biostats entries run on the OMOP cohorts, not the brief, so they are
     // available in every mode, blank included.
     const analyses =
-      mode === 'blank' ? g.analyses.filter((a) => a.blankPrompt || a.biostats) : g.analyses
+      mode === 'blank' || mode === 'empty'
+        ? g.analyses.filter((a) => a.blankPrompt || a.biostats)
+        : g.analyses
     return { ...g, analyses }
   }).filter((g) => g.analyses.length)
 
   return (
     <div className="space-y-2">
       <p className="text-[11.5px] leading-snug" style={{ color: wcg.muted }}>
-        {mode === 'blank'
+        {mode === 'blank' || mode === 'empty'
           ? 'Pick the decision you want to explore — each pulls from comparable trials.'
           : 'Pick the decision you want to pressure-test — each runs a grounded, chart-backed analysis.'}
       </p>
@@ -546,7 +568,11 @@ function QuestionExplorer({
                     onClick={() =>
                       a.biostats
                         ? onOpenBiostats(a.biostats)
-                        : onRunAnalysis((mode === 'blank' ? a.blankPrompt : a.prompt) ?? a.prompt ?? '')
+                        : onRunAnalysis(
+                            (mode === 'blank' || mode === 'empty' ? a.blankPrompt : a.prompt) ??
+                              a.prompt ??
+                              ''
+                          )
                     }
                     className="w-full text-left rounded-md border px-2.5 py-1.5 transition-colors"
                     style={{ background: wcg.surfaceMuted, borderColor: wcg.border }}

@@ -12,11 +12,12 @@
 
 import { NextRequest } from 'next/server'
 
-import { clientAccessError } from '@/lib/client-access'
-import { resolveBrief, type BriefSource } from '@/lib/strategistPrompt'
+import { clientAccessError, currentUserEmail } from '@/lib/client-access'
+import { sanitizeClientBrief } from '@/lib/strategistExtract'
+import { parseClientSource, resolveBrief } from '@/lib/strategistPrompt'
 import { publishProtocol, PublishError, type PublishDecision } from '@/lib/strategistPublish'
 import { resolveTemplate } from '@/lib/strategistTemplates'
-import { designBrief, type DesignBrief } from '@/lib/trialCorpus'
+import type { DesignBrief } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -29,9 +30,10 @@ interface ClientMessage {
   content: string
 }
 
-function briefFromContext(source: unknown): DesignBrief | null {
-  const s = source as BriefSource | undefined
-  if (!s) return designBrief() // no context sent — the hero brief is the default document
+function briefFromContext(source: unknown, clientBrief?: unknown): DesignBrief | null {
+  const s = parseClientSource(source)
+  if (s.kind === 'upload') return sanitizeClientBrief(clientBrief)
+  if (s.kind === 'empty' || s.kind === 'blank') return null
   return resolveBrief(s)
 }
 
@@ -46,6 +48,7 @@ export async function POST(req: NextRequest) {
   let body: {
     messages?: ClientMessage[]
     context?: unknown
+    brief?: unknown
     decisions?: PublishDecision[]
     title?: string
     shareWith?: string
@@ -57,9 +60,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Invalid JSON body.' }, { status: 400 })
   }
 
-  const brief = briefFromContext(body.context)
+  const brief = briefFromContext(body.context, body.brief)
   const decisions = Array.isArray(body.decisions) ? body.decisions.slice(0, 50) : []
   const template = resolveTemplate(body.template?.key, body.template?.customOutline)
+  const shareWith = body.shareWith ?? (await currentUserEmail()) ?? undefined
 
   const transcript = (body.messages ?? [])
     .filter((m) => typeof m.content === 'string' && m.content.trim())
@@ -72,7 +76,7 @@ export async function POST(req: NextRequest) {
       decisions,
       transcript,
       title: body.title,
-      shareWith: body.shareWith,
+      shareWith,
       template,
     })
     return Response.json(result)

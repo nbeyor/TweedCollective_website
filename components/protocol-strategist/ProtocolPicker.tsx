@@ -1,54 +1,40 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { Check, ChevronDown, FilePlus2, FileText, Star } from 'lucide-react'
+import { Check, ChevronDown, FilePlus2, FileUp } from 'lucide-react'
 
 import type { ProtocolIndexEntry } from '@/lib/trialCorpus'
-import type { ExampleProtocol } from '@/lib/strategistExamples'
+import { sourceKey, type BriefSource } from '@/lib/strategistSource'
+import { DocDropZone } from './DocDropZone'
 import { wcg } from './wcgTheme'
 
-/** Which document the session is anchored on. Mirrored by the chat API. */
-export type BriefSource =
-  | { kind: 'hero' }
-  | { kind: 'corpus'; protocolId: string }
-  | { kind: 'blank' }
-
-export function sourceKey(s: BriefSource): string {
-  return s.kind === 'corpus' ? `corpus:${s.protocolId}` : s.kind
-}
+export type { BriefSource }
+export { sourceKey }
 
 /**
- * Document selector at the top of the left panel: the drafted hero brief, two
- * pinned example protocols, the full filterable corpus list, or a blank
- * net-new protocol. Selection resets the conversation (confirmed upstream).
+ * Document selector: upload a .docx, pick a corpus protocol, or start blank.
+ * The three Google-Doc starters are no longer listed — an uploaded working
+ * copy lives only in this session and is not shown in anyone else's picker.
  */
 export function ProtocolPicker({
   source,
-  heroLabel,
-  examples,
+  currentLabel,
   protocols,
   onSelect,
+  onUpload,
+  uploading,
+  uploadError,
 }: {
   source: BriefSource
-  heroLabel: string
-  examples: ExampleProtocol[]
+  currentLabel: string
   protocols: ProtocolIndexEntry[]
   onSelect: (next: BriefSource) => void
+  onUpload: (file: File) => void
+  uploading?: boolean
+  uploadError?: string | null
 }) {
   const [open, setOpen] = useState(false)
   const [filter, setFilter] = useState('')
-
-  const current =
-    source.kind === 'hero'
-      ? heroLabel
-      : source.kind === 'blank'
-        ? 'New protocol (blank)'
-        : (() => {
-            const ex = examples.find((e) => e.protocol_id === source.protocolId)
-            if (ex) return ex.label
-            const p = protocols.find((x) => x.protocol_id === source.protocolId)
-            return p ? `${p.indication} — ${p.protocol_id}` : source.protocolId
-          })()
 
   const filtered = useMemo(() => {
     const q = filter.trim().toLowerCase()
@@ -79,7 +65,7 @@ export function ProtocolPicker({
             Document under review
           </span>
           <span className="block text-[12.5px] font-medium truncate" style={{ color: wcg.ink }}>
-            {current}
+            {currentLabel}
           </span>
         </span>
         <ChevronDown
@@ -90,31 +76,17 @@ export function ProtocolPicker({
 
       {open && (
         <div className="border-t px-2 py-2 space-y-2" style={{ borderColor: wcg.border }}>
-          <Option
-            icon={<FileText className="w-3.5 h-3.5" style={{ color: wcg.teal }} />}
-            label={heroLabel}
-            note="Drafted brief · pre-protocol"
-            selected={active === 'hero'}
-            onClick={() => pick({ kind: 'hero' })}
-          />
+          <DocDropZone compact uploading={uploading} error={uploadError} onFile={onUpload} />
 
-          <div>
-            <p className="px-1.5 pb-1 text-[10.5px] uppercase tracking-[0.14em]" style={{ color: wcg.muted }}>
-              Example protocols
-            </p>
-            <div className="space-y-1">
-              {examples.map((ex) => (
-                <Option
-                  key={ex.protocol_id}
-                  icon={<Star className="w-3.5 h-3.5" style={{ color: wcg.amber }} />}
-                  label={ex.label}
-                  note={ex.descriptor}
-                  selected={active === `corpus:${ex.protocol_id}`}
-                  onClick={() => pick({ kind: 'corpus', protocolId: ex.protocol_id })}
-                />
-              ))}
-            </div>
-          </div>
+          {source.kind === 'upload' && (
+            <Option
+              icon={<FileUp className="w-3.5 h-3.5" style={{ color: wcg.teal }} />}
+              label={currentLabel}
+              note="Your working copy — not listed for anyone else"
+              selected={active.startsWith('upload:')}
+              onClick={() => setOpen(false)}
+            />
+          )}
 
           <div>
             <p className="px-1.5 pb-1 text-[10.5px] uppercase tracking-[0.14em]" style={{ color: wcg.muted }}>
@@ -152,7 +124,7 @@ export function ProtocolPicker({
 
           <Option
             icon={<FilePlus2 className="w-3.5 h-3.5" style={{ color: wcg.blue }} />}
-            label="Start blank (net new)"
+            label="Start blank (corpus only)"
             note="No draft — build the protocol from the data up"
             selected={active === 'blank'}
             onClick={() => pick({ kind: 'blank' })}

@@ -10,7 +10,7 @@
  * server-only imports.
  */
 
-export type StrategistMode = 'hero' | 'corpus' | 'blank'
+export type StrategistMode = 'hero' | 'corpus' | 'blank' | 'empty' | 'upload'
 
 /**
  * The corpus's data categories, as checkable boxes. Checking one or more tees
@@ -209,6 +209,17 @@ export const SUGGESTIONS: Record<StrategistMode, string[]> = {
     'What would a study like this cost per patient, and what drives it?',
     'Help me set a realistic target enrollment, duration, and site mix for a new study.',
   ],
+  empty: [
+    'I want to design a Phase 2 oncology trial — what should I decide first, and what does the corpus say about comparable studies?',
+    'What would a study like this cost per patient, and what drives it?',
+    'Help me set a realistic target enrollment, duration, and site mix for a new study.',
+  ],
+  upload: [
+    'Which eligibility criteria in this brief will cost us the most patients?',
+    'What will this study cost per patient and all-in — direct vs indirect?',
+    'Build me a site and country footprint that clears the 20% US regulatory floor — and show the compliance.',
+    'Before this goes to writing, which elements are most likely to force an amendment?',
+  ],
 }
 
 export const MODE_DESCRIPTIONS: Record<StrategistMode, string> = {
@@ -217,6 +228,9 @@ export const MODE_DESCRIPTIONS: Record<StrategistMode, string> = {
     'Load a completed trial from the corpus as the document under review; its actual operational outcomes are known, so predictions can be checked against what happened.',
   blank:
     'Start from a blank page and build a design grounded in what comparable trials in the corpus actually did.',
+  empty: 'Drop a .docx design brief, pick a corpus protocol, or start from a blank page.',
+  upload:
+    'Pressure-test the uploaded design brief — extracted into the same schema as a drafted brief. Gaps were left empty, not invented.',
 }
 
 /**

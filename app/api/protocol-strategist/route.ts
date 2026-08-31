@@ -15,15 +15,18 @@ import { NextRequest } from 'next/server'
 import { clientAccessError } from '@/lib/client-access'
 import { buildChartHtml, type GeneratedChartSpec } from '@/lib/generatedChart'
 import {
+  cachedSystemBlocks,
+  parseClientSource,
   resolveBrief,
   sanitizeBiostatsRuns,
   sanitizeDecisions,
   sanitizeFloors,
   stripAux,
-  systemPrompt,
+  toolsWithCacheBreakpoint,
   type BriefSource,
   type ClientMessage,
 } from '@/lib/strategistPrompt'
+import { sanitizeClientBrief, sanitizeCoverage, sanitizeSourceText } from '@/lib/strategistExtract'
 import { TOOLS, runTool } from '@/lib/strategistTools'
 
 export const runtime = 'nodejs'
@@ -53,6 +56,9 @@ export async function POST(req: NextRequest) {
   let body: {
     messages?: ClientMessage[]
     context?: BriefSource
+    brief?: unknown
+    sourceText?: unknown
+    coverage?: unknown
     decisions?: unknown
     floors?: unknown
     biostats?: unknown
@@ -73,13 +79,17 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: 'No messages supplied.' }), { status: 400 })
   }
 
-  const source: BriefSource =
-    body.context?.kind === 'corpus' && typeof body.context.protocolId === 'string'
-      ? { kind: 'corpus', protocolId: body.context.protocolId }
-      : body.context?.kind === 'blank'
-        ? { kind: 'blank' }
-        : { kind: 'hero' }
-  const activeBrief = resolveBrief(source)
+  const source = parseClientSource(body.context)
+  const uploadedBrief = source.kind === 'upload' ? sanitizeClientBrief(body.brief) : null
+  const activeBrief = source.kind === 'upload' ? uploadedBrief : resolveBrief(source)
+  const sourceText = source.kind === 'upload' ? sanitizeSourceText(body.sourceText) : null
+  const coverage = source.kind === 'upload' ? sanitizeCoverage(body.coverage) : null
+  if (source.kind === 'upload' && !activeBrief) {
+    return new Response(
+      JSON.stringify({ error: 'Uploaded brief is missing. Re-drop the .docx to extract it again.' }),
+      { status: 400 }
+    )
+  }
   if (source.kind === 'corpus' && !activeBrief) {
     return new Response(
       JSON.stringify({ error: `Unknown protocol "${source.protocolId}".` }),
@@ -113,14 +123,11 @@ export async function POST(req: NextRequest) {
             max_tokens: 16000,
             thinking: { type: 'adaptive', display: 'summarized' },
             output_config: { effort: EFFORT },
-            system: [
-              {
-                type: 'text',
-                text: systemPrompt(source, activeBrief, decisions, floors, biostatsRuns),
-                cache_control: { type: 'ephemeral' },
-              },
-            ],
-            tools: TOOLS,
+            system: cachedSystemBlocks(source, activeBrief, decisions, floors, biostatsRuns, {
+              sourceText,
+              coverage,
+            }),
+            tools: toolsWithCacheBreakpoint(TOOLS),
             messages,
           } as unknown as Anthropic.MessageStreamParams
 

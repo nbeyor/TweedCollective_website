@@ -11,6 +11,7 @@
     "setup:pipeline": "bash pipeline/setup.sh",
     "start": "next start",
     "test:biostats": "tsx scripts/test-biostats.ts",
+    "test:intake": "tsx scripts/test-strategist-intake.ts",
     "lint": "next lint"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "framer-motion": "^10.16.0",
     "google-auth-library": "^11.0.0",
     "lucide-react": "^0.292.0",
+    "mammoth": "^1.12.2",
     "mcp-handler": "^2.1.0",
     "next": "^14.0.0",
     "postcss": "^8.4.31",
