@@ -3,6 +3,7 @@ import React from 'react'
 import { StrategistWorkspace } from '@/components/protocol-strategist/StrategistWorkspace'
 import { wcg } from '@/components/protocol-strategist/wcgTheme'
 import { BRAND } from '@/lib/strategistBrand'
+import type { BriefSource } from '@/lib/strategistSource'
 import { designBrief, manifest, protocolIndex } from '@/lib/trialCorpus'
 
 export const metadata = {
@@ -13,13 +14,23 @@ export const metadata = {
 // The brief and corpus stats are read at build time. Access is per user, not
 // just per sign-in: the layout requires the 'protocol-strategist' workspace
 // grant, and the API routes behind this page check the same grant.
-export default function ProtocolStrategistPage() {
-  const brief = designBrief()
+export default function ProtocolStrategistPage({
+  searchParams,
+}: {
+  searchParams?: { demo?: string }
+}) {
+  // Hidden Tweed/WCG demo load — not listed in the picker. ?demo=tcx-lung
+  // opens the existing TCX-LUNG hero brief so the scripted walkthrough still
+  // works. Starter Drive files stay published via scripts/publish-starter-protocols.mjs.
+  const demoLung = searchParams?.demo === 'tcx-lung'
+  const brief = demoLung ? designBrief() : null
+  const initialSource: BriefSource = demoLung ? { kind: 'hero' } : { kind: 'empty' }
   const m = manifest() as Record<string, number | string>
   const protocols = protocolIndex()
-  const briefDocLink = process.env.STRATEGIST_BRIEF_DOC_ID
-    ? `https://docs.google.com/document/d/${process.env.STRATEGIST_BRIEF_DOC_ID}/edit`
-    : null
+  const briefDocLink =
+    demoLung && process.env.STRATEGIST_BRIEF_DOC_ID
+      ? `https://docs.google.com/document/d/${process.env.STRATEGIST_BRIEF_DOC_ID}/edit`
+      : null
 
   return (
     <div className="h-screen flex flex-col" style={{ background: wcg.page }}>
@@ -46,7 +57,12 @@ export default function ProtocolStrategistPage() {
       </header>
 
       <main className="flex-1 min-h-0">
-        <StrategistWorkspace brief={brief} briefDocLink={briefDocLink} protocols={protocols} />
+        <StrategistWorkspace
+          brief={brief}
+          briefDocLink={briefDocLink}
+          protocols={protocols}
+          initialSource={initialSource}
+        />
       </main>
 
       <footer className="border-t px-6 py-2 shrink-0" style={{ background: wcg.surface, borderColor: wcg.border }}>

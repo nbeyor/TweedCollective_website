@@ -4,16 +4,18 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2, ExternalLink, FileUp, Loader2, RotateCcw, Send, Wrench } from 'lucide-react'
 
 import { SUGGESTIONS } from '@/lib/mcp/prompts'
+import type { BriefCoverage } from '@/lib/strategistExtract'
 import type { DesignBrief, ProtocolIndexEntry } from '@/lib/trialCorpus'
-import { EXAMPLE_PROTOCOLS } from '@/lib/strategistExamples'
+import { sourceKey, type BriefSource } from '@/lib/strategistSource'
 import { BiostatsPanel, type BiostatsRunSummary, type BiostatsSelection } from './BiostatsPanel'
 import { BriefPanel, type BriefMode, type ShippedDecision } from './BriefPanel'
 import { DataConnectorsPanel } from './DataConnectorsPanel'
+import { DocDropZone } from './DocDropZone'
 import { InsightPanel, type Insight } from './InsightPanel'
 import { DEFAULT_TEMPLATE_KEY } from '@/lib/strategistTemplates'
 import { Markdown } from './Markdown'
 import { OutputTemplatePanel } from './OutputTemplatePanel'
-import { ProtocolPicker, sourceKey, type BriefSource } from './ProtocolPicker'
+import { ProtocolPicker } from './ProtocolPicker'
 import { wcg } from './wcgTheme'
 
 interface Message {
@@ -46,6 +48,8 @@ const PLACEHOLDERS: Record<BriefMode, string> = {
   hero: 'Ask a what-if, or select an element from the brief…',
   corpus: 'Ask a what-if about this protocol…',
   blank: 'Describe the trial you want to design…',
+  empty: 'Drop a .docx, or describe the trial you want to design…',
+  upload: 'Ask a what-if, or select an element from the extracted brief…',
 }
 
 /** Shared width for everything in the chat column. */
@@ -62,12 +66,22 @@ const TEMPLATE_KEY = 'strategist.outputTemplate'
  * restores the target's, so the model never sees two protocols' histories
  * interleaved and nothing is destroyed by browsing.
  */
+interface WorkingDoc {
+  id: string
+  name?: string
+  webViewLink?: string
+}
+
 interface DocSession {
   messages: Message[]
   insights: Insight[]
   decisions: ShippedDecision[]
   biostatsRuns: BiostatsRunSummary[]
   publishedDoc: { webViewLink?: string } | null
+  activeBrief: DesignBrief | null
+  coverage: BriefCoverage | null
+  sourceText: string | null
+  workingDoc: WorkingDoc | null
 }
 
 /** Decision logs persist per document across reloads; chat is session-only. */
@@ -94,10 +108,12 @@ export function StrategistWorkspace({
   brief,
   briefDocLink,
   protocols,
+  initialSource,
 }: {
-  brief: DesignBrief
+  brief?: DesignBrief | null
   briefDocLink?: string | null
   protocols: ProtocolIndexEntry[]
+  initialSource?: BriefSource
 }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -120,9 +136,19 @@ export function StrategistWorkspace({
   const [customOutline, setCustomOutline] = useState('')
 
   // Document under review.
-  const [source, setSource] = useState<BriefSource>({ kind: 'hero' })
-  const [activeBrief, setActiveBrief] = useState<DesignBrief | null>(brief)
+  const [source, setSource] = useState<BriefSource>(initialSource ?? { kind: 'empty' })
+  const [activeBrief, setActiveBrief] = useState<DesignBrief | null>(brief ?? null)
   const [briefLoading, setBriefLoading] = useState(false)
+  const [coverage, setCoverage] = useState<BriefCoverage | null>(null)
+  const [sourceText, setSourceText] = useState<string | null>(null)
+  const [workingDoc, setWorkingDoc] = useState<WorkingDoc | null>(
+    briefDocLink && initialSource?.kind === 'hero'
+      ? { id: '', webViewLink: briefDocLink, name: brief?.title }
+      : null
+  )
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [reviewing, setReviewing] = useState(false)
 
   // Publish to Google Doc.
   const [publishing, setPublishing] = useState(false)
@@ -160,8 +186,8 @@ export function StrategistWorkspace({
 
   // Restore this document's persisted decision log on first load.
   useEffect(() => {
-    setDecisions(loadStoredDecisions(sourceKey({ kind: 'hero' })))
-  }, [])
+    setDecisions(loadStoredDecisions(sourceKey(initialSource ?? { kind: 'empty' })))
+  }, [initialSource])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -233,7 +259,15 @@ export function StrategistWorkspace({
         const res = await fetch('/api/protocol-strategist', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: next, context: source, decisions, biostats: biostatsRuns }),
+          body: JSON.stringify({
+            messages: next,
+            context: source,
+            brief: source.kind === 'upload' ? activeBrief : undefined,
+            sourceText: source.kind === 'upload' ? sourceText : undefined,
+            coverage: source.kind === 'upload' ? coverage : undefined,
+            decisions,
+            biostats: biostatsRuns,
+          }),
         })
         if (!res.ok || !res.body) {
           const detail = await res.text()
@@ -324,7 +358,7 @@ export function StrategistWorkspace({
         }
       }
     },
-    [messages, streaming, source, decisions, biostatsRuns, addFixedInsight]
+    [messages, streaming, source, activeBrief, sourceText, coverage, decisions, biostatsRuns, addFixedInsight]
   )
 
   /** Wipe the current document's decision log — a fresh start for this project. */
@@ -367,7 +401,17 @@ export function StrategistWorkspace({
       // Park this document's session, restore the target's. Nothing is lost by
       // browsing, and each conversation stays scoped to one document — the
       // model never sees two protocols' histories mixed together.
-      parked.current.set(sourceKey(source), { messages, insights, decisions, biostatsRuns, publishedDoc })
+      parked.current.set(sourceKey(source), {
+        messages,
+        insights,
+        decisions,
+        biostatsRuns,
+        publishedDoc,
+        activeBrief,
+        coverage,
+        sourceText,
+        workingDoc,
+      })
       const restored = parked.current.get(sourceKey(next))
       setMessages(restored?.messages ?? [])
       setInsights(restored?.insights ?? [])
@@ -379,17 +423,36 @@ export function StrategistWorkspace({
       setError(null)
       setShipNotice(null)
       setPublishError(null)
+      setUploadError(null)
 
       setSource(next)
       if (next.kind === 'hero') {
-        setActiveBrief(brief)
+        setActiveBrief(brief ?? null)
+        setCoverage(null)
+        setSourceText(null)
+        setWorkingDoc(
+          briefDocLink ? { id: '', webViewLink: briefDocLink, name: brief?.title } : restored?.workingDoc ?? null
+        )
         return
       }
-      if (next.kind === 'blank') {
+      if (next.kind === 'blank' || next.kind === 'empty') {
         setActiveBrief(null)
+        setCoverage(null)
+        setSourceText(null)
+        setWorkingDoc(null)
+        return
+      }
+      if (next.kind === 'upload') {
+        setActiveBrief(restored?.activeBrief ?? activeBrief)
+        setCoverage(restored?.coverage ?? coverage)
+        setSourceText(restored?.sourceText ?? sourceText)
+        setWorkingDoc(restored?.workingDoc ?? workingDoc)
         return
       }
       setActiveBrief(null)
+      setCoverage(null)
+      setSourceText(null)
+      setWorkingDoc(null)
       setBriefLoading(true)
       try {
         const res = await fetch(
@@ -399,13 +462,27 @@ export function StrategistWorkspace({
         setActiveBrief((await res.json()) as DesignBrief)
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err))
-        setSource({ kind: 'hero' })
-        setActiveBrief(brief)
+        setSource({ kind: 'empty' })
+        setActiveBrief(null)
       } finally {
         setBriefLoading(false)
       }
     },
-    [source, streaming, messages, insights, decisions, biostatsRuns, publishedDoc, brief]
+    [
+      source,
+      streaming,
+      messages,
+      insights,
+      decisions,
+      biostatsRuns,
+      publishedDoc,
+      brief,
+      briefDocLink,
+      activeBrief,
+      coverage,
+      sourceText,
+      workingDoc,
+    ]
   )
 
   const publish = useCallback(async () => {
@@ -423,6 +500,7 @@ export function StrategistWorkspace({
         body: JSON.stringify({
           messages,
           context: source,
+          brief: source.kind === 'upload' ? activeBrief : undefined,
           decisions,
           template: { key: templateKey, customOutline },
         }),
@@ -435,7 +513,99 @@ export function StrategistWorkspace({
     } finally {
       setPublishing(false)
     }
-  }, [messages, decisions, source, streaming, publishing, templateKey, customOutline])
+  }, [messages, decisions, source, activeBrief, streaming, publishing, templateKey, customOutline])
+
+  const handleUpload = useCallback(
+    async (file: File) => {
+      if (uploading || streaming) return
+      setUploading(true)
+      setUploadError(null)
+      setError(null)
+      try {
+        const form = new FormData()
+        form.set('file', file)
+        const res = await fetch('/api/protocol-strategist/upload', { method: 'POST', body: form })
+        const data = (await res.json()) as {
+          error?: string
+          brief?: DesignBrief
+          coverage?: BriefCoverage
+          sourceText?: string | null
+          doc?: WorkingDoc
+        }
+        if (!res.ok) throw new Error(data.error ?? `Upload failed (${res.status}).`)
+        if (!data.brief || !data.doc?.id) throw new Error('Upload did not return a brief and working copy.')
+
+        parked.current.set(sourceKey(source), {
+          messages,
+          insights,
+          decisions,
+          biostatsRuns,
+          publishedDoc,
+          activeBrief,
+          coverage,
+          sourceText,
+          workingDoc,
+        })
+
+        const next: BriefSource = { kind: 'upload', docId: data.doc.id }
+        setSource(next)
+        setActiveBrief(data.brief)
+        setCoverage(data.coverage ?? null)
+        setSourceText(data.sourceText ?? null)
+        setWorkingDoc(data.doc)
+        setMessages([])
+        setInsights([])
+        setDecisions(loadStoredDecisions(sourceKey(next)))
+        setBiostatsRuns([])
+        setPublishedDoc(null)
+        setReply('')
+        setTools([])
+        setShipNotice(null)
+        setPublishError(null)
+      } catch (err) {
+        setUploadError(err instanceof Error ? err.message : String(err))
+      } finally {
+        setUploading(false)
+      }
+    },
+    [
+      uploading,
+      streaming,
+      source,
+      messages,
+      insights,
+      decisions,
+      biostatsRuns,
+      publishedDoc,
+      activeBrief,
+      coverage,
+      sourceText,
+      workingDoc,
+    ]
+  )
+
+  const reviseFromComments = useCallback(async () => {
+    if (!workingDoc?.id || reviewing || streaming) return
+    setReviewing(true)
+    setPublishError(null)
+    try {
+      const res = await fetch('/api/protocol-strategist/review', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ fileId: workingDoc.id }),
+      })
+      const data = (await res.json()) as {
+        error?: string
+        revision?: { webViewLink?: string; id?: string; name?: string }
+      }
+      if (!res.ok) throw new Error(data.error ?? `Review failed (${res.status}).`)
+      if (data.revision) setPublishedDoc(data.revision)
+    } catch (err) {
+      setPublishError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setReviewing(false)
+    }
+  }, [workingDoc, reviewing, streaming])
 
   const startDrag = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -480,12 +650,33 @@ export function StrategistWorkspace({
           <div className="px-4 pt-4">
             <ProtocolPicker
               source={source}
-              heroLabel={`${brief.indication} — drafted brief`}
-              examples={EXAMPLE_PROTOCOLS}
+              currentLabel={
+                source.kind === 'empty'
+                  ? 'No document — drop a .docx'
+                  : source.kind === 'blank'
+                    ? 'New protocol (blank)'
+                    : source.kind === 'upload'
+                      ? activeBrief?.title || workingDoc?.name || 'Uploaded brief'
+                      : source.kind === 'hero'
+                        ? brief
+                          ? `${brief.indication} — drafted brief`
+                          : 'Demo brief'
+                        : activeBrief
+                          ? `${activeBrief.indication} — ${source.protocolId}`
+                          : source.protocolId
+              }
               protocols={protocols}
               onSelect={switchSource}
+              onUpload={handleUpload}
+              uploading={uploading}
+              uploadError={uploadError}
             />
           </div>
+          {source.kind === 'empty' && (
+            <div className="px-4 pt-3">
+              <DocDropZone onFile={handleUpload} uploading={uploading} error={uploadError} />
+            </div>
+          )}
           {briefLoading ? (
             <div className="flex items-center gap-2 px-4 py-6 text-[12.5px]" style={{ color: wcg.muted }}>
               <Loader2 className="w-4 h-4 animate-spin" /> Loading protocol…
@@ -499,7 +690,8 @@ export function StrategistWorkspace({
               onRunAnalysis={send}
               onOpenBiostats={setBiostats}
               onClearDecisions={clearDecisions}
-              docLink={briefDocLink}
+              docLink={workingDoc?.webViewLink ?? (source.kind === 'hero' ? briefDocLink : null)}
+              coverage={coverage}
             />
           )}
           <OutputTemplatePanel
@@ -517,6 +709,29 @@ export function StrategistWorkspace({
           className="border-b px-5 py-2 flex items-center justify-end gap-2 shrink-0"
           style={{ background: wcg.surface, borderColor: wcg.border }}
         >
+          {workingDoc?.webViewLink && !publishedDoc?.webViewLink && (
+            <a
+              href={workingDoc.webViewLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-medium"
+              style={{ background: '#ECFBF6', borderColor: wcg.teal, color: wcg.navy }}
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Working copy
+            </a>
+          )}
+          {workingDoc?.id && (
+            <button
+              onClick={reviseFromComments}
+              disabled={reviewing || streaming || (docsReady !== null && !docsReady.ok)}
+              title="Read margin comments on the working copy and produce a revised Google Doc"
+              className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-medium disabled:opacity-40 transition-colors"
+              style={{ background: wcg.surface, borderColor: wcg.borderStrong, color: wcg.body }}
+            >
+              {reviewing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileUp className="w-3.5 h-3.5" />}
+              {reviewing ? 'Revising…' : 'Revise from comments'}
+            </button>
+          )}
           {publishedDoc?.webViewLink && (
             <a
               href={publishedDoc.webViewLink}
@@ -578,9 +793,11 @@ export function StrategistWorkspace({
           {empty && (
             <div className={`${COL} pt-4`}>
               <p className="text-[14px] leading-relaxed mb-5" style={{ color: wcg.body }}>
-                {mode === 'blank'
-                  ? 'Describe the trial you have in mind — every design choice gets grounded in the operations corpus — or start from a question below.'
-                  : 'Pick data categories in the Analyses tab to tee up chart-backed questions, click any element of the brief, or ask a what-if below. Charts land on the right.'}
+                {mode === 'empty'
+                  ? 'Drop a .docx design brief to extract it into the left panel, pick a corpus protocol, or start blank from a question below. The file you drop is never overwritten — we create a new Google Doc as the working copy.'
+                  : mode === 'blank'
+                    ? 'Describe the trial you have in mind — every design choice gets grounded in the operations corpus — or start from a question below.'
+                    : 'Pick data categories in the Analyses tab to tee up chart-backed questions, click any element of the brief, or ask a what-if below. Charts land on the right.'}
               </p>
               <div className="space-y-2">
                 {SUGGESTIONS[mode].map((s) => (

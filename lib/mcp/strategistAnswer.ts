@@ -14,10 +14,11 @@ import Anthropic from '@anthropic-ai/sdk'
 
 import type { GeneratedChartSpec } from '../generatedChart'
 import {
+  cachedSystemBlocks,
   resolveBrief,
   sanitizeDecisions,
   stripAux,
-  systemPrompt,
+  toolsWithCacheBreakpoint,
   type BriefSource,
   type ClientMessage,
 } from '../strategistPrompt'
@@ -106,14 +107,8 @@ export async function runGroundedStrategist(opts: {
       max_tokens: 16000,
       thinking: { type: 'adaptive', display: 'summarized' },
       output_config: { effort: EFFORT },
-      system: [
-        {
-          type: 'text',
-          text: systemPrompt(opts.source, brief, decisions),
-          cache_control: { type: 'ephemeral' },
-        },
-      ],
-      tools: TOOLS,
+      system: cachedSystemBlocks(opts.source, brief, decisions),
+      tools: toolsWithCacheBreakpoint(TOOLS),
       messages,
     } as unknown as Anthropic.MessageStreamParams
 
