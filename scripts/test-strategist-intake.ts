@@ -183,6 +183,76 @@ const sampleExtract = {
   check('missing list includes arms and eligibility', coverage.missing.includes('arms') && coverage.missing.includes('eligibility'))
 }
 
+// --------------- 3b. normalization: an RA working-notes extract grounds -----
+
+console.log('normalization maps an RA extract onto corpus vocabulary')
+
+{
+  // Shaped like a faithful extract of loose RA meeting notes: no therapeutic
+  // area stated, colloquial phase, an enrollment range, free-text endpoints.
+  const { brief } = normalizeExtractedBrief(
+    {
+      title: 'TCX-0028 — RA Phase 2 (working notes)',
+      therapeutic_area: '',
+      indication: 'rheumatoid arthritis',
+      phase: 'Phase 2',
+      target_enrollment: 0,
+      target_enrollment_range: { low: 180, high: 220 },
+      planned_sites: 0,
+      arms: [{ name: 'TCX-0028 150 mg SC q2w + MTX' }, { name: 'Placebo SC q2w + MTX' }],
+      primary_endpoint: { text: 'ACR20 at Week 12', assessment: '' },
+      secondary_endpoints: [{ text: 'DAS28-CRP', assessment: '' }],
+      criteria: [{ type: 'Exclusion', text: 'Prior exposure to biologic therapy' }],
+      soa_sketch: [],
+      coverage: { present: ['indication', 'phase', 'arms'], missing: ['soa', 'sites'] },
+    },
+    { fileName: 'ra-notes.docx', briefId: 'UPLOAD-ra' }
+  )
+  check(
+    'therapeutic area classified from indication',
+    brief.comparator_cohort.therapeutic_area === 'Immunology & Inflammation'
+  )
+  check('phase normalized ("Phase 2" → "2")', brief.comparator_cohort.phase?.join() === '2')
+  check(
+    'indication matched to corpus indication',
+    brief.comparator_cohort.indication === 'Moderate-to-Severe Rheumatoid Arthritis'
+  )
+  check('enrollment range collapsed to midpoint', brief.target_enrollment === 200)
+  check(
+    'midpoint disclosed as an extraction note',
+    Boolean(brief.extraction_notes?.some((n) => /180–220.*200/.test(n)))
+  )
+  check(
+    'primary endpoint mapped to assessment vocabulary',
+    brief.primary_endpoint.assessment === 'Proportion of participants achieving ACR20 response'
+  )
+  check(
+    'secondary endpoint mapped (DAS28-CRP)',
+    brief.secondary_endpoints[0]?.assessment ===
+      'Change from baseline in Disease Activity Score-28 (DAS28-CRP)'
+  )
+  check(
+    'criterion mapped to corpus criterion name',
+    brief.criteria[0]?.corpus_criterion === 'Prior exposure to biologic therapy'
+  )
+  check('indication text itself stays verbatim', brief.indication === 'rheumatoid arthritis')
+}
+
+{
+  // An ambiguous one-word indication must NOT snap to an arbitrary corpus
+  // indication — comparator falls back to TA+phase instead.
+  const { brief } = normalizeExtractedBrief({
+    indication: 'Asthma',
+    phase: 'II',
+    arms: [],
+    criteria: [],
+    soa_sketch: [],
+  })
+  check('ambiguous indication left unmatched', !brief.comparator_cohort.indication)
+  check('TA still classified from keyword', brief.comparator_cohort.therapeutic_area === 'Respiratory')
+  check('roman-numeral phase normalized', brief.comparator_cohort.phase?.join() === '2')
+}
+
 {
   const { brief } = normalizeExtractedBrief({
     indication: 'Asthma',

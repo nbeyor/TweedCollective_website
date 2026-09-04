@@ -4,7 +4,28 @@
 **Output:** `public/data/trial-corpus/` — 17 JSON files, ~7.4 MB
 **Regenerate:** `python3 pipeline/generate_trial_corpus.py --out public/data/trial-corpus`
 **Seed:** `20260806` — fixed. Reruns are byte-identical.
-**Version:** `2.0.0` — 150 protocols (30 NSCLC), weighted toward thoracic oncology for the hero flow; adds the v0.2 sensitivity layer.
+**Version:** `2.1.0` — 150 protocols (30 NSCLC), weighted toward thoracic oncology for the hero flow; adds the v0.2 sensitivity layer.
+
+## 2.1.0 — sensitivity layer covers all five therapeutic areas
+
+The v0.2 operational tables were authored for the NSCLC hero flow only: 10 oncology
+assessments and 19 onc/respiratory procedures. That meant endpoint and procedure
+what-ifs silently returned zeros for every other therapeutic area (rheumatoid
+arthritis was the reported case). 2.1.0 extends them:
+
+- `assessment_operations.json` now carries a row for **every distinct `std_endpoint`
+  in the endpoint sheets (58 names, 64 rows total)** — ACR20/DAS28/HAQ-DI, LDL-C,
+  EDSS, FEV1, MACE, and the rest. Each name is assigned an operational class
+  (central-read imaging, clinician score, PRO, central lab, physiologic test,
+  adjudicated event, safety count, PK); the class carries the burden profile and a
+  deterministic per-name hash offset differentiates rows. See
+  `ASSESSMENT_STD_CLASS` in `pipeline/trial_corpus_sensitivity.py`.
+- `procedure_operations.json` adds 10 cross-TA procedures (joint radiography, MSK
+  ultrasound, IGRA TB screening, colonoscopy, DXA, EEG, lumbar puncture, fasting
+  lipids, skin photography, CGM placement) — 29 procedures total.
+
+Only these two tables and the manifest changed; every other file regenerates
+byte-identical under the fixed seed.
 
 ## v0.2 sensitivity layer (new in 2.0.0)
 

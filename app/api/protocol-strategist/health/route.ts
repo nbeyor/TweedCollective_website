@@ -18,7 +18,7 @@ import { NextRequest } from 'next/server'
 import { clientAccessError } from '@/lib/client-access'
 import { checkDriveAccess } from '@/lib/googleDocs'
 import { runTool } from '@/lib/strategistTools'
-import { manifest, selectCohort } from '@/lib/trialCorpus'
+import { assessmentOperations, manifest, selectCohort } from '@/lib/trialCorpus'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -36,18 +36,49 @@ export async function GET(req: NextRequest) {
   const started = Date.now()
   const googleOnly = req.nextUrl.searchParams.get('scope') === 'google'
 
-  // --- corpus ---
+  // --- corpus: every therapeutic area must produce a non-empty cohort ---
   if (!googleOnly) try {
     const t = Date.now()
     const m = manifest() as Record<string, unknown>
-    const cohort = selectCohort({ therapeutic_area: 'Respiratory' })
+    const areas = [
+      'Respiratory',
+      'Oncology',
+      'Immunology & Inflammation',
+      'Cardiometabolic',
+      'Neurology',
+    ]
+    const counts = areas.map((ta) => [ta, selectCohort({ therapeutic_area: ta }).length] as const)
     checks.corpus = {
-      ok: cohort.length > 0,
-      detail: `${m.protocolCount} protocols, ${m.siteCount} sites, corpus v${m.corpusVersion}; Respiratory cohort ${cohort.length}`,
+      ok: counts.every(([, n]) => n > 0),
+      detail: `${m.protocolCount} protocols, ${m.siteCount} sites, corpus v${m.corpusVersion}; cohorts ${counts
+        .map(([ta, n]) => `${ta} ${n}`)
+        .join(', ')}`,
       ms: Date.now() - t,
     }
   } catch (err) {
     checks.corpus = { ok: false, detail: err instanceof Error ? err.message : String(err) }
+  }
+
+  // --- cross-TA grounding: a non-oncology endpoint what-if must resolve ---
+  if (!googleOnly) try {
+    const t = Date.now()
+    const rows = assessmentOperations()
+    const names = new Set(rows.map((r) => String(r.assessment_name)))
+    const probes = [
+      'Proportion of participants achieving ACR20 response',
+      'Change from baseline in low-density lipoprotein cholesterol (LDL-C)',
+      'Change from baseline in Expanded Disability Status Scale (EDSS)',
+    ]
+    const missing = probes.filter((p) => !names.has(p))
+    checks.cross_ta_grounding = {
+      ok: missing.length === 0,
+      detail: missing.length
+        ? `assessment_operations missing: ${missing.join('; ')}`
+        : `${rows.length} assessment-operations rows; immunology / cardiometabolic / neurology probes all resolve`,
+      ms: Date.now() - t,
+    }
+  } catch (err) {
+    checks.cross_ta_grounding = { ok: false, detail: err instanceof Error ? err.message : String(err) }
   }
 
   // --- tool execution ---

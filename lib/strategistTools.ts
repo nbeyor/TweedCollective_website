@@ -665,7 +665,14 @@ export async function runTool(
     case 'endpoint_timeline_sensitivity': {
       const brief = ctx.brief
       if (!brief) return NO_BRIEF
-      const assessments = (input.assessments as string[] | undefined) ?? []
+      let assessments = (input.assessments as string[] | undefined) ?? []
+      if (!assessments.length) {
+        // Default to the brief's own proposed endpoints (candidates first).
+        assessments = [
+          ...brief.candidate_secondary_endpoints.map((e) => e.assessment),
+          ...brief.secondary_endpoints.map((e) => e.assessment),
+        ].filter(Boolean)
+      }
       const data = endpointSensitivity(brief, assessments)
       if (input.context_only === true) return data
       return { ...data, _panel: { chart: 'endpoint_timeline', data } }

@@ -78,7 +78,12 @@ export interface DesignBrief {
   indication: string
   line_of_treatment: string
   phase: string
-  comparator_cohort: { therapeutic_area?: string; disease_area?: string; phase?: string[] }
+  comparator_cohort: {
+    therapeutic_area?: string
+    disease_area?: string
+    indication?: string
+    phase?: string[]
+  }
   target_enrollment: number
   planned_sites: number
   site_mix: Record<string, number>
@@ -97,6 +102,10 @@ export interface DesignBrief {
     open_question?: string
   }>
   soa_sketch: string[]
+  /** Normalization/assumption notes from document intake (e.g. an enrollment
+   *  range collapsed to its midpoint, vocabulary mappings) — surfaced to the
+   *  model so it can disclose them, never silently applied. */
+  extraction_notes?: string[]
   disclaimer: string
 }
 
@@ -279,6 +288,67 @@ export function selectCohort(f: CohortFilter = {}): Protocol[] {
     if (f.max_participants != null && n > f.max_participants) return false
     return true
   })
+}
+
+export interface ResolvedCohort {
+  cohort: Protocol[]
+  /** Human-readable description of the slice that actually matched. */
+  scope: string
+  /** True when the requested slice was empty or too thin and a wider one was used. */
+  widened: boolean
+}
+
+const MIN_COHORT = 8
+
+/**
+ * Resolve the comparator cohort for a brief with a widening fallback chain —
+ * indication+phase → TA+phase → TA → phase → whole corpus — stopping at the
+ * first slice with at least `minN` protocols. selectCohort is exact-match, and
+ * an uploaded brief's comparator keys can be missing or partial; a thin or
+ * empty comparator must degrade to a wider, honestly-labelled one, never to
+ * silent zeros. Callers surface `scope` in tool results so the model can say
+ * what the numbers are actually grounded on.
+ */
+export function resolveComparatorCohort(brief: DesignBrief, minN = MIN_COHORT): ResolvedCohort {
+  const cc = brief.comparator_cohort
+  const ta = cc.therapeutic_area || undefined
+  const phase = cc.phase?.length ? cc.phase : undefined
+  const indication = cc.indication || undefined
+  const phaseLabel = phase ? `Phase ${phase.join(' & ')}` : null
+
+  const attempts: Array<{ filter: CohortFilter; scope: string }> = []
+  if (indication)
+    attempts.push({
+      filter: { indication, phase },
+      scope: [indication, phaseLabel].filter(Boolean).join(', '),
+    })
+  if (ta)
+    attempts.push({
+      filter: { therapeutic_area: ta, phase },
+      scope: [ta, phaseLabel].filter(Boolean).join(', '),
+    })
+  if (ta) attempts.push({ filter: { therapeutic_area: ta }, scope: `${ta}, all phases` })
+  if (phase) attempts.push({ filter: { phase }, scope: `all therapeutic areas, ${phaseLabel}` })
+  attempts.push({ filter: {}, scope: 'entire corpus' })
+
+  let requested: { cohort: Protocol[]; scope: string } | null = null
+  for (let i = 0; i < attempts.length; i++) {
+    const cohort = selectCohort(attempts[i].filter)
+    if (i === 0) requested = { cohort, scope: attempts[i].scope }
+    const isLast = i === attempts.length - 1
+    if (cohort.length >= minN || isLast) {
+      const widened = i > 0
+      return {
+        cohort,
+        scope: widened
+          ? `${attempts[i].scope} (widened from "${requested!.scope}" — only ${requested!.cohort.length} corpus matches)`
+          : attempts[i].scope,
+        widened,
+      }
+    }
+  }
+  // Unreachable — the last attempt always returns — but keeps TypeScript honest.
+  return { cohort: protocols(), scope: 'entire corpus', widened: true }
 }
 
 // -------------------------------------------------------------- statistics ---
@@ -546,8 +616,26 @@ function pct(n: number, dp = 1) {
 }
 
 /** Normalised site-mix weights for the brief. */
+/**
+ * Corpus-typical site mix, used when a brief states none. A missing site mix
+ * must not zero out every site-weighted figure; the assumption is surfaced by
+ * siteMixAssumed() so tool results can disclose it.
+ */
+const DEFAULT_SITE_MIX: Record<string, number> = {
+  'Academic Medical Center': 0.3,
+  'Community Hospital': 0.25,
+  'Dedicated Research Site': 0.2,
+  'Private Practice': 0.15,
+  'Safety-Net / Public Hospital': 0.1,
+}
+
+export function siteMixAssumed(brief: DesignBrief): boolean {
+  return Object.keys(brief.site_mix).length === 0
+}
+
 function mixWeights(brief: DesignBrief): Array<[string, number]> {
-  const entries = Object.entries(brief.site_mix)
+  const source = siteMixAssumed(brief) ? DEFAULT_SITE_MIX : brief.site_mix
+  const entries = Object.entries(source)
   const total = entries.reduce((a, [, w]) => a + w, 0) || 1
   return entries.map(([st, w]) => [st, w / total])
 }
@@ -569,17 +657,15 @@ function procedureOpsIndex(): Map<string, Map<string, Row>> {
  * monthly rate needed to hit the brief's target N.
  */
 export function baselineEnrollment(brief: DesignBrief) {
-  const cohort = selectCohort({
-    therapeutic_area: brief.comparator_cohort.therapeutic_area,
-    disease_area: brief.comparator_cohort.disease_area,
-    phase: brief.comparator_cohort.phase,
-  })
+  const { cohort, scope, widened } = resolveComparatorCohort(brief)
   const durations = cohort.map((p) => Number(p.enrollment_duration_months)).filter(Number.isFinite)
   const screenFails = cohort.map((p) => Number(p.screen_fail_rate)).filter(Number.isFinite)
   const months = durations.length ? quantile(durations, 0.5) : 14
   const screenFail = screenFails.length ? quantile(screenFails, 0.5) : 0.35
   return {
     comparator_n: cohort.length,
+    cohort_scope: scope,
+    cohort_widened: widened,
     baseline_enrollment_months: round(months, 1),
     cohort_median_screen_fail_pct: pct(screenFail),
     monthly_enrollment_rate: round(brief.target_enrollment / Math.max(1, months), 1),
@@ -595,7 +681,25 @@ export function baselineEnrollment(brief: DesignBrief) {
  * criteria do most of the damage" reads straight off the data.
  */
 export function criteriaWaterfall(brief: DesignBrief) {
-  const ta = brief.comparator_cohort.therapeutic_area ?? brief.therapeutic_area
+  // Attribution is keyed by (therapeutic_area, criterion). Fall back from the
+  // comparator TA to the resolved cohort's dominant TA so an off-vocabulary or
+  // missing TA still lands on a real attribution slice.
+  const attributionTAs = new Set(criterionAttribution().map((r) => String(r.therapeutic_area)))
+  let ta = brief.comparator_cohort.therapeutic_area || brief.therapeutic_area
+  let taNote: string | null = null
+  if (!attributionTAs.has(ta)) {
+    const { cohort, scope } = resolveComparatorCohort(brief)
+    const counts = new Map<string, number>()
+    for (const p of cohort) {
+      const t = String(p.therapeutic_area)
+      counts.set(t, (counts.get(t) ?? 0) + 1)
+    }
+    const dominant = Array.from(counts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0]
+    if (dominant && attributionTAs.has(dominant)) {
+      taNote = `Attribution read from "${dominant}" (comparator cohort: ${scope}); the brief's stated area "${ta || 'unspecified'}" has no attribution slice.`
+      ta = dominant
+    }
+  }
   const attr = criterionAttribution().filter((r) => r.therapeutic_area === ta)
   const byName = new Map(attr.map((r) => [String(r.criterion), r]))
 
@@ -608,6 +712,7 @@ export function criteriaWaterfall(brief: DesignBrief) {
       corpus_criterion: c.corpus_criterion,
       criterion_type: c.type,
       category: c.category,
+      matched: Boolean(row),
       screen_fail_attribution_pct: round(attribution, 2),
       protocols_evidencing: row ? Number(row.protocols_using) : 0,
       hero_hook: Boolean(c.hero_hook),
@@ -629,13 +734,26 @@ export function criteriaWaterfall(brief: DesignBrief) {
   })
   const topTwo = withShare.slice(0, 2).reduce((a, it) => a + it.screen_fail_attribution_pct, 0)
 
+  const unmatched = withShare.filter((it) => !it.matched)
+  const notes = [
+    'Each criterion carries the mean screen-fail attribution measured across comparator protocols that use it; share_of_draft_burden_pct is its slice of the burden across the draft\'s own criteria. Association across protocols, not an isolated causal effect.',
+  ]
+  if (taNote) notes.push(taNote)
+  if (unmatched.length) {
+    notes.push(
+      `${unmatched.length} of ${withShare.length} criteria have no matching attribution row (matched: false) — their burden is UNKNOWN, not zero. Say so rather than treating them as free.`
+    )
+  }
+
   return {
     brief_id: brief.brief_id,
+    attribution_therapeutic_area: ta,
     total_attributable_screen_fail_pct: round(total, 2),
     top_two_share_pct: total ? pct(topTwo / total) : 0,
-    lead_criterion: withShare[0]?.corpus_criterion ?? null,
+    lead_criterion: withShare.find((it) => it.matched)?.corpus_criterion ?? null,
     criteria: withShare,
-    note: 'Each criterion carries the mean screen-fail attribution measured across comparator protocols that use it; share_of_draft_burden_pct is its slice of the burden across the draft\'s own criteria. Association across protocols, not an isolated causal effect.',
+    unmatched_criteria: unmatched.map((it) => it.criterion),
+    note: notes.join(' '),
   }
 }
 
@@ -788,6 +906,8 @@ export function endpointSensitivity(brief: DesignBrief, assessmentNames: string[
     }
   })
 
+  const unresolvedNames = items.filter((it) => !it.resolved).map((it) => it.assessment)
+
   const totalLock = items.reduce((a, it) => a + it.db_lock_contribution_days, 0)
   const ranked = [...items].sort((a, b) => a.db_lock_contribution_days - b.db_lock_contribution_days)
   // Timeline-protecting subset: keep endpoints until the added lock crosses a
@@ -829,7 +949,17 @@ export function endpointSensitivity(brief: DesignBrief, assessmentNames: string[
         tradeoff: 'Protects the primary timeline fully; loses powered secondary evidence.',
       },
     ],
-    note: 'db_lock_contribution_days from assessment_operations, additive at the margin. Synthetic.',
+    ...(unresolvedNames.length
+      ? {
+          unresolved_assessments: unresolvedNames,
+          available_assessments: assessmentOperations()
+            .map((r) => String(r.assessment_name))
+            .sort(),
+        }
+      : {}),
+    note: unresolvedNames.length
+      ? `db_lock_contribution_days from assessment_operations, additive at the margin. Synthetic. ${unresolvedNames.length} requested assessment(s) have NO operations row (resolved: false) — their zeros mean "no data", not "no burden". Re-run with the closest names from available_assessments, or tell the user the corpus cannot ground those.`
+      : 'db_lock_contribution_days from assessment_operations, additive at the margin. Synthetic.',
   }
 }
 
@@ -839,10 +969,7 @@ export function endpointSensitivity(brief: DesignBrief, assessmentNames: string[
  * then flags the brief's element categories against that history.
  */
 export function amendmentRiskSweep(brief: DesignBrief) {
-  const cohort = selectCohort({
-    therapeutic_area: brief.comparator_cohort.therapeutic_area,
-    phase: brief.comparator_cohort.phase,
-  })
+  const { cohort, scope, widened } = resolveComparatorCohort(brief)
   const ids = new Set(cohort.map((p) => String(p.protocol_id)))
   const rows = amendments().filter((r) => ids.has(String(r.protocol_id)))
 
@@ -893,6 +1020,8 @@ export function amendmentRiskSweep(brief: DesignBrief) {
   return {
     brief_id: brief.brief_id,
     comparator_n: cohort.length,
+    cohort_scope: scope,
+    cohort_widened: widened,
     amendment_types: byType,
     brief_element_risk: elementFlags,
     note: 'Amendment history for comparator protocols. Timing is months from first-patient-in; cost is a synthetic ~$500K-scale estimate.',
@@ -909,10 +1038,7 @@ export function amendmentRiskSweep(brief: DesignBrief) {
  * an unbuilt draft (the hero brief) gets the estimated position.
  */
 export function comparatorLandscape(brief: DesignBrief) {
-  const cohort = selectCohort({
-    therapeutic_area: brief.comparator_cohort.therapeutic_area,
-    phase: brief.comparator_cohort.phase,
-  })
+  const { cohort, scope, widened } = resolveComparatorCohort(brief)
   const source = brief.source_protocol_id
     ? protocols().find((p) => String(p.protocol_id) === brief.source_protocol_id)
     : undefined
@@ -956,6 +1082,8 @@ export function comparatorLandscape(brief: DesignBrief) {
   return {
     brief_id: brief.brief_id,
     comparator_n: points.length,
+    cohort_scope: scope,
+    cohort_widened: widened,
     points,
     draft,
     note: measured
@@ -1029,17 +1157,31 @@ function dataManagementPerPatient(): number {
  * management, site activation, and site maintenance over the enrollment window.
  */
 export function trialCostModel(brief: DesignBrief) {
-  const cohort = selectCohort({
-    therapeutic_area: brief.comparator_cohort.therapeutic_area,
-    phase: brief.comparator_cohort.phase,
-  })
+  const { cohort, scope, widened } = resolveComparatorCohort(brief)
   const procCounts = cohort.map((p) => Number(p.procedure_count)).filter(Number.isFinite)
   const visitCounts = cohort.map((p) => Number(p.total_visit_count)).filter(Number.isFinite)
   const perProcedure = blendedProcedureCost(brief)
   const dataMgmt = dataManagementPerPatient()
   const base = baselineEnrollment(brief)
-  const n = brief.target_enrollment
-  const sites = brief.planned_sites || 1
+
+  // A vague draft ("enrollment TBD", "sites TBD") costs at the comparator
+  // median rather than at zero — with each substitution disclosed.
+  const assumptions: string[] = []
+  let n = brief.target_enrollment
+  if (!n) {
+    const enrollments = cohort.map((p) => Number(p.number_of_participants)).filter(Number.isFinite)
+    n = enrollments.length ? Math.round(quantile(enrollments, 0.5)) : 0
+    if (n) assumptions.push(`Target enrollment not stated in the brief — comparator-cohort median N=${n} assumed.`)
+  }
+  let sites = brief.planned_sites
+  if (!sites) {
+    const siteCounts = cohort.map((p) => Number(p.sites_initiated)).filter((x) => Number.isFinite(x) && x > 0)
+    sites = siteCounts.length ? Math.round(quantile(siteCounts, 0.5)) : 1
+    assumptions.push(`Planned site count not stated — comparator-cohort median of ${sites} sites assumed.`)
+  }
+  if (siteMixAssumed(brief)) {
+    assumptions.push('Site mix not stated — a corpus-typical mix assumed for procedure-cost weighting.')
+  }
   const months = base.baseline_enrollment_months
 
   // Indirect that does not scale with SoA intensity: activation once per site,
@@ -1084,6 +1226,9 @@ export function trialCostModel(brief: DesignBrief) {
     planned_sites: sites,
     enrollment_window_months: months,
     comparator_n: cohort.length,
+    cohort_scope: scope,
+    cohort_widened: widened,
+    ...(assumptions.length ? { assumptions } : {}),
     cost_drivers: {
       blended_procedure_cost_usd: Math.round(perProcedure),
       data_management_per_patient_usd: Math.round(dataMgmt),
@@ -1192,10 +1337,7 @@ export interface FootprintOptions {
  * aggressive — reporting recruit timeline and activation cost for each.
  */
 export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
-  const cohort = selectCohort({
-    therapeutic_area: brief.comparator_cohort.therapeutic_area,
-    phase: brief.comparator_cohort.phase,
-  })
+  const { cohort, scope } = resolveComparatorCohort(brief)
   let ops = countryOperations(cohort)
   if (opts.restrict_countries?.length) {
     const keep = new Set(opts.restrict_countries)
@@ -1342,6 +1484,7 @@ export function siteFootprint(brief: DesignBrief, opts: FootprintOptions = {}) {
     brief_id: brief.brief_id,
     target_enrollment: n,
     comparator_n: cohort.length,
+    cohort_scope: scope,
     region_floors: floors,
     floor_compliance: floorCompliance,
     countries_available: ops.map((o) => o.country),
