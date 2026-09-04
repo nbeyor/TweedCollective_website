@@ -29,6 +29,8 @@ Everything here is synthetic and labelled as such. Numbers are plausible, not
 benchmarked; if real WCG operational data arrives, recalibrate the base profiles.
 """
 
+import hashlib
+
 # --------------------------------------------------------------------------
 # Procedure operations.
 #
@@ -103,6 +105,39 @@ PROCEDURE_OPS_BASE = {
     "6-minute walk test": dict(
         invasiveness="Procedure (Non - Invasive)", base_lag=2, base_avail=0.85,
         base_refusal=0.03, unit_cost=120, staffing="Site nursing"),
+    # Cross-TA procedures (v2.1.0): the corpus spans five therapeutic areas, so
+    # what-ifs in immunology, cardiometabolic, and neurology briefs need the
+    # procedures their criteria and endpoints actually reference.
+    "Joint radiography (hands and feet X-ray)": dict(
+        invasiveness="Procedure (Non - Invasive)", base_lag=5, base_avail=0.86,
+        base_refusal=0.02, unit_cost=310, staffing="Radiology + central scoring read"),
+    "Musculoskeletal ultrasound": dict(
+        invasiveness="Procedure (Non - Invasive)", base_lag=9, base_avail=0.52,
+        base_refusal=0.02, unit_cost=480, staffing="Trained sonographer (OMERACT-scored)"),
+    "Interferon-gamma release assay (TB screening)": dict(
+        invasiveness="Procedure (Minimally Invasive)", base_lag=3, base_avail=0.91,
+        base_refusal=0.01, unit_cost=185, staffing="Site phlebotomy + central lab"),
+    "Colonoscopy with biopsy": dict(
+        invasiveness="Procedure (Highly Invasive)", base_lag=22, base_avail=0.54,
+        base_refusal=0.15, unit_cost=2250, staffing="GI / endoscopy suite + anesthesia + central read"),
+    "Dual-energy X-ray absorptiometry (DXA)": dict(
+        invasiveness="Procedure (Non - Invasive)", base_lag=10, base_avail=0.47,
+        base_refusal=0.02, unit_cost=340, staffing="Radiology / DXA-certified tech"),
+    "Electroencephalogram (EEG)": dict(
+        invasiveness="Procedure (Non - Invasive)", base_lag=12, base_avail=0.48,
+        base_refusal=0.03, unit_cost=720, staffing="Neurodiagnostics + neurologist read"),
+    "Lumbar puncture (CSF sampling)": dict(
+        invasiveness="Procedure (Highly Invasive)", base_lag=15, base_avail=0.51,
+        base_refusal=0.18, unit_cost=1150, staffing="Trained proceduralist + central CSF lab"),
+    "Fasting lipid panel": dict(
+        invasiveness="Procedure (Minimally Invasive)", base_lag=2, base_avail=0.97,
+        base_refusal=0.02, unit_cost=65, staffing="Site phlebotomy + central lab"),
+    "Skin lesion assessment and photography": dict(
+        invasiveness="Procedure (Non - Invasive)", base_lag=2, base_avail=0.83,
+        base_refusal=0.03, unit_cost=160, staffing="Trained assessor + imaging upload"),
+    "Continuous glucose monitoring sensor placement": dict(
+        invasiveness="Procedure (Minimally Invasive)", base_lag=6, base_avail=0.66,
+        base_refusal=0.05, unit_cost=390, staffing="Device-trained site nursing"),
 }
 
 # Per-site-type modifiers. lag_x / cost_x scale the base; avail_x scales
@@ -192,6 +227,121 @@ ASSESSMENT_OPS_COLUMNS = [
     "operational_requirement",
 ]
 
+# --------------------------------------------------------------------------
+# Standard-endpoint operations (v2.1.0).
+#
+# The 10 rows above are the hero-brief assessment set — all oncology. But the
+# endpoint sheets carry 58 distinct std_endpoint names across all five
+# therapeutic areas, and an endpoint what-if must resolve every one of them,
+# whichever document is under review. Each name gets an operational class; the
+# class carries the burden profile, and a per-name deterministic offset (no
+# RNG — hash of the name) keeps rows from being clones.
+# --------------------------------------------------------------------------
+
+ASSESSMENT_CLASS_OPS = {
+    "imaging_central": dict(  # central-read imaging on the critical path
+        domain="Effectiveness", fields=24, entry_min=30, query_lag_days=13,
+        monitor_min=22, lock_days=20, requires="Central imaging read + charter"),
+    "clinician_score": dict(  # site-administered clinical scoring instruments
+        domain="Effectiveness", fields=16, entry_min=18, query_lag_days=9,
+        monitor_min=12, lock_days=10, requires="Trained / certified site assessor"),
+    "pro_questionnaire": dict(  # patient-reported instruments and diaries
+        domain="QoL", fields=26, entry_min=15, query_lag_days=8,
+        monitor_min=9, lock_days=9, requires="ePRO device + translated instruments"),
+    "lab_biomarker": dict(  # central-lab analytes and biomarkers
+        domain="Effectiveness", fields=12, entry_min=10, query_lag_days=10,
+        monitor_min=8, lock_days=11, requires="Central laboratory + shipping logistics"),
+    "physiologic_test": dict(  # equipment-based functional measurements
+        domain="Effectiveness", fields=14, entry_min=16, query_lag_days=9,
+        monitor_min=11, lock_days=10, requires="Calibrated site equipment + over-read"),
+    "event_adjudicated": dict(  # committee-adjudicated clinical events
+        domain="Effectiveness", fields=18, entry_min=22, query_lag_days=17,
+        monitor_min=16, lock_days=24, requires="Endpoint adjudication committee"),
+    "safety_count": dict(  # ongoing safety tabulations
+        domain="Safety", fields=30, entry_min=24, query_lag_days=10,
+        monitor_min=18, lock_days=12, requires="Ongoing safety review"),
+    "pk": dict(  # dense-sampling pharmacokinetics
+        domain="Pharmacokinetics", fields=22, entry_min=24, query_lag_days=11,
+        monitor_min=17, lock_days=13, requires="Dense PK sampling + bioanalytical lab"),
+}
+
+# Every std_endpoint in the corpus endpoint sheets, classed. Names must match
+# endpoints.json exactly — they are the lookup keys the what-if resolves.
+# Names already present in ASSESSMENT_OPS_BASE are skipped at build time.
+ASSESSMENT_STD_CLASS = {
+    # Oncology
+    "Objective response rate (ORR) per RECIST v1.1": "imaging_central",
+    "Progression-free survival (PFS) per RECIST v1.1": "imaging_central",
+    "Overall survival (OS)": "event_adjudicated",
+    "Duration of response (DoR)": "imaging_central",
+    "Disease control rate (DCR)": "imaging_central",
+    "Time to response (TTR)": "imaging_central",
+    "Minimal residual disease (MRD) negativity rate": "lab_biomarker",
+    "Change from baseline in EORTC QLQ-C30 global health status": "pro_questionnaire",
+    "Count of dose-limiting toxicities (DLTs)": "safety_count",
+    "Count of dose reductions and dose interruptions": "safety_count",
+    # Immunology & Inflammation
+    "Proportion of participants achieving ACR20 response": "clinician_score",
+    "Proportion of participants achieving ACR50 response": "clinician_score",
+    "Change from baseline in Disease Activity Score-28 (DAS28-CRP)": "clinician_score",
+    "Change from baseline in Health Assessment Questionnaire (HAQ-DI)": "pro_questionnaire",
+    "Proportion of participants achieving PASI 75 response": "clinician_score",
+    "Proportion of participants achieving PASI 90 response": "clinician_score",
+    "Change from baseline in Eczema Area and Severity Index (EASI)": "clinician_score",
+    "Change from baseline in SLE Disease Activity Index (SLEDAI-2K)": "clinician_score",
+    "Proportion of participants achieving clinical remission by modified Mayo score": "clinician_score",
+    "Proportion of participants achieving endoscopic improvement": "imaging_central",
+    "Incidence of serious infections": "event_adjudicated",
+    # Cardiometabolic
+    "Change from baseline in low-density lipoprotein cholesterol (LDL-C)": "lab_biomarker",
+    "Change from baseline in glycated hemoglobin (HbA1c)": "lab_biomarker",
+    "Proportion of participants achieving HbA1c < 7.0%": "lab_biomarker",
+    "Percent change from baseline in body weight": "physiologic_test",
+    "Change from baseline in left ventricular ejection fraction (LVEF)": "imaging_central",
+    "Change from baseline in Kansas City Cardiomyopathy Questionnaire (KCCQ) score": "pro_questionnaire",
+    "Change from baseline in N-terminal pro b-type natriuretic peptide (NT-proBNP)": "lab_biomarker",
+    "Change from baseline in estimated glomerular filtration rate (eGFR)": "lab_biomarker",
+    "Time to first occurrence of major adverse cardiovascular event (MACE)": "event_adjudicated",
+    "Incidence of documented hypoglycemia": "event_adjudicated",
+    # Neurology
+    "Count of new or enlarging T2 lesions on MRI": "imaging_central",
+    "Change from baseline in Expanded Disability Status Scale (EDSS)": "clinician_score",
+    "Annualized relapse rate (ARR)": "event_adjudicated",
+    "Change from baseline in ALS Functional Rating Scale-Revised (ALSFRS-R)": "clinician_score",
+    "Change from baseline in Movement Disorder Society-Unified Parkinson's Disease Rating Scale (MDS-UPDRS)": "clinician_score",
+    "Change from baseline in Clinical Dementia Rating-Sum of Boxes (CDR-SB)": "clinician_score",
+    "Change from baseline in Alzheimer's Disease Assessment Scale-Cognitive Subscale (ADAS-Cog)": "clinician_score",
+    "Percent change from baseline in seizure frequency": "pro_questionnaire",
+    "Change from baseline in amyloid PET standardized uptake value ratio (SUVR)": "imaging_central",
+    "Incidence of amyloid-related imaging abnormalities (ARIA)": "imaging_central",
+    "Change from baseline in plasma neurofilament light chain (NfL)": "lab_biomarker",
+    # Respiratory
+    "Change from baseline in pre-bronchodilator forced expiratory volume in 1 second (FEV1)": "physiologic_test",
+    "Change from baseline in post-bronchodilator forced expiratory volume in 1 second (FEV1)": "physiologic_test",
+    "Change from baseline in forced vital capacity (FVC)": "physiologic_test",
+    "Change from baseline in diffusing capacity of the lungs for carbon monoxide (DLCO)": "physiologic_test",
+    "Annualized rate of moderate or severe exacerbations": "event_adjudicated",
+    "Change from baseline in 6-minute walk distance (6MWD)": "physiologic_test",
+    "Change from baseline in St George's Respiratory Questionnaire (SGRQ) total score": "pro_questionnaire",
+    "Change from baseline in Asthma Control Questionnaire (ACQ-7) score": "pro_questionnaire",
+    "Change from baseline in fractional exhaled nitric oxide (FeNO)": "physiologic_test",
+    # Cross-TA
+    "Count of treatment emergent adverse events": "safety_count",
+    "Count of treatment emergent adverse events by CTCAE v5.0 grade": "safety_count",
+    "Count of treatment emergent serious adverse events": "safety_count",
+    "Incidence of anti-drug antibodies": "lab_biomarker",
+    "Maximum observed plasma concentration (Cmax)": "pk",
+    "Area under the plasma concentration-time curve (AUC)": "pk",
+    "Serum concentration of IP over time": "pk",
+}
+
+
+def _name_offset(name, span):
+    """Deterministic per-name offset in [-span, +span]. Hash, not RNG, so the
+    corpus regenerates byte-identical."""
+    h = int(hashlib.md5(name.encode("utf-8")).hexdigest()[:8], 16)
+    return (h % (2 * span + 1)) - span
+
 
 def build_assessment_operations():
     rows = []
@@ -199,6 +349,19 @@ def build_assessment_operations():
         rows.append([
             name, b["domain"], b["fields"], b["entry_min"], b["query_lag_days"],
             b["monitor_min"], b["lock_days"], b["requires"],
+        ])
+    for name, cls in sorted(ASSESSMENT_STD_CLASS.items()):
+        if name in ASSESSMENT_OPS_BASE:
+            continue
+        b = ASSESSMENT_CLASS_OPS[cls]
+        rows.append([
+            name, b["domain"],
+            max(4, b["fields"] + _name_offset(name, 4)),
+            max(5, b["entry_min"] + _name_offset(name + ":entry", 4)),
+            max(3, b["query_lag_days"] + _name_offset(name + ":query", 3)),
+            max(4, b["monitor_min"] + _name_offset(name + ":mon", 3)),
+            max(4, b["lock_days"] + _name_offset(name + ":lock", 3)),
+            b["requires"],
         ])
     return rows
 

@@ -12,6 +12,7 @@
     "start": "next start",
     "test:biostats": "tsx scripts/test-biostats.ts",
     "test:intake": "tsx scripts/test-strategist-intake.ts",
+    "test:grounding": "tsx scripts/test-strategist-grounding.ts",
     "lint": "next lint"
   },
   "dependencies": {

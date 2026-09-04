@@ -7,6 +7,14 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 
+import {
+  assessmentVocabulary,
+  criterionVocabulary,
+  indicationVocabulary,
+  normalizeBrief,
+  phaseVocabulary,
+  therapeuticAreas,
+} from './strategistNormalize'
 import type { DesignBrief } from './trialCorpus'
 
 /** Repo Haiku id for cheap structured extract. Same ANTHROPIC_API_KEY as Opus. */
@@ -39,17 +47,36 @@ const COVERAGE_FIELDS = [
   'sites',
 ] as const
 
-const EXTRACT_SYSTEM = `You extract a clinical-trial design brief from a document. This is ETL, not analysis.
+function buildExtractSystem(): string {
+  return `You extract a clinical-trial design brief from a document. This is ETL, not analysis.
 
 Rules:
 - Copy only what the document states. Do not invent arms, endpoints, criteria, numbers, or a schedule.
 - If a field is absent or ambiguous, leave it empty ("" / [] / 0) and list it under coverage.missing.
 - coverage.present / coverage.missing use these keys only: ${COVERAGE_FIELDS.join(', ')}.
-- Prefer short verbatim phrases over paraphrase.
+- Prefer short verbatim phrases over paraphrase — EXCEPT the classification fields below, which map onto controlled vocabularies so downstream lookups resolve.
 - eligibility: each criterion is inclusion or exclusion as labeled in the source; if unlabeled, use the source wording and type "Unspecified".
-- Do not recommend, score, or pressure-test anything. Do not fill gaps from general knowledge.`
+- Do not recommend, score, or pressure-test anything. Do not fill gaps from general knowledge.
 
-const EXTRACT_TOOL: Anthropic.Tool = {
+Classification fields (choose from the vocabulary; this is categorization of what the document states, not invention):
+- therapeutic_area: the corpus area the trial's indication belongs to. One of: ${therapeuticAreas().join(' | ')}. A rheumatoid-arthritis trial is "Immunology & Inflammation" even if the document says "Rheumatology"; leave "" only when the indication is genuinely unclassifiable.
+- phase: one of ${phaseVocabulary().join(' | ')} (map "Phase II" → "2", "2b" → "2", and so on).
+- target_enrollment_range: when the document states a range ("180–220"), put low and high here and leave target_enrollment 0. When it states one number, use target_enrollment.
+- criteria[].corpus_criterion: the closest name from the criterion vocabulary below, or "" when nothing is close. The criterion's own "text" stays verbatim from the document.
+- endpoints' "assessment": the closest name from the assessment vocabulary below, or "" when nothing is close. The endpoint's "text" stays verbatim.
+
+Known indications in the comparator corpus (for context only; "indication" itself stays verbatim from the document):
+${indicationVocabulary().join('; ')}
+
+Criterion vocabulary:
+${criterionVocabulary().join('\n')}
+
+Assessment vocabulary:
+${assessmentVocabulary().join('\n')}`
+}
+
+function buildExtractTool(): Anthropic.Tool {
+  return {
   name: 'emit_design_brief',
   description:
     'Emit the extracted design brief and a present/missing coverage list. ETL only — no invented content.',
@@ -70,12 +97,25 @@ const EXTRACT_TOOL: Anthropic.Tool = {
     ],
     properties: {
       title: { type: 'string' },
-      therapeutic_area: { type: 'string' },
+      therapeutic_area: {
+        type: 'string',
+        enum: [...therapeuticAreas(), ''],
+        description: 'Corpus therapeutic area the indication belongs to; "" only if unclassifiable.',
+      },
       disease_area: { type: 'string' },
       indication: { type: 'string' },
       line_of_treatment: { type: 'string' },
-      phase: { type: 'string' },
+      phase: {
+        type: 'string',
+        enum: [...phaseVocabulary(), ''],
+        description: 'Normalized phase ("Phase II" → "2"); "" if not stated.',
+      },
       target_enrollment: { type: 'number' },
+      target_enrollment_range: {
+        type: 'object',
+        description: 'Only when the document states a range (e.g. "180–220"); leave target_enrollment 0 then.',
+        properties: { low: { type: 'number' }, high: { type: 'number' } },
+      },
       planned_sites: { type: 'number' },
       randomization: { type: 'string' },
       site_mix: {
@@ -134,7 +174,11 @@ const EXTRACT_TOOL: Anthropic.Tool = {
             type: { type: 'string' },
             category: { type: 'string' },
             text: { type: 'string' },
-            corpus_criterion: { type: 'string' },
+            corpus_criterion: {
+              type: 'string',
+              description:
+                'Closest name from the criterion vocabulary in the system prompt; "" when nothing is close.',
+            },
           },
         },
       },
@@ -149,6 +193,7 @@ const EXTRACT_TOOL: Anthropic.Tool = {
       },
     },
   },
+  }
 }
 
 function clip(s: unknown, max: number): string {
@@ -288,6 +333,22 @@ export function normalizeExtractedBrief(
   const indication = clip(rec.indication, 200)
   const title = clip(rec.title, 240) || (indication ? `${indication} — design brief` : fileStem)
 
+  // Enrollment stated as a range collapses to its midpoint, disclosed as an
+  // assumption — "maybe 180–220" must not size the study at N=0.
+  const notes: string[] = []
+  let targetEnrollment = num(rec.target_enrollment)
+  if (!targetEnrollment && rec.target_enrollment_range && typeof rec.target_enrollment_range === 'object') {
+    const r = rec.target_enrollment_range as Record<string, unknown>
+    const low = num(r.low)
+    const high = num(r.high)
+    if (low > 0 && high >= low) {
+      targetEnrollment = Math.round((low + high) / 2)
+      notes.push(
+        `Target enrollment stated as a range (${low}–${high}); midpoint ${targetEnrollment} assumed for sizing.`
+      )
+    }
+  }
+
   const brief: DesignBrief = {
     brief_id: briefId,
     title,
@@ -301,7 +362,7 @@ export function normalizeExtractedBrief(
       therapeutic_area: clip(rec.therapeutic_area, 80) || undefined,
       phase: clip(rec.phase, 20) ? [clip(rec.phase, 20)] : undefined,
     },
-    target_enrollment: num(rec.target_enrollment),
+    target_enrollment: targetEnrollment,
     planned_sites: num(rec.planned_sites),
     site_mix: siteMix,
     arms,
@@ -319,7 +380,17 @@ export function normalizeExtractedBrief(
       'Extracted from an uploaded .docx. Gaps are listed as missing — they were not inferred. Supporting operational figures come from a synthetic demonstration corpus.',
   }
 
-  return { brief, coverage: deriveCoverage(brief, rec.coverage) }
+  // Deterministic vocabulary normalization under the model's own mapping, so
+  // the comparator cohort and criterion/assessment joins resolve even when the
+  // extract left them verbatim or blank.
+  const normalized = normalizeBrief(brief)
+  const allNotes = [...notes, ...normalized.notes]
+  const finalBrief: DesignBrief = {
+    ...normalized.brief,
+    ...(allNotes.length ? { extraction_notes: allNotes } : {}),
+  }
+
+  return { brief: finalBrief, coverage: deriveCoverage(finalBrief, rec.coverage) }
 }
 
 export function sanitizeClientBrief(raw: unknown): DesignBrief | null {
@@ -376,8 +447,8 @@ export async function extractDesignBrief(
   const res = await client.messages.create({
     model: EXTRACT_MODEL,
     max_tokens: 4096,
-    system: EXTRACT_SYSTEM,
-    tools: [EXTRACT_TOOL],
+    system: buildExtractSystem(),
+    tools: [buildExtractTool()],
     tool_choice: { type: 'tool', name: 'emit_design_brief' },
     messages: [
       {

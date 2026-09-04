@@ -53,7 +53,7 @@ from trial_corpus_sensitivity import (
 
 SEED = 20260806
 TARGET_PROTOCOLS = 150
-CORPUS_VERSION = "2.0.0"
+CORPUS_VERSION = "2.1.0"
 GENERATED_ON = "2026-08-06"          # fixed, so reruns are byte-identical
 
 # Corpus share by therapeutic area. Oncology carries the most, weighted toward
