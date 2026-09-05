@@ -1,137 +1,79 @@
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, Target, Users, Rocket } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { ladder } from '@/data/marketing'
 
+const colorClasses: Record<string, { gradient: string; bg: string; dot: string }> = {
+  sage: {
+    gradient: 'from-sage to-sage-light',
+    bg: 'bg-sage/10',
+    dot: 'bg-sage',
+  },
+  taupe: {
+    gradient: 'from-taupe to-taupe-light',
+    bg: 'bg-taupe/10',
+    dot: 'bg-taupe',
+  },
+  gold: {
+    gradient: 'from-gold to-gold-light',
+    bg: 'bg-gold/10',
+    dot: 'bg-gold',
+  },
+}
+
+/**
+ * Capability ladder — text only. No product chrome, wireframes, or screens.
+ */
 const Services = () => {
-  const services = [
-    {
-      number: "01",
-      title: "Advise",
-      subtitle: "AI strategy and diligence",
-      description: "AI strategy and diligence for investors, boards, and executive teams. We've evaluated 50+ computational biology platforms, AI-enabled drug discovery companies, and clinical tech assets. Deliverables are specific: a model, a roadmap, a clear view on go or no-go.",
-      icon: Users,
-      tangibleOutputs: ["Technical and commercial diligence", "Opportunity sizing and quantified models", "Post-close AI roadmaps", "Board presentations and investment memos"],
-      color: "sage"
-    },
-    {
-      number: "02",
-      title: "Embed",
-      subtitle: "Operators inside your team",
-      description: "Fractional executive and operating roles inside growth-stage companies. We join the team, run the workstream, and hand it back working. Engagements run on a retained basis with defined outcomes, not open-ended hours.",
-      icon: Target,
-      tangibleOutputs: ["Product strategy leadership", "Commercial strategy leadership", "AI program leadership", "Workstreams handed back working"],
-      color: "taupe"
-    },
-    {
-      number: "03",
-      title: "Build",
-      subtitle: "Software that answers a business question",
-      description: "Small software builds that answer a business question. Dashboards, internal tools, prototypes, and analytical models. We build with modern AI tooling, which means working software in weeks, not quarters.",
-      icon: Rocket,
-      tangibleOutputs: ["Dashboards and internal tools", "Prototypes and analytical models", "Client tools that run on this site"],
-      color: "gold"
-    }
-  ]
-
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'sage':
-        return {
-          gradient: 'from-sage to-sage-light',
-          icon: 'text-sage-light',
-          bg: 'bg-sage/10',
-          dot: 'bg-sage'
-        }
-      case 'taupe':
-        return {
-          gradient: 'from-taupe to-taupe-light',
-          icon: 'text-taupe-light',
-          bg: 'bg-taupe/10',
-          dot: 'bg-taupe'
-        }
-      case 'rust':
-        return {
-          gradient: 'from-rust to-rust-light',
-          icon: 'text-rust-light',
-          bg: 'bg-rust/10',
-          dot: 'bg-rust'
-        }
-      default:
-        return {
-          gradient: 'from-sage to-taupe',
-          icon: 'text-sage-light',
-          bg: 'bg-sage/10',
-          dot: 'bg-sage'
-        }
-    }
-  }
-
   return (
-    <section className="section bg-carbon relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-void via-carbon to-graphite" />
-
+    <section className="section bg-graphite relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="mono-label">// What We Do</span>
-          </div>
-          <h2 className="text-cream">What we do</h2>
+        <div className="mb-16 max-w-3xl">
+          <span className="mono-label mb-4 block">// Capability ladder</span>
+          <h2 className="text-cream mb-4">What we staff and build so a thesis is testable</h2>
+          <p className="body-large text-stone">
+            Advise, Embed, and Build are how we show up. They are not the thesis. Production at
+            scale is assembled from these. We are not a body shop.
+          </p>
         </div>
 
-        {/* Services grid with gap lines */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-slate/30 rounded-2xl overflow-hidden mb-16">
-          {services.map((service) => {
-            const IconComponent = service.icon
-            const colorClasses = getColorClasses(service.color)
+          {ladder.map((rung) => {
+            const colors = colorClasses[rung.color] ?? colorClasses.sage
 
             return (
               <div
-                key={service.title}
+                key={rung.title}
                 className="group bg-carbon p-8 hover:bg-graphite transition-all duration-500 relative"
               >
-                {/* Gradient top border on hover */}
-                <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${colorClasses.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div
+                  className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${colors.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                />
 
-                {/* Number */}
-                <span className="font-mono text-sm text-zinc mb-6 block">{service.number}</span>
+                <span className="font-mono text-sm text-zinc mb-4 block">{rung.number}</span>
+                <h3 className="text-cream mb-2">{rung.title}</h3>
+                <p className="mono-label text-xs mb-4">{rung.cadence}</p>
+                <p className="text-stone text-sm leading-relaxed mb-6">{rung.summary}</p>
 
-                {/* Icon */}
-                <div className={`w-14 h-14 rounded-xl ${colorClasses.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <IconComponent className={`w-7 h-7 ${colorClasses.icon}`} />
-                  </div>
-
-                {/* Title & Subtitle */}
-                <h3 className="text-cream mb-2">{service.title}</h3>
-                <p className="mono-label text-xs mb-4">{service.subtitle}</p>
-
-                {/* Description */}
-                <p className="text-stone text-sm leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-
-                  {/* Tangible Outputs */}
-                <div>
-                  <p className="text-xs font-mono uppercase tracking-wider text-zinc mb-3">Deliverables</p>
-                      <ul className="space-y-2">
-                        {service.tangibleOutputs.map((output, i) => (
-                      <li key={i} className="text-sm text-stone/80 flex items-center gap-2">
-                        <span className={`w-1.5 h-1.5 rounded-full ${colorClasses.dot}`} />
-                            {output}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                <p className="text-xs font-mono uppercase tracking-wider text-zinc mb-3">
+                  What you get
+                </p>
+                <ul className="space-y-2">
+                  {rung.outputs.map((output) => (
+                    <li key={output} className="text-sm text-stone/80 flex items-start gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full ${colors.dot} mt-1.5 shrink-0`} />
+                      {output}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )
           })}
         </div>
 
-        {/* CTA */}
         <div className="text-center">
           <Link href="/services" className="btn-primary inline-flex items-center gap-2 group">
-            <span>Explore All Services</span>
+            <span>How we engage</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

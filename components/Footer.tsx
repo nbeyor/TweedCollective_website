@@ -8,9 +8,11 @@ import { CONTACT_EMAIL } from '@/lib/site'
 
 const quickLinks = [
   { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
+  { name: 'Offerings', href: '/services' },
+  { name: 'Work', href: '/work' },
   { name: 'Operators', href: '/operators' },
   { name: 'Insights', href: '/insights' },
+  { name: 'Contact', href: '/contact' },
 ]
 
 const Footer = () => {
@@ -31,8 +33,8 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-stone text-sm leading-relaxed max-w-xs">
-              Operators and builders at the AI × life sciences frontier. 
-              Advisory. Operations. Incubation.
+              AI diligence and the post-close operating framework for private equity.
+              One spine. Four value levers.
             </p>
           </div>
 
@@ -106,9 +108,8 @@ const Footer = () => {
             © {new Date().getFullYear()} Tweed Collective. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-zinc text-sm">
-            <span>Built at the</span>
-            <span className="text-sage-light">AI × life sciences</span>
-            <span>frontier</span>
+            <span>Diligence first.</span>
+            <span className="text-sage-light">Then operate.</span>
           </div>
         </div>
       </div>
