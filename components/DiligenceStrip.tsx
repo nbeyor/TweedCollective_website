@@ -1,5 +1,5 @@
 import React from 'react'
-import { grades, phases } from '@/data/marketing'
+import { grades, homepage, phases } from '@/data/marketing'
 
 const gradeTone: Record<string, string> = {
   Strong: 'bg-sage/15 text-sage-light',
@@ -13,12 +13,9 @@ export default function DiligenceStrip() {
       <div className="absolute inset-0 bg-gradient-to-b from-void via-carbon to-graphite" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="mb-12 max-w-3xl">
-          <span className="mono-label mb-4 block">// Diligence</span>
-          <h2 className="text-cream mb-4">Four phases. Three grades.</h2>
-          <p className="body-large text-stone">
-            Every phase opens with a one-page answer and closes with a scorecard. Conditional names
-            the condition.
-          </p>
+          <span className="mono-label mb-4 block">{homepage.diligence.eyebrow}</span>
+          <h2 className="text-cream mb-4">{homepage.diligence.headline}</h2>
+          <p className="body-large text-stone">{homepage.diligence.body}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-slate/30 rounded-2xl overflow-hidden mb-12">

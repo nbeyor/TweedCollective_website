@@ -1,11 +1,12 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import EmailCTA from '@/components/EmailCTA'
+import { homepage } from '@/data/marketing'
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Tweed Collective brings an underwritable standard and a bench of operators to AI diligence and post-close work for private equity.',
+    'We underwrite AI in diligence, then help the operating team run it after close. Principals only. Depth in life sciences and health-tech.',
 }
 
 export default function AboutPage() {
@@ -19,14 +20,14 @@ export default function AboutPage() {
             <h1 className="text-cream mb-6">The firm already has operators</h1>
             <div className="space-y-4 text-stone body-large">
               <p>
-                Private equity already has operators. What it often lacks is an underwritable
-                standard for AI — at entry, and in the first year after close. Tweed brings that
-                standard, and the bench that can run it.
+                Private equity already has operators. What it often lacks is a standard for AI that
+                the IC can underwrite, and that the operating team can run after close. That is
+                the work.
               </p>
               <p>
-                Diligence first: four phases, three grades, named conditions. Then the same spine
-                after close: fund, measure, validate, stage. Value is read on four levers — cost,
-                speed, quality, revenue.
+                Diligence first: four phases, three grades, named conditions. After close: fund,
+                measure, validate, stage. We price cost, speed, quality, and revenue. Those are
+                the only levers.
               </p>
               <p>
                 The bench has run those numbers in life sciences and health-tech. That is where the
@@ -66,8 +67,8 @@ export default function AboutPage() {
             <span className="mono-label mb-4 block">// The bench</span>
             <h2 className="text-cream mb-6">The bench</h2>
             <p className="text-stone body-large">
-              Senior operators from operating and building roles. Two or three per workstream.
-              Networks included. Clients get the people they met, not a staffing pyramid.
+              Seniors from operating and building roles. Two or three per workstream. You get the
+              people you met.
             </p>
           </div>
         </div>
@@ -77,9 +78,10 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-violet/5 to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="mono-label mb-4 block">// Let&apos;s Connect</span>
-            <h2 className="text-cream mb-8">Let&apos;s talk</h2>
-            <EmailCTA />
+            <span className="mono-label mb-4 block">{homepage.connect.eyebrow}</span>
+            <h2 className="text-cream mb-4">{homepage.connect.headline}</h2>
+            <p className="body-large text-stone mb-8">{homepage.connect.body}</p>
+            <EmailCTA label={homepage.hero.primaryCta} />
           </div>
         </div>
       </section>

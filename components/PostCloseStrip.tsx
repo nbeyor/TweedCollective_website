@@ -1,17 +1,14 @@
 import React from 'react'
-import { postCloseSteps, valueLevers } from '@/data/marketing'
+import { homepage, postCloseSteps } from '@/data/marketing'
 
 export default function PostCloseStrip() {
   return (
     <section className="section bg-void relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="mb-12 max-w-3xl">
-          <span className="mono-label mb-4 block">// Post-close</span>
-          <h2 className="text-cream mb-4">Fund. Measure. Validate. Stage.</h2>
-          <p className="body-large text-stone">
-            The same spine after close. Value is read on four levers:{' '}
-            <span className="text-cream">{valueLevers.map((lever) => lever.toLowerCase()).join(', ')}</span>.
-          </p>
+          <span className="mono-label mb-4 block">{homepage.postClose.eyebrow}</span>
+          <h2 className="text-cream mb-4">{homepage.postClose.headline}</h2>
+          <p className="body-large text-stone">{homepage.postClose.body}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

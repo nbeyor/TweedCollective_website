@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import TechSpiral from './ui/tech-spiral'
+import { homepage } from '@/data/marketing'
 
 const Hero = () => {
   return (
@@ -23,25 +24,25 @@ const Hero = () => {
         <div className="max-w-4xl">
           <div className="flex items-center gap-3 mb-8 animate-fade-up">
             <span className="w-6 h-px bg-gold" />
-            <span className="mono-label text-gold">AI diligence · Post-close operating framework</span>
+            <span className="mono-label text-gold">{homepage.hero.eyebrow}</span>
           </div>
 
           <h1 className="mb-6 text-balance animate-fade-up animation-delay-100">
-            <span className="text-cream">How we underwrite AI at entry, and what the operating team runs after close.</span>
+            <span className="text-cream">{homepage.hero.headline}</span>
           </h1>
 
           <p className="body-large mb-12 text-balance max-w-2xl text-stone animate-fade-up animation-delay-200">
-            One spine. Four value levers — cost, speed, quality, revenue. Diligence first, then operate.
+            {homepage.hero.sub}
           </p>
 
           <div className="animate-fade-up animation-delay-300">
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/contact" className="btn-primary text-base px-8 py-4 group">
-                <span>Start a conversation</span>
+                <span>{homepage.hero.primaryCta}</span>
                 <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link href="/work" className="btn-outline text-base px-8 py-4">
-                <span>Worked examples</span>
+                <span>{homepage.hero.secondaryCta}</span>
               </Link>
             </div>
           </div>

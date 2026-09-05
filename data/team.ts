@@ -11,20 +11,20 @@ export const team: TeamMember[] = [
     name: 'Nate Beyor',
     role: 'Founder',
     expertise:
-      'Leads AI diligence and the post-close operating standard; commercial and technical judgment across software and life sciences',
+      'Leads AI diligence and the post-close operating standard. Commercial and technical judgment across software and life sciences',
   },
   {
     name: 'Sam Juraschka',
     role: 'Operating Partner',
     expertise:
-      'Takes AI products from concept to launch — product strategy, roadmap definition, and the operating plan that makes a thesis testable',
+      'Takes AI products from concept to launch - product strategy, roadmap definition, and the operating plan that makes a thesis testable',
     linkedin: 'https://www.linkedin.com/in/sjuraschka',
   },
   {
     name: 'Hans Yang',
     role: 'Operating Partner',
     expertise:
-      'Takes AI from strategy to production — product judgment, implementation, and adoption that moves the P&L',
+      'Takes AI from strategy to production - product judgment, implementation, and adoption that moves the P&L',
     linkedin: 'https://www.linkedin.com/in/hanscyang',
   },
   {
@@ -37,7 +37,7 @@ export const team: TeamMember[] = [
     name: 'Sibel Sayiner',
     role: 'Business Operations & Analytics',
     expertise:
-      'Designs the operating backbone of digital health businesses — care operations, analytics, and data-driven commercialization',
+      'Designs the operating backbone of digital health businesses - care operations, analytics, and data-driven commercialization',
   },
   {
     name: 'Stuart John',
@@ -49,12 +49,12 @@ export const team: TeamMember[] = [
     name: 'Syuzi Pakhchyan',
     role: 'Innovation & Experience Design',
     expertise:
-      'Prototypes and launches emerging interface experiences — turning new technologies into products customers actually use',
+      'Prototypes and launches emerging interface experiences - turning new technologies into products customers actually use',
   },
   {
     name: 'Amy Zhang',
     role: 'Marketing Strategy & Growth',
     expertise:
-      'Builds demand engines for SaaS — positioning, pipeline generation, and full-funnel growth marketing',
+      'Builds demand engines for SaaS - positioning, pipeline generation, and full-funnel growth marketing',
   },
 ]

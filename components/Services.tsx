@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { ladder } from '@/data/marketing'
+import { homepage, ladder } from '@/data/marketing'
 
 const colorClasses: Record<string, { gradient: string; bg: string; dot: string }> = {
   sage: {
@@ -22,19 +22,16 @@ const colorClasses: Record<string, { gradient: string; bg: string; dot: string }
 }
 
 /**
- * Capability ladder — text only. No product chrome, wireframes, or screens.
+ * Capability ladder - text only. No product chrome, wireframes, or screens.
  */
 const Services = () => {
   return (
     <section className="section bg-graphite relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="mb-16 max-w-3xl">
-          <span className="mono-label mb-4 block">// Capability ladder</span>
-          <h2 className="text-cream mb-4">What we staff and build so a thesis is testable</h2>
-          <p className="body-large text-stone">
-            Advise, Embed, and Build are how we show up. They are not the thesis. Production at
-            scale is assembled from these. We are not a body shop.
-          </p>
+          <span className="mono-label mb-4 block">{homepage.ladder.eyebrow}</span>
+          <h2 className="text-cream mb-4">{homepage.ladder.headline}</h2>
+          <p className="body-large text-stone">{homepage.ladder.body}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-slate/30 rounded-2xl overflow-hidden mb-16">

@@ -1,11 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
-import { starts } from '@/data/marketing'
+import { homepage, starts } from '@/data/marketing'
 
 export default function ThreeStarts({
-  heading = 'Three ways to start',
-  eyebrow = '// Start',
+  heading = homepage.starts.headline,
+  eyebrow = homepage.starts.eyebrow,
 }: {
   heading?: string
   eyebrow?: string
@@ -16,9 +16,7 @@ export default function ThreeStarts({
         <div className="mb-12 max-w-3xl">
           <span className="mono-label mb-4 block">{eyebrow}</span>
           <h2 className="text-cream mb-4">{heading}</h2>
-          <p className="body-large text-stone">
-            A live deal, a portfolio screen, or one company. Same spine.
-          </p>
+          <p className="body-large text-stone">{homepage.starts.body}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

@@ -1,13 +1,12 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { ChevronRight } from 'lucide-react'
-import { starts } from '@/data/marketing'
+import { homepage, starts } from '@/data/marketing'
 import { CONTACT_EMAIL, contactMailto } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description:
-    'Start with a live deal walk, a portfolio initiative review, or a one-company operating program.',
+  description: 'Live deal, portfolio, or one company. Tell us which. We will say what the first page looks like.',
 }
 
 export default function ContactPage() {
@@ -18,9 +17,9 @@ export default function ContactPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
             <span className="mono-label mb-4 block">// Contact</span>
-            <h1 className="text-cream mb-6">How do you want to start?</h1>
+            <h1 className="text-cream mb-6">{homepage.connect.headline}</h1>
             <p className="body-large text-stone max-w-2xl">
-              Three conversations. Same spine. Write {CONTACT_EMAIL} and name the one that fits.
+              {homepage.connect.body} Write {CONTACT_EMAIL} and name the one that fits.
             </p>
           </div>
         </div>
