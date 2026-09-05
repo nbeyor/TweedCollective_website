@@ -20,13 +20,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Tweed Collective | AI Diligence and Post-Close Operating Work',
+    default: 'Tweed Collective | AI × Life Sciences Advisory',
     template: '%s | Tweed Collective',
   },
-  description:
-    'We underwrite AI in diligence, then help the operating team run it after close. Cost, speed, quality, revenue. Same bar before close and after.',
-  keywords:
-    'private equity AI diligence, post-close operating work, AI value creation, life sciences, health-tech, PE due diligence, portfolio operations',
+  description: 'Operators and builders at the frontier of AI and life sciences. We advise, we embed, we build.',
+  keywords: 'AI life sciences, biotech consulting, fractional operators, due diligence, computational biology',
 }
 
 export default function RootLayout({

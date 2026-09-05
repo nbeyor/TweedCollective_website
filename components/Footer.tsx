@@ -8,11 +8,9 @@ import { CONTACT_EMAIL } from '@/lib/site'
 
 const quickLinks = [
   { name: 'About', href: '/about' },
-  { name: 'Offerings', href: '/services' },
-  { name: 'Work', href: '/work' },
+  { name: 'Services', href: '/services' },
   { name: 'Operators', href: '/operators' },
   { name: 'Insights', href: '/insights' },
-  { name: 'Contact', href: '/contact' },
 ]
 
 const Footer = () => {
@@ -33,8 +31,8 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-stone text-sm leading-relaxed max-w-xs">
-              We underwrite AI in diligence, then help the operating team run it after close.
-              Cost, speed, quality, revenue.
+              Operators and builders at the AI × life sciences frontier. 
+              Advisory. Operations. Incubation.
             </p>
           </div>
 
@@ -108,8 +106,9 @@ const Footer = () => {
             © {new Date().getFullYear()} Tweed Collective. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-zinc text-sm">
-            <span>Diligence first.</span>
-            <span className="text-sage-light">Then operate.</span>
+            <span>Built at the</span>
+            <span className="text-sage-light">AI × life sciences</span>
+            <span>frontier</span>
           </div>
         </div>
       </div>

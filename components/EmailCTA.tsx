@@ -1,13 +1,12 @@
 import React from 'react'
 import { ChevronRight } from 'lucide-react'
-import { CONTACT_EMAIL, contactMailto } from '@/lib/site'
+import { CONTACT_EMAIL } from '@/lib/site'
 
 interface EmailCTAProps {
   label?: string
   variant?: 'primary' | 'outline'
   align?: 'center' | 'left'
   className?: string
-  subject?: string
 }
 
 export default function EmailCTA({
@@ -15,14 +14,13 @@ export default function EmailCTA({
   variant = 'primary',
   align = 'center',
   className = '',
-  subject,
 }: EmailCTAProps) {
   const alignClass = align === 'center' ? 'items-center text-center' : 'items-start text-left'
   const buttonClass = variant === 'primary' ? 'btn-primary' : 'btn-outline'
 
   return (
     <div className={`flex flex-col gap-3 ${alignClass} ${className}`}>
-      <a href={contactMailto(subject)} className={`${buttonClass} text-base px-8 py-4 group`}>
+      <a href={`mailto:${CONTACT_EMAIL}`} className={`${buttonClass} text-base px-8 py-4 group`}>
         <span>{label}</span>
         <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
       </a>
