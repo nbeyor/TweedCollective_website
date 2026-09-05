@@ -2,7 +2,9 @@ import React from 'react'
 import type { Metadata } from 'next'
 import {
   grades,
+  homepage,
   ladder,
+  offerings,
   phases,
   postCloseSteps,
   pricingPoints,
@@ -14,7 +16,7 @@ import EmailCTA from '@/components/EmailCTA'
 export const metadata: Metadata = {
   title: 'Offerings',
   description:
-    'How Tweed engages: AI diligence across four phases, a post-close operating framework, and a capability ladder of advise, embed, and build.',
+    'How we engage. Diligence first. Then the operating framework the team runs after close. Advise, Embed, and Build are how we staff it.',
 }
 
 const gradeTone: Record<string, string> = {
@@ -30,26 +32,20 @@ export default function ServicesPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-sage/5 via-transparent to-gold/5" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="mono-label mb-4 block">// Offerings</span>
-            <h1 className="text-cream mb-6">How we engage</h1>
-            <p className="body-large text-stone">
-              Diligence first. Then the operating framework the team runs after close. Advise,
-              Embed, and Build are how we staff the work — not the homepage thesis.
-            </p>
+            <span className="mono-label mb-4 block">{offerings.eyebrow}</span>
+            <h1 className="text-cream mb-6">{offerings.headline}</h1>
+            <p className="body-large text-stone">{offerings.body}</p>
           </div>
         </div>
       </section>
 
-      {/* A — Diligence */}
+      {/* A - Diligence */}
       <section className="section bg-carbon" id="diligence">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mb-12">
-            <span className="mono-label mb-4 block">A · Diligence</span>
-            <h2 className="text-cream mb-4">Four phases. A scorecard. Named conditions.</h2>
-            <p className="body-large text-stone">
-              Every phase opens with a one-page answer and closes with a grade. Conditional names
-              the condition. If the condition cannot be written, the grade is High-risk.
-            </p>
+            <span className="mono-label mb-4 block">{offerings.diligence.label}</span>
+            <h2 className="text-cream mb-4">{offerings.diligence.headline}</h2>
+            <p className="body-large text-stone">{offerings.diligence.body}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
@@ -76,17 +72,13 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* B — Post-close */}
+      {/* B - Post-close */}
       <section className="section bg-void" id="post-close">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mb-12">
-            <span className="mono-label mb-4 block">B · Post-close</span>
-            <h2 className="text-cream mb-4">The operating framework after close</h2>
-            <p className="body-large text-stone">
-              Initiative portfolio screen. Then readiness — six dimensions, 25 elements. Then fund,
-              measure, validate, stage. The first move is the smallest 90-day win that tests the
-              thesis.
-            </p>
+            <span className="mono-label mb-4 block">{offerings.postClose.label}</span>
+            <h2 className="text-cream mb-4">{offerings.postClose.headline}</h2>
+            <p className="body-large text-stone">{offerings.postClose.body}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
@@ -110,24 +102,18 @@ export default function ServicesPage() {
           <div className="card p-8 max-w-3xl">
             <p className="mono-label mb-3">Four value levers</p>
             <p className="text-cream text-lg mb-3">{valueLevers.join(' · ')}</p>
-            <p className="text-stone text-sm leading-relaxed">
-              If an initiative cannot be scored on one of these, it is not funded. The 90-day win
-              is the smallest test that would change a belief on the scorecard.
-            </p>
+            <p className="text-stone text-sm leading-relaxed">{offerings.leversNote}</p>
           </div>
         </div>
       </section>
 
-      {/* C — Capability ladder — TEXT ONLY */}
+      {/* C - Capability ladder, text only */}
       <section className="section bg-carbon" id="ladder">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mb-12">
-            <span className="mono-label mb-4 block">C · Capability ladder</span>
-            <h2 className="text-cream mb-4">Advise. Embed. Build.</h2>
-            <p className="body-large text-stone">
-              Decision tools in days. Operating tools in weeks. Working systems in weeks. Production
-              at scale is assembled, not staffed as a body shop.
-            </p>
+            <span className="mono-label mb-4 block">{offerings.ladder.label}</span>
+            <h2 className="text-cream mb-4">{offerings.ladder.headline}</h2>
+            <p className="body-large text-stone">{offerings.ladder.body}</p>
           </div>
 
           <div className="max-w-3xl space-y-10">
@@ -153,12 +139,12 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* D — Pricing */}
+      {/* D - Pricing */}
       <section className="section bg-graphite" id="pricing">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mb-12">
-            <span className="mono-label mb-4 block">D · Pricing</span>
-            <h2 className="text-cream mb-4">What we will and will not take</h2>
+            <span className="mono-label mb-4 block">{offerings.pricing.label}</span>
+            <h2 className="text-cream mb-4">{offerings.pricing.headline}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {pricingPoints.map((point) => (
@@ -175,12 +161,10 @@ export default function ServicesPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-gold/5 to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto text-center">
-            <span className="mono-label mb-4 block">// Let&apos;s Connect</span>
-            <h2 className="text-cream mb-4">Start with the work in front of you</h2>
-            <p className="body-large text-stone mb-8">
-              Live deal, portfolio screen, or one-company program.
-            </p>
-            <EmailCTA />
+            <span className="mono-label mb-4 block">{homepage.connect.eyebrow}</span>
+            <h2 className="text-cream mb-4">{homepage.connect.headline}</h2>
+            <p className="body-large text-stone mb-8">{homepage.connect.body}</p>
+            <EmailCTA label={homepage.hero.primaryCta} />
           </div>
         </div>
       </section>

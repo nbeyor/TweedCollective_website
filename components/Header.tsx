@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
 import TweedLogo from './ui/tweed-logo'
 import { ChevronRight } from 'lucide-react'
+import { homepage } from '@/data/marketing'
 
 const navigation = [
   { name: 'About', href: '/about' },
@@ -146,7 +147,7 @@ export default function Header() {
                 href="/contact"
                 className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-sage text-cream hover:bg-sage-light hover:shadow-glow-sage"
               >
-                <span>Get in touch</span>
+                <span>{homepage.hero.primaryCta}</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             )}
@@ -266,7 +267,7 @@ export default function Header() {
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <span>Get in touch</span>
+                  <span>{homepage.hero.primaryCta}</span>
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               )}

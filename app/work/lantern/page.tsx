@@ -43,7 +43,7 @@ export default function LanternPage() {
             <h2 className="text-cream mb-4">Six dimensions. Element scores.</h2>
             <p className="text-stone">
               The full scorecard is 25 elements. This is a working extract. A 3 is the minimum
-              to fund. Below that, the first job is the path to a 3 — not a model.
+              to fund. Below that, the first job is the path to a 3, not a model.
             </p>
           </div>
 

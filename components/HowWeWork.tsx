@@ -1,17 +1,13 @@
 import React from 'react'
-import { pricingPoints } from '@/data/marketing'
+import { homepage, pricingPoints } from '@/data/marketing'
 
 export default function HowWeWork() {
   return (
     <section className="section bg-graphite relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mb-12">
-          <span className="mono-label mb-4 block">// How we engage</span>
-          <h2 className="text-cream mb-4">Pricing is a filter</h2>
-          <p className="body-large text-stone">
-            We work on a project or retained basis. Not time and materials. Scope is fixed so
-            incentives sit on the output, not the hours.
-          </p>
+          <span className="mono-label mb-4 block">{homepage.pricing.eyebrow}</span>
+          <h2 className="text-cream mb-4">{homepage.pricing.headline}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -44,7 +44,7 @@ export default function RidgelinePage() {
             <h2 className="text-cream mb-4">Four phases. Four grades.</h2>
             <p className="text-stone">
               This is the first page of the memo. Conditional names the condition. High-risk is
-              not a soft no — it is a line that is not priced at entry.
+              not a soft no. It is a line that is not priced at entry.
             </p>
           </div>
 

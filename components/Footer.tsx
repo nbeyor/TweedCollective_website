@@ -33,8 +33,8 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-stone text-sm leading-relaxed max-w-xs">
-              AI diligence and the post-close operating framework for private equity.
-              One spine. Four value levers.
+              We underwrite AI in diligence, then help the operating team run it after close.
+              Cost, speed, quality, revenue.
             </p>
           </div>
 

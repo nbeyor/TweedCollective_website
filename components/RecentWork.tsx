@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { homepage } from '@/data/marketing'
 import { workProjects } from '@/data/work'
 import WorkCard from '@/components/WorkCard'
 import WorkDisclaimer from '@/components/WorkDisclaimer'
@@ -10,11 +11,9 @@ export default function RecentWork() {
     <section className="section bg-void relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="mb-12 max-w-3xl">
-          <span className="mono-label mb-4 block">// Work</span>
-          <h2 className="text-cream mb-4">Illustrative worked examples</h2>
-          <p className="body-large text-stone">
-            Three blinded projects. The method, not the client. Figures are invented.
-          </p>
+          <span className="mono-label mb-4 block">{homepage.work.eyebrow}</span>
+          <h2 className="text-cream mb-4">{homepage.work.headline}</h2>
+          <p className="body-large text-stone">{homepage.work.body}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">

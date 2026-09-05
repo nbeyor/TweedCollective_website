@@ -9,21 +9,21 @@ export const workProjects = [
     slug: 'ridgeline',
     name: 'Project Ridgeline',
     sector: 'Clinical trial technology',
-    tease: 'A four-phase cover map, one worked Value page, and why the seller’s productivity case is not an entry assumption.',
+    tease: "Four-phase cover map, one Value page, and why the seller's productivity case is not an entry assumption.",
     excerpt: 'Diligence cover. Four grades. One phase written through.',
   },
   {
     slug: 'lantern',
     name: 'Project Lantern',
     sector: 'Specialty insurance',
-    tease: 'A readiness extract: element scores, the fast path to a 3, and the sprint that would test it.',
+    tease: 'Readiness extract: element scores, the fast path to a 3, and the sprint that would test it.',
     excerpt: 'Post-close readiness. Six dimensions. One sprint.',
   },
   {
     slug: 'kestrel',
     name: 'Project Kestrel',
     sector: 'Industrial software',
-    tease: 'Weeks 1–20 and six workstreams. The tool decision is the smallest part of the program.',
+    tease: 'Weeks 1–20 and six workstreams. The tool pick is the smallest part of the program.',
     excerpt: 'Operating shape. Twenty weeks. Six workstreams.',
   },
 ] as const
@@ -31,13 +31,13 @@ export const workProjects = [
 export const ridgeline = {
   name: 'Project Ridgeline',
   sector: 'Clinical trial technology',
-  dek: 'How a four-phase cover is written, and why a budgeted productivity gain is not an underwritable entry case.',
+  dek: "Four-phase cover map, one Value page, and why the seller's productivity case is not an entry assumption.",
   cover: [
     {
       phase: 'Growth',
       grade: 'Conditional' as Grade,
       condition:
-        'Holds if share is taken in site startup and monitoring — not if growth is only the installed base defending price.',
+        'Holds if share is taken in site startup and monitoring, not if growth is only the installed base defending price.',
     },
     {
       phase: 'Disruption',
@@ -61,7 +61,7 @@ export const ridgeline = {
     phase: 'Value',
     grade: 'High-risk' as Grade,
     answer:
-      'The IC memo should not underwrite the seller’s productivity case. The operating plan can still create value. Those are different sentences.',
+      "The IC memo should not underwrite the seller's productivity case. The operating plan can still create value. Those are different sentences.",
     risks: [
       'Measurement is not in place. There is no baseline on the workflows the model claims to improve.',
       'The budget assumes adoption the organization has not demonstrated outside a pilot slide.',
@@ -83,7 +83,7 @@ export const ridgeline = {
   ],
   harveyRule: [
     'Full ball: the company owns it, it is in production use, and it can be inspected.',
-    'Three-quarter: owned and in use; inspection is partial or coverage is uneven.',
+    'Three-quarter: owned and in use. Inspection is partial or coverage is uneven.',
     'Half: it exists, but is licensed, siloed, or unproven outside a pilot.',
     'Quarter: a slide, a vendor claim, or a roadmap item with a logo on it.',
     'Empty: not an asset.',
@@ -113,7 +113,7 @@ export const ridgeline = {
 export const lantern = {
   name: 'Project Lantern',
   sector: 'Specialty insurance',
-  dek: 'A readiness extract from the 25-element scorecard. Scores, the fast path to a 3, and the sprint that would test it.',
+  dek: 'Readiness extract: element scores, the fast path to a 3, and the sprint that would test it.',
   dimensions: [
     {
       name: 'Sponsorship',
@@ -188,9 +188,9 @@ export const lantern = {
 export const kestrel = {
   name: 'Project Kestrel',
   sector: 'Industrial software',
-  dek: 'The operating shape after close. Twenty weeks. Six workstreams. The tool decision is the smallest part.',
+  dek: 'Weeks 1–20 and six workstreams. The tool pick is the smallest part of the program.',
   principle:
-    'The tool decision is the smallest part of the program. Measurement, workflow, and adoption decide whether the thesis is real.',
+    'The tool pick is the smallest part of the program. Measurement, workflow, and adoption decide whether the thesis is real.',
   weeks: [
     {
       range: 'Weeks 1–4',
@@ -205,7 +205,7 @@ export const kestrel = {
     {
       range: 'Weeks 9–12',
       title: 'Measure',
-      body: 'Weekly numbers the line trusts. Cost, speed, quality, revenue — only the levers the win claims.',
+      body: 'Weekly numbers the line trusts. Cost, speed, quality, revenue. Only the levers the win claims.',
     },
     {
       range: 'Weeks 13–16',

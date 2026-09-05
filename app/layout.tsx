@@ -20,13 +20,13 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Tweed Collective | AI Diligence and Post-Close Operating Framework',
+    default: 'Tweed Collective | AI Diligence and Post-Close Operating Work',
     template: '%s | Tweed Collective',
   },
   description:
-    'AI diligence and the post-close operating framework for private equity. One spine. Four value levers. Diligence first, then operate. Depth in life sciences and health-tech.',
+    'We underwrite AI in diligence, then help the operating team run it after close. Cost, speed, quality, revenue. Same bar before close and after.',
   keywords:
-    'private equity AI diligence, post-close operating framework, AI value creation, life sciences, health-tech, PE due diligence, portfolio operations',
+    'private equity AI diligence, post-close operating work, AI value creation, life sciences, health-tech, PE due diligence, portfolio operations',
 }
 
 export default function RootLayout({
