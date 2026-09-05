@@ -7,7 +7,8 @@ import type { DocumentMeta } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: 'Insights',
-  description: 'Research and points of view on AI in life sciences from Tweed Collective.',
+  description:
+    'Public research and points of view from Tweed Collective. Not case studies. Not client work.',
 }
 
 const documents = getDocumentsByVisibility('public')
@@ -31,7 +32,7 @@ export default function InsightsPage() {
             <span className="mono-label mb-4 block">// Insights</span>
             <h1 className="text-cream mb-6">Insights</h1>
             <p className="body-large text-stone max-w-2xl">
-              Research and points of view on AI in life sciences.
+              Public research and points of view. This list is not a case-study index.
             </p>
           </div>
         </div>

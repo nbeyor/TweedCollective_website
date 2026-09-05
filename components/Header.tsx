@@ -6,13 +6,14 @@ import { usePathname } from 'next/navigation'
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
 import TweedLogo from './ui/tweed-logo'
 import { ChevronRight } from 'lucide-react'
-import { CONTACT_EMAIL } from '@/lib/site'
 
 const navigation = [
   { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
+  { name: 'Offerings', href: '/services' },
+  { name: 'Work', href: '/work' },
   { name: 'Operators', href: '/operators' },
   { name: 'Insights', href: '/insights' },
+  { name: 'Contact', href: '/contact' },
 ]
 
 export default function Header() {
@@ -100,12 +101,15 @@ export default function Header() {
             }`}
           >
             {navigation.map((item) => {
-              const isActive = pathname === item.href
+              const isActive =
+                item.href === '/work'
+                  ? pathname === '/work' || pathname.startsWith('/work/')
+                  : pathname === item.href
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
+                  className={`relative px-3 py-2 text-sm font-medium tracking-wide transition-all duration-300 rounded-full ${
                     isActive
                       ? 'text-cream bg-sage/20'
                       : 'text-stone hover:text-cream hover:bg-slate/50'
@@ -138,13 +142,13 @@ export default function Header() {
           {/* CTA Button & Auth */}
           <div className="hidden lg:flex items-center gap-3">
             {showCTA && (
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
+              <Link
+                href="/contact"
                 className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 bg-sage text-cream hover:bg-sage-light hover:shadow-glow-sage"
               >
                 <span>Get in touch</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-              </a>
+              </Link>
             )}
             <SignedOut>
               <SignInButton mode="modal">
@@ -197,17 +201,22 @@ export default function Header() {
         {/* Mobile Navigation - Slide Down Panel */}
         <div
           className={`lg:hidden transition-all duration-500 ease-out overflow-hidden ${
-            isMenuOpen ? 'max-h-[32rem] opacity-100 mt-4' : 'max-h-0 opacity-0'
+            isMenuOpen ? 'max-h-[40rem] opacity-100 mt-4' : 'max-h-0 opacity-0'
           }`}
         >
           <div className="py-4 px-2 bg-carbon/98 backdrop-blur-md rounded-2xl border border-slate/50 shadow-lg">
             <div className="space-y-1">
-              {navigation.map((item) => (
+              {navigation.map((item) => {
+                const isActive =
+                  item.href === '/work'
+                    ? pathname === '/work' || pathname.startsWith('/work/')
+                    : pathname === item.href
+                return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                    pathname === item.href
+                    isActive
                       ? 'bg-sage/10 text-sage-light'
                       : 'text-stone hover:bg-slate/50 hover:text-cream'
                   }`}
@@ -215,10 +224,11 @@ export default function Header() {
                 >
                   <span>{item.name}</span>
                   <ChevronRight className={`w-4 h-4 transition-colors ${
-                    pathname === item.href ? 'text-sage' : 'text-zinc'
+                    isActive ? 'text-sage' : 'text-zinc'
                   }`} />
                 </Link>
-              ))}
+                )
+              })}
               {hasInternalAccess && (
                 <Link
                   href="/internal"
@@ -251,14 +261,14 @@ export default function Header() {
                 </div>
               </SignedIn>
             {showCTA && (
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
+                <Link
+                  href="/contact"
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-sage text-cream rounded-xl font-medium hover:bg-sage-light transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span>Get in touch</span>
                   <ChevronRight className="w-4 h-4" />
-                </a>
+                </Link>
               )}
               </div>
           </div>

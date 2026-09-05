@@ -11,13 +11,13 @@ export const team: TeamMember[] = [
     name: 'Nate Beyor',
     role: 'Founder',
     expertise:
-      'Leads AI strategy and technical diligence; builds commercial engines and go-to-market plans for life sciences companies',
+      'Leads AI diligence and the post-close operating standard; commercial and technical judgment across software and life sciences',
   },
   {
     name: 'Sam Juraschka',
     role: 'Operating Partner',
     expertise:
-      'Takes AI products from concept to launch — product strategy, roadmap definition, and zero-to-one venture building',
+      'Takes AI products from concept to launch — product strategy, roadmap definition, and the operating plan that makes a thesis testable',
     linkedin: 'https://www.linkedin.com/in/sjuraschka',
   },
   {

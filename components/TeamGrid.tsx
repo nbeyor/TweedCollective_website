@@ -1,14 +1,16 @@
 import React from 'react'
 import { team } from '@/data/team'
 
-export default function TeamGrid() {
+export default function TeamGrid({ showHeader = true }: { showHeader?: boolean }) {
   return (
     <section className="section bg-carbon relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
+        {showHeader && (
         <div className="mb-12">
           <span className="mono-label mb-4 block">// Operators</span>
-          <h2 className="text-cream">The team</h2>
+          <h2 className="text-cream">The bench</h2>
         </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {team.map((member) => (
