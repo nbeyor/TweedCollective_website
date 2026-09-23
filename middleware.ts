@@ -23,6 +23,12 @@ const isPublicRoute = createRouteMatcher([
   // HMAC inside each chart token.
   '/api/mcp(.*)',
   '/charts(.*)',
+  // GREX by text: Twilio cannot present a Clerk session, and the report
+  // link in an SMS has to open without one. The client workspace stays gated.
+  '/api/grex/mms/webhook',
+  '/api/grex/mms/dry-run',
+  '/r/(.*)',
+  '/grex/text',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

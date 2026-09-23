@@ -33,6 +33,14 @@ export interface GrexTheme {
     verdictSupported: string
     verdictContradicted: string
     verdictInsufficient: string
+    /** Collapse-diagram domain kinds. Distinct from verdict hues. */
+    domainJournal: string
+    domainGovernment: string
+    domainWire: string
+    domainPress: string
+    domainEncyclopedia: string
+    domainSocial: string
+    domainOther: string
   }
   fonts: {
     display: string
@@ -66,6 +74,13 @@ export const GREX_THEME: GrexTheme = {
     verdictSupported: '#178F5F',
     verdictContradicted: '#B4452F',
     verdictInsufficient: '#B98A2F',
+    domainJournal: '#0E7C86',
+    domainGovernment: '#1F4E79',
+    domainWire: '#2E8FA3',
+    domainPress: '#3E6B58',
+    domainEncyclopedia: '#5C6B8A',
+    domainSocial: '#8A6A3D',
+    domainOther: '#6D8791',
   },
   fonts: {
     display: 'var(--grex-font-grotesk)',
@@ -96,6 +111,13 @@ export function themeVars(t: GrexTheme): CSSProperties {
     '--grex-supported': t.colors.verdictSupported,
     '--grex-contradicted': t.colors.verdictContradicted,
     '--grex-insufficient': t.colors.verdictInsufficient,
+    '--grex-domain-journal': t.colors.domainJournal,
+    '--grex-domain-government': t.colors.domainGovernment,
+    '--grex-domain-wire': t.colors.domainWire,
+    '--grex-domain-press': t.colors.domainPress,
+    '--grex-domain-encyclopedia': t.colors.domainEncyclopedia,
+    '--grex-domain-social': t.colors.domainSocial,
+    '--grex-domain-other': t.colors.domainOther,
     '--grex-font-display': t.fonts.display,
     '--grex-font-body': t.fonts.body,
     '--grex-font-mono': t.fonts.mono,

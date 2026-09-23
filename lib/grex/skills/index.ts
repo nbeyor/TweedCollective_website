@@ -1,6 +1,7 @@
 import type { GrexSurface } from '../types'
 import { browserSkill, type SurfaceSkill } from './browser'
 import { mcpSkill } from './mcp'
+import { mmsSkill } from './mms'
 import { screenshotSkill } from './screenshot'
 import { SHARED_PIPELINE_PROMPT } from './shared'
 
@@ -8,6 +9,7 @@ const SKILLS: Record<GrexSurface, SurfaceSkill> = {
   browser: browserSkill,
   screenshot: screenshotSkill,
   mcp: mcpSkill,
+  mms: mmsSkill,
 }
 
 export function getSkill(surface: GrexSurface): SurfaceSkill {

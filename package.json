@@ -13,12 +13,15 @@
     "test:biostats": "tsx scripts/test-biostats.ts",
     "test:intake": "tsx scripts/test-strategist-intake.ts",
     "test:grounding": "tsx scripts/test-strategist-grounding.ts",
+    "test:grex-mms": "tsx scripts/test-grex-mms.ts",
     "lint": "next lint"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
     "@clerk/nextjs": "^6.36.5",
     "@modelcontextprotocol/server": "^2.0.0",
+    "@vercel/blob": "^2.8.0",
+    "@vercel/functions": "^3.9.9",
     "airtable": "^0.12.2",
     "autoprefixer": "^10.4.16",
     "chart.js": "^4.5.1",
