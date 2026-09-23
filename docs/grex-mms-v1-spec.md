@@ -12,7 +12,7 @@ This is an analysis of the 2026-09-22 product vision. A 2026-09-23 follow-up loc
 2. Latency is acceptable. GREX is trust, not speed. The phone gets an ack immediately and the score when the check is actually done.
 3. The only user-facing frame is **evidence strength**. Supported, insufficient, contradicted, then the v0.1 aggregate.
 
-Section 5 is what is still open. Everything after it follows the locks plus the defaults in that section.
+Section 5 records the locks and the questions still open. Everything after it follows both.
 
 ---
 
