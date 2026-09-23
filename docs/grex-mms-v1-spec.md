@@ -6,7 +6,13 @@
 **Audience:** Nate Beyor, then whoever builds the free demo
 **Grounded in:** `docs/grex-prd.md` (scoring methodology v0.1) and the prototype in `lib/grex/`, `app/api/grex/verify/route.ts`, `app/clients/grex/report/[id]`
 
-This is an analysis of the 2026-09-22 product vision, with defaults chosen where that vision left a fork. Section 5 is the reply that is owed. Everything after it is the spec that follows if those defaults stand.
+This is an analysis of the 2026-09-22 product vision. A 2026-09-23 follow-up locked three decisions, and this draft already applies them:
+
+1. A visible claim-collapse diagram ships in the free demo (V0). It has to look like provenance on day one, and it has to stay honest about being a picture of search hits.
+2. Latency is acceptable. GREX is trust, not speed. The phone gets an ack immediately and the score when the check is actually done.
+3. The only user-facing frame is **evidence strength**. Supported, insufficient, contradicted, then the v0.1 aggregate.
+
+Section 5 is what is still open. Everything after it follows the locks plus the defaults in that section.
 
 ---
 
@@ -14,17 +20,15 @@ This is an analysis of the 2026-09-22 product vision, with defaults chosen where
 
 GREX by text is Surface B from the existing PRD, with the unbuilt iOS share extension replaced by a phone number.
 
-The user already knows how to share a picture in Messages. GREX meets them there: one image in, one short SMS back, one mobile page that shows the same three-level explanation the prototype already renders (score, one-breath summary, per-claim evidence).
+The user already knows how to share a picture in Messages. GREX meets them there: one image in, an ack while the check runs, then one short SMS with the evidence score and a link. The link opens a mobile page in a fixed order: evidence score, per-claim teardown, then a collapse diagram of where the wording showed up.
 
-The score remains a measure of **public evidence strength** under methodology v0.1. It is not a validity percentage, a truth probability, or a scam verdict. The words *true, false, fake, real, lie,* and *misinformation* stay out of the SMS, the page, and the pipeline.
-
-**Default name for the number in the SMS:** “evidence score,” with the existing band label beside it (`Strong evidence`, `Moderate evidence`, `Mixed evidence`, `Weak evidence`). “Confidence” stays in the methodology sense on the page, where the formula is visible. In a single SMS, “confidence 82/100” will be read as “82% true.”
+The score is **public evidence strength** under methodology v0.1. Bands stay `Strong evidence`, `Moderate evidence`, `Mixed evidence`, `Weak evidence`. The SMS calls the number an evidence score. The words *true, false, fake, real, lie, misinformation,* and *valid* stay out of the SMS, the page, and the pipeline. Model-internal confidence (0–1 on an evaluation) stays stored for methodology work and stays off the screen, matching the PRD.
 
 ### Non-goals
 
 - Determining whether the world is as the image says.
 - Detecting scams, fraud, or bad actors as a product promise. A contradicted FDA-approval claim can still surface, because that claim is verifiable. The product does not label the sender a scammer.
-- A knowledge graph of the web. Section 5b defines what “claim collapse” can honestly mean on a basic web search.
+- A citation knowledge graph, a web-wide volume count, or a declared original paper. V0 does ship a collapse diagram (sections 5b and 7). The diagram is built from public web search hits, clustered and dated with a deterministic heuristic.
 - An account, a native app, or a score that changes because someone paid.
 - Replacing the browser extension or the MCP surface. They keep the same scoring kernel.
 
@@ -40,13 +44,15 @@ The prototype is a real verifier with a simulated phone. MMS is the reverse shap
 | Scoring | `v0Score` in `lib/grex/types.ts`: supported = 1, insufficient = 0.5, contradicted = 0, average × 100. Bands at 80 / 60 / 40. `verifiable = 0` yields **no score** (`Nothing to check`). Server-side only. | Unchanged math. SMS prints `score.value` and `score.label`, or the no-score sentence. |
 | Live verifier | `POST /api/grex/verify` streams SSE. One Claude conversation, Anthropic `web_search` (**6 searches per run**, not per claim), strict `submit_verification`, then `sanitizeVerification`. `maxDuration = 300`. Model `claude-opus-5`, effort default `medium`, **4 rounds**, **6,000 input chars**. | Call this runner from a worker. Do not invoke it inside the Twilio webhook. Do not loop back through the Clerk-gated HTTP route. |
 | Screenshot behavior | `lib/grex/skills/screenshot.ts` assumes **text already extracted**. The phone UI (`ScreenshotSim`) plays a canned scenario. Milestone M4 (iOS share extension) is simulated. | OCR is new. The screenshot rubric is the right voice for the page. The SMS is a new, shorter artifact. |
-| Explanation page | `ExplanationView`: score, summary, claim cards, methodology footer. Live ids resolve from **`sessionStorage`** (`grex:result:{id}`). A link opened later, or on another device, shows “This report has expired.” Canned ids resolve from `lib/grex/scenarios.ts`. | A public, unguessable URL that works from Messages days later. Same three levels. Session storage cannot do this. |
+| Explanation page | `ExplanationView`: score, summary, claim cards, methodology footer. Live ids resolve from **`sessionStorage`** (`grex:result:{id}`). A link opened later, or on another device, shows “This report has expired.” Canned ids resolve from `lib/grex/scenarios.ts`. | A public, unguessable URL that works from Messages days later. Score, teardown, then the collapse diagram. Session storage cannot do this. |
 | Identity and retention | PRD: no user identity; raw inputs deleted; only normalized claims and short excerpts. The live API stores nothing. | The phone number is an identity whether we want it or not (Twilio has it; US carriers require STOP). Split transport identity from the public report. Delete the image. Keep the report for a fixed window. |
 | Auth boundary | `middleware.ts` protects `/clients/grex` and `/api/grex/verify` with Clerk. The route also calls `clientAccessError('grex')`. | The webhook and the report URL are public. They do not belong behind the Tweed client wall. |
 | Abstractions in the PRD | Model, search, extraction, and scoring are described as swappable. **In code, only scoring and the prompt skills are real modules.** Search is the Anthropic server tool, inlined in the route. | Reuse the route’s runner. Extract a function when the worker needs it. Do not invent a second search stack for the demo. |
-| Knowledge graph | Absent. Evidence is a flat list of URLs with a stance. | V0 adds a per-report duplication count on those URLs. A graph picture and a citation trace are later, and the citation trace needs a decision to fetch pages. |
+| Collapse diagram | Absent. Evidence is a flat list of URLs with a stance. | **In V0.** A second, deterministic pass over web search hits builds `CollapseViz` (section 7). The model does not pick a root and does not draw the picture. |
 
-**Pipeline budget that shapes the product:** six web searches cover the whole image, then at most five snippets are kept per claim. A screenshot with eight factual claims gets a thin evidence set. “This claim appears 1,000 times and traces to one paper” is not observable under that budget. Raising the budget is a cost decision, not a visualization decision.
+**Two budgets, on purpose.** The score still comes from the existing verifier: six web searches for the whole image, at most five evidence items kept per claim. That set is too small to look like collapse, and it is the wrong place to widen the search, because widening it would silently change v0.1. The diagram gets its own retrieval pass (section 6): up to one quoted-phrase search per verifiable claim, at most eight searches, at most eight hits each. The page says the score and the diagram were gathered separately.
+
+Neither budget can support the sentence “this claim appears 1,000 times online.” V0 never prints a web-wide count. The picture collapses the hits we actually retrieved.
 
 ---
 
@@ -54,8 +60,8 @@ The prototype is a real verifier with a simulated phone. MMS is the reverse shap
 
 1. The person already has the GREX number saved as a contact (how they got it: section 5g).
 2. They take a screenshot, or a photo of something on a screen, and send that single image to the number in the system Messages app. iMessage falls back to MMS when the recipient is a carrier number. That fallback is the product.
-3. GREX replies within a few seconds: `GREX got the image. Checking public evidence — usually under 2 minutes.`
-4. A worker downloads the image from Twilio, transcribes it, deletes the image, and runs the existing verifier on the transcript.
+3. GREX replies within a few seconds, before any model work finishes: `Tough one — working on it. I'll text the evidence score when it's ready.`
+4. A worker downloads the image from Twilio, transcribes it, deletes the image, runs the existing verifier on the transcript, then runs the collapse pass. A minute or more is a normal run. If the job is still open at 75 seconds, one mid-status SMS goes out: `Still working — reading where these claims show up publicly.` If the result is already on its way, the mid-status is skipped.
 5. GREX sends one result SMS. Two examples, using v0.1 so the arithmetic is checkable:
 
    Four verifiable claims, three supported, one insufficient:
@@ -66,7 +72,11 @@ The prototype is a real verifier with a simulated phone. MMS is the reverse shap
 
    `GREX found nothing factual to check in that image. Opinions and vague lines aren't scored. https://<host>/r/<id>`
 
-6. The link opens a mobile page: band and number at the top, the one-breath summary, then one card per claim (verdict, rationale, sources). A line on each scored claim says how many retrieved pages collapse to how many publishers. The footer states methodology v0.1 in the same language as `ExplanationView`.
+6. The link opens a mobile page in this order, and only this order:
+   1. Evidence score (band and number).
+   2. The one-breath summary and the claim teardown (one card per claim: supported, insufficient, or contradicted, with rationale and the evidence URLs that fed the score).
+   3. The collapse diagram, below the teardown.
+   4. The v0.1 methodology footer, same meaning as `ExplanationView`: each verifiable claim counts 1 if supported, 0.5 if evidence was insufficient, 0 if contradicted; the score is the average × 100; the number is evidence strength.
 
 Failure SMS replaces the result SMS. It does not stack on top of it.
 
@@ -80,12 +90,13 @@ These are product rules, not copy suggestions. The builder treats them as the co
 
 | Situation | What the user gets |
 |---|---|
-| One image, transcription long enough, verifier finishes | Ack SMS, then result SMS with score or “nothing to check,” plus link |
+| One image, transcription long enough, verifier finishes | Ack SMS immediately. Optional mid-status at 75 seconds if still running. Result SMS with the evidence score or “nothing to check,” plus link |
 | Image plus a typed caption | Caption is context for transcription. The image is the submission. |
 | Text and no image | One SMS telling them to send a screenshot. The verifier does not run. |
 | More than one attachment, or video / audio | One SMS: send a single screenshot. The verifier does not run. |
 | Transcription under 40 characters, or the transcriber marks the image illegible | One SMS: a screenshot of the text works better than a photo of a page. No score. |
-| Verifier exceeds 180 seconds, or returns no `submit_verification` | Failure SMS. No partial score. |
+| Job still open at 75 seconds | One mid-status SMS. Never a second one. |
+| Job exceeds 5 minutes, or the verifier returns no `submit_verification` | Failure SMS. No partial score. Five minutes is a stuck-job guard, not a speed target. |
 | `evidenceMode: degraded` (search failed) | Result SMS still sends if a result exists. The page shows the existing degraded notice. The SMS adds “Web search was limited.” |
 | More than 8 claims | Page and SMS say the first 8 in reading order were checked. Requires a `truncated` flag on the tool result (section 6). |
 | Second image while the first is in flight | `Still checking the last image.` The new image is dropped, not queued behind. |
@@ -96,55 +107,81 @@ The result SMS stays inside two SMS segments when the link is short. The page ca
 
 ---
 
-## 5. Challenges — reply with yes, or an override
+## 5. Locks and the challenges that remain
 
-Each item has a default. A default stands unless you write a different decision. “Let’s see” is how the demo ships the wrong product.
+5a, 5c, and the existence of the V0 diagram are locked. The questions under 5b, 5d, 5e, 5f, 5g, and 5h still need a yes or an override. A default stands unless you write a different decision.
 
-### 5a. Latency
+### 5a. Latency — locked
 
-The live route is allowed to run for 300 seconds. Opus with adaptive thinking, up to four rounds, and six searches commonly lands in the tens of seconds and can run past a minute. Messages users read silence as failure at about fifteen seconds.
+Waiting is part of the product. A check that takes a minute, or two, is a finished check. The prototype route already allows 300 seconds; the SMS product should feel like that kind of care, not like a chat reply.
 
-Twilio will retry the webhook if it does not get a response in roughly fifteen seconds. The verifier cannot run inside that request.
+Twilio still needs a webhook response in about fifteen seconds, or it retries. That constraint is transport. It is not a product deadline. The webhook enqueues and returns. The worker takes the time it takes.
 
-**Default:** two messages, and only two, on the success path — an immediate ack, then the result. No “still searching” drip. Each extra SMS costs money and trains people to ignore the thread.
+**Patience points (locked shape):**
 
-**Time box:** ack as soon as the job is queued; result target under 90 seconds median; hard stop at 180 seconds, then the failure SMS. The 300-second route ceiling is a prototype allowance, not the SMS budget.
+| When | Message | Always? |
+|---|---|---|
+| Immediately after the image is queued | `Tough one — working on it. I'll text the evidence score when it's ready.` | Yes |
+| 75 seconds, and the result is not already sent | `Still working — reading where these claims show up publicly.` | Only if still running |
+| When the report is stored | Evidence-score SMS plus link | Yes, on success |
+| 5 minutes with no report | Failure SMS. No partial score. | Guardrail |
 
-**Question:** Is an ack-plus-result pair acceptable, or do you want the user to wait in silence for a single message? Silence is the wrong default.
+No third status ping. No percentage. No “usually under two minutes.”
 
-### 5b. Knowledge graph and “claim collapse”
+**Still open:** the 75-second mid-status is the proposed second patience point. Say if you want the ack and the final only.
 
-The picture you described — a claim repeated a thousand times that traces to one paper — is a real explanation of why evidence *feels* abundant. It is also a different system from v0.1.
+### 5b. Claim collapse — in V0; the open question is honesty
 
-What we can actually see on one check:
+Locked: the free demo’s report has a collapse diagram under the teardown. It is the visible differentiator. It should read, at a glance, as many mentions narrowing to a few roots, with a date on a root when we have one.
 
-- At most six searches, and at most five URLs retained per claim.
-- Those URLs are whatever the search tool chose to return. Search products already hide duplicates. A hit count of “1,000” is not a field we have, and it would be a bad census if we did.
-- Snippets do not include the reference list of a paper. Tracing a claim to a DOI means fetching pages and reading citations. That is outside “basic web search only,” which you already set as the evidence constraint. Keep that constraint for the demo.
+The risk is the glance. A funnel that looks like provenance will be remembered as “GREX found the original paper.” The build has to make that reading hard.
 
-**What “collapse” means, in three grades:**
+**What the diagram is.** For each verifiable claim, a deterministic pass:
 
-| Grade | Definition | Honest label | When |
-|---|---|---|---|
-| Source duplication | Among the URLs already on the claim: group by registrable domain, and group titles that are the same story with a site-name suffix stripped. | “4 pages, 2 publishers, from the sources we retrieved.” | **V0, the free demo** |
-| Source map | The same groups, drawn as claim → publisher, edges labeled “retrieved.” Per report only. | “Source map.” | **V1** |
-| Provenance trace | Fetch the retrieved pages, pull citations and DOIs, and try to walk repeats back to a primary source. Optionally remember claims across reports. | “Provenance.” A cross-report index is a corpus of other people’s claims, which the PRD does not have. | **V2, and only after you explicitly lift the search-snippet limit** |
+1. Search the public web for a quoted distinctive fragment of the claim (section 6). Keep the evidence URLs from scoring as extra mentions. Cap the new hits.
+2. Canonicalize URLs (scheme, host, tracking parameters, trailing slash, obvious AMP wrappers).
+3. Cluster near-duplicates: same canonical URL, or titles that match after the site-name suffix is stripped (token Jaccard ≥ 0.75), or a shared six-word phrase in the snippets.
+4. Label each domain with a static host list: `journal-or-preprint`, `government`, `wire`, `press-release`, `encyclopedia`, `social`, `other`. The list is data. The model does not assign the label.
+5. Inside a cluster, the root is the mention with the earliest observed date. Tie-break by domain kind in the order above, then by the shorter canonical URL. If nobody in the cluster has a date, there is no root. The cluster still draws, labeled as repeats without an origin.
 
-A force-directed graph of five links in the demo would look like a knowledge graph and would not be one. **Default: V0 ships the sentence, not the picture.** The sentence is the visualization. V1 may draw it once the sentence has been useful on real screenshots. V2 is the paper-trace, and it is a research project with a crawler, a parser, and a retention policy for a claim corpus.
+**What the diagram is not.**
 
-**Question:** Do you accept a demo that explains repetition in one sentence per claim, with the graph deferred to V1 and the paper-trace deferred until we are willing to fetch pages?
+- It is not a count of how often the claim exists on the internet. Search tools dedupe before we see results, and they do not hand us a reliable census. The chip says `8 pages → 2 clusters`, meaning eight retrieved pages, two clusters. It never says “appeared 1,000 times.”
+- It is not a citation trail. We do not read bibliographies, resolve DOIs, or walk “according to.” That work needs page fetches aimed at references, and a decision to store a corpus across reports. It stays V2.
+- The model does not choose the root, the clusters, or the caption. Code does. Otherwise the picture will upgrade itself into a story.
 
-### 5c. Score semantics
+**Dates, and the one exception to “search results only.”** A date counts only if we can point at where we saw it:
 
-v0.1 already answers this. An 88 means: of the verifiable claims, the mix of supported / insufficient / contradicted averaged to 0.88 under equal weights. Insufficient evidence is half, because absence of evidence is not a refutation. Opinions, predictions, personal experiences, and vague lines are listed and **not scored**.
+| Source | When we use it |
+|---|---|
+| A date field on the search hit | First choice |
+| A date written in the title or snippet | Second |
+| `article:published_time` or JSON-LD `datePublished` from a single GET of that URL | Third, and only for a provisional root |
 
-“How valid each claim was” slides the product into a verdict. The claim card already has the right words: `SUPPORTED`, `CONTRADICTED`, `INSUFFICIENT_EVIDENCE`, rendered in the prototype as support / contradicted / couldn’t verify. The page keeps those. The SMS never says valid, invalid, true, or false.
+The third row is a public-page read for a date string. The HTML is discarded. Links inside the page are ignored. The body is not evidence and cannot move the score. **Default: this date read is on for V0**, capped at one GET per cluster, three-second timeout, failure leaves the cluster undated. It is not a specialty evidence API. It is also more than the search snippet. Turn it off and the diagram still ships; many roots will say “No date in what we retrieved,” which is the correct screen when we refuse to guess.
 
-Model-internal `confidence` (0–1 on each evaluation) stays in the stored evaluation for methodology work and stays off the page and off the SMS, matching the PRD.
+**Volume over time.** A Google Trends line is the picture you described, and Trends is a separate API (it is not the `web_search` tool, and it is not a page we can scrape reliably). **Trends stays out of V0.** The search-only stand-in is a monthly bar chart of dates already on the retrieved mentions, drawn only when at least three mentions have a date. The axis title is “Dates printed on these results.” Fewer than three dated mentions, and the chart is omitted with the line “Not enough dates in these results to show a timeline.” That omission is better than a two-point trend.
 
-**Default SMS shape:** `GREX evidence <n>/100 (<band label>). <one clause>. <url>`
+**Score and diagram stay uncoupled.** Collapse hits do not re-enter evaluation. Putting them into the score would be methodology v0.2. The section caption on every report is fixed:
 
-**Question:** Will you give up the phrase “confidence score 82/100” in the text message? The page can still say evidentiary confidence in the methodology footer, next to the formula.
+> The score above uses the sources in the claim cards. This diagram uses a wider public-web search for where the wording showed up. “Earliest” means the earliest date we could see on those results. It is not a citation trail, and it is not proof of who published first.
+
+**Question:** Date-meta GET on for V0 — yes? And do you accept that the diagram is forbidden from changing the evidence score?
+
+### 5c. Evidence strength — locked
+
+v0.1 is the whole meaning of the number. An 88 means the verifiable claims averaged to 0.88 with equal weights: supported = 1, insufficient = 0.5, contradicted = 0. Insufficient evidence is half because a missing source is not a refutation. Opinions, predictions, personal experiences, and vague lines are listed and carry no score. Zero verifiable claims produce no number (`Nothing to check`).
+
+User-facing words, and only these:
+
+| Layer | Copy |
+|---|---|
+| SMS | `GREX evidence <n>/100 (<band label>)` |
+| Page hero | The same number and the same band label the prototype already uses |
+| Claim card | Supported / couldn’t verify / contradicted, matching `SUPPORTED` / `INSUFFICIENT_EVIDENCE` / `CONTRADICTED` |
+| Footer | The v0.1 formula, described as evidence strength |
+
+“Confidence score,” “validity,” and “how valid the claim was” are out of the SMS and the page. The methodology footer keeps the PRD sentence that a score is the strength of publicly available evidence.
 
 ### 5d. Cost, abuse, and how a subscription would map
 
@@ -152,9 +189,10 @@ Illustrative planning bands, to be replaced by a measurement on the first twenty
 
 | Piece | Order of magnitude | Note |
 |---|---|---|
-| Inbound MMS + two outbound SMS | Cents | Twilio list prices; confirm at implementation. Noise next to the model. |
+| Inbound MMS + two or three outbound SMS | Cents | Ack, sometimes one mid-status, then the result. Twilio list prices; confirm at implementation. Noise next to the model. |
 | Vision transcription of one image | Cents to low tens of cents | Use a short vision call. Do not send the image into the long verifier. |
 | Verification conversation | Likely the majority of the bill, easily several dimes and possibly more | Current settings: Opus, medium effort, up to 4 rounds, 6 searches, 16k output tokens. Thinking tokens dominate. |
+| Collapse pass | Another search bill, smaller than the verifier if it stays capped | Up to 8 extra web searches plus at most one date-meta GET per cluster. Still public web. Re-measure with the score cost; the $1 planning ceiling in section 10 includes this pass. |
 | Report storage | Negligible | Text only. |
 
 A public phone number is an unauthenticated spend API. The day the number is on a webpage, someone will script MMS at it.
@@ -185,7 +223,7 @@ Two principles in the PRD collide with this product, and both collisions are man
 |---|---|
 | Image bytes | Deleted when the job finishes. A sweeper deletes any leftover at 15 minutes. Never written to the report. |
 | Raw transcription | Private job log, 24 hours, for debugging bad OCR. Never rendered. |
-| Public report | Normalized claims, verdicts, rationales, evidence excerpts and URLs, score, methodology version, duplication groups. **30 days**, then hard delete. |
+| Public report | Normalized claims, verdicts, rationales, evidence excerpts and URLs, score, methodology version, and the collapse diagram (public URLs, titles, snippets, dates). **30 days**, then hard delete. |
 | Opt-out hash | Until START, because the carrier rule outlives the report. |
 
 The link is a capability URL: 128 bits of randomness. Anyone who has the SMS can open it, including someone the user forwarded it to. The page says that, in one line. `noindex`. No account recovery for a lost link; the check is gone with the phone thread.
@@ -257,18 +295,20 @@ flowchart TD
   worker[Worker]
   ocr[Vision transcription]
   engine[Existing verifier runner]
+  collapse[Collapse pass: search, cluster, date]
   sms[Result or failure SMS]
   page[Public report page]
 
   user -->|one image| twilio
   twilio -->|MessageSid, MediaUrl| hook
-  hook -->|202 or empty TwiML immediately| twilio
+  hook -->|empty TwiML immediately| twilio
   hook -->|ack SMS| twilio
   hook --> store
   store --> worker
   worker -->|download then delete image| ocr
   ocr -->|transcript, untrusted text| engine
-  engine -->|VerificationResult + v0 score| store
+  engine -->|VerificationResult + v0 score| collapse
+  collapse -->|CollapseViz, score unchanged| store
   store --> sms
   sms --> twilio
   twilio --> user
@@ -276,33 +316,61 @@ flowchart TD
   page --> store
 ```
 
-**Webhook.** Public, signature-checked (Twilio request signature). Idempotent on `MessageSid` — Twilio retries. Respond immediately after the row is queued. The response body does not wait on OCR. Opt-out keywords are handled on this request, before any model spend.
+**Webhook.** Public, signature-checked (Twilio request signature). Idempotent on `MessageSid` — Twilio retries. Respond immediately after the row is queued. The response body does not wait on OCR. Opt-out keywords are handled on this request, before any model spend. The ack SMS goes out from this request. A timer for the 75-second mid-status is armed here and cancelled when a terminal SMS is sent.
 
-**Worker.** Pulls a queued intake, fetches media with Twilio credentials, runs transcription, deletes bytes, calls the verifier. One attempt plus one retry on provider errors. A second retry is a failure SMS, not a third model bill.
+**Worker.** Pulls a queued intake, fetches media with Twilio credentials, runs transcription, deletes bytes, calls the verifier, then runs the collapse pass, then stores the report and sends the result SMS. One attempt plus one retry on provider errors. A second retry is a failure SMS, not a third model bill. At five minutes the job is failed even if a provider is still thinking.
 
 **Verifier.** The function inside `app/api/grex/verify/route.ts` (`runVerification` plus `sanitizeVerification`), lifted so the worker calls it in-process. Same system prompt composition, same `submit_verification` tool, same caps, same `v0Score`. Surface id for these runs: `mms`, added to `GrexSurface` when this is built, so methodology events are distinguishable from the simulated screenshot surface.
 
-The MMS skill starts from the screenshot skill (charitable OCR, promotional superlatives as opinion, specific embedded facts as verifiable, protective plain voice). It adds two instructions the screenshot skill does not need: set `truncated` when claims were dropped past eight, and write the summary so a single SMS clause can be cut from it. Scoring weights do not change.
+The MMS skill starts from the screenshot skill (charitable OCR, promotional superlatives as opinion, specific embedded facts as verifiable, protective plain voice). It adds two instructions the screenshot skill does not need: set `truncated` when claims were dropped past eight, and write the summary so a single SMS clause can be cut from it. Scoring weights do not change. The skill does not describe the diagram. Clustering is not a model task.
 
-**Search.** The Anthropic web search tool already wired in the route, max six uses. Evidence URLs still have to pass `safeUrl` (http/https only). The model still does not answer from memory. Degraded mode still exists.
+**Search for the score.** The Anthropic web search tool already wired in the route, max six uses. Evidence URLs still have to pass `safeUrl` (http/https only). The model still does not answer from memory. Degraded mode still exists.
+
+**Collapse pass.** Runs only after a `VerificationResult` exists, and only for claims with `verifiability: VERIFIABLE`. For each such claim, one web search, using the same public web search capability as the verifier (the Anthropic `web_search` tool or a thin wrapper around it — not a second vendor).
+
+- Query: a quoted fragment of the normalized claim, 6–12 words, preferring a fragment that contains a name, number, or date. The worker picks the fragment with code (longest token window that contains a numeral or a capitalized token). The model does not invent a different claim to search.
+- At most eight collapse searches per report, one per verifiable claim. At most eight hits retained per search.
+- Evidence URLs already on that claim are inserted as mentions too, deduped by canonical URL.
+- Hits without an http(s) URL are dropped.
+- Then clustering, domain labels, root selection, and the optional date-meta GET (section 5b). No citation extraction.
+
+If collapse search fails entirely, the report still sends. The diagram section says “The mention search didn’t return enough to draw a collapse for this claim,” and the evidence score is unchanged.
 
 **Transcription.** A separate, short vision call whose only job is a plain transcript plus `legible: boolean`. The transcript is untrusted data, wrapped in the same begin/end markers the route already uses. URLs visible in the image are claims or context, not pages the worker fetches.
 
-**Report page.** Server-rendered from the report store. Mobile first. Reuse the visual behavior of `ScoreBadge`, `ClaimCard`, and the methodology footer. Omit the prototype chrome (hub link, “demo scenario” chip, client layout). Unknown or expired ids get the same calm empty state the prototype uses for a dead deep link, without offering a sign-in.
+**Report page.** Server-rendered from the report store. Mobile first. Three stacked regions:
 
-**What we will not build in the demo:** a queue framework as a product, a `SearchProvider` interface, a crawler, an account system.
+1. **Score.** Reuse `ScoreBadge`. Band label and number. Degraded-search notice when `evidenceMode` is `degraded`, using the prototype’s wording.
+2. **Teardown.** Summary, then `ClaimCard` for every claim. Scored claims show supported / couldn’t verify / contradicted. Unscored claims stay in the “found but not scored” group the prototype already has. These cards cite only the evidence array that entered `v0Score`.
+3. **Collapse.** A new section under the teardown, one block per verifiable claim, driven only by `CollapseViz`. Layout below.
+
+Colors for domain kinds come from the GREX theme (`lib/grex/theme.ts`). Add named tokens there if a kind needs a new color. Components do not carry hex values.
+
+Omit the prototype chrome (hub link, “demo scenario” chip, client layout). Unknown or expired ids get the same calm empty state the prototype uses for a dead deep link, without offering a sign-in.
+
+**Collapse block, per verifiable claim.**
+
+- Claim text, one line.
+- Chip: `{retrievedCount} pages → {clusterCount} clusters`.
+- An SVG funnel, full width, about 220px tall on a phone. Leaves sit on top (domain + shortened title). Near-duplicates in one cluster draw as a stacked pile, offset a few pixels, so repetition is visible before the eye follows the edge. Edges run down to the cluster’s root card. Root card shows domain, domain-kind label, and either `Earliest date we could see · {date}` or `No date in what we retrieved`. Undated clusters use a dashed card. At most eight leaves draw; the rest are `+N more` on the chip.
+- A claim with one retrieved page draws that single node and the line “One page retrieved — nothing to collapse.” No fake second node.
+- Under the funnel, the date histogram when `dateHistogram` is non-null: monthly bars, title “Dates printed on these results.” When it is null: “Not enough dates in these results to show a timeline.”
+- Small type under that: `Searched: "{query}"`.
+
+The section heading is “How the mentions collapse.” The fixed caption from section 5b sits under the heading, visible without a tap.
+
+**What we will not build in the demo:** a queue product, a `SearchProvider` interface as a project of its own, a citation crawler, Google Trends, an account system, a force-directed graph of the whole web.
 
 ### Processing states
 
-The prototype’s states stay internal to the worker. The user’s phone sees a coarser set:
+The prototype’s states stay internal to the worker. The phone sees patience points, not pipeline stages.
 
 | Internal | User-visible |
 |---|---|
 | Queued | Ack SMS already sent |
-| Transcribing | Silence |
-| EXTRACTING / SEARCHING / EVALUATING | Silence |
+| Transcribing / EXTRACTING / SEARCHING / EVALUATING / collapsing | Silence, then the single mid-status SMS if 75 seconds have passed |
 | COMPLETE | Result SMS |
-| Failed / timed out | Failure SMS |
+| Failed / timed out at 5 minutes | Failure SMS |
 | Refused (limits, illegible, opt-out) | The refusal SMS, and no result |
 
 ---
@@ -317,7 +385,8 @@ Two stores, logically separate. The public page can be served from the report st
 |---|---|
 | `message_sid` | Unique. Idempotency key. |
 | `phone_hash` | HMAC of E.164. Rate limit and STOP. |
-| `status` | `queued \| transcribing \| verifying \| complete \| failed \| refused \| opted_out` |
+| `status` | `queued \| transcribing \| verifying \| collapsing \| complete \| failed \| refused \| opted_out` |
+| `mid_status_sent_at` | Set when the 75-second SMS goes out, so a retry cannot send it twice. |
 | `received_at`, `completed_at` | Latency measurement. |
 | `image_deleted_at` | Audit that bytes are gone. |
 | `report_id` | Nullable. Set when a public report exists. |
@@ -339,33 +408,74 @@ The report embeds a `VerificationResult`, with these MMS constraints on top:
 | `methodologyVersion` | `v0.1` copied onto the report so a later rubric change does not rewrite history. |
 | `truncated` | True when the extractor hit `MAX_CLAIMS`. |
 | `expiresAt` | `createdAt + 30 days`. |
-| `provenance` | Optional. V0 shape below. Absent means “we did not compute duplication,” which should not happen if there is evidence. |
+| `collapse` | Required on a finished report. `CollapseViz` below. Empty `claims` only when nothing was verifiable. |
 
-`Claim` and `Evidence` are unchanged: normalized sentence, verifiability, verdict, rationale, url, source name, title, snippet, stance. Model `confidence` may be stored and is not rendered.
+`Claim` and `Evidence` are unchanged: normalized sentence, verifiability, verdict, rationale, url, source name, title, snippet, stance. Model `confidence` may be stored and is not rendered. Collapse mentions are a separate list. They are not appended onto `Claim.evaluation.evidence`.
 
-### Provenance stub (V0)
+### CollapseViz (V0, required)
 
-Not a graph. Computed in the worker from evidence URLs already on the claim, after sanitizing.
+Produced by the worker after scoring. This is the object the diagram reads. There is no second, freer JSON for “whatever the model sketched.”
 
 ```ts
-interface ProvenanceStub {
-  version: 'source-duplication-v0'
-  claims: Array<{
-    claimId: string
-    pageCount: number
-    publisherCount: number
-    groups: Array<{
-      publisher: string // registrable domain
-      urls: string[]
-      reason: 'same-domain' | 'similar-title'
-    }>
-  }>
+type DomainKind =
+  | 'journal-or-preprint'
+  | 'government'
+  | 'wire'
+  | 'press-release'
+  | 'encyclopedia'
+  | 'social'
+  | 'other'
+
+type DateSource = 'search-result' | 'title-or-snippet' | 'page-meta' | 'none'
+
+interface CollapseMention {
+  id: string
+  url: string
+  canonicalUrl: string
+  domain: string // registrable domain
+  domainKind: DomainKind
+  title: string
+  snippet: string
+  /** ISO date (YYYY-MM-DD). Null when unknown. */
+  observedDate: string | null
+  dateSource: DateSource
+}
+
+interface CollapseCluster {
+  id: string
+  mentionIds: string[]
+  /** Null when no member has a date. The UI must not invent a root. */
+  rootMentionId: string | null
+  rootRule: 'earliest-observed-date' | 'undated'
+  linkReason: 'canonical-url' | 'similar-title' | 'shared-phrase'
+}
+
+interface ClaimCollapse {
+  claimId: string
+  /** The quoted fragment actually sent to web search. Shown on the page. */
+  query: string
+  mentions: CollapseMention[]
+  clusters: CollapseCluster[]
+  retrievedCount: number
+  clusterCount: number
+  /**
+   * Monthly buckets. Null unless at least three mentions have observedDate.
+   * This is not a search-interest series.
+   */
+  dateHistogram: Array<{ bucket: string; count: number }> | null
+}
+
+interface CollapseViz {
+  version: 'collapse-v0'
+  /** The fixed caption in section 5b. Stored so a later caption change does not rewrite old reports. */
+  caption: string
+  claims: ClaimCollapse[]
 }
 ```
 
-Rendered as one line on the claim card: “4 pages, 2 publishers, among the sources retrieved for this check.” When `pageCount === publisherCount`, the line is omitted; there is nothing to collapse. The page caption, once per report, reads: “Repetition here only compares the pages retrieved for this check. It is not a map of the web and it does not trace a claim to an original paper.”
+Root selection, in order, inside each cluster: earliest `observedDate`, then domain kind in the order listed on `DomainKind`, then the shorter `canonicalUrl`. A cluster whose members share only a domain, with different titles and no shared phrase, stays unmerged. Same-domain siblings can be two roots. That is a feature: a journal page and a later news write-up on the same host should not collapse unless the text says they are the same story.
 
-V1 may add coordinates for a drawing. V1 does not add node types the stub does not have.
+`retrievedCount` is `mentions.length` after canonical dedupe. `clusterCount` is `clusters.length`. The chip is those two integers. No estimated web total is stored, because we would be tempted to draw it.
 
 ---
 
@@ -373,23 +483,23 @@ V1 may add coordinates for a drawing. V1 does not add node types the stub does n
 
 ### V0 — free demo
 
-The loop in section 3. Screenshot-quality images, score SMS, durable teardown page, duplication sentence, rate limits, toll-free number, separate deployable. No graph picture, no accounts, no payment, no change to v0.1 weights.
+The loop in section 3, including the collapse diagram under the teardown. Screenshot-quality images, async SMS (ack, optional mid-status, evidence score), durable report, rate limits, toll-free number, separate deployable. No accounts, no payment, no change to v0.1 weights, no Google Trends, no citation walk.
 
-Pipeline additions that are in V0 because the loop is false without them: image transcription, `truncated` on the tool result, `surface: 'mms'`, a public report row, deletion of the image.
+Pipeline additions required for that loop: image transcription, `truncated` on the tool result, `surface: 'mms'`, a public report row, image deletion, and `CollapseViz` from the deterministic pass.
 
-### V1 — source map
+### V1 — richer public volume, still not a citation graph
 
-Draw the V0 groups. Tune transcription on the images the demo actually received. Adjust the daily cap and the 180-second box using measured latency and cost. Delete-this-report control if it was not forced earlier by going public. Still basic web search. Still equal claim weights.
+Tune transcription and the quoted-fragment query on images the demo actually received. Raise the collapse hit cap only after the section 10 cost number exists. A delete-this-report control if the number is about to become public.
 
-Only consider a higher search budget here, and only with the measured cost in hand. More searches improve evidence quality more than a diagram does.
+Google Trends, or any other volume product, is an optional V1 add **only** with an explicit decision to take a dependency beyond web search. The V0 histogram remains the search-only alternate and stays in the UI either way, with the same caption, so a Trends layer cannot silently become “the” volume.
 
 ### Monetization
 
 After the demo criteria in section 10, not before. Buddy subscription as quota. Details in section 9.
 
-### V2 — provenance
+### V2 — citation provenance
 
-Page fetches, citation extraction, an explicit new decision on whether GREX keeps a cross-report claim index. That index is a different privacy product from “we forgot your screenshot.” It is out of every default in this spec.
+Fetch pages in order to read citations, resolve identifiers, and try to walk repeats to a primary source. Separately, decide whether GREX keeps a cross-report claim index. That index is a corpus of other people’s claims, which is a different privacy product from deleting the screenshot. Neither is a default in this spec.
 
 ---
 
@@ -400,7 +510,7 @@ Page fetches, citation extraction, an explicit new decision on whether GREX keep
 | User action | Pay, then text, or text and get billed | Subscribe once, text like a contact | Text, inside a small cap |
 | Fits the loop | Poorly. Payment sits in the middle of “I just saw a claim.” | Well. The number is the product relationship you described. | This is how we learn if they text again. |
 | Unit economics | Easy to stay above cost. | Only if included checks × measured cost fit under the price, with a hard cap. | A subsidy, fenced by section 5d. |
-| Principle 6 | Safe if the score is identical and the charge is for the check. Still easy to misread as paying for a verdict. | Safe if payment changes quota only. | Safe. |
+| Principle 6 | Safe if the score is identical and the charge is for the check. Still easy to misread as paying for a higher score. | Safe if payment changes quota only. | Safe. |
 | Abuse | Card fraud and receipt toil. | Account farming. Manageable. | The entire threat. Fences required. |
 
 **Recommendation:** run the free demo with the fences in section 5d. If people send a second image within a week, sell a buddy subscription whose only upgrade is quota and a contact they were going to save anyway. Keep per-check as a later, user-initiated pack for heavy senders, never as silent overage, and not as the thing we launch.
@@ -416,15 +526,16 @@ Measured on real images from people who are not the builder, over a bounded tria
 | Criterion | Bar |
 |---|---|
 | Completion | A person who has only the help page can send an image and open the report without a walkthrough. |
-| Latency | Median time from inbound MMS to result SMS under 90 seconds. At least 90% under 180 seconds, or a failure SMS. |
-| Comprehension | In a short ask-back, people describe the number as evidence strength. If they say “it told me this was fake,” the SMS copy failed, regardless of the score. |
+| Patience | Every accepted image gets the ack SMS before model work finishes. A result or a failure SMS follows. A run of a minute or more is a success if those messages landed. The five-minute guard fires in a test and sends the failure SMS once. |
+| Comprehension | In a short ask-back, people describe the number as evidence strength. If they say the text told them the image was fake, or that GREX found the original paper, the copy or the diagram caption failed. |
+| Collapse | Every report with two or more retrieved pages for a verifiable claim draws the funnel and the `pages → clusters` chip. Undated clusters render the dashed “no date” card. Reports do not contain a web-wide count. |
 | Repeat | At least 30% of phone hashes with one successful result send another image within 7 days. That is the buddy signal. |
 | Honesty of truncation | Every report that hit 8 claims says so on the page and in the SMS. |
 | Cost | After a 20-check burn-in, write down the median cost per successful check. The ongoing ceiling uses that number. Planning placeholder before measurement: stay under **$1** per successful check at current model settings, or turn effort down until you do. |
 | Retention audit | Zero image objects older than 15 minutes. No public report contains a phone number, a transcript dump, or `submittedText`. |
 | Abuse fence | A single phone cannot receive a fourth successful check inside 24 hours. The global ceiling stops new model calls and still answers Twilio. |
 
-A demo that hits latency and fails comprehension has the wrong product. Fix the words before adding a graph.
+A demo that returns a number people describe as a truth score, or a diagram they describe as the original paper, has the wrong product. The caption and the SMS wording are the fix. Speed is not the bar.
 
 ---
 
@@ -432,7 +543,10 @@ A demo that hits latency and fails comprehension has the wrong product. Fix the 
 
 - Twilio implementation, carrier registration, purchasing a number, and any secret. This document does not authorize that work by itself.
 - Native apps, the iOS share extension, Chrome extension changes, WhatsApp, RCS features, email ingest.
-- A knowledge-graph visualization, embeddings, citation crawling, DOI resolution, cross-report claim memory.
+- A citation crawl, DOI resolution, bibliography parsing, or a cross-report claim index. The V0 diagram is in scope; those are not.
+- Google Trends or any other volume API. The monthly bars on retrieved dates are the V0 stand-in.
+- Letting collapse hits change `v0Score`.
+- A model-written root, cluster, or caption.
 - Changing v0.1 weights, claim importance, or scam detection.
 - Accounts, subscriptions, receipts, per-text billing.
 - Multi-image MMS, video, voice notes, group chats, international numbers.
@@ -449,13 +563,14 @@ Reply on the PR with overrides. Silence adopts the row.
 | # | Default |
 |---|---|
 | 1 | This is Surface B via MMS, same kernel, new transport and durable report. |
-| 2 | SMS says `GREX evidence N/100 (band)`. No “valid,” no “confidence score” in the text. |
-| 3 | Ack SMS plus one result or failure SMS. No progress drip. 180s hard stop. |
-| 4 | V0 provenance is a sentence: pages vs publishers among retrieved URLs. Graph picture is V1. Paper-trace is V2 and requires fetching pages. |
-| 5 | v0.1 formula unchanged. No score when nothing is verifiable. |
-| 6 | 3 successful checks per phone-hash per 24h, 1 in flight, $25/day global placeholder ceiling, number unlisted. |
-| 7 | Image gone in minutes. Public report kept 30 days. Phone stored only as an HMAC for STOP and rate limits. Public page omits raw text. |
-| 8 | Illegible photos refused. Cap stays 8 and is disclosed when it binds. |
-| 9 | One US toll-free number. Help page explains screenshot → contact → wait. |
-| 10 | Same repo, separate deployable, `lib/grex` shared. Prototype routes stay client-gated and out of the SMS link. |
-| 11 | Monetize later with a quota subscription. Free demo takes no payment. |
+| 2 | Locked. User-facing language is evidence strength only: `GREX evidence N/100 (band)`, supported / insufficient / contradicted. |
+| 3 | Locked. Ack SMS (“Tough one — working on it.”), one optional mid-status at 75 seconds, then the evidence-score SMS. Five-minute stuck-job guard. A minute-plus run is fine. |
+| 4 | Locked. V0 ships the collapse funnel under the teardown: canonical URL + near-duplicate clusters + domain-kind labels + earliest observed date. Chip is retrieved pages → clusters. No web-wide count. Citation walk and Google Trends are out. |
+| 5 | Locked. v0.1 formula unchanged. Collapse hits do not enter the score. No score when nothing is verifiable. |
+| 6 | Date-meta GET (one per cluster, date string only) is on. Override to turn it off; the undated card still ships. |
+| 7 | 3 successful checks per phone-hash per 24h, 1 in flight, $25/day global placeholder ceiling, number unlisted. |
+| 8 | Image gone in minutes. Public report kept 30 days. Phone stored only as an HMAC for STOP and rate limits. Public page omits raw text. |
+| 9 | Illegible photos refused. Cap stays 8 and is disclosed when it binds. |
+| 10 | One US toll-free number. Help page explains screenshot → contact → wait. |
+| 11 | Same repo, separate deployable, `lib/grex` shared. Prototype routes stay client-gated and out of the SMS link. |
+| 12 | Monetize later with a quota subscription. Free demo takes no payment. |
