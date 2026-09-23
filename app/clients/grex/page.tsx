@@ -39,6 +39,12 @@ const COMPANIONS = [
     description:
       'The pipeline, the scoring math with a worked example, the data model, and the build plan.',
   },
+  {
+    href: '/clients/grex/mms',
+    title: 'Text the number',
+    description:
+      'Operator notes for the MMS demo: the public webhook, the unlisted report link, and which environment variables are set.',
+  },
 ]
 
 export default function GrexHubPage() {

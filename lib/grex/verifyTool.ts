@@ -38,6 +38,11 @@ export const SUBMIT_VERIFICATION_TOOL = {
         type: 'string',
         description: 'One-to-two sentence summary of what the evidence showed.',
       },
+      truncated: {
+        type: 'boolean',
+        description:
+          'True when more than 8 claims were present and only the first 8 in document order were kept.',
+      },
       claims: {
         type: 'array',
         items: {
@@ -76,7 +81,7 @@ export const SUBMIT_VERIFICATION_TOOL = {
         },
       },
     },
-    required: ['content_label', 'summary', 'claims'],
+    required: ['content_label', 'summary', 'claims', 'truncated'],
     additionalProperties: false,
   },
 }
@@ -100,7 +105,9 @@ export function sanitizeVerification(
   meta: { id: string; surface: GrexSurface; submittedText: string; evidenceMode: 'web' | 'degraded' }
 ): VerificationResult {
   const input = (raw ?? {}) as Record<string, unknown>
-  const rawClaims = Array.isArray(input.claims) ? input.claims.slice(0, MAX_CLAIMS) : []
+  const allClaims = Array.isArray(input.claims) ? input.claims : []
+  const truncated = input.truncated === true || allClaims.length > MAX_CLAIMS
+  const rawClaims = allClaims.slice(0, MAX_CLAIMS)
 
   const claims: Claim[] = rawClaims.map((c, i) => {
     const rc = (c ?? {}) as Record<string, unknown>
@@ -152,5 +159,6 @@ export function sanitizeVerification(
     score: scoreFor(v0Score(countClaims(claims))),
     checkedAt: new Date().toISOString(),
     evidenceMode: meta.evidenceMode,
+    truncated,
   }
 }

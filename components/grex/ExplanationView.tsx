@@ -16,6 +16,7 @@ const SURFACE_LABELS: Record<VerificationResult['surface'], string> = {
   browser: 'Browser extension',
   screenshot: 'Screenshot checker',
   mcp: 'Agent verification',
+  mms: 'Text message',
 }
 
 export const LIVE_RESULT_STORAGE_PREFIX = 'grex:result:'

@@ -46,3 +46,6 @@ next-env.d.ts
 # Python
 __pycache__/
 *.pyc
+
+# GREX MMS local file store (reports and transport). Never commit.
+.data/

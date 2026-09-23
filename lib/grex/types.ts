@@ -6,7 +6,7 @@
  * the explanation page never needs to know where a result came from.
  */
 
-export type GrexSurface = 'browser' | 'screenshot' | 'mcp'
+export type GrexSurface = 'browser' | 'screenshot' | 'mcp' | 'mms'
 
 export type ProcessingState =
   | 'PENDING'
@@ -74,6 +74,8 @@ export interface VerificationResult {
   checkedAt: string // ISO timestamp
   /** 'degraded' when web search was unavailable during a live run. */
   evidenceMode: 'web' | 'degraded'
+  /** True when extraction kept only the first 8 claims in document order. */
+  truncated?: boolean
 }
 
 export const SCORING_METHODOLOGY_VERSION = 'v0.1'

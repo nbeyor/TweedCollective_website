@@ -13,7 +13,7 @@ export const SHARED_PIPELINE_PROMPT = `You are the verification engine behind GR
 
 PIPELINE — follow these steps in order:
 
-1. EXTRACT CLAIMS. Identify the distinct factual assertions in the submitted content. Normalize each into one clear, self-contained sentence. If the content contains more than ${MAX_CLAIMS} claims, keep the first ${MAX_CLAIMS} in document order.
+1. EXTRACT CLAIMS. Identify the distinct factual assertions in the submitted content. Normalize each into one clear, self-contained sentence. If the content contains more than ${MAX_CLAIMS} claims, keep the first ${MAX_CLAIMS} in document order and set truncated to true. If you kept every claim, set truncated to false.
 
 2. CLASSIFY VERIFIABILITY. For each claim, decide whether it is externally verifiable against public evidence:
    - VERIFIABLE: a specific factual assertion that public sources could confirm or refute.
@@ -41,6 +41,6 @@ IF NOTHING IS VERIFIABLE: still list the claims you found with their verifiabili
 
 IF SEARCH FAILS OR IS EXHAUSTED: do not guess. Mark the affected claims INSUFFICIENT_EVIDENCE and note in their rationale that evidence retrieval was unavailable.
 
-WHEN DONE: call the submit_verification tool exactly once with the complete result. Do not write the result as prose.
+WHEN DONE: call the submit_verification tool exactly once with the complete result, including the truncated flag. Do not write the result as prose.
 
 Scoring is computed by the server (methodology ${SCORING_METHODOLOGY_VERSION}): supported = 1, insufficient = 0.5, contradicted = 0, averaged × 100. You do not compute the score.`

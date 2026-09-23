@@ -7,8 +7,8 @@ import Footer from '@/components/Footer'
 
 /**
  * Wraps pages in the marketing header and footer, except in the client
- * workspace (/clients) and the standalone chart viewers (/charts, opened
- * from MCP chart links), which render their own minimal chrome.
+ * workspace (/clients), the standalone chart viewers (/charts), and the
+ * public GREX text surfaces (/r reports, /grex/text), which render their own chrome.
  */
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -16,7 +16,11 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     pathname === '/clients' ||
     pathname.startsWith('/clients/') ||
     pathname === '/charts' ||
-    pathname.startsWith('/charts/')
+    pathname.startsWith('/charts/') ||
+    pathname === '/r' ||
+    pathname.startsWith('/r/') ||
+    pathname === '/grex' ||
+    pathname.startsWith('/grex/')
 
   if (isClientWorkspace) {
     return <main className="flex-grow">{children}</main>
