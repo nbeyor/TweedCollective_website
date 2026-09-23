@@ -4,6 +4,7 @@
 **Version:** Prototype (scoring methodology v0.1)
 **Status:** Clickable prototype live at `/clients/grex`; agent surface runs live verification
 **Prepared by:** Tweed Collective
+**Related:** [GREX MMS v1 spec](./grex-mms-v1-spec.md) — analysis and product spec for texting a screenshot to a GREX number. Spec only; not implemented.
 
 ---
 
