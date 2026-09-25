@@ -18,19 +18,12 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const DEFAULT_INVENTORY = join(HERE, 'USER-INVENTORY.json')
 const API = 'https://api.clerk.com/v1'
 const FIRST_EMAILS = ['nate.beyor@tweedcollective.ai', 'nbeyor@gmail.com']
-/**
- * Allowlisted in lib/client-access.ts ADMIN_EMAILS. A verified Google sign-in
- * is already admin and sees every workspace, so this address does not need
- * Backend API user create. nbeyor@gmail.com is not on that allowlist.
- */
-const SELF_SERVE_ADMIN_EMAILS = new Set(['nate.beyor@tweedcollective.ai'])
 
 const HELP = `Usage: node scripts/clerk-prod-migrate/migrate.mjs [options]
 
 Default: dry-run the full USER-INVENTORY.json (every exported dev user,
 including inactive accounts and users with no clientSlugs).
 No Clerk writes. No invitation or verification emails.
-nate.beyor@tweedcollective.ai is not API-created (self-serve; ADMIN_EMAILS).
 
 Options:
   --apply                 Create/update users on the target instance (or set APPLY=1)
@@ -140,10 +133,6 @@ function emailOf(record) {
     return primary.email.trim().toLowerCase()
   }
   return ''
-}
-
-function isSelfServeAdmin(record) {
-  return SELF_SERVE_ADMIN_EMAILS.has(emailOf(record))
 }
 
 function isSourceAdmin(record) {
@@ -259,10 +248,21 @@ function exactStringArray(value, expected) {
   return Array.isArray(value) && sameArray(value, expected) && value.every((item) => typeof item === 'string')
 }
 
+/** Grants and role to send. Empty clientSlugs are omitted so a live value is not cleared. */
+function writePublicMetadata(desired) {
+  const publicMetadata = {}
+  if (desired.publicMetadata.clientSlugs.length > 0) {
+    publicMetadata.clientSlugs = desired.publicMetadata.clientSlugs
+  }
+  if (desired.publicMetadata.role === 'admin') publicMetadata.role = 'admin'
+  return publicMetadata
+}
+
 function diffMetadata(live, desired) {
   const patch = { public: {}, private: {} }
-  if (!exactStringArray(live?.public_metadata?.clientSlugs, desired.publicMetadata.clientSlugs)) {
-    patch.public.clientSlugs = desired.publicMetadata.clientSlugs
+  const slugs = desired.publicMetadata.clientSlugs
+  if (slugs.length > 0 && !exactStringArray(live?.public_metadata?.clientSlugs, slugs)) {
+    patch.public.clientSlugs = slugs
   }
   if (desired.publicMetadata.role === 'admin' && live?.public_metadata?.role !== 'admin') {
     patch.public.role = 'admin'
@@ -319,8 +319,9 @@ function userCreateBody(record, desired) {
   const body = {
     email_address: [emailOf(record)],
     skip_password_requirement: true,
-    public_metadata: desired.publicMetadata,
   }
+  const publicMetadata = writePublicMetadata(desired)
+  if (Object.keys(publicMetadata).length > 0) body.public_metadata = publicMetadata
   const first = cleanName(record.first_name)
   const last = cleanName(record.last_name)
   if (first) body.first_name = first
@@ -585,7 +586,7 @@ async function executeUserCreate(ctx, record, desired, row) {
     }
     if (!created) throw new Error('create returned but user lookup missed the email')
     const patch = {
-      public: desired.publicMetadata,
+      public: writePublicMetadata(desired),
       private: desired.privateMetadata,
     }
     if (!metadataApplied(created, patch)) throw new Error('created user metadata did not match inventory')
@@ -604,8 +605,8 @@ async function executeUserCreate(ctx, record, desired, row) {
     if (!isPasswordRequirementError(error)) throw error
   }
 
-  const decision = classifyInvitations([], desired.publicMetadata, ctx.sendInvites, true)
-  await executeInvitation(ctx.targetKey, row.email, desired.publicMetadata, {
+  const decision = classifyInvitations([], writePublicMetadata(desired), ctx.sendInvites, true)
+  await executeInvitation(ctx.targetKey, row.email, writePublicMetadata(desired), {
     ...decision,
     execute: 'create',
     notify: ctx.sendInvites === true,
@@ -658,17 +659,6 @@ async function processOne(ctx, record) {
     }
   }
 
-  if (isSelfServeAdmin(record) && existence !== 'found') {
-    row.action = 'skip'
-    row.notify = false
-    row.documentAccess = 'n/a'
-    row.auth =
-      existence === 'missing'
-        ? 'self-serve admin (ADMIN_EMAILS); not on live yet; no API create; no email'
-        : 'existence not checked; self-serve admin (ADMIN_EMAILS); no API create; no email'
-    return row
-  }
-
   if (existence === 'found') {
     const { patch, changed } = diffMetadata(live, desired)
     if (!changed) {
@@ -708,11 +698,12 @@ async function processOne(ctx, record) {
   }
 
   if (method === 'invitation') {
-    let decision = classifyInvitations([], desired.publicMetadata, ctx.sendInvites, ctx.apply)
+    const publicMetadata = writePublicMetadata(desired)
+    let decision = classifyInvitations([], publicMetadata, ctx.sendInvites, ctx.apply)
     if (ctx.targetKey && existence === 'missing') {
       try {
         const pending = await listPendingInvitations(ctx.targetKey, row.email)
-        decision = classifyInvitations(pending, desired.publicMetadata, ctx.sendInvites, ctx.apply)
+        decision = classifyInvitations(pending, publicMetadata, ctx.sendInvites, ctx.apply)
       } catch (error) {
         row.failed = true
         row.action = 'error'
@@ -725,7 +716,7 @@ async function processOne(ctx, record) {
     row.notify = decision.notify === true && decision.action !== 'skip'
     if (ctx.apply && existence === 'missing' && decision.execute) {
       try {
-        await executeInvitation(ctx.targetKey, row.email, desired.publicMetadata, decision)
+        await executeInvitation(ctx.targetKey, row.email, publicMetadata, decision)
       } catch (error) {
         row.failed = true
         row.action = 'error'
@@ -825,18 +816,15 @@ async function run(args) {
   console.log('clerk-prod-migrate')
   console.log(`mode: ${args.apply ? 'apply' : 'dry-run'}`)
   console.log(`inventory: ${inventoryPath}`)
-  const selfServe = users.filter(isSelfServeAdmin).length
   console.log(
-    `users: ${users.length} (admins ${adminCount}, with clientSlugs ${withSlugs}, no grant and not admin ${noGrant}, self-serve no API create ${selfServe})`
+    `users: ${users.length} (admins ${adminCount}, with clientSlugs ${withSlugs}, no grant and not admin ${noGrant})`
   )
   if (loaded.meta?.clerk_instance) console.log(`inventory instance label: ${loaded.meta.clerk_instance}`)
   console.log(`target key: ${maskKey(targetKey)}`)
   console.log(`source key (${args.sourceSecretEnv}): ${maskKey(sourceKey)}`)
   console.log(`send invites: ${args.sendInvites ? 'yes' : 'no'}`)
   if (!targetKey) {
-    console.log(
-      'existence: not checked (no usable CLERK_SECRET_KEY). Missing users are planned as create, except the self-serve admin.'
-    )
+    console.log('existence: not checked (no usable CLERK_SECRET_KEY). Missing users are planned as create.')
   } else if (!args.apply) {
     console.log('existence: read-only lookups only. No POST, PATCH, or invitation revoke.')
   }
@@ -885,11 +873,36 @@ async function run(args) {
       ? `invite emails sent: ${emailCount}`
       : `invite emails that would be sent: ${emailCount}`
   )
-  const failures = rows.filter((row) => row.failed || row.action === 'error')
-  if (failures.length > 0) {
-    console.error(`FAILED ${failures.length} user(s).`)
+  const buckets = printBuckets(rows)
+  if (buckets.failures.length > 0) {
+    console.error(`FAILED ${buckets.failures.length} user(s).`)
     process.exitCode = 1
   }
+}
+
+function summarizeBuckets(rows) {
+  const failures = rows
+    .filter((row) => row.failed || row.action === 'error')
+    .map((row) => ({ email: row.email, reason: scrub(row.auth || 'failed') }))
+  return {
+    total: rows.length,
+    withGrants: rows.filter((row) => Array.isArray(row.clientSlugs) && row.clientSlugs.length > 0).length,
+    admins: rows.filter((row) => row.admin).length,
+    failures,
+  }
+}
+
+function printBuckets(rows) {
+  const buckets = summarizeBuckets(rows)
+  console.log('buckets:')
+  console.log(`  total processed: ${buckets.total}`)
+  console.log(`  with grants: ${buckets.withGrants}`)
+  console.log(`  admins: ${buckets.admins}`)
+  console.log(`  failures: ${buckets.failures.length}`)
+  for (const failure of buckets.failures) {
+    console.log(`    - ${failure.email}: ${failure.reason}`)
+  }
+  return buckets
 }
 
 async function selfTest() {
@@ -923,7 +936,7 @@ async function selfTest() {
   assert.equal(jenBody.skip_password_requirement, true)
   assert.equal(Object.hasOwn(jenBody, 'password'), false)
   assert.equal(Object.hasOwn(jenBody, 'password_digest'), false)
-  assert.deepEqual(jenBody.public_metadata.clientSlugs, [])
+  assert.equal(Object.hasOwn(jenBody, 'public_metadata'), false)
 
   const nameless = full.users.find((record) => emailOf(record) === 'takisanya@gipartners.com')
   const namelessBody = userCreateBody(nameless, desiredMetadata(nameless, { state: 'n/a' }))
@@ -934,9 +947,8 @@ async function selfTest() {
   assert.equal(chooseCreate(passwordUser, { sendInvites: false, privateNeeded: false }), 'user')
   assert.equal(chooseCreate(passwordUser, { sendInvites: true, privateNeeded: false }), 'invitation')
   assert.equal(chooseCreate(passwordUser, { sendInvites: true, privateNeeded: true }), 'user')
-  assert.equal(isSelfServeAdmin(nate), true)
-  assert.equal(isSelfServeAdmin(nbeyor), false)
-  assert.equal(isSelfServeAdmin(jen), false)
+  assert.deepEqual(writePublicMetadata(nateDesired).clientSlugs, ['ecs', 'protocol-strategist', 'protocol-authoring'])
+  assert.equal(Object.hasOwn(writePublicMetadata(jenDesired), 'clientSlugs'), false)
 
   const quietInvite = invitationBody('person@example.com', { clientSlugs: ['ecs'] }, false)
   assert.equal(quietInvite.notify, false)
@@ -956,8 +968,12 @@ async function selfTest() {
     nateDesired
   )
   assert.equal(same.changed, false)
-  const emptyVsMissing = diffMetadata({ public_metadata: {}, private_metadata: {} }, jenDesired)
-  assert.deepEqual(emptyVsMissing.patch.public.clientSlugs, [])
+  const keepLiveGrants = diffMetadata(
+    { public_metadata: { clientSlugs: ['ecs'], note: 'keep' }, private_metadata: { keep: true } },
+    jenDesired
+  )
+  assert.equal(keepLiveGrants.changed, false)
+  assert.equal(Object.hasOwn(keepLiveGrants.patch.public, 'clientSlugs'), false)
 
   const dummyLive = ['sk', 'live', 'abcdefghijklmnopqrstuvwxyz'].join('_')
   const dummyTest = ['sk', 'test', 'abcdefghijklmnopqrstuvwxyz'].join('_')
@@ -979,17 +995,31 @@ async function selfTest() {
   assert.deepEqual(withDocs.privateMetadata.documentAccess, ['doc-a'])
   assert.equal(withDocs.privateMetadata.isAdmin, undefined)
 
-  const offline = { apply: false, sendInvites: true, targetKey: '', sourceKey: '' }
-  const nateRow = await processOne(offline, nate)
-  assert.equal(nateRow.action, 'skip')
-  assert.equal(nateRow.notify, false)
-  const nbeyorRow = await processOne(offline, nbeyor)
-  assert.equal(nbeyorRow.action, 'create')
-  assert.equal(nbeyorRow.notify, false)
-  const jenRow = await processOne({ ...offline, sendInvites: false }, jen)
+  const offline = { apply: false, sendInvites: false, targetKey: '', sourceKey: '' }
+  const planned = []
+  for (const record of sorted) planned.push(await processOne(offline, record))
+  const buckets = summarizeBuckets(planned)
+  assert.equal(buckets.total, 36)
+  assert.equal(buckets.withGrants, 17)
+  assert.equal(buckets.admins, 2)
+  assert.deepEqual(buckets.failures, [])
+  assert.equal(planned.filter((row) => row.action === 'create').length, 36)
+  assert.equal(planned.filter((row) => row.notify).length, 0)
+  assert.equal(planned[0].email, 'nate.beyor@tweedcollective.ai')
+  assert.equal(planned[1].email, 'nbeyor@gmail.com')
+  const jenRow = planned.find((row) => row.email === 'jen@wanderpants.com')
   assert.equal(jenRow.action, 'create')
   assert.equal(jenRow.clientSlugs.length, 0)
-  assert.equal(jenRow.notify, false)
+  const failed = summarizeBuckets([
+    { email: 'a@example.com', clientSlugs: ['ecs'], admin: false, failed: true, action: 'error', auth: 'lookup failed' },
+    { email: 'b@example.com', clientSlugs: [], admin: true, failed: false, action: 'skip', auth: 'already matches' },
+  ])
+  assert.equal(failed.total, 2)
+  assert.equal(failed.withGrants, 1)
+  assert.equal(failed.admins, 1)
+  assert.equal(failed.failures.length, 1)
+  assert.equal(failed.failures[0].email, 'a@example.com')
+  assert.equal(failed.failures[0].reason, 'lookup failed')
 
   console.log('self-test ok')
 }
