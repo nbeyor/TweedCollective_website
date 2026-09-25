@@ -6,7 +6,7 @@ Background (plan only, already executed nowhere by this script): [CUTOVER-PLAN.m
 
 ## Default scope
 
-**Full inventory.** The default file is [USER-INVENTORY.json](./USER-INVENTORY.json) (36 dev users). Everyone in that file is processed, including people with an empty `clientSlugs` array who are not admins. Empty grants stay empty. The script does not invent workspace or document grants.
+**Full inventory.** The default file is [USER-INVENTORY.json](./USER-INVENTORY.json) (all 36 prior dev signups). Inactive users are included: there is no filter on last sign-in, empty `clientSlugs`, or admin. Empty grants stay empty. The script does not invent workspace or document grants, and it does not add a Create-account flow to the website.
 
 [MIGRATE-SCOPE.json](./MIGRATE-SCOPE.json) is the older 18-user grants-or-admin slice. It is **not** the default. Pass it only if you intentionally want that narrower set:
 
@@ -23,14 +23,16 @@ App access (see `lib/client-access.ts` and `lib/document-access.ts`):
 | Need | Where it lives |
 |---|---|
 | Workspace access | `publicMetadata.clientSlugs` (array, copied as-is, may be empty) |
-| Admin | `privateMetadata.isAdmin: true` when the export says admin (`is_admin`, `private_metadata_isAdmin`, or `role === 'admin'`). `nate.beyor@tweedcollective.ai` is also on the `ADMIN_EMAILS` allowlist; `nbeyor@gmail.com` is not, so the `isAdmin` flag is required for that account. |
+| Admin | `privateMetadata.isAdmin: true` when the export says admin (`is_admin`, `private_metadata_isAdmin`, or `role === 'admin'`). |
 | Document grants | `privateMetadata.documentAccess` |
 
 The export lists the key name `documentAccess` but not the values. Those values are copied only when `SOURCE_CLERK_SECRET_KEY` is set (read-only GET against the dev instance). If it is unset, the script logs a WARN and still migrates `clientSlugs` and admin flags.
 
-Password hashes are never copied. Google users are created with no password so they can sign in with Google. Password users are created with no password (`skip_password_requirement`) and must use **Forgot password** or Google afterward.
+Password hashes are never copied. Google users are created with no password so they can sign in with Google. Password users are created with no password (`skip_password_requirement`) and must use **Forgot password** or Google afterward. No invitation or verification email is sent unless `--send-invites`.
 
-Order: `nate.beyor@tweedcollective.ai`, then `nbeyor@gmail.com`, then any other admins, then everyone else by email.
+**Nate’s work email is not API-created.** `nate.beyor@tweedcollective.ai` is on `ADMIN_EMAILS` in `lib/client-access.ts`. A verified Google sign-in is already admin and sees every workspace and document, so the script does not `POST /users` or send an invite for that address. If that user already exists on the live instance, a later run only patches metadata. `nbeyor@gmail.com` is not on the allowlist; that account is still created and gets `privateMetadata.isAdmin: true`.
+
+Order: `nate.beyor@tweedcollective.ai` (skip create), then `nbeyor@gmail.com`, then any other admins, then everyone else by email.
 
 ## No email unless you opt in
 
@@ -60,7 +62,7 @@ From the repo root.
 node scripts/clerk-prod-migrate/migrate.mjs
 ```
 
-Expected: mode `dry-run`, 36 users, first two rows `nate.beyor@tweedcollective.ai` and `nbeyor@gmail.com`, actions planned as `create`, `invite emails that would be sent: 0`, exit 0. A WARN lists how many users have `documentAccess` keys that were skipped. Existence is not checked.
+Expected: mode `dry-run`, 36 users, first row `nate.beyor@tweedcollective.ai` with action `skip` (self-serve, no API create), then `nbeyor@gmail.com` as `create`. The other 34 rows are `create`, including users with no grants. `invite emails that would be sent: 0`, exit 0. A WARN lists how many users have `documentAccess` keys that were skipped. Existence is not checked.
 
 ### 2. Read-only dry-run (live key set, still no writes)
 
@@ -126,7 +128,7 @@ Exit 0 when every row succeeded. Exit 1 when any user hit a hard failure (lookup
 This script does not delete users and does not change the website.
 
 - Production `tweedcollective.ai` keeps whatever Clerk keys Vercel already has. Rolling back the **site** is a separate Vercel env change (see CUTOVER-PLAN.md) and is out of scope here.
-- To undo users created on the live Clerk instance, delete those users in the Clerk Dashboard (Production → Users). Re-running this script will recreate anyone still in the inventory.
+- To undo users created on the live Clerk instance, delete those users in the Clerk Dashboard (Production → Users). Re-running this script will recreate inventory users except `nate.beyor@tweedcollective.ai`, who is left to sign in with Google.
 - To undo metadata edits on someone who already existed, fix the inventory (or edit them in the Dashboard) and re-run `--apply`. `clientSlugs` is set to the inventory array.
 - Invitations from `--send-invites` can be revoked in the Dashboard. They expire after 30 days.
 - Password hashes were not copied. There is nothing to restore. People set a new password or use Google.

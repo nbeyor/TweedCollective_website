@@ -18,11 +18,19 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const DEFAULT_INVENTORY = join(HERE, 'USER-INVENTORY.json')
 const API = 'https://api.clerk.com/v1'
 const FIRST_EMAILS = ['nate.beyor@tweedcollective.ai', 'nbeyor@gmail.com']
+/**
+ * Allowlisted in lib/client-access.ts ADMIN_EMAILS. A verified Google sign-in
+ * is already admin and sees every workspace, so this address does not need
+ * Backend API user create. nbeyor@gmail.com is not on that allowlist.
+ */
+const SELF_SERVE_ADMIN_EMAILS = new Set(['nate.beyor@tweedcollective.ai'])
 
 const HELP = `Usage: node scripts/clerk-prod-migrate/migrate.mjs [options]
 
-Default: dry-run the full USER-INVENTORY.json (every exported dev user).
+Default: dry-run the full USER-INVENTORY.json (every exported dev user,
+including inactive accounts and users with no clientSlugs).
 No Clerk writes. No invitation or verification emails.
+nate.beyor@tweedcollective.ai is not API-created (self-serve; ADMIN_EMAILS).
 
 Options:
   --apply                 Create/update users on the target instance (or set APPLY=1)
@@ -132,6 +140,10 @@ function emailOf(record) {
     return primary.email.trim().toLowerCase()
   }
   return ''
+}
+
+function isSelfServeAdmin(record) {
+  return SELF_SERVE_ADMIN_EMAILS.has(emailOf(record))
 }
 
 function isSourceAdmin(record) {
@@ -646,6 +658,17 @@ async function processOne(ctx, record) {
     }
   }
 
+  if (isSelfServeAdmin(record) && existence !== 'found') {
+    row.action = 'skip'
+    row.notify = false
+    row.documentAccess = 'n/a'
+    row.auth =
+      existence === 'missing'
+        ? 'self-serve admin (ADMIN_EMAILS); not on live yet; no API create; no email'
+        : 'existence not checked; self-serve admin (ADMIN_EMAILS); no API create; no email'
+    return row
+  }
+
   if (existence === 'found') {
     const { patch, changed } = diffMetadata(live, desired)
     if (!changed) {
@@ -802,15 +825,18 @@ async function run(args) {
   console.log('clerk-prod-migrate')
   console.log(`mode: ${args.apply ? 'apply' : 'dry-run'}`)
   console.log(`inventory: ${inventoryPath}`)
+  const selfServe = users.filter(isSelfServeAdmin).length
   console.log(
-    `users: ${users.length} (admins ${adminCount}, with clientSlugs ${withSlugs}, no grant and not admin ${noGrant})`
+    `users: ${users.length} (admins ${adminCount}, with clientSlugs ${withSlugs}, no grant and not admin ${noGrant}, self-serve no API create ${selfServe})`
   )
   if (loaded.meta?.clerk_instance) console.log(`inventory instance label: ${loaded.meta.clerk_instance}`)
   console.log(`target key: ${maskKey(targetKey)}`)
   console.log(`source key (${args.sourceSecretEnv}): ${maskKey(sourceKey)}`)
   console.log(`send invites: ${args.sendInvites ? 'yes' : 'no'}`)
   if (!targetKey) {
-    console.log('existence: not checked (no usable CLERK_SECRET_KEY). Rows are planned as create.')
+    console.log(
+      'existence: not checked (no usable CLERK_SECRET_KEY). Missing users are planned as create, except the self-serve admin.'
+    )
   } else if (!args.apply) {
     console.log('existence: read-only lookups only. No POST, PATCH, or invitation revoke.')
   }
@@ -866,7 +892,7 @@ async function run(args) {
   }
 }
 
-function selfTest() {
+async function selfTest() {
   const full = loadInventory(DEFAULT_INVENTORY)
   assert.equal(full.users.length, 36)
   const sorted = sortUsers(full.users)
@@ -908,7 +934,9 @@ function selfTest() {
   assert.equal(chooseCreate(passwordUser, { sendInvites: false, privateNeeded: false }), 'user')
   assert.equal(chooseCreate(passwordUser, { sendInvites: true, privateNeeded: false }), 'invitation')
   assert.equal(chooseCreate(passwordUser, { sendInvites: true, privateNeeded: true }), 'user')
-  assert.equal(chooseCreate(nate, { sendInvites: true, privateNeeded: false }), 'user')
+  assert.equal(isSelfServeAdmin(nate), true)
+  assert.equal(isSelfServeAdmin(nbeyor), false)
+  assert.equal(isSelfServeAdmin(jen), false)
 
   const quietInvite = invitationBody('person@example.com', { clientSlugs: ['ecs'] }, false)
   assert.equal(quietInvite.notify, false)
@@ -951,6 +979,18 @@ function selfTest() {
   assert.deepEqual(withDocs.privateMetadata.documentAccess, ['doc-a'])
   assert.equal(withDocs.privateMetadata.isAdmin, undefined)
 
+  const offline = { apply: false, sendInvites: true, targetKey: '', sourceKey: '' }
+  const nateRow = await processOne(offline, nate)
+  assert.equal(nateRow.action, 'skip')
+  assert.equal(nateRow.notify, false)
+  const nbeyorRow = await processOne(offline, nbeyor)
+  assert.equal(nbeyorRow.action, 'create')
+  assert.equal(nbeyorRow.notify, false)
+  const jenRow = await processOne({ ...offline, sendInvites: false }, jen)
+  assert.equal(jenRow.action, 'create')
+  assert.equal(jenRow.clientSlugs.length, 0)
+  assert.equal(jenRow.notify, false)
+
   console.log('self-test ok')
 }
 
@@ -961,7 +1001,7 @@ async function cli() {
     return
   }
   if (args.selfTest) {
-    selfTest()
+    await selfTest()
     return
   }
   await run(args)
