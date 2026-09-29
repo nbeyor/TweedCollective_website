@@ -1,16 +1,15 @@
-import { digestRecipients, nytTvSession, nytTvSessionError } from '@/lib/nyt-tv/access'
+import { clientAccessError } from '@/lib/client-access'
+import { NYT_TV_CLIENT_SLUG, digestRecipients } from '@/lib/nyt-tv/access'
 import type { DigestScope } from '@/lib/nyt-tv/digest'
 import { composeDigest, digestSendEnabled } from '@/lib/nyt-tv/runDigest'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-/** Signed-in allowlisted preview. Never sends mail. */
+/** Signed-in workspace preview. Never sends mail. */
 export async function GET(req: Request) {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const denied = await clientAccessError(NYT_TV_CLIENT_SLUG)
+  if (denied) return denied
 
   const scope: DigestScope = new URL(req.url).searchParams.get('scope') === 'all' ? 'all' : 'since-last'
   const composed = await composeDigest(scope)

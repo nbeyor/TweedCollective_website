@@ -76,9 +76,10 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
     ],
   },
   {
-    // Weekend utility for two people. The page itself allows NYT_TV_NATE_EMAIL
-    // and NYT_TV_JEN_EMAIL — it does not use the clientSlugs grant. The entry
-    // is here so the link shows up in an admin's workspace list.
+    // Weekend utility for two people. Admission is the normal client workspace
+    // grant: admins, or publicMetadata clientSlugs: ["nyt-tv-100"] (Jen gets
+    // that slug from the admin panel after signup). NYT_TV_JEN_EMAIL is the
+    // digest address and an optional profile hint, not the admission gate.
     slug: 'nyt-tv-100',
     name: 'NYT 100 TV',
     deliverables: [

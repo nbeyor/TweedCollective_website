@@ -1,5 +1,5 @@
 /**
- * NYT 100 swipe deck: allowlist, Pacific day key, digest grouping, file store.
+ * NYT 100 swipe deck: profile mapping, Pacific day key, digest grouping, file store.
  *
  * Run with: npm run test:nyt-tv
  */
@@ -10,7 +10,14 @@ import path from 'path'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-import { DEFAULT_NATE_EMAIL, digestRecipients, profileForEmail, voteRecord } from '../lib/nyt-tv/access'
+import {
+  DEFAULT_NATE_EMAIL,
+  digestRecipients,
+  profileForEmail,
+  profileForSubject,
+  voteRecord,
+  type ProfileSubject,
+} from '../lib/nyt-tv/access'
 import { cronRequestAuthorized } from '../lib/nyt-tv/cronAuth'
 import { pacificDayKey } from '../lib/nyt-tv/day'
 import { buildDigest, digestHtml, digestText, voteInDigest } from '../lib/nyt-tv/digest'
@@ -78,17 +85,54 @@ async function main() {
 
   check('nate default email', DEFAULT_NATE_EMAIL === 'nate.beyor@tweedcollective.ai')
   check(
-    'nate email maps to nate',
+    'nate email hint maps to nate',
     profileForEmail('Nate.Beyor@tweedcollective.ai', {}) === 'nate'
   )
-  check('unknown email maps to nobody', profileForEmail('jen@example.com', {}) === null)
+  check('unknown email hint assigns nobody', profileForEmail('jen@example.com', {}) === null)
   const jenEnv = { NYT_TV_JEN_EMAIL: 'Jen@example.com' }
-  check('jen email maps to jen', profileForEmail('jen@example.com', jenEnv) === 'jen')
+  check('jen email hint maps to jen', profileForEmail('jen@example.com', jenEnv) === 'jen')
   check(
     'duplicate env does not create a jen profile',
     profileForEmail(DEFAULT_NATE_EMAIL, { NYT_TV_JEN_EMAIL: DEFAULT_NATE_EMAIL }) === 'nate'
   )
   check('digest recipients', digestRecipients(jenEnv).join(',') === `${DEFAULT_NATE_EMAIL},jen@example.com`)
+  check('digest omits jen until her address is set', digestRecipients({}).join(',') === DEFAULT_NATE_EMAIL)
+
+  const granted = (overrides: Partial<ProfileSubject>): ProfileSubject => ({
+    isAdmin: false,
+    email: 'jen@example.com',
+    verified: true,
+    hasClientAccess: true,
+    ...overrides,
+  })
+  check(
+    'admin maps to nate without the nate email',
+    profileForSubject(granted({ isAdmin: true, email: 'other@example.com' }), {}) === 'nate'
+  )
+  check(
+    'verified nate email maps to nate',
+    profileForSubject(granted({ email: 'Nate.Beyor@tweedcollective.ai', hasClientAccess: false }), {}) === 'nate'
+  )
+  check(
+    'unverified nate email is not nate by address',
+    profileForSubject(granted({ email: DEFAULT_NATE_EMAIL, verified: false, hasClientAccess: false }), {}) === null
+  )
+  check(
+    'granted non-nate maps to jen without NYT_TV_JEN_EMAIL',
+    profileForSubject(granted({ email: 'jen@example.com' }), {}) === 'jen'
+  )
+  check(
+    'jen email hint maps a verified address before the grant fallback',
+    profileForSubject(granted({ hasClientAccess: false }), jenEnv) === 'jen'
+  )
+  check(
+    'unknown email without a grant maps to nobody',
+    profileForSubject(granted({ hasClientAccess: false }), {}) === null
+  )
+  check(
+    'admin wins when the same address is also the jen hint',
+    profileForSubject(granted({ isAdmin: true }), jenEnv) === 'nate'
+  )
 
   const eightPmPdt = new Date('2026-09-30T03:00:00.000Z')
   check('8pm PDT day key', pacificDayKey(eightPmPdt) === '2026-09-29', pacificDayKey(eightPmPdt))

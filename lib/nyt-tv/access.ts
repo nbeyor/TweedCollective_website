@@ -1,7 +1,12 @@
 import { currentUser } from '@clerk/nextjs/server'
 
+import { clientSlugsForUser, isAdminUser } from '@/lib/client-access'
+
 import { pacificDayKey } from './day'
 import { PROFILE_LABELS, type ProfileId, type VoteChoice, type VoteRecord } from './types'
+
+/** Workspace slug. Admission is the normal Clerk client grant, same as Grex and eCS. */
+export const NYT_TV_CLIENT_SLUG = 'nyt-tv-100'
 
 /** Nate's verified Tweed address. Override with NYT_TV_NATE_EMAIL. */
 export const DEFAULT_NATE_EMAIL = 'nate.beyor@tweedcollective.ai'
@@ -12,12 +17,16 @@ export function nateEmail(env: Env = process.env): string {
   return (env.NYT_TV_NATE_EMAIL || DEFAULT_NATE_EMAIL).trim().toLowerCase()
 }
 
-/** Jen's address is unknown until NYT_TV_JEN_EMAIL is set. No default. */
+/** Jen's digest address. Optional profile hint. Not an admission gate. */
 export function jenEmail(env: Env = process.env): string | null {
   const raw = env.NYT_TV_JEN_EMAIL?.trim().toLowerCase()
   return raw || null
 }
 
+/**
+ * Email hint only. Unknown addresses stay unassigned here; workspace access
+ * decides admission, and `profileForSubject` assigns the deck after that.
+ */
 export function profileForEmail(email: string | null | undefined, env: Env = process.env): ProfileId | null {
   if (!email) return null
   const normalized = email.trim().toLowerCase()
@@ -28,7 +37,7 @@ export function profileForEmail(email: string | null | undefined, env: Env = pro
   return null
 }
 
-/** Both allowlisted inboxes. Jen is omitted until her env var is set. */
+/** Digest inboxes. Jen is omitted until NYT_TV_JEN_EMAIL is set. Not the admission gate. */
 export function digestRecipients(env: Env = process.env): string[] {
   const recipients = [nateEmail(env)]
   const jen = jenEmail(env)
@@ -36,37 +45,52 @@ export function digestRecipients(env: Env = process.env): string[] {
   return recipients
 }
 
-export type NytTvSession =
-  | { status: 'ok'; profileId: ProfileId; email: string; label: string }
-  | { status: 'signed-out' }
-  | { status: 'unverified'; email: string | null }
-  | { status: 'denied'; email: string | null }
-
-export function nytTvSessionError(session: NytTvSession): Response | null {
-  if (session.status === 'ok') return null
-  if (session.status === 'signed-out') {
-    return Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
-  if (session.status === 'unverified') {
-    return Response.json({ error: 'Verify your email, then refresh.' }, { status: 403 })
-  }
-  return Response.json({ error: 'This account is not on the NYT TV list.' }, { status: 403 })
+/** Signed-in user, after client-workspace access has already been decided. */
+export interface ProfileSubject {
+  isAdmin: boolean
+  email: string | null
+  verified: boolean
+  hasClientAccess: boolean
 }
 
-export async function nytTvSession(): Promise<NytTvSession> {
+/**
+ * Deck profile once the workspace grant exists.
+ * Nate: admin, or a verified primary email matching NYT_TV_NATE_EMAIL.
+ * Jen: verified primary email matching NYT_TV_JEN_EMAIL, or any granted user who is not Nate.
+ */
+export function profileForSubject(subject: ProfileSubject, env: Env = process.env): ProfileId | null {
+  const verifiedEmail = subject.verified ? subject.email?.trim().toLowerCase() || null : null
+  const nate = nateEmail(env)
+  if (subject.isAdmin || (verifiedEmail != null && verifiedEmail === nate)) return 'nate'
+
+  const jen = jenEmail(env)
+  if (jen && verifiedEmail != null && verifiedEmail === jen && jen !== nate) return 'jen'
+  if (subject.hasClientAccess) return 'jen'
+  return null
+}
+
+export type NytTvProfile = {
+  profileId: ProfileId
+  email: string | null
+  label: string
+}
+
+/** Profile for the signed-in Clerk user. Null when nobody is signed in or no deck fits. */
+export async function nytTvProfile(): Promise<NytTvProfile | null> {
   const user = await currentUser()
-  if (!user) return { status: 'signed-out' }
+  if (!user) return null
 
   const primary = user.primaryEmailAddress
   const email = primary?.emailAddress ?? null
-  if (!primary || primary.verification?.status !== 'verified' || !email) {
-    return { status: 'unverified', email }
-  }
+  const profileId = profileForSubject({
+    isAdmin: isAdminUser(user),
+    email,
+    verified: primary?.verification?.status === 'verified',
+    hasClientAccess: clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG),
+  })
+  if (!profileId) return null
 
-  const profileId = profileForEmail(email)
-  if (!profileId) return { status: 'denied', email }
-
-  return { status: 'ok', profileId, email, label: PROFILE_LABELS[profileId] }
+  return { profileId, email, label: PROFILE_LABELS[profileId] }
 }
 
 export function voteRecord(profileId: ProfileId, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {

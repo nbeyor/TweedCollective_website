@@ -1,5 +1,6 @@
+import { clientAccessError } from '@/lib/client-access'
+import { NYT_TV_CLIENT_SLUG, nytTvProfile, voteRecord, type NytTvProfile } from '@/lib/nyt-tv/access'
 import { showByRank } from '@/lib/nyt-tv/shows'
-import { nytTvSession, nytTvSessionError, voteRecord } from '@/lib/nyt-tv/access'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 import { isVoteChoice } from '@/lib/nyt-tv/types'
 
@@ -7,21 +8,17 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const profile = await grantedProfile()
+  if (profile instanceof Response) return profile
 
   const store = getVoteStore()
-  const votes = await store.listVotes(session.profileId)
-  return Response.json({ profileId: session.profileId, persistence: store.kind, votes })
+  const votes = await store.listVotes(profile.profileId)
+  return Response.json({ profileId: profile.profileId, persistence: store.kind, votes })
 }
 
 export async function PUT(req: Request) {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const profile = await grantedProfile()
+  if (profile instanceof Response) return profile
 
   let body: unknown
   try {
@@ -36,24 +33,33 @@ export async function PUT(req: Request) {
     return Response.json({ error: 'Send showRank and vote "want" or "skip".' }, { status: 400 })
   }
 
-  const record = voteRecord(session.profileId, rank, vote)
+  const record = voteRecord(profile.profileId, rank, vote)
   const store = getVoteStore()
   await store.putVote(record)
   return Response.json({ vote: record, persistence: store.kind })
 }
 
 export async function DELETE(req: Request) {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const profile = await grantedProfile()
+  if (profile instanceof Response) return profile
 
   const rank = rankFrom(new URL(req.url).searchParams.get('rank'))
   if (!rank) return Response.json({ error: 'Send a show rank.' }, { status: 400 })
 
   const store = getVoteStore()
-  await store.deleteVote(session.profileId, rank)
+  await store.deleteVote(profile.profileId, rank)
   return Response.json({ ok: true, persistence: store.kind })
+}
+
+async function grantedProfile(): Promise<NytTvProfile | Response> {
+  const denied = await clientAccessError(NYT_TV_CLIENT_SLUG)
+  if (denied) return denied
+
+  const profile = await nytTvProfile()
+  if (!profile) {
+    return Response.json({ error: 'Could not resolve a watchlist profile for this account.' }, { status: 403 })
+  }
+  return profile
 }
 
 function rankFrom(bodyOrRank: unknown): number | null {
