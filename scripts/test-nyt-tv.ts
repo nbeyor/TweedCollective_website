@@ -314,6 +314,16 @@ async function main() {
       pendingHeader.includes('Copy link') &&
       pendingHeader.includes('Update invite')
   )
+  const pendingEmailTag = (() => {
+    const idAt = pendingHeader.indexOf('id="partner-email"')
+    const open = pendingHeader.lastIndexOf('<input', idAt)
+    const close = pendingHeader.indexOf('>', idAt)
+    return open >= 0 && close > open ? pendingHeader.slice(open, close + 1) : ''
+  })()
+  check(
+    'invite controls stay at a 44px touch height',
+    pendingEmailTag.includes('h-11') && soloHeader.includes('h-11') && !pendingHeader.includes('h-10')
+  )
   check(
     'incoming header asks to confirm and is not paired',
     incomingHeader.includes(`${DEFAULT_NATE_EMAIL} asked to pair`) &&
@@ -648,7 +658,13 @@ async function main() {
   if (failures > 0) process.exit(1)
 }
 
-/** Invite success must update the header in place and leave the deck mounted. */
+/**
+ * Mobile Chromium throws NotFoundError from Node.removeChild when a focused or
+ * autofilled node is removed during commit. router.refresh() after invite used
+ * to unmount the email form, and that exception reached the root error boundary.
+ * Other engines that throw on focused-node removal hit the same path. Solo and
+ * pending must keep that input node and leave the deck mounted.
+ */
 function checkPostInviteClient() {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url: 'https://tweedcollective.ai/clients/nyt-tv-100',
@@ -727,6 +743,7 @@ function checkPostInviteClient() {
       extra.textContent = 'autofill'
       form.insertBefore(extra, emailInput)
     }
+    // Same NotFoundError mobile Chromium raises if commit removes a focused form.
     dom.window.Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
       if (child instanceof dom.window.HTMLFormElement) {
         throw new dom.window.DOMException('The object can not be found here.', 'NotFoundError')

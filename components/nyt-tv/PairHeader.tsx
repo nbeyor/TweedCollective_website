@@ -43,9 +43,11 @@ export function PairHeader(props: PairHeaderProps) {
 }
 
 /**
- * Mobile Safari throws NotFoundError if React removes the email field while it
- * is focused or autofilled. That commit error hits the root error boundary and
- * blanks the page, including the deck. Keep the failure inside the header.
+ * Mobile Chromium throws NotFoundError if React removes a focused or autofilled
+ * node during commit. router.refresh() after invite used to unmount the email
+ * field and that exception hit the root error boundary, blanking the page
+ * including the deck. Other engines that throw on focused-node removal do the
+ * same. Keep the failure inside the header.
  */
 export class PairHeaderBoundary extends React.Component<
   PairHeaderProps & { children: React.ReactNode },
@@ -84,11 +86,13 @@ function PairHeaderFallback({ viewerEmail, status, partnerEmail, invitePath }: P
       ? "You're not paired yet. You can swipe now."
       : `You're signed in as ${viewerEmail}. You can swipe now.`
   return (
-    <section className="sticky top-0 z-30 border-b border-slate/80 bg-void/95 px-4 py-4 backdrop-blur">
+    <section className="sticky top-0 z-30 shrink-0 border-b border-slate/80 bg-void/95 px-4 py-3 backdrop-blur">
       <div className="mx-auto w-full max-w-lg">
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">Your pair</p>
-        <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">{title}</h1>
-        <p className="mt-1 text-sm text-stone">{body}</p>
+        <h1 className="mt-0.5 text-lg font-semibold leading-snug tracking-tight text-cream [overflow-wrap:anywhere]">
+          {title}
+        </h1>
+        <p className="mt-1 text-sm leading-snug text-stone">{body}</p>
         {status === 'pending' && invitePath ? (
           <p className="mt-3 break-all font-mono text-xs text-cream">{invitePath}</p>
         ) : null}
@@ -177,59 +181,60 @@ export function PairHeaderView({
   }
 
   return (
-    <section className="sticky top-0 z-30 border-b border-slate/80 bg-void/95 px-4 py-4 backdrop-blur">
+    <section className="sticky top-0 z-30 shrink-0 border-b border-slate/80 bg-void/95 px-4 py-3 backdrop-blur">
       <div className="mx-auto w-full max-w-lg">
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">Your pair</p>
         {status === 'active' && partnerEmail ? (
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Paired with {partnerEmail}</h1>
-            <p className="mt-1 text-sm text-stone">You&apos;re signed in as {viewerEmail}. Swipes stay on your account.</p>
+            <h1 className="mt-0.5 text-lg font-semibold leading-snug tracking-tight text-cream [overflow-wrap:anywhere]">
+              Paired with {partnerEmail}
+            </h1>
+            <p className="mt-1 text-sm leading-snug text-stone [overflow-wrap:anywhere]">
+              You&apos;re signed in as {viewerEmail}. Swipes stay on your account.
+            </p>
             <button
               type="button"
               onClick={() => void unpair()}
               disabled={busy}
-              className="mt-3 h-10 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40"
+              className="mt-2 h-11 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40"
             >
               {busy ? 'Unpairing' : 'Unpair'}
             </button>
           </>
         ) : status === 'incoming' && partnerEmail ? (
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">{partnerEmail} asked to pair</h1>
-            <p className="mt-1 text-sm text-stone">
+            <h1 className="mt-0.5 text-lg font-semibold leading-snug tracking-tight text-cream [overflow-wrap:anywhere]">
+              {partnerEmail} asked to pair
+            </h1>
+            <p className="mt-1 text-sm leading-snug text-stone">
               You&apos;re not paired yet. Confirm to share a want list. You can swipe now either way.
             </p>
             <button
               type="button"
               onClick={() => void confirm()}
               disabled={busy}
-              className="mt-3 h-11 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
+              className="mt-2 h-11 whitespace-nowrap rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
             >
               {busy ? 'Confirming' : 'Confirm'}
             </button>
           </>
         ) : (
-          // Solo and pending share this tree. Invite success used to swap in a
-          // new form, and mobile Safari threw NotFoundError while removing the
-          // focused email field. That became the root client-side exception.
+          // Solo and pending share this tree, including one email input. Invite
+          // success calls router.refresh(), and mobile Chromium throws
+          // NotFoundError if that commit removes the focused field. Other
+          // browsers that throw on focused-node removal do the same.
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">
+            <h1 className="mt-0.5 text-lg font-semibold leading-snug tracking-tight text-cream [overflow-wrap:anywhere]">
               {showPending && partnerEmail ? `Waiting for ${partnerEmail} to join` : 'Invite your partner'}
             </h1>
-            <p className="mt-1 text-sm text-stone">
+            <p className="mt-1 text-sm leading-snug text-stone [overflow-wrap:anywhere]">
               {showPending ? (
-                <>
-                  You&apos;re not paired yet. The pair starts on their first visit after they verify this email and have
-                  access. You can swipe now.
-                </>
+                <>You&apos;re not paired yet. You can swipe now.</>
               ) : (
-                <>
-                  Enter their email. If they already have access, you are paired now. Otherwise this waits until they
-                  join. You&apos;re signed in as {viewerEmail}.
-                </>
+                <>Enter their email. You&apos;re signed in as {viewerEmail}.</>
               )}
             </p>
-            <div className={`mt-3 items-center gap-2 ${showPending ? 'flex' : 'hidden'}`}>
+            <div className={`mt-2 items-center gap-2 ${showPending ? 'flex' : 'hidden'}`}>
               <input
                 readOnly
                 value={link}
@@ -240,12 +245,12 @@ export function PairHeaderView({
               <button
                 type="button"
                 onClick={() => void copyLink()}
-                className="h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream"
+                className="h-11 shrink-0 whitespace-nowrap rounded-xl bg-sage px-3 text-sm font-medium text-cream"
               >
                 {copied ? 'Copied' : 'Copy link'}
               </button>
             </div>
-            <form onSubmit={(event) => void onSubmit(event)} className="mt-3 flex items-center gap-2">
+            <form onSubmit={(event) => void onSubmit(event)} className="mt-2 flex items-center gap-2">
               <label className="sr-only" htmlFor="partner-email">
                 {showPending ? 'Different partner email' : 'Partner email'}
               </label>
@@ -258,15 +263,15 @@ export function PairHeaderView({
                 placeholder={showPending ? 'Different email' : 'partner@email.com'}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className={`min-w-0 flex-1 rounded-xl border border-slate bg-carbon px-3 text-sm text-cream placeholder:text-stone ${showPending ? 'h-10' : 'h-11'}`}
+                className="h-11 min-w-0 flex-1 rounded-xl border border-slate bg-carbon px-3 text-sm text-cream placeholder:text-stone"
               />
               <button
                 type="submit"
                 disabled={busy}
                 className={
                   showPending
-                    ? 'h-10 shrink-0 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40'
-                    : 'h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40'
+                    ? 'h-11 shrink-0 whitespace-nowrap rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40'
+                    : 'h-11 shrink-0 whitespace-nowrap rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40'
                 }
               >
                 {busy ? (showPending ? 'Updating' : 'Sending') : showPending ? 'Update invite' : 'Invite'}

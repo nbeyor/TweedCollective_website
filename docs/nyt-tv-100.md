@@ -15,7 +15,7 @@ The initiator enters a partner email. It is stored as a pending invite (normaliz
 - If that email already belongs to a verified Clerk user with `nyt-tv-100` access (or an admin), the pair is active immediately.
 - Otherwise the header says "Waiting for {email} to join". On that person's first session after they verify the email and can open the watchlist (`clientSlugs` or admin), the invite binds. The join link still grants the slug when they do not have it yet: `/clients/nyt-tv-100/join/<token>` (18 random bytes, base64url; the email is not in the URL). Entering the inviter's email does the same bind.
 
-The header is always visible:
+The watch page is a phone column. The clients bar, pair header, card, and Skip/Want stay in the viewport; the card fills the space between them. Invite controls are at least 44px tall. The header is always visible:
 
 - **Solo:** email field, "Invite". The deck is already there.
 - **Pending:** "Waiting for {email} to join". You are not paired yet. You can swipe. No shared list until they join.
