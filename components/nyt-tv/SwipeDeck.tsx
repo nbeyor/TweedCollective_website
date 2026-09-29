@@ -230,9 +230,17 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-lg flex-1 flex-col px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
       <p className="sr-only">Signed in as {profileLabel}. Swipe right to want a show, left to skip.</p>
-      <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">NYT 100</p>
-        <div className="flex rounded-full border border-slate bg-carbon p-0.5">
+      <div className="mb-1 flex shrink-0 items-center justify-between gap-2">
+        <p className="min-w-0 truncate text-sm text-stone">
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-sage-light">NYT 100</span>
+          <span className="mx-1.5 text-zinc">·</span>
+          <span className="text-cream">{remaining.length}</span> left
+          <span className="mx-1.5 text-zinc">·</span>
+          <span className="text-sage-light">{wantCount} want</span>
+          <span className="mx-1.5 text-zinc">·</span>
+          <span className="text-rust">{skipCount} skip</span>
+        </p>
+        <div className="flex shrink-0 rounded-full border border-slate bg-carbon p-0.5">
           <button
             type="button"
             onClick={() => setView('deck')}
@@ -249,13 +257,6 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
           </button>
         </div>
       </div>
-      <p className="mb-2 shrink-0 text-sm text-stone">
-        <span className="text-cream">{remaining.length}</span> left
-        <span className="mx-1.5 text-zinc">·</span>
-        <span className="text-sage-light">{wantCount} want</span>
-        <span className="mx-1.5 text-zinc">·</span>
-        <span className="text-rust">{skipCount} skip</span>
-      </p>
 
       <div
         className="mb-2 h-1 shrink-0 overflow-hidden rounded-full bg-slate"
@@ -289,7 +290,7 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
           <div className="absolute inset-x-3 top-3 bottom-2 rounded-3xl border border-slate bg-graphite" />
           {current ? (
             <div
-              className="absolute inset-0 touch-pan-y select-none"
+              className="absolute inset-0 touch-none select-none"
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
@@ -303,7 +304,7 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
                 }}
                 aria-labelledby="nyt-card-title"
               >
-                <div className="min-h-0 flex-1 overflow-y-auto">
+                <div>
                   <div className="flex items-start justify-between gap-3">
                     <h2 id="nyt-card-title" className="text-balance text-2xl font-semibold leading-tight tracking-tight text-charcoal">
                       {current.title}
@@ -315,8 +316,8 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
                     )}
                   </div>
                   <p className="mt-2 font-mono text-[11px] tracking-[0.14em] text-sage">#{current.rank}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{current.description}</p>
-                  <dl className="mt-4 space-y-2.5 border-t border-charcoal/10 pt-4">
+                  <p className="mt-2 text-sm leading-snug text-charcoal/70">{current.description}</p>
+                  <dl className="mt-3 space-y-2 border-t border-charcoal/10 pt-3">
                     <div className="grid grid-cols-[2.5rem_1fr] gap-x-2">
                       <dt className="pt-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-sage">Pro</dt>
                       <dd className="text-sm leading-snug text-charcoal/90">{current.reviewPro}</dd>

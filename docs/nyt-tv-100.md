@@ -15,11 +15,11 @@ The initiator enters a partner email. It is stored as a pending invite (normaliz
 - If that email already belongs to a verified Clerk user with `nyt-tv-100` access (or an admin), the pair is active immediately.
 - Otherwise the header says "Waiting for {email} to join". On that person's first session after they verify the email and can open the watchlist (`clientSlugs` or admin), the invite binds. The join link still grants the slug when they do not have it yet: `/clients/nyt-tv-100/join/<token>` (18 random bytes, base64url; the email is not in the URL). Entering the inviter's email does the same bind.
 
-The watch page is a phone column. The clients bar, pair header, card, and Skip/Want stay in the viewport; the card fills the space between them. Invite controls are at least 44px tall. The header is always visible:
+The watch page is a phone column. While swiping, the card fills most of the viewport and shows the title, tagline, pro, and con without an inner scroller. Invite controls are at least 44px tall.
 
-- **Solo:** email field, "Invite". The deck is already there.
-- **Pending:** "Waiting for {email} to join". You are not paired yet. You can swipe. No shared list until they join.
-- **Active:** "Paired with {email}", plus Unpair. Unpair deletes the couple and leaves each person's swipes on their account.
+- **Solo:** the email field and "Invite" stay open. The deck is already there.
+- **Pending:** one line, "Waiting for {email} to join". Tap it for the copy link and a different email. You are not paired yet. You can swipe. No shared list until they join.
+- **Active:** one line, "Paired with {email}". Tap it to unpair. Unpair deletes the couple and leaves each person's swipes on their account. "Both want" is a one-line chip, and only when there is overlap.
 
 An active pair is `{ aUserId, bUserId, aEmail, bEmail, pairedAt }`. Couples are independent. A person is in at most one pair. A second invite to an email that is already pending is rejected.
 

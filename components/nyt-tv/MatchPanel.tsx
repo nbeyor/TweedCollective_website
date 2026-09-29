@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 
 import type { MatchShow } from '@/lib/nyt-tv/pairs'
 
@@ -11,30 +13,32 @@ export function MatchPanel({
   partnerEmail: string | null
   shows: MatchShow[]
 }) {
+  const [open, setOpen] = useState(false)
+  if (status !== 'active' || shows.length === 0) return null
+
   return (
     <section className="mx-auto w-full max-w-lg shrink-0 px-4 pt-2">
-      <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">Both want</h2>
-      {status === 'active' ? (
-        shows.length === 0 ? (
-          <p className="mt-1 text-sm leading-snug text-stone">No overlap yet. Swipes you both mark want show up here.</p>
-        ) : (
-          <ul className="mt-2 space-y-1">
-            {shows.map((show) => (
-              <li key={show.rank} className="text-sm text-cream">
-                {show.rank}. {show.title}
-              </li>
-            ))}
-          </ul>
-        )
-      ) : status === 'pending' ? (
-        <p className="mt-1 text-sm leading-snug text-stone [overflow-wrap:anywhere]">
-          No shared list until {partnerEmail ?? 'your partner'} joins.
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="flex h-11 w-full items-center rounded-xl border border-slate bg-carbon px-3 text-left text-sm text-cream"
+      >
+        <span className="min-w-0 flex-1 truncate">Both want · {shows.length}</span>
+        <span className="ml-2 shrink-0 text-xs text-sage-light">{open ? 'Close' : 'Details'}</span>
+      </button>
+      <div className={open ? 'mt-2' : 'hidden'}>
+        <p className="sr-only">
+          Shared with {partnerEmail ?? 'your partner'}.
         </p>
-      ) : status === 'incoming' ? (
-        <p className="mt-1 text-sm leading-snug text-stone">Confirm the pair to see what you both want.</p>
-      ) : (
-        <p className="mt-1 text-sm leading-snug text-stone">Invite a partner to see what you both want.</p>
-      )}
+        <ul className="space-y-1">
+          {shows.map((show) => (
+            <li key={show.rank} className="text-sm text-cream">
+              {show.rank}. {show.title}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }
