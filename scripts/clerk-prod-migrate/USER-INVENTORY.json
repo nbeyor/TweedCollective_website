@@ -1,0 +1,1242 @@
+{
+  "meta": {
+    "exported_at_pt": "2026-09-23 14:02 PDT",
+    "clerk_instance": "noted-piglet-2",
+    "publishable_key_prefix": "pk_test_",
+    "secret_key_masked": "[REDACTED]",
+    "vercel_project": "tweed-collective-website",
+    "api_errors": [],
+    "counts": {
+      "total_users": 36,
+      "with_any_clientSlugs": 17,
+      "with_ecs": 9,
+      "with_grex": 1,
+      "admins": 2,
+      "password_only": 26,
+      "google_oauth": 10,
+      "never_signed_in": 0,
+      "signed_in_last_30_days": 9
+    },
+    "read_only": true
+  },
+  "users": [
+    {
+      "id": "user_3IpLORtH2ngWoveIaOX7Jzqe826",
+      "first_name": "Gar",
+      "last_name": "Crowell",
+      "emails": [
+        {
+          "email": "gcrowell@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "gcrowell@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1788456530113,
+      "created_at_pt": "2026-09-03 10:28 PDT",
+      "last_sign_in_at": 1788456530131,
+      "last_sign_in_at_pt": "2026-09-03 10:28 PDT"
+    },
+    {
+      "id": "user_3IpDPUFUPJfle73EdfHy4lgA8Jq",
+      "first_name": "Adesh",
+      "last_name": "Ghadge",
+      "emails": [
+        {
+          "email": "aghadge@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "aghadge@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1788452591773,
+      "created_at_pt": "2026-09-03 09:23 PDT",
+      "last_sign_in_at": 1788452591794,
+      "last_sign_in_at_pt": "2026-09-03 09:23 PDT"
+    },
+    {
+      "id": "user_3IR69l75KSsn2z7cs4DJYlJtHgJ",
+      "first_name": "Greg ",
+      "last_name": "Vernon ",
+      "emails": [
+        {
+          "email": "hangar1home@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "hangar1home@gmail.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "grex"
+        ]
+      },
+      "clientSlugs": [
+        "grex"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1787714884817,
+      "created_at_pt": "2026-08-25 20:28 PDT",
+      "last_sign_in_at": 1787714884835,
+      "last_sign_in_at_pt": "2026-08-25 20:28 PDT"
+    },
+    {
+      "id": "user_3IBJWhAMbOVokj2qck5xu3xOlFD",
+      "first_name": "Mette",
+      "last_name": "Andersen",
+      "emails": [
+        {
+          "email": "mette.andersen@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "mette.andersen@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1787232061089,
+      "created_at_pt": "2026-08-20 06:21 PDT",
+      "last_sign_in_at": 1787232061109,
+      "last_sign_in_at_pt": "2026-08-20 06:21 PDT"
+    },
+    {
+      "id": "user_3HosV3Ad67FcsUcTNcaTCF92Zq6",
+      "first_name": "Samantha",
+      "last_name": "Romiski",
+      "emails": [
+        {
+          "email": "samantha.romiski@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "samantha.romiski@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1786545775128,
+      "created_at_pt": "2026-08-12 07:42 PDT",
+      "last_sign_in_at": 1786545775148,
+      "last_sign_in_at_pt": "2026-08-12 07:42 PDT"
+    },
+    {
+      "id": "user_3HoQ0xpJMlVwlEZqgBqvKmJ6Np1",
+      "first_name": "currien",
+      "last_name": "macdonald",
+      "emails": [
+        {
+          "email": "cmacdonald@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "cmacdonald@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1786531722412,
+      "created_at_pt": "2026-08-12 03:48 PDT",
+      "last_sign_in_at": 1786532354994,
+      "last_sign_in_at_pt": "2026-08-12 03:59 PDT"
+    },
+    {
+      "id": "user_3HYLRzOqcbmjLd2nheh0NVCkNYZ",
+      "first_name": "Samantha",
+      "last_name": "Juraschka",
+      "emails": [
+        {
+          "email": "samjuraschka@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "samjuraschka@gmail.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1786040051709,
+      "created_at_pt": "2026-08-06 11:14 PDT",
+      "last_sign_in_at": 1786483810081,
+      "last_sign_in_at_pt": "2026-08-11 14:30 PDT"
+    },
+    {
+      "id": "user_3DzTuZD9OYbG9P34HkOQqHwr1nj",
+      "first_name": "Stuart",
+      "last_name": "John",
+      "emails": [
+        {
+          "email": "stuart@futurestatelabs.io",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "stuart@futurestatelabs.io",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1779284121092,
+      "created_at_pt": "2026-05-20 06:35 PDT",
+      "last_sign_in_at": 1779284121118,
+      "last_sign_in_at_pt": "2026-05-20 06:35 PDT"
+    },
+    {
+      "id": "user_3DgPP6pdGMa0rKEcgYycxZAI0ZG",
+      "first_name": "Connor",
+      "last_name": "McGauley",
+      "emails": [
+        {
+          "email": "cmcgauley@gipartners.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "cmcgauley@gipartners.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1778700712940,
+      "created_at_pt": "2026-05-13 12:31 PDT",
+      "last_sign_in_at": 1778700712953,
+      "last_sign_in_at_pt": "2026-05-13 12:31 PDT"
+    },
+    {
+      "id": "user_3CozGAm1vJcD5O5ko1zRF7INeV2",
+      "first_name": "David",
+      "last_name": "Foster",
+      "emails": [
+        {
+          "email": "dfoster@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "dfoster@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1777066612451,
+      "created_at_pt": "2026-04-24 14:36 PDT",
+      "last_sign_in_at": 1787775233806,
+      "last_sign_in_at_pt": "2026-08-26 13:13 PDT"
+    },
+    {
+      "id": "user_3CLHgxWLgGJ5W0Hr9TKsC8oqH3V",
+      "first_name": "Atchutharao",
+      "last_name": "Banna",
+      "emails": [
+        {
+          "email": "abanna@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "abanna@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1776158044231,
+      "created_at_pt": "2026-04-14 02:14 PDT",
+      "last_sign_in_at": 1790169179785,
+      "last_sign_in_at_pt": "2026-09-23 06:12 PDT"
+    },
+    {
+      "id": "user_3CJictaoScyWSGEJQ9ZU6PDqptL",
+      "first_name": "Scott",
+      "last_name": "Thursby",
+      "emails": [
+        {
+          "email": "sthursby@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "sthursby@eclinicalsol.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1776110155253,
+      "created_at_pt": "2026-04-13 12:55 PDT",
+      "last_sign_in_at": 1776110155288,
+      "last_sign_in_at_pt": "2026-04-13 12:55 PDT"
+    },
+    {
+      "id": "user_3CJEbiGXw9HJ0tcH9fI5RDp3DIB",
+      "first_name": "Daniel",
+      "last_name": "Ivanov",
+      "emails": [
+        {
+          "email": "divanov@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "divanov@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1776095345662,
+      "created_at_pt": "2026-04-13 08:49 PDT",
+      "last_sign_in_at": 1784837516597,
+      "last_sign_in_at_pt": "2026-07-23 13:11 PDT"
+    },
+    {
+      "id": "user_3C4eZ1kcNlCOCkdxO9UbxzZrI4K",
+      "first_name": "David",
+      "last_name": "Hughes",
+      "emails": [
+        {
+          "email": "dhughes@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "dhughes@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1775649321313,
+      "created_at_pt": "2026-04-08 04:55 PDT",
+      "last_sign_in_at": 1775649321323,
+      "last_sign_in_at_pt": "2026-04-08 04:55 PDT"
+    },
+    {
+      "id": "user_3BSlkky0V5WyVhX1J8xc8KN9QIP",
+      "first_name": null,
+      "last_name": null,
+      "emails": [
+        {
+          "email": "takisanya@gipartners.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "takisanya@gipartners.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1774490497093,
+      "created_at_pt": "2026-03-25 19:01 PDT",
+      "last_sign_in_at": 1774490497118,
+      "last_sign_in_at_pt": "2026-03-25 19:01 PDT"
+    },
+    {
+      "id": "user_3B53RqIpi5Vpm1Nbabf8mYVpYn3",
+      "first_name": "Jonathan",
+      "last_name": "Levy",
+      "emails": [
+        {
+          "email": "jll@novo.dk",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "jll@novo.dk",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773765098642,
+      "created_at_pt": "2026-03-17 09:31 PDT",
+      "last_sign_in_at": 1773765098656,
+      "last_sign_in_at_pt": "2026-03-17 09:31 PDT"
+    },
+    {
+      "id": "user_3B52ZQjJVTjJ92xgrMdfuWHtm6q",
+      "first_name": "jlevy22",
+      "last_name": null,
+      "emails": [
+        {
+          "email": "jlevy22@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "jlevy22@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773764665918,
+      "created_at_pt": "2026-03-17 09:24 PDT",
+      "last_sign_in_at": 1773764665939,
+      "last_sign_in_at_pt": "2026-03-17 09:24 PDT"
+    },
+    {
+      "id": "user_3B4v6EOsi8K9lgO0X4ZY8Q3dORg",
+      "first_name": "Christie",
+      "last_name": "Mealo",
+      "emails": [
+        {
+          "email": "cmealo17@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "cmealo17@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773760979734,
+      "created_at_pt": "2026-03-17 08:22 PDT",
+      "last_sign_in_at": 1773760979778,
+      "last_sign_in_at_pt": "2026-03-17 08:22 PDT"
+    },
+    {
+      "id": "user_3B2mmw3sPhk5ssdBxdLKPxpWWGl",
+      "first_name": "Leon",
+      "last_name": "Behar",
+      "emails": [
+        {
+          "email": "lbehar@mkgny.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "lbehar@mkgny.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773695701661,
+      "created_at_pt": "2026-03-16 14:15 PDT",
+      "last_sign_in_at": 1773695701670,
+      "last_sign_in_at_pt": "2026-03-16 14:15 PDT"
+    },
+    {
+      "id": "user_3B2blhoe2aRdZNnc7peF97GgUdq",
+      "first_name": "Susan",
+      "last_name": "Abedi",
+      "emails": [
+        {
+          "email": "susan.a.abedi@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "susan.a.abedi@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773690264177,
+      "created_at_pt": "2026-03-16 12:44 PDT",
+      "last_sign_in_at": 1773690264222,
+      "last_sign_in_at_pt": "2026-03-16 12:44 PDT"
+    },
+    {
+      "id": "user_3Akzqjv1wDBoeBwVl59WUnuXXpf",
+      "first_name": "Nathan",
+      "last_name": "Johnson",
+      "emails": [
+        {
+          "email": "njohnson@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "njohnson@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1773151548255,
+      "created_at_pt": "2026-03-10 07:05 PDT",
+      "last_sign_in_at": 1773151548287,
+      "last_sign_in_at_pt": "2026-03-10 07:05 PDT"
+    },
+    {
+      "id": "user_3AXQM1vTdAua7CkMaKf7ZNxbHVS",
+      "first_name": "Silvio",
+      "last_name": "Galea",
+      "emails": [
+        {
+          "email": "silvio.galea.wcg@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "silvio.galea.wcg@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1772736383337,
+      "created_at_pt": "2026-03-05 10:46 PST",
+      "last_sign_in_at": 1772736383358,
+      "last_sign_in_at_pt": "2026-03-05 10:46 PST"
+    },
+    {
+      "id": "user_3AX4E0idlFDoKyqEENe9spKOpxJ",
+      "first_name": "Lauren",
+      "last_name": "Chan",
+      "emails": [
+        {
+          "email": "lec@novo.dk",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "lec@novo.dk",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1772725465444,
+      "created_at_pt": "2026-03-05 07:44 PST",
+      "last_sign_in_at": 1772725465483,
+      "last_sign_in_at_pt": "2026-03-05 07:44 PST"
+    },
+    {
+      "id": "user_3A9pOR9SMRiHyBwEVn9SbdGXnW0",
+      "first_name": "Venu",
+      "last_name": "Mallarapu",
+      "emails": [
+        {
+          "email": "vmallarapu@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "vmallarapu@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1772014607168,
+      "created_at_pt": "2026-02-25 02:16 PST",
+      "last_sign_in_at": 1789589031460,
+      "last_sign_in_at_pt": "2026-09-16 13:03 PDT"
+    },
+    {
+      "id": "user_39ukUnNbaOQcwid85KKe1vxqzri",
+      "first_name": "Silvio",
+      "last_name": "Galea",
+      "emails": [
+        {
+          "email": "silvio.galea@wcgclinical.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "silvio.galea@wcgclinical.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "protocol-strategist"
+        ]
+      },
+      "clientSlugs": [
+        "protocol-strategist"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1771553360238,
+      "created_at_pt": "2026-02-19 18:09 PST",
+      "last_sign_in_at": 1788459592817,
+      "last_sign_in_at_pt": "2026-09-03 11:19 PDT"
+    },
+    {
+      "id": "user_39rMKJuoJva46bwh85mzntE734c",
+      "first_name": "Connor",
+      "last_name": "McGauley",
+      "emails": [
+        {
+          "email": "cmcgauley@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "cmcgauley@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1771449670880,
+      "created_at_pt": "2026-02-18 13:21 PST",
+      "last_sign_in_at": 1771449670893,
+      "last_sign_in_at_pt": "2026-02-18 13:21 PST"
+    },
+    {
+      "id": "user_39rAsnJfdtK7qoMTuP8GsE41d5h",
+      "first_name": "Troy",
+      "last_name": "Sullivan",
+      "emails": [
+        {
+          "email": "tsullivan@eclinicalsol.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "tsullivan@eclinicalsol.com",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs"
+        ]
+      },
+      "clientSlugs": [
+        "ecs"
+      ],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1771444024587,
+      "created_at_pt": "2026-02-18 11:47 PST",
+      "last_sign_in_at": 1778097541021,
+      "last_sign_in_at_pt": "2026-05-06 12:59 PDT"
+    },
+    {
+      "id": "user_37zVrdz9HCoDsua5TaRifGXJKqY",
+      "first_name": "Colby",
+      "last_name": "Ye",
+      "emails": [
+        {
+          "email": "cye@novo.dk",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "cye@novo.dk",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1767906086681,
+      "created_at_pt": "2026-01-08 13:01 PST",
+      "last_sign_in_at": 1772728965522,
+      "last_sign_in_at_pt": "2026-03-05 08:42 PST"
+    },
+    {
+      "id": "user_37qIJ3fBMlouzWUGEKcx7tialzz",
+      "first_name": "Helen",
+      "last_name": "Gaffney",
+      "emails": [
+        {
+          "email": "hga@novo.dk",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "hga@novo.dk",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1767624098036,
+      "created_at_pt": "2026-01-05 06:41 PST",
+      "last_sign_in_at": 1767624098049,
+      "last_sign_in_at_pt": "2026-01-05 06:41 PST"
+    },
+    {
+      "id": "user_37c6tzEMkJxF0x05zv4bxjH56ie",
+      "first_name": "Aleks",
+      "last_name": "Engel",
+      "emails": [
+        {
+          "email": "aeee@novo.dk",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "aeee@novo.dk",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1767190230258,
+      "created_at_pt": "2025-12-31 06:10 PST",
+      "last_sign_in_at": 1773364386864,
+      "last_sign_in_at_pt": "2026-03-12 18:13 PDT"
+    },
+    {
+      "id": "user_37Zo1HiyglKJWNysT43jJFU99BZ",
+      "first_name": "Abhijeet",
+      "last_name": "Lele",
+      "emails": [
+        {
+          "email": "ajlele1219@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "ajlele1219@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1767119737629,
+      "created_at_pt": "2025-12-30 10:35 PST",
+      "last_sign_in_at": 1767119737644,
+      "last_sign_in_at_pt": "2025-12-30 10:35 PST"
+    },
+    {
+      "id": "user_37YYvEoJoTD0KGmT61KAzaYKeJx",
+      "first_name": "Nate",
+      "last_name": "Beyor",
+      "emails": [
+        {
+          "email": "nate.beyor@tweedcollective.ai",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "nate.beyor@tweedcollective.ai",
+      "public_metadata": {
+        "clientSlugs": [
+          "ecs",
+          "protocol-strategist",
+          "protocol-authoring"
+        ]
+      },
+      "clientSlugs": [
+        "ecs",
+        "protocol-strategist",
+        "protocol-authoring"
+      ],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": true,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1767081699498,
+      "created_at_pt": "2025-12-30 00:01 PST",
+      "last_sign_in_at": 1790193389327,
+      "last_sign_in_at_pt": "2026-09-23 12:56 PDT"
+    },
+    {
+      "id": "user_37PmE0hJESQ1JlS3dgiiR0UDFlM",
+      "first_name": "Jen",
+      "last_name": "Beyor",
+      "emails": [
+        {
+          "email": "jen@wanderpants.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "jen@wanderpants.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1766812964407,
+      "created_at_pt": "2025-12-26 21:22 PST",
+      "last_sign_in_at": 1766812964416,
+      "last_sign_in_at_pt": "2025-12-26 21:22 PST"
+    },
+    {
+      "id": "user_37P1WuLPWrUMAN3SbOGA5WaO3Go",
+      "first_name": "Alexis",
+      "last_name": "Horowitz-Burdick",
+      "emails": [
+        {
+          "email": "lexy@ahbb.xyz",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "lexy@ahbb.xyz",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1766789926399,
+      "created_at_pt": "2025-12-26 14:58 PST",
+      "last_sign_in_at": 1766789926417,
+      "last_sign_in_at_pt": "2025-12-26 14:58 PST"
+    },
+    {
+      "id": "user_37OwyneMMHT44zJeFeCROIO1Hzg",
+      "first_name": "Khe",
+      "last_name": "Hy",
+      "emails": [
+        {
+          "email": "khemaridh.hy@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "khemaridh.hy@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "documentAccess"
+      ],
+      "private_metadata_isAdmin": false,
+      "is_admin": false,
+      "password_enabled": true,
+      "external_accounts_providers": [],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1766787682862,
+      "created_at_pt": "2025-12-26 14:21 PST",
+      "last_sign_in_at": 1766787682870,
+      "last_sign_in_at_pt": "2025-12-26 14:21 PST"
+    },
+    {
+      "id": "user_37OupQ1f5B6W2y0PGkFGizVUaJn",
+      "first_name": "Nathaniel",
+      "last_name": "Beyor",
+      "emails": [
+        {
+          "email": "nbeyor@gmail.com",
+          "verified": true,
+          "verification_status": "verified",
+          "is_primary": true
+        }
+      ],
+      "primary_email": "nbeyor@gmail.com",
+      "public_metadata": {},
+      "clientSlugs": [],
+      "role": null,
+      "private_metadata_keys": [
+        "isAdmin"
+      ],
+      "private_metadata_isAdmin": true,
+      "is_admin": true,
+      "password_enabled": false,
+      "external_accounts_providers": [
+        "oauth_google"
+      ],
+      "two_factor_enabled": false,
+      "banned": false,
+      "locked": false,
+      "created_at": 1766786620235,
+      "created_at_pt": "2025-12-26 14:03 PST",
+      "last_sign_in_at": 1788985299696,
+      "last_sign_in_at_pt": "2026-09-09 13:21 PDT"
+    }
+  ]
+}
