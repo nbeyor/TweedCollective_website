@@ -1,8 +1,9 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'fs/promises'
 import path from 'path'
 
-import type { ProfileId, VoteRecord } from './types'
-import { isProfileId, isVoteChoice } from './types'
+import { emailIndexKey, normalizeEmail, type DirectoryUser, type PairRecord } from './pairs'
+import type { VoteRecord } from './types'
+import { isVoteChoice } from './types'
 
 export interface DigestSentMarker {
   sentAt: string
@@ -12,11 +13,27 @@ export interface DigestSentMarker {
 
 export interface VoteStore {
   kind: 'blob' | 'file'
-  listVotes(profileId?: ProfileId): Promise<VoteRecord[]>
+  listVotes(userId?: string): Promise<VoteRecord[]>
   putVote(vote: VoteRecord): Promise<void>
-  deleteVote(profileId: ProfileId, showRank: number): Promise<void>
+  deleteVote(userId: string, showRank: number): Promise<void>
   getDigestSent(): Promise<DigestSentMarker | null>
   markDigestSent(marker: DigestSentMarker): Promise<void>
+  getPair(pairId: string): Promise<PairRecord | null>
+  getPairForUser(userId: string): Promise<PairRecord | null>
+  getPairByInvite(token: string): Promise<PairRecord | null>
+  listPairs(): Promise<PairRecord[]>
+  /**
+   * Writes the pair, each member's user index, and the invite-token index.
+   * A pending pair also indexes the partner under incoming/. An active pair clears that index.
+   * `previousToken` drops the old invite index when an invite is rotated.
+   */
+  savePair(pair: PairRecord, previousToken?: string | null): Promise<void>
+  deletePair(pair: PairRecord): Promise<void>
+  rememberUser(user: DirectoryUser): Promise<void>
+  findUserByEmail(email: string): Promise<DirectoryUser | null>
+  getIncomingPair(userId: string): Promise<PairRecord | null>
+  /** Pending invite whose target email is this address. Null once the pair is active. */
+  getPendingInviteByEmail(email: string): Promise<PairRecord | null>
 }
 
 const tails = new Map<string, Promise<unknown>>()
@@ -37,12 +54,12 @@ function serial<T>(key: string, fn: () => Promise<T>): Promise<T> {
 export function parseVote(value: unknown): VoteRecord | null {
   if (!value || typeof value !== 'object') return null
   const row = value as Partial<VoteRecord>
-  if (!isProfileId(row.profileId)) return null
+  if (typeof row.userId !== 'string' || !row.userId) return null
   if (typeof row.showRank !== 'number' || !Number.isInteger(row.showRank)) return null
   if (!isVoteChoice(row.vote)) return null
   if (typeof row.updatedAt !== 'string' || typeof row.dayKey !== 'string') return null
   return {
-    profileId: row.profileId,
+    userId: row.userId,
     showRank: row.showRank,
     vote: row.vote,
     updatedAt: row.updatedAt,
@@ -50,69 +67,251 @@ export function parseVote(value: unknown): VoteRecord | null {
   }
 }
 
-export function createFileVoteStore(dir: string): VoteStore {
-  const votePath = (profileId: ProfileId, showRank: number) =>
-    path.join(dir, 'votes', profileId, `${showRank}.json`)
-  const markerPath = path.join(dir, 'digest-sent.json')
+function parseDirectoryUser(value: unknown): DirectoryUser | null {
+  if (!value || typeof value !== 'object') return null
+  const row = value as Partial<DirectoryUser>
+  const email = normalizeEmail(typeof row.email === 'string' ? row.email : null)
+  if (typeof row.userId !== 'string' || !row.userId || !email) return null
+  if (typeof row.seenAt !== 'string') return null
+  return { userId: row.userId, email, seenAt: row.seenAt }
+}
 
-  async function readVote(profileId: ProfileId, showRank: number): Promise<VoteRecord | null> {
+export function parsePair(value: unknown): PairRecord | null {
+  if (!value || typeof value !== 'object') return null
+  const row = value as Partial<PairRecord>
+  if (typeof row.id !== 'string' || !row.id) return null
+  if (typeof row.createdAt !== 'string') return null
+  if (row.status !== 'pending' && row.status !== 'active') return null
+  if (typeof row.inviteEmail !== 'string' || typeof row.inviteToken !== 'string') return null
+  if (!Array.isArray(row.members) || row.members.length === 0) return null
+  const members = []
+  for (const member of row.members) {
+    if (!member || typeof member !== 'object') return null
+    const item = member as Partial<PairRecord['members'][number]>
+    if (typeof item.userId !== 'string' || typeof item.email !== 'string' || typeof item.joinedAt !== 'string') return null
+    members.push({ userId: item.userId, email: item.email, joinedAt: item.joinedAt })
+  }
+  return {
+    id: row.id,
+    createdAt: row.createdAt,
+    status: row.status,
+    inviteEmail: row.inviteEmail,
+    inviteToken: row.inviteToken,
+    members,
+    partnerUserId: typeof row.partnerUserId === 'string' && row.partnerUserId ? row.partnerUserId : null,
+    pairedAt: typeof row.pairedAt === 'string' && row.pairedAt ? row.pairedAt : null,
+  }
+}
+
+export function createFileVoteStore(dir: string): VoteStore {
+  const votePath = (userId: string, showRank: number) => path.join(dir, 'votes', userId, `${showRank}.json`)
+  const markerPath = path.join(dir, 'digest-sent.json')
+  const pairPath = (pairId: string) => path.join(dir, 'pairs', `${pairId}.json`)
+  const userIndexPath = (userId: string) => path.join(dir, 'user-pairs', `${userId}.json`)
+  const inviteIndexPath = (token: string) => path.join(dir, 'invite-index', `${token}.json`)
+  const incomingPath = (userId: string) => path.join(dir, 'incoming', `${userId}.json`)
+  const inviteEmailPath = (email: string) => path.join(dir, 'invite-emails', `${emailIndexKey(email)}.json`)
+  const directoryUserPath = (userId: string) => path.join(dir, 'directory', 'users', `${userId}.json`)
+  const directoryEmailPath = (email: string) => path.join(dir, 'directory', 'emails', `${emailIndexKey(email)}.json`)
+
+  async function readJson<T>(abs: string): Promise<T | null> {
     try {
-      return parseVote(JSON.parse(await readFile(votePath(profileId, showRank), 'utf8')))
+      return JSON.parse(await readFile(abs, 'utf8')) as T
     } catch {
       return null
     }
   }
 
+  async function writeJson(abs: string, value: unknown) {
+    await mkdir(path.dirname(abs), { recursive: true })
+    await writeFile(abs, JSON.stringify(value), 'utf8')
+  }
+
+  async function readVote(userId: string, showRank: number): Promise<VoteRecord | null> {
+    return parseVote(await readJson(votePath(userId, showRank)))
+  }
+
+  async function listUserVotes(userId: string): Promise<VoteRecord[]> {
+    let names: string[] = []
+    try {
+      names = await readdir(path.join(dir, 'votes', userId))
+    } catch {
+      return []
+    }
+    const votes: VoteRecord[] = []
+    for (const name of names) {
+      if (!name.endsWith('.json')) continue
+      const rank = Number(name.replace(/\.json$/, ''))
+      if (!Number.isInteger(rank)) continue
+      const vote = await readVote(userId, rank)
+      if (vote) votes.push(vote)
+    }
+    return votes
+  }
+
   return {
     kind: 'file',
-    async listVotes(profileId) {
-      const profiles: ProfileId[] = profileId ? [profileId] : ['nate', 'jen']
-      const votes: VoteRecord[] = []
-      for (const id of profiles) {
-        let names: string[] = []
-        try {
-          names = await readdir(path.join(dir, 'votes', id))
-        } catch {
-          continue
-        }
-        for (const name of names) {
-          if (!name.endsWith('.json')) continue
-          const rank = Number(name.replace(/\.json$/, ''))
-          if (!Number.isInteger(rank)) continue
-          const vote = await readVote(id, rank)
-          if (vote) votes.push(vote)
-        }
+    async listVotes(userId) {
+      if (userId) return listUserVotes(userId)
+      let ids: string[] = []
+      try {
+        ids = await readdir(path.join(dir, 'votes'))
+      } catch {
+        return []
       }
-      return votes
+      const groups = await Promise.all(ids.map((id) => listUserVotes(id)))
+      return groups.flat()
     },
     putVote(vote) {
-      const key = `${vote.profileId}:${vote.showRank}`
+      const key = `${vote.userId}:${vote.showRank}`
       return serial(key, async () => {
-        const abs = votePath(vote.profileId, vote.showRank)
-        await mkdir(path.dirname(abs), { recursive: true })
-        await writeFile(abs, JSON.stringify(vote), 'utf8')
+        await writeJson(votePath(vote.userId, vote.showRank), vote)
       })
     },
-    async deleteVote(profileId, showRank) {
-      await rm(votePath(profileId, showRank), { force: true })
+    async deleteVote(userId, showRank) {
+      await rm(votePath(userId, showRank), { force: true })
     },
     async getDigestSent() {
-      try {
-        const parsed = JSON.parse(await readFile(markerPath, 'utf8')) as Partial<DigestSentMarker>
-        if (typeof parsed.sentAt !== 'string' || typeof parsed.dayKey !== 'string') return null
-        return {
-          sentAt: parsed.sentAt,
-          dayKey: parsed.dayKey,
-          recipients: Array.isArray(parsed.recipients) ? parsed.recipients.filter((item) => typeof item === 'string') : [],
-        }
-      } catch {
-        return null
+      const parsed = await readJson<Partial<DigestSentMarker>>(markerPath)
+      if (!parsed || typeof parsed.sentAt !== 'string' || typeof parsed.dayKey !== 'string') return null
+      return {
+        sentAt: parsed.sentAt,
+        dayKey: parsed.dayKey,
+        recipients: Array.isArray(parsed.recipients) ? parsed.recipients.filter((item) => typeof item === 'string') : [],
       }
     },
     async markDigestSent(marker) {
-      await mkdir(dir, { recursive: true })
-      await writeFile(markerPath, JSON.stringify(marker), 'utf8')
+      await writeJson(markerPath, marker)
     },
+    async getPair(pairId) {
+      return parsePair(await readJson(pairPath(pairId)))
+    },
+    async getPairForUser(userId) {
+      const index = await readJson<{ pairId?: string }>(userIndexPath(userId))
+      if (!index?.pairId) return null
+      return parsePair(await readJson(pairPath(index.pairId)))
+    },
+    async getPairByInvite(token) {
+      const index = await readJson<{ pairId?: string }>(inviteIndexPath(token))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairPath(index.pairId)))
+      if (!pair || pair.inviteToken !== token) return null
+      return pair
+    },
+    async listPairs() {
+      let names: string[] = []
+      try {
+        names = await readdir(path.join(dir, 'pairs'))
+      } catch {
+        return []
+      }
+      const pairs: PairRecord[] = []
+      for (const name of names) {
+        if (!name.endsWith('.json')) continue
+        const pair = parsePair(await readJson(pairPath(name.replace(/\.json$/, ''))))
+        if (pair) pairs.push(pair)
+      }
+      return pairs
+    },
+    savePair(pair, previousToken) {
+      return serial(`pair:${pair.id}`, async () => {
+        const previous = parsePair(await readJson(pairPath(pair.id)))
+        await writeJson(pairPath(pair.id), pair)
+        for (const member of pair.members) {
+          await writeJson(userIndexPath(member.userId), { pairId: pair.id })
+        }
+        await writeJson(inviteIndexPath(pair.inviteToken), { pairId: pair.id })
+        if (previousToken && previousToken !== pair.inviteToken) {
+          await rm(inviteIndexPath(previousToken), { force: true })
+        }
+        const previousPartner = previous?.partnerUserId
+        if (previousPartner && previousPartner !== pair.partnerUserId) {
+          await clearIncoming(previousPartner, pair.id)
+        }
+        if (pair.status === 'pending' && pair.partnerUserId) {
+          await writeJson(incomingPath(pair.partnerUserId), { pairId: pair.id })
+        } else if (pair.partnerUserId) {
+          await clearIncoming(pair.partnerUserId, pair.id)
+        }
+        if (previous?.inviteEmail && previous.inviteEmail !== pair.inviteEmail) {
+          await clearInviteEmail(previous.inviteEmail, pair.id)
+        }
+        await writeInviteEmail(pair)
+      })
+    },
+    deletePair(pair) {
+      return serial(`pair:${pair.id}`, async () => {
+        await rm(pairPath(pair.id), { force: true })
+        const userIds = pair.members.map((member) => member.userId)
+        if (pair.partnerUserId) userIds.push(pair.partnerUserId)
+        for (const userId of userIds) {
+          const index = await readJson<{ pairId?: string }>(userIndexPath(userId))
+          if (index?.pairId === pair.id) await rm(userIndexPath(userId), { force: true })
+        }
+        await rm(inviteIndexPath(pair.inviteToken), { force: true })
+        if (pair.partnerUserId) await clearIncoming(pair.partnerUserId, pair.id)
+        await clearInviteEmail(pair.inviteEmail, pair.id)
+      })
+    },
+    rememberUser(user) {
+      const email = normalizeEmail(user.email)
+      if (!email) return Promise.resolve()
+      return serial(`dir:${user.userId}`, async () => {
+        const previous = parseDirectoryUser(await readJson(directoryUserPath(user.userId)))
+        if (previous && previous.email !== email) {
+          const oldIndex = await readJson<{ userId?: string }>(directoryEmailPath(previous.email))
+          if (oldIndex?.userId === user.userId) await rm(directoryEmailPath(previous.email), { force: true })
+        }
+        const record: DirectoryUser = { userId: user.userId, email, seenAt: user.seenAt }
+        await writeJson(directoryUserPath(user.userId), record)
+        await writeJson(directoryEmailPath(email), { userId: user.userId })
+      })
+    },
+    async findUserByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ userId?: string }>(directoryEmailPath(normalized))
+      if (!index?.userId) return null
+      const user = parseDirectoryUser(await readJson(directoryUserPath(index.userId)))
+      if (!user || user.email !== normalized) return null
+      return user
+    },
+    async getIncomingPair(userId) {
+      const index = await readJson<{ pairId?: string }>(incomingPath(userId))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairPath(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.partnerUserId !== userId) return null
+      return pair
+    },
+    async getPendingInviteByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ pairId?: string }>(inviteEmailPath(normalized))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairPath(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.inviteEmail !== normalized) return null
+      return pair
+    },
+  }
+
+  async function clearIncoming(userId: string, pairId: string) {
+    const index = await readJson<{ pairId?: string }>(incomingPath(userId))
+    if (index?.pairId === pairId) await rm(incomingPath(userId), { force: true })
+  }
+
+  async function clearInviteEmail(email: string, pairId: string) {
+    const normalized = normalizeEmail(email)
+    if (!normalized) return
+    const index = await readJson<{ pairId?: string }>(inviteEmailPath(normalized))
+    if (index?.pairId === pairId) await rm(inviteEmailPath(normalized), { force: true })
+  }
+
+  async function writeInviteEmail(pair: PairRecord) {
+    if (pair.status === 'pending') {
+      await writeJson(inviteEmailPath(pair.inviteEmail), { pairId: pair.id })
+      return
+    }
+    await clearInviteEmail(pair.inviteEmail, pair.id)
   }
 }
 
@@ -137,11 +336,39 @@ export function resetVoteStoreForTests() {
   singleton = null
 }
 
-function voteKey(profileId: ProfileId, showRank: number): string {
-  return `nyt-tv-100/votes/${profileId}/${showRank}.json`
+function voteKey(userId: string, showRank: number): string {
+  return `nyt-tv-100/votes/${userId}/${showRank}.json`
 }
 
 const DIGEST_SENT_KEY = 'nyt-tv-100/digest-sent.json'
+
+function pairKey(pairId: string): string {
+  return `nyt-tv-100/pairs/${pairId}.json`
+}
+
+function userIndexKey(userId: string): string {
+  return `nyt-tv-100/user-pairs/${userId}.json`
+}
+
+function inviteIndexKey(token: string): string {
+  return `nyt-tv-100/invite-index/${token}.json`
+}
+
+function incomingKey(userId: string): string {
+  return `nyt-tv-100/incoming/${userId}.json`
+}
+
+function inviteEmailKey(email: string): string {
+  return `nyt-tv-100/invite-emails/${emailIndexKey(email)}.json`
+}
+
+function directoryUserKey(userId: string): string {
+  return `nyt-tv-100/directory/users/${userId}.json`
+}
+
+function directoryEmailKey(email: string): string {
+  return `nyt-tv-100/directory/emails/${emailIndexKey(email)}.json`
+}
 
 function createBlobVoteStore(token: string): VoteStore {
   async function blob() {
@@ -171,38 +398,49 @@ function createBlobVoteStore(token: string): VoteStore {
     })
   }
 
-  async function listProfile(profileId: ProfileId): Promise<VoteRecord[]> {
+  async function listPrefix(prefix: string): Promise<string[]> {
     const { list } = await blob()
-    const prefix = `nyt-tv-100/votes/${profileId}/`
-    const votes: VoteRecord[] = []
+    const keys: string[] = []
     let cursor: string | undefined
     do {
       const page = await list({ prefix, token, limit: 200, cursor })
-      for (const item of page.blobs) {
-        const vote = parseVote(await readJson<unknown>(item.pathname))
-        if (vote && vote.profileId === profileId) votes.push(vote)
-      }
+      for (const item of page.blobs) keys.push(item.pathname)
       cursor = page.hasMore ? page.cursor : undefined
     } while (cursor)
+    return keys
+  }
+
+  async function listUserVotes(userId: string): Promise<VoteRecord[]> {
+    const keys = await listPrefix(`nyt-tv-100/votes/${userId}/`)
+    const votes: VoteRecord[] = []
+    for (const key of keys) {
+      const vote = parseVote(await readJson<unknown>(key))
+      if (vote && vote.userId === userId) votes.push(vote)
+    }
     return votes
   }
 
   return {
     kind: 'blob',
-    async listVotes(profileId) {
-      const profiles: ProfileId[] = profileId ? [profileId] : ['nate', 'jen']
-      const groups = await Promise.all(profiles.map((id) => listProfile(id)))
-      return groups.flat()
+    async listVotes(userId) {
+      if (userId) return listUserVotes(userId)
+      const keys = await listPrefix('nyt-tv-100/votes/')
+      const votes: VoteRecord[] = []
+      for (const key of keys) {
+        const vote = parseVote(await readJson<unknown>(key))
+        if (vote) votes.push(vote)
+      }
+      return votes
     },
     putVote(vote) {
-      const key = `${vote.profileId}:${vote.showRank}`
+      const key = `${vote.userId}:${vote.showRank}`
       return serial(key, async () => {
-        await writeJson(voteKey(vote.profileId, vote.showRank), vote)
+        await writeJson(voteKey(vote.userId, vote.showRank), vote)
       })
     },
-    async deleteVote(profileId, showRank) {
+    async deleteVote(userId, showRank) {
       const { del } = await blob()
-      await del(voteKey(profileId, showRank), { token }).catch(() => undefined)
+      await del(voteKey(userId, showRank), { token }).catch(() => undefined)
     },
     async getDigestSent() {
       const parsed = await readJson<Partial<DigestSentMarker>>(DIGEST_SENT_KEY)
@@ -216,6 +454,133 @@ function createBlobVoteStore(token: string): VoteStore {
     markDigestSent(marker) {
       return writeJson(DIGEST_SENT_KEY, marker)
     },
+    async getPair(pairId) {
+      return parsePair(await readJson(pairKey(pairId)))
+    },
+    async getPairForUser(userId) {
+      const index = await readJson<{ pairId?: string }>(userIndexKey(userId))
+      if (!index?.pairId) return null
+      return parsePair(await readJson(pairKey(index.pairId)))
+    },
+    async getPairByInvite(token) {
+      const index = await readJson<{ pairId?: string }>(inviteIndexKey(token))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairKey(index.pairId)))
+      if (!pair || pair.inviteToken !== token) return null
+      return pair
+    },
+    async listPairs() {
+      const keys = await listPrefix('nyt-tv-100/pairs/')
+      const pairs: PairRecord[] = []
+      for (const key of keys) {
+        const pair = parsePair(await readJson(key))
+        if (pair) pairs.push(pair)
+      }
+      return pairs
+    },
+    savePair(pair, previousToken) {
+      return serial(`pair:${pair.id}`, async () => {
+        const previous = parsePair(await readJson(pairKey(pair.id)))
+        await writeJson(pairKey(pair.id), pair)
+        for (const member of pair.members) {
+          await writeJson(userIndexKey(member.userId), { pairId: pair.id })
+        }
+        await writeJson(inviteIndexKey(pair.inviteToken), { pairId: pair.id })
+        if (previousToken && previousToken !== pair.inviteToken) {
+          await delKey(inviteIndexKey(previousToken))
+        }
+        const previousPartner = previous?.partnerUserId
+        if (previousPartner && previousPartner !== pair.partnerUserId) {
+          await clearIncoming(previousPartner, pair.id)
+        }
+        if (pair.status === 'pending' && pair.partnerUserId) {
+          await writeJson(incomingKey(pair.partnerUserId), { pairId: pair.id })
+        } else if (pair.partnerUserId) {
+          await clearIncoming(pair.partnerUserId, pair.id)
+        }
+        if (previous?.inviteEmail && previous.inviteEmail !== pair.inviteEmail) {
+          await clearInviteEmail(previous.inviteEmail, pair.id)
+        }
+        await writeInviteEmail(pair)
+      })
+    },
+    deletePair(pair) {
+      return serial(`pair:${pair.id}`, async () => {
+        await delKey(pairKey(pair.id))
+        const userIds = pair.members.map((member) => member.userId)
+        if (pair.partnerUserId) userIds.push(pair.partnerUserId)
+        for (const userId of userIds) {
+          const index = await readJson<{ pairId?: string }>(userIndexKey(userId))
+          if (index?.pairId === pair.id) await delKey(userIndexKey(userId))
+        }
+        await delKey(inviteIndexKey(pair.inviteToken))
+        if (pair.partnerUserId) await clearIncoming(pair.partnerUserId, pair.id)
+        await clearInviteEmail(pair.inviteEmail, pair.id)
+      })
+    },
+    rememberUser(user) {
+      const email = normalizeEmail(user.email)
+      if (!email) return Promise.resolve()
+      return serial(`dir:${user.userId}`, async () => {
+        const previous = parseDirectoryUser(await readJson(directoryUserKey(user.userId)))
+        if (previous && previous.email !== email) {
+          const oldIndex = await readJson<{ userId?: string }>(directoryEmailKey(previous.email))
+          if (oldIndex?.userId === user.userId) await delKey(directoryEmailKey(previous.email))
+        }
+        const record: DirectoryUser = { userId: user.userId, email, seenAt: user.seenAt }
+        await writeJson(directoryUserKey(user.userId), record)
+        await writeJson(directoryEmailKey(email), { userId: user.userId })
+      })
+    },
+    async findUserByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ userId?: string }>(directoryEmailKey(normalized))
+      if (!index?.userId) return null
+      const user = parseDirectoryUser(await readJson(directoryUserKey(index.userId)))
+      if (!user || user.email !== normalized) return null
+      return user
+    },
+    async getIncomingPair(userId) {
+      const index = await readJson<{ pairId?: string }>(incomingKey(userId))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairKey(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.partnerUserId !== userId) return null
+      return pair
+    },
+    async getPendingInviteByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ pairId?: string }>(inviteEmailKey(normalized))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairKey(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.inviteEmail !== normalized) return null
+      return pair
+    },
+  }
+
+  async function delKey(key: string) {
+    const { del } = await blob()
+    await del(key, { token }).catch(() => undefined)
+  }
+
+  async function clearIncoming(userId: string, pairId: string) {
+    const index = await readJson<{ pairId?: string }>(incomingKey(userId))
+    if (index?.pairId === pairId) await delKey(incomingKey(userId))
+  }
+
+  async function clearInviteEmail(email: string, pairId: string) {
+    const normalized = normalizeEmail(email)
+    if (!normalized) return
+    const index = await readJson<{ pairId?: string }>(inviteEmailKey(normalized))
+    if (index?.pairId === pairId) await delKey(inviteEmailKey(normalized))
+  }
+
+  async function writeInviteEmail(pair: PairRecord) {
+    if (pair.status === 'pending') {
+      await writeJson(inviteEmailKey(pair.inviteEmail), { pairId: pair.id })
+      return
+    }
+    await clearInviteEmail(pair.inviteEmail, pair.id)
   }
 }
-

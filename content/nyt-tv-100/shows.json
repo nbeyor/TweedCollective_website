@@ -15,6 +15,8 @@
       "rank": 1,
       "title": "Breaking Bad",
       "description": "A New Mexico chemistry teacher with cancer turns to cooking meth to secure his family's future.",
+      "reviewPro": "Moral free-fall this precise is rare; the performances and plotting stay airtight.",
+      "reviewCon": "The early episodes take their time, and the violence is not gentle.",
       "status": "seen",
       "notes": ""
     },
@@ -22,6 +24,8 @@
       "rank": 2,
       "title": "The Wire",
       "description": "An ensemble crime epic that maps Baltimore through cops, dealers, schools, politics, and the press.",
+      "reviewPro": "The richest portrait of a city on television, with institutions as the real villain.",
+      "reviewCon": "It asks for patience; the slang and the sprawl can feel impenetrable at first.",
       "status": "seen",
       "notes": ""
     },
@@ -29,6 +33,8 @@
       "rank": 3,
       "title": "Mad Men",
       "description": "1960s Madison Avenue ad men chase clients, status, and identity as America remakes itself.",
+      "reviewPro": "Gorgeous, precise writing about identity, ambition, and American self-invention.",
+      "reviewCon": "Slow, interior, and often chilly. Plot matters less than mood and manners.",
       "status": "seen",
       "notes": ""
     },
@@ -36,6 +42,8 @@
       "rank": 4,
       "title": "Succession",
       "description": "A media dynasty's heirs claw for control as their ruthless father refuses to let go.",
+      "reviewPro": "Vicious, quotable family warfare, with a cast operating at full power.",
+      "reviewCon": "Almost nobody is likable, and the cruelty is the point for hours on end.",
       "status": "seen",
       "notes": ""
     },
@@ -43,6 +51,8 @@
       "rank": 5,
       "title": "Fleabag",
       "description": "A wry London woman breaks the fourth wall while navigating grief, desire, and family chaos.",
+      "reviewPro": "Two short seasons of grief, desire, and fourth-wall jokes that actually cut.",
+      "reviewCon": "The pain under the jokes gets heavy. It is a short, intense sit.",
       "status": "partial",
       "notes": "Started; keep on watchlist"
     },
@@ -50,6 +60,8 @@
       "rank": 6,
       "title": "Game of Thrones",
       "description": "Noble houses battle for the Iron Throne in a fantasy world of betrayal, dragons, and winter.",
+      "reviewPro": "The early seasons are sprawling, shocking fantasy with a huge sense of scale.",
+      "reviewCon": "The final stretch is widely considered a rushed, unsatisfying landing.",
       "status": "seen",
       "notes": ""
     },
@@ -57,6 +69,8 @@
       "rank": 7,
       "title": "Veep",
       "description": "A foul-mouthed U.S. vice president and her staff scramble through political farce and failure.",
+      "reviewPro": "The sharpest political farce on TV. The insults are engineering.",
+      "reviewCon": "Relentless cynicism. If you want warmth, look elsewhere.",
       "status": "seen",
       "notes": ""
     },
@@ -64,6 +78,8 @@
       "rank": 8,
       "title": "30 Rock",
       "description": "A sketch-show showrunner juggles NBC chaos, eccentric stars, and corporate absurdity.",
+      "reviewPro": "Joke density this high is a magic trick, and the ensemble never misses.",
+      "reviewCon": "Chaos is the style. Continuity and sincerity are not the point.",
       "status": "seen",
       "notes": ""
     },
@@ -71,6 +87,8 @@
       "rank": 9,
       "title": "Curb Your Enthusiasm",
       "description": "Larry David plays a heightened version of himself, turning social etiquette into endless conflict.",
+      "reviewPro": "Social discomfort as high art. Larry David's timing is still unmatched.",
+      "reviewCon": "Cringe is the engine. Many scenes are built to make you squirm.",
       "status": "seen",
       "notes": ""
     },
@@ -78,6 +96,8 @@
       "rank": 10,
       "title": "Atlanta",
       "description": "A Princeton dropout manages his cousin's rap career in a surreal, sharp portrait of Black Atlanta.",
+      "reviewPro": "Surreal, funny, and formally daring, with episodes that feel like short films.",
+      "reviewCon": "The anthology swings can feel disjointed if you want one straight plot.",
       "status": "partial",
       "notes": "Mostly seen; Nate would finish, Jen would not"
     },
@@ -85,6 +105,8 @@
       "rank": 11,
       "title": "The Office (U.S.)",
       "description": "A mockumentary about the awkward staff of a Scranton paper company and their clueless boss.",
+      "reviewPro": "A comfort-watch ensemble that turned awkwardness into real affection.",
+      "reviewCon": "Early Michael is hard to watch, and the later seasons thin out.",
       "status": "seen",
       "notes": ""
     },
@@ -92,6 +114,8 @@
       "rank": 12,
       "title": "Arrested Development",
       "description": "A wealthy family collapses into schemes and secrets after the patriarch is jailed for fraud.",
+      "reviewPro": "The densest callback comedy ever made. The first three seasons repay rewatches.",
+      "reviewCon": "The later revival seasons are spottier and lose the original snap.",
       "status": "seen",
       "notes": ""
     },
@@ -99,6 +123,8 @@
       "rank": 13,
       "title": "Girls",
       "description": "Four young women in New York stumble through work, sex, friendship, and growing up.",
+      "reviewPro": "A frank, specific portrait of messy twentysomething friendship in New York.",
+      "reviewCon": "The leads are often selfish on purpose, which alienates plenty of viewers.",
       "status": "seen",
       "notes": ""
     },
@@ -106,6 +132,8 @@
       "rank": 14,
       "title": "Friday Night Lights",
       "description": "A Texas high-school football town lives and breathes every Friday under the lights.",
+      "reviewPro": "Earnest, big-hearted drama that makes a football town feel like a family.",
+      "reviewCon": "The sports frame and the Texas sincerity are not for everyone.",
       "status": "not_seen",
       "notes": ""
     },
@@ -113,6 +141,8 @@
       "rank": 15,
       "title": "Six Feet Under",
       "description": "A dysfunctional L.A. funeral-home family grapples with death, love, and who they want to be.",
+      "reviewPro": "Funny and profound about family, grief, and how to live with death.",
+      "reviewCon": "Family misery is the subject. It can feel heavy week after week.",
       "status": "seen",
       "notes": "Would revisit"
     },
@@ -120,6 +150,8 @@
       "rank": 16,
       "title": "The Office (U.K.)",
       "description": "Ricky Gervais's original mockumentary about a bleak British office and its desperate manager.",
+      "reviewPro": "The original cringe masterpiece: short, bleak, and painfully well observed.",
+      "reviewCon": "Meaner and sadder than the U.S. version, with very little relief.",
       "status": "skip",
       "notes": "Won't watch"
     },
@@ -127,6 +159,8 @@
       "rank": 17,
       "title": "The Americans",
       "description": "Two Soviet spies pose as a suburban American couple while raising kids who don't know the truth.",
+      "reviewPro": "A marriage thriller that gets richer as the lies compound. Quietly devastating.",
+      "reviewCon": "Deliberate pacing: spy craft and domestic dread, not action set pieces.",
       "status": "seen",
       "notes": ""
     },
@@ -134,6 +168,8 @@
       "rank": 18,
       "title": "I May Destroy You",
       "description": "A writer rebuilds her life and art after a sexual assault she can't fully remember.",
+      "reviewPro": "Bold and formally alive, about memory, consent, and making art after harm.",
+      "reviewCon": "The subject is sexual assault. It is frank, fragmented, and heavy.",
       "status": "not_seen",
       "notes": ""
     },
@@ -141,6 +177,8 @@
       "rank": 19,
       "title": "Chernobyl",
       "description": "A limited series on the 1986 nuclear disaster and the covers-ups that made it worse.",
+      "reviewPro": "Five tight episodes of dread, procedure, and moral courage. Remarkably controlled.",
+      "reviewCon": "Grim by design. The disaster and the cover-up leave little air.",
       "status": "not_seen",
       "notes": ""
     },
@@ -148,6 +186,8 @@
       "rank": 20,
       "title": "The Crown",
       "description": "A dramatized chronicle of Queen Elizabeth II's reign and the private costs of public duty.",
+      "reviewPro": "Lavish and well cast, it makes public duty feel like a private tragedy.",
+      "reviewCon": "Later seasons draw more debate about accuracy, and the tone stays solemn.",
       "status": "skip",
       "notes": "Doubt he'd watch"
     },
@@ -155,6 +195,8 @@
       "rank": 21,
       "title": "The White Lotus",
       "description": "Vacationers at a luxury resort collide in dark comedy about class, privilege, and desire.",
+      "reviewPro": "Acid social satire in beautiful places. Each season is a self-contained bite.",
+      "reviewCon": "The guests are awful on purpose, and the mystery can outrank the people.",
       "status": "unchecked",
       "notes": ""
     },
@@ -162,6 +204,8 @@
       "rank": 22,
       "title": "Lost",
       "description": "Plane-crash survivors on a mysterious island face monsters, flashbacks, and each other.",
+      "reviewPro": "Peak mystery-box television: character, cliffhangers, and a huge ensemble.",
+      "reviewCon": "The mythology outruns the answers. The ending still divides people.",
       "status": "unchecked",
       "notes": ""
     },
@@ -169,6 +213,8 @@
       "rank": 23,
       "title": "The Comeback",
       "description": "A faded sitcom star claws back into Hollywood in a cringe-comedy of fame and humiliation.",
+      "reviewPro": "Cringe comedy with a real point about fame, age, and who gets to be seen.",
+      "reviewCon": "The heroine is excruciating by design. Humiliation is the joke.",
       "status": "unchecked",
       "notes": ""
     },
@@ -176,6 +222,8 @@
       "rank": 24,
       "title": "Deadwood",
       "description": "A lawless Dakota gold camp builds itself into a town through violence, deals, and dirty talk.",
+      "reviewPro": "Shakespearean swearing in a mud street. The dialogue is the special effect.",
+      "reviewCon": "Dense, profane, and unfinished on its own terms until a later movie.",
       "status": "unchecked",
       "notes": ""
     },
@@ -183,6 +231,8 @@
       "rank": 25,
       "title": "The Leftovers",
       "description": "After 2% of the world's people vanish, the leftover struggle with faith, grief, and meaning.",
+      "reviewPro": "Grief science fiction that becomes one of the most moving shows of its era.",
+      "reviewCon": "The first season is deliberately miserable. Faith and ambiguity are the plot.",
       "status": "unchecked",
       "notes": ""
     },
@@ -190,6 +240,8 @@
       "rank": 26,
       "title": "Black Mirror",
       "description": "Anthology stories about technology's dark, twisted edges and what we do with it.",
+      "reviewPro": "A cultural shorthand for tech anxiety, with several genuinely great hours.",
+      "reviewCon": "Anthology quality swings hard, and the cynicism can feel samey.",
       "status": "unchecked",
       "notes": ""
     },
@@ -197,6 +249,8 @@
       "rank": 27,
       "title": "Better Call Saul",
       "description": "Jimmy McGill's slow-burn transformation into criminal lawyer Saul Goodman before Breaking Bad.",
+      "reviewPro": "A patient character tragedy that many people think outgrows Breaking Bad.",
+      "reviewCon": "It is a slow burn for a long time. Action fans may bounce early.",
       "status": "unchecked",
       "notes": ""
     },
@@ -204,6 +258,8 @@
       "rank": 28,
       "title": "Band of Brothers",
       "description": "A WWII miniseries following Easy Company from training through Europe to war's end.",
+      "reviewPro": "The standard for World War II miniseries: scale, brotherhood, and craft.",
+      "reviewCon": "The combat is intense, and a large cast of similar faces can blur.",
       "status": "unchecked",
       "notes": ""
     },
@@ -211,6 +267,8 @@
       "rank": 29,
       "title": "Key & Peele",
       "description": "Sketch comedy that skewers race, politics, and pop culture with surgical absurdity.",
+      "reviewPro": "Sketch precision with a point of view. The hits became instant canon.",
+      "reviewCon": "Like any sketch show, some premises die in the first thirty seconds.",
       "status": "unchecked",
       "notes": ""
     },
@@ -218,6 +276,8 @@
       "rank": 30,
       "title": "Severance",
       "description": "Office workers surgically split work and home selves, then start asking what the company hides.",
+      "reviewPro": "A clean, eerie premise about work and the self, directed with real style.",
+      "reviewCon": "It withholds answers. If you need the mystery to pay off fast, you may fidget.",
       "status": "unchecked",
       "notes": ""
     },
@@ -225,6 +285,8 @@
       "rank": 31,
       "title": "Survivor",
       "description": "Castaways compete in challenges and alliances until one is the sole survivor.",
+      "reviewPro": "The reality format that still works: strategy, personalities, and camp life.",
+      "reviewCon": "Two decades of seasons means a lot of repetition if you try to binge it all.",
       "status": "unchecked",
       "notes": ""
     },
@@ -232,6 +294,8 @@
       "rank": 32,
       "title": "Andor",
       "description": "A Star Wars spy thriller about how ordinary people become rebels against the Empire.",
+      "reviewPro": "The rare franchise show that is actually about politics, sacrifice, and craft.",
+      "reviewCon": "Slower and talkier than typical Star Wars. That is the bet.",
       "status": "unchecked",
       "notes": ""
     },
@@ -239,6 +303,8 @@
       "rank": 33,
       "title": "Enlightened",
       "description": "A corporate whistleblower tries to remake her life and company after a very public meltdown.",
+      "reviewPro": "A sharp, tender comedy about wanting to be good inside a rotten company.",
+      "reviewCon": "The heroine is embarrassing on purpose. Short, and still underseen.",
       "status": "unchecked",
       "notes": ""
     },
@@ -246,6 +312,8 @@
       "rank": 34,
       "title": "Schitt's Creek",
       "description": "A rich family loses everything and rebuilds in a tiny town they once bought as a joke.",
+      "reviewPro": "A warm redemption that earns its sweetness without going soft too fast.",
+      "reviewCon": "The early snob comedy is broad. The glow comes later.",
       "status": "unchecked",
       "notes": ""
     },
@@ -253,6 +321,8 @@
       "rank": 35,
       "title": "True Detective (Season 1)",
       "description": "Two Louisiana detectives hunt a ritual killer across years of obsession and damaged lives.",
+      "reviewPro": "A humid, hypnotic detective story with two performances for the ages.",
+      "reviewCon": "This praise is for season one. Later seasons are a different, spottier show.",
       "status": "unchecked",
       "notes": ""
     },
@@ -260,6 +330,8 @@
       "rank": 36,
       "title": "The Pitt",
       "description": "A high-pressure hospital drama tracking one chaotic ER shift and the people holding it together.",
+      "reviewPro": "Old-school medical urgency, played over a single ER shift at full volume.",
+      "reviewCon": "A new show with a hot reputation and a still-short track record.",
       "status": "unchecked",
       "notes": ""
     },
@@ -267,6 +339,8 @@
       "rank": 37,
       "title": "Battlestar Galactica",
       "description": "Survivors of a robot apocalypse flee through space while debating what it means to be human.",
+      "reviewPro": "Space opera that is really about politics, faith, and staying human.",
+      "reviewCon": "The ending is divisive, and the middle can wander into mythology.",
       "status": "unchecked",
       "notes": ""
     },
@@ -274,6 +348,8 @@
       "rank": 38,
       "title": "Homeland",
       "description": "A bipolar CIA officer suspects a rescued POW has been turned into a terrorist asset.",
+      "reviewPro": "The first season is a taut paranoia machine with a great unstable lead.",
+      "reviewCon": "It runs long past its best idea. The later years are uneven.",
       "status": "unchecked",
       "notes": ""
     },
@@ -281,6 +357,8 @@
       "rank": 39,
       "title": "Watchmen",
       "description": "A remix of the comic that digs into American racism, power, and masked vigilantism.",
+      "reviewPro": "A fierce, stylish limited series about American power, race, and masks.",
+      "reviewCon": "It assumes some comic knowledge and makes bold, polarizing swings.",
       "status": "unchecked",
       "notes": ""
     },
@@ -288,6 +366,8 @@
       "rank": 40,
       "title": "Adolescence",
       "description": "A contemporary drama centered on teenage life, identity, and the pressures of growing up.",
+      "reviewPro": "A short, intensely acted portrait of teenage pressure that landed as an event.",
+      "reviewCon": "Bleak and claustrophobic, with little relief once it gets going.",
       "status": "unchecked",
       "notes": ""
     },
@@ -295,6 +375,8 @@
       "rank": 41,
       "title": "Louie",
       "description": "Louis C.K.'s semi-autobiographical comedy about stand-up, parenting, and awkward encounters.",
+      "reviewPro": "Loose, melancholy stand-up storytelling that widened what a comedy could be.",
+      "reviewCon": "Hard to separate from Louis C.K.'s later public disgrace.",
       "status": "unchecked",
       "notes": ""
     },
@@ -302,6 +384,8 @@
       "rank": 42,
       "title": "Hacks",
       "description": "A legendary comic and a young writer forge a prickly partnership in the Vegas comedy world.",
+      "reviewPro": "A prickly mentor comedy whose two leads make every insult count.",
+      "reviewCon": "Showbiz insider jokes and a slow thaw. The spark is the relationship.",
       "status": "unchecked",
       "notes": ""
     },
@@ -309,6 +393,8 @@
       "rank": 43,
       "title": "Peaky Blinders",
       "description": "A post-WWI Birmingham gang rises from the streets into organized crime and politics.",
+      "reviewPro": "Style, violence, and ambition, set to a soundtrack that does half the work.",
+      "reviewCon": "The myth-making gets repetitive, and historical looseness is part of the deal.",
       "status": "unchecked",
       "notes": ""
     },
@@ -316,6 +402,8 @@
       "rank": 44,
       "title": "BoJack Horseman",
       "description": "An animated washed-up sitcom horse confronts depression, fame, and whether people can change.",
+      "reviewPro": "The saddest, sharpest cartoon about fame, depression, and accountability.",
+      "reviewCon": "It goes to very dark places. The animal gags are not the real subject.",
       "status": "unchecked",
       "notes": ""
     },
@@ -323,6 +411,8 @@
       "rank": 45,
       "title": "Happy Valley",
       "description": "A Yorkshire police sergeant hunts criminals while protecting her family from old wounds.",
+      "reviewPro": "Grounded, tense, and deeply human crime drama with a formidable lead.",
+      "reviewCon": "The crimes are brutal, and the show does not look away.",
       "status": "unchecked",
       "notes": ""
     },
@@ -330,6 +420,8 @@
       "rank": 46,
       "title": "Broad City",
       "description": "Two best friends bounce through New York in a chaotic, affectionate comedy of millennial life.",
+      "reviewPro": "Friendship is the love story: silly, specific, and full of New York joy.",
+      "reviewCon": "The stoner-hangout vibe is the show. Plot is optional.",
       "status": "unchecked",
       "notes": ""
     },
@@ -337,6 +429,8 @@
       "rank": 47,
       "title": "Twin Peaks: The Return",
       "description": "David Lynch revisits Twin Peaks decades later in a surreal, unsettling continuation.",
+      "reviewPro": "A late Lynch epic: eighteen hours of dream logic, dread, and beauty.",
+      "reviewCon": "Not a cozy reunion. Abstraction and patience are required.",
       "status": "unchecked",
       "notes": ""
     },
@@ -344,6 +438,8 @@
       "rank": 48,
       "title": "House of Cards",
       "description": "A ruthless politician and his wife climb Washington's ladder through manipulation and murder.",
+      "reviewPro": "The early seasons are a sleek, nasty Washington power fantasy.",
+      "reviewCon": "Later seasons collapse, and the lead's scandal hangs over the show.",
       "status": "unchecked",
       "notes": ""
     },
@@ -351,6 +447,8 @@
       "rank": 49,
       "title": "Normal People",
       "description": "Two Irish teens fall into an intense, on-and-off romance from school through university.",
+      "reviewPro": "An intimate, beautifully acted romance that understands awkward desire.",
+      "reviewCon": "Very little happens. Mood, sex, and miscommunication carry it.",
       "status": "unchecked",
       "notes": ""
     },
@@ -358,6 +456,8 @@
       "rank": 50,
       "title": "Parks and Recreation",
       "description": "An earnest parks official and her quirky colleagues try to make a small town better.",
+      "reviewPro": "Optimistic workplace comedy that becomes a genuine ensemble classic.",
+      "reviewCon": "Season one is shaky. The show people love starts a little later.",
       "status": "unchecked",
       "notes": ""
     },
@@ -365,6 +465,8 @@
       "rank": 51,
       "title": "The Good Place",
       "description": "A woman wakes in the afterlife and must learn what it actually means to be a good person.",
+      "reviewPro": "A high-concept comedy that keeps reinventing itself and sticks the landing.",
+      "reviewCon": "The philosophy and the twists are the fun. Straight-sitcom fans may drift.",
       "status": "unchecked",
       "notes": ""
     },
@@ -372,6 +474,8 @@
       "rank": 52,
       "title": "Downton Abbey",
       "description": "An English aristocratic household and its servants navigate class and change before WWII.",
+      "reviewPro": "Sumptuous upstairs-downstairs soap with a deep bench of characters.",
+      "reviewCon": "Comfort costume drama. The stakes stay soapy more than severe.",
       "status": "unchecked",
       "notes": ""
     },
@@ -379,6 +483,8 @@
       "rank": 53,
       "title": "Stranger Things",
       "description": "1980s kids in Indiana battle supernatural horrors from a parallel dimension.",
+      "reviewPro": "A blast of 1980s adventure, friendship, and monster-movie pleasure.",
+      "reviewCon": "Later seasons stretch the nostalgia, and the scale starts to sag.",
       "status": "unchecked",
       "notes": ""
     },
@@ -386,6 +492,8 @@
       "rank": 54,
       "title": "The Bureau",
       "description": "French intelligence officers run covert ops abroad while their private lives unravel at home.",
+      "reviewPro": "The spy show connoisseurs recommend: procedural, adult, and precise.",
+      "reviewCon": "French-language, low on glamour, and slow if you want Bond energy.",
       "status": "unchecked",
       "notes": ""
     },
@@ -393,6 +501,8 @@
       "rank": 55,
       "title": "Insecure",
       "description": "A young Black woman in L.A. navigates friendship, dating, and figuring herself out.",
+      "reviewPro": "Specific, funny, and stylish about friendship and dating in Los Angeles.",
+      "reviewCon": "A character hang, not a plot machine. The lead is not written to be easy.",
       "status": "unchecked",
       "notes": ""
     },
@@ -400,6 +510,8 @@
       "rank": 56,
       "title": "Nathan for You",
       "description": "A fake business consultant pitches absurd \"improvements\" to real small businesses.",
+      "reviewPro": "Reality comedy as conceptual art. The escalations are hard to believe.",
+      "reviewCon": "The cringe, and the ethics of the bits, are part of the discomfort.",
       "status": "unchecked",
       "notes": ""
     },
@@ -407,6 +519,8 @@
       "rank": 57,
       "title": "I Think You Should Leave",
       "description": "Short, chaotic sketch comedy that escalates ordinary situations into pure nonsense.",
+      "reviewPro": "Minute-long spirals into social hell. Endlessly rewatchable when it hits.",
+      "reviewCon": "Sketch hit rate varies, and the volume is shouting-in-a-meeting.",
       "status": "unchecked",
       "notes": ""
     },
@@ -414,6 +528,8 @@
       "rank": 58,
       "title": "Chappelle's Show",
       "description": "Dave Chappelle's sketch series that became a cultural phenomenon in the early 2000s.",
+      "reviewPro": "A sketch show that defined early-2000s comedy and still circulates in clips.",
+      "reviewCon": "Some material has aged poorly. It is a product of that moment.",
       "status": "unchecked",
       "notes": ""
     },
@@ -421,6 +537,8 @@
       "rank": 59,
       "title": "PEN15",
       "description": "Two adult actresses play seventh-graders in a painfully funny middle-school comedy.",
+      "reviewPro": "Brutally accurate middle-school cringe, played with real tenderness.",
+      "reviewCon": "Secondhand embarrassment is the point. It can be hard to sit in.",
       "status": "unchecked",
       "notes": ""
     },
@@ -428,6 +546,8 @@
       "rank": 60,
       "title": "Peep Show",
       "description": "A British sitcom filmed POV-style as two flatmates spiral through social anxiety and bad choices.",
+      "reviewPro": "The best British sitcom about anxiety, with the camera stuck in their heads.",
+      "reviewCon": "The leads are pathetic on purpose. Warmth is scarce.",
       "status": "unchecked",
       "notes": ""
     },
@@ -435,6 +555,8 @@
       "rank": 61,
       "title": "RuPaul's Drag Race",
       "description": "Drag queens compete in challenges and runways for the crown of America's Next Drag Superstar.",
+      "reviewPro": "The competition show that built a canon: runway, wit, and heart.",
+      "reviewCon": "Long seasons and franchise fatigue. The early years look cheaper.",
       "status": "unchecked",
       "notes": ""
     },
@@ -442,6 +564,8 @@
       "rank": 62,
       "title": "Slow Horses",
       "description": "Misfit MI5 agents in a dead-end department stumble into real, dangerous spy work.",
+      "reviewPro": "A rumpled spy story that is actually funny and actually tense.",
+      "reviewCon": "The jokes are dry and British. The team is unglamorous by design.",
       "status": "unchecked",
       "notes": ""
     },
@@ -449,6 +573,8 @@
       "rank": 63,
       "title": "The Thick of It",
       "description": "A blistering British political satire about spin, incompetence, and verbal warfare.",
+      "reviewPro": "Political satire at full volume, with a spin doctor who flattens the room.",
+      "reviewCon": "The shouting and the jargon are the style. It is not a gentle farce.",
       "status": "unchecked",
       "notes": ""
     },
@@ -456,6 +582,8 @@
       "rank": 64,
       "title": "Anthony Bourdain: Parts Unknown",
       "description": "Bourdain travels the world through food, culture, and the stories people tell at the table.",
+      "reviewPro": "Travel television with curiosity, politics, and real respect for the table.",
+      "reviewCon": "Episodic wandering, not a plot. The tone can turn melancholy.",
       "status": "unchecked",
       "notes": ""
     },
@@ -463,6 +591,8 @@
       "rank": 65,
       "title": "Mare of Easttown",
       "description": "A small-town Pennsylvania detective investigates a murder while her own life falls apart.",
+      "reviewPro": "A grounded murder mystery anchored by a lead performance at full strength.",
+      "reviewCon": "Grim small-town crime, more ache than puzzle-box mystery.",
       "status": "unchecked",
       "notes": ""
     },
@@ -470,6 +600,8 @@
       "rank": 66,
       "title": "The Rehearsal",
       "description": "Nathan Fielder builds elaborate rehearsals to help people practice high-stakes real-life moments.",
+      "reviewPro": "Ambitious comedy that starts as a stunt and turns existential.",
+      "reviewCon": "The artifice, and the ethics questions, are the show. It gets strange.",
       "status": "unchecked",
       "notes": ""
     },
@@ -477,6 +609,8 @@
       "rank": 67,
       "title": "The Handmaid's Tale",
       "description": "In a theocratic dystopia, fertile women are forced into reproductive slavery.",
+      "reviewPro": "The first season is a visceral, well-made warning that landed in the culture.",
+      "reviewCon": "Later seasons repeat the misery. Plenty of people stopped after the peak.",
       "status": "unchecked",
       "notes": ""
     },
@@ -484,6 +618,8 @@
       "rank": 68,
       "title": "Ozark",
       "description": "A financial advisor launders cartel money in the Missouri Ozarks and drags his family under.",
+      "reviewPro": "A propulsive crime soap with a strong sense of place and escalation.",
+      "reviewCon": "The logic gets pulpy, and the grimness stacks without much relief.",
       "status": "unchecked",
       "notes": ""
     },
@@ -491,6 +627,8 @@
       "rank": 69,
       "title": "Anthony Bourdain: No Reservations",
       "description": "Bourdain's earlier travel series eating his way through cities and cultures worldwide.",
+      "reviewPro": "The earlier, looser Bourdain: hunger, humor, and cities off the postcard.",
+      "reviewCon": "Rougher production, and it overlaps the later series in spirit.",
       "status": "unchecked",
       "notes": ""
     },
@@ -498,6 +636,8 @@
       "rank": 70,
       "title": "The Shield",
       "description": "A corrupt strike-team cop and his crew blur every line while policing L.A.",
+      "reviewPro": "The antihero cop show that made prestige television feel dangerous.",
+      "reviewCon": "An early-2000s look, and the crew's brutality is the subject.",
       "status": "unchecked",
       "notes": ""
     },
@@ -505,6 +645,8 @@
       "rank": 71,
       "title": "Beef (Season 1)",
       "description": "A road-rage encounter spirals into an obsession that consumes two strangers' lives.",
+      "reviewPro": "A vicious, funny spiral about rage, class, and people who cannot let go.",
+      "reviewCon": "Stressful on purpose. The pettiness curdles into darkness.",
       "status": "unchecked",
       "notes": ""
     },
@@ -512,6 +654,8 @@
       "rank": 72,
       "title": "Squid Game",
       "description": "Desperate contestants play deadly children's games for a massive cash prize in South Korea.",
+      "reviewPro": "A global hit with a clean, brutal premise and sharp production.",
+      "reviewCon": "The violence is the hook, and later seasons chase the original shock.",
       "status": "unchecked",
       "notes": ""
     },
@@ -519,6 +663,8 @@
       "rank": 73,
       "title": "Barry",
       "description": "A hitman takes an acting class and discovers he might prefer the stage to murder.",
+      "reviewPro": "A hitman comedy that becomes a serious show about talent and harm.",
+      "reviewCon": "The tone shifts are whiplash. Funnier, then much darker.",
       "status": "unchecked",
       "notes": ""
     },
@@ -526,6 +672,8 @@
       "rank": 74,
       "title": "The Bear",
       "description": "A fine-dining chef inherits his family's chaotic Chicago sandwich shop and tries to save it.",
+      "reviewPro": "Kitchen chaos as a character study. The anxiety is the aesthetic.",
+      "reviewCon": "Stressful to watch. Shouting, debt, and grief are the recipe.",
       "status": "unchecked",
       "notes": ""
     },
@@ -533,6 +681,8 @@
       "rank": 75,
       "title": "Ted Lasso",
       "description": "An relentlessly optimistic American coaches a struggling English soccer club.",
+      "reviewPro": "A sincere sports comedy that made kindness feel like a plot engine.",
+      "reviewCon": "Later seasons get preachier. The niceness is not ironic.",
       "status": "unchecked",
       "notes": ""
     },
@@ -540,6 +690,8 @@
       "rank": 76,
       "title": "Somebody Somewhere",
       "description": "A woman returns to Kansas and finds unexpected community, grief, and belonging.",
+      "reviewPro": "Small, humane, and funny, about grief and finding your people.",
+      "reviewCon": "Very quiet. If you need plot momentum, this will feel still.",
       "status": "unchecked",
       "notes": ""
     },
@@ -547,6 +699,8 @@
       "rank": 77,
       "title": "Modern Family",
       "description": "Three related households collide in a warm mockumentary sitcom about contemporary family life.",
+      "reviewPro": "A broad, sturdy family sitcom with a deep bench of comic actors.",
+      "reviewCon": "Later seasons coast, and the mockumentary format gets familiar.",
       "status": "unchecked",
       "notes": ""
     },
@@ -554,6 +708,8 @@
       "rank": 78,
       "title": "It's Always Sunny in Philadelphia",
       "description": "Five narcissistic friends run a dive bar and invent new ways to be terrible people.",
+      "reviewPro": "The longest-running joke about terrible people, still finding new lows.",
+      "reviewCon": "There is no one to root for. That is the contract, for a lot of seasons.",
       "status": "unchecked",
       "notes": ""
     },
@@ -561,6 +717,8 @@
       "rank": 79,
       "title": "The Good Wife",
       "description": "A politician's wife returns to law practice after a public sex scandal destroys their life.",
+      "reviewPro": "A sharp legal procedural that is secretly a great show about power.",
+      "reviewCon": "Case-of-the-week shape, and it runs long enough to sag.",
       "status": "unchecked",
       "notes": ""
     },
@@ -568,6 +726,8 @@
       "rank": 80,
       "title": "How To with John Wilson",
       "description": "John Wilson wanders New York with a camera, turning mundane how-tos into odd human portraits.",
+      "reviewPro": "A tiny New York essay film disguised as a how-to. Tender and weird.",
+      "reviewCon": "It meanders by design. Not a joke-machine comedy.",
       "status": "unchecked",
       "notes": ""
     },
@@ -575,6 +735,8 @@
       "rank": 81,
       "title": "The Queen's Gambit",
       "description": "An orphaned chess prodigy rises through the male-dominated 1960s chess world while fighting addiction.",
+      "reviewPro": "A stylish, addictive limited series about genius, loneliness, and chess.",
+      "reviewCon": "The sports-movie beats are familiar, and the world is very sleek.",
       "status": "unchecked",
       "notes": ""
     },
@@ -582,6 +744,8 @@
       "rank": 82,
       "title": "Better Things",
       "description": "A single-mom actress juggles daughters, career, and the mess of everyday life.",
+      "reviewPro": "A loosely plotted life comedy that is warm, rude, and specific.",
+      "reviewCon": "Episodes wander. The pleasure is texture, not a tight arc.",
       "status": "unchecked",
       "notes": ""
     },
@@ -589,6 +753,8 @@
       "rank": 83,
       "title": "Justified",
       "description": "A U.S. Marshal returns to Kentucky and crosses paths with criminals who know him too well.",
+      "reviewPro": "Elmore Leonard energy: dialogue, grudges, and a villain people quote.",
+      "reviewCon": "A case-of-the-week frame sits around the better serialized stretch.",
       "status": "unchecked",
       "notes": ""
     },
@@ -596,6 +762,8 @@
       "rank": 84,
       "title": "Planet Earth",
       "description": "Landmark nature documentary series capturing wildlife and landscapes across the globe.",
+      "reviewPro": "The nature series that reset the standard for footage and awe.",
+      "reviewCon": "Documentary spectacle, not a story with characters to follow.",
       "status": "unchecked",
       "notes": ""
     },
@@ -603,6 +771,8 @@
       "rank": 85,
       "title": "The Great British Baking Show",
       "description": "Amateur bakers compete in a tent with cakes, pastry, and polite British tension.",
+      "reviewPro": "The nicest competition on television. Real tension, no cruelty.",
+      "reviewCon": "Low stakes by design. Cozy, not gripping.",
       "status": "unchecked",
       "notes": ""
     },
@@ -610,6 +780,8 @@
       "rank": 86,
       "title": "Shogun",
       "description": "An English sailor washes into feudal Japan and is pulled into a war for the shogunate.",
+      "reviewPro": "An epic, immersive limited series with politics, language, and scale.",
+      "reviewCon": "A large cast and a deliberate pace. It asks you to settle in.",
       "status": "unchecked",
       "notes": ""
     },
@@ -617,6 +789,8 @@
       "rank": 87,
       "title": "Reservation Dogs",
       "description": "Indigenous teens on a reservation scheme, grieve, and chase a way out\u2014or a way through.",
+      "reviewPro": "Funny, grief-struck, and formally free. A landmark of Indigenous storytelling.",
+      "reviewCon": "The tone shifts from silly to spiritual. The plot is a loose weave.",
       "status": "unchecked",
       "notes": ""
     },
@@ -624,6 +798,8 @@
       "rank": 88,
       "title": "Dexter",
       "description": "A blood-spatter analyst moonlights as a serial killer who only targets other killers.",
+      "reviewPro": "A killer premise and a magnetic lead, especially in the early seasons.",
+      "reviewCon": "It overstays badly. The later years are a well-known letdown.",
       "status": "unchecked",
       "notes": ""
     },
@@ -631,6 +807,8 @@
       "rank": 89,
       "title": "Baby Reindeer",
       "description": "A comedian is stalked after a small kindness, in a raw story drawn from real events.",
+      "reviewPro": "A raw, uncomfortable limited series about obsession and the stories we tell.",
+      "reviewCon": "Harrowing, and the real-life echoes became a public controversy.",
       "status": "unchecked",
       "notes": ""
     },
@@ -638,6 +816,8 @@
       "rank": 90,
       "title": "Eastbound & Down",
       "description": "A washed-up MLB pitcher returns home as a gym teacher and refuses to accept obscurity.",
+      "reviewPro": "Vanity, jokes, and American delusion, played at full volume.",
+      "reviewCon": "The lead is repulsive on purpose. The volume never drops.",
       "status": "unchecked",
       "notes": ""
     },
@@ -645,6 +825,8 @@
       "rank": 91,
       "title": "Catastrophe",
       "description": "A fling becomes a relationship when an American and an Irish woman get unexpectedly pregnant.",
+      "reviewPro": "A rom-com for adults: sharp, rude, and honest about staying together.",
+      "reviewCon": "Short and spiky. If you want swooning, this is more of a spar.",
       "status": "unchecked",
       "notes": ""
     },
@@ -652,6 +834,8 @@
       "rank": 92,
       "title": "The Night Of",
       "description": "A young man accused of murder navigates Rikers and a grinding New York criminal case.",
+      "reviewPro": "A sober, gripping limited series about a case grinding through the system.",
+      "reviewCon": "Bleak and procedural. The night itself is only the beginning.",
       "status": "unchecked",
       "notes": ""
     },
@@ -659,6 +843,8 @@
       "rank": 93,
       "title": "Station Eleven",
       "description": "After a flu collapses civilization, a traveling theater troupe and survivors cling to art and memory.",
+      "reviewPro": "A post-collapse story about art and memory that stays surprisingly gentle.",
+      "reviewCon": "If you want grim survival horror, the tenderness may throw you.",
       "status": "unchecked",
       "notes": ""
     },
@@ -666,6 +852,8 @@
       "rank": 94,
       "title": "The Diplomat",
       "description": "A U.S. ambassador to the U.K. juggles crises, marriage, and Washington power games.",
+      "reviewPro": "A glossy political thriller with snap, banter, and a fun central marriage.",
+      "reviewCon": "Closer to a smart soap than to an idealistic civics lesson.",
       "status": "unchecked",
       "notes": ""
     },
@@ -673,6 +861,8 @@
       "rank": 95,
       "title": "House",
       "description": "A brilliant, abrasive diagnostician solves medical mysteries no one else can.",
+      "reviewPro": "A medical-mystery machine built on a genuinely great comic performance.",
+      "reviewCon": "The formula repeats, and the misanthropy is the brand.",
       "status": "unchecked",
       "notes": ""
     },
@@ -680,6 +870,8 @@
       "rank": 96,
       "title": "Halt and Catch Fire",
       "description": "Ambitious misfits chase the next computing revolution through the 1980s and '90s.",
+      "reviewPro": "A slow-burn period drama about ambition that found its stride late.",
+      "reviewCon": "The first season is the hard part. The reputation is mostly the later years.",
       "status": "unchecked",
       "notes": ""
     },
@@ -687,6 +879,8 @@
       "rank": 97,
       "title": "Community",
       "description": "A disbarred lawyer joins a study group at a ridiculous community college.",
+      "reviewPro": "Meta sitcom joy when it is locked in. The study group is the point.",
+      "reviewCon": "Behind-the-scenes turmoil shows. Some seasons feel like a different show.",
       "status": "unchecked",
       "notes": ""
     },
@@ -694,6 +888,8 @@
       "rank": 98,
       "title": "The OA",
       "description": "A blind woman returns with her sight and a story of captivity, near-death, and another dimension.",
+      "reviewPro": "A sincere, strange mystery about trauma, belief, and other worlds.",
+      "reviewCon": "It asks for a leap, and it was canceled before it could answer itself.",
       "status": "unchecked",
       "notes": ""
     },
@@ -701,6 +897,8 @@
       "rank": 99,
       "title": "Gilmore Girls",
       "description": "A mother and daughter navigate life, love, and witty banter in a quirky Connecticut town.",
+      "reviewPro": "Fast talk, small-town comfort, and a mother-daughter bond as the engine.",
+      "reviewCon": "The quirky banter never lets up. Love it, or find it exhausting.",
       "status": "unchecked",
       "notes": ""
     },
@@ -708,6 +906,8 @@
       "rank": 100,
       "title": "Scandal",
       "description": "A D.C. fixer and her team manage crises for the powerful while hiding plenty of their own.",
+      "reviewPro": "Addictive network soap: speeches, twists, and a fixer in total command.",
+      "reviewCon": "It jumps the shark with enthusiasm. Logic is not the attraction.",
       "status": "unchecked",
       "notes": ""
     }

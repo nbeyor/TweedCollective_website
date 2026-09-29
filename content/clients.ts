@@ -76,15 +76,16 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
     ],
   },
   {
-    // Weekend utility for two people. The page itself allows NYT_TV_NATE_EMAIL
-    // and NYT_TV_JEN_EMAIL — it does not use the clientSlugs grant. The entry
-    // is here so the link shows up in an admin's workspace list.
+    // Couples watchlist. Admission is the Clerk client grant (admins, or
+    // clientSlugs: ["nyt-tv-100"]). Anyone with that grant can swipe.
+    // An invite is an email. It binds when that person verifies and has access,
+    // or immediately if they already do. NYT_TV_JEN_EMAIL only bootstraps one invite.
     slug: 'nyt-tv-100',
     name: 'NYT 100 TV',
     deliverables: [
       {
         title: 'Watchlist swipe',
-        description: 'Nate and Jen mark the NYT 100. Right is want, left is skip.',
+        description: 'Swipe the NYT 100 and invite a partner by email. Right is want, left is skip.',
         href: '/clients/nyt-tv-100',
         kind: 'dashboard',
         date: '2026-09',

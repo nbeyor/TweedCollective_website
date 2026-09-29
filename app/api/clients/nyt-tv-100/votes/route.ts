@@ -1,5 +1,6 @@
+import { clientAccessError } from '@/lib/client-access'
+import { NYT_TV_CLIENT_SLUG, lookupViewer, voteRecord, type NytViewer } from '@/lib/nyt-tv/access'
 import { showByRank } from '@/lib/nyt-tv/shows'
-import { nytTvSession, nytTvSessionError, voteRecord } from '@/lib/nyt-tv/access'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 import { isVoteChoice } from '@/lib/nyt-tv/types'
 
@@ -7,21 +8,17 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const viewer = await grantedViewer()
+  if (viewer instanceof Response) return viewer
 
   const store = getVoteStore()
-  const votes = await store.listVotes(session.profileId)
-  return Response.json({ profileId: session.profileId, persistence: store.kind, votes })
+  const votes = await store.listVotes(viewer.userId)
+  return Response.json({ userId: viewer.userId, persistence: store.kind, votes })
 }
 
 export async function PUT(req: Request) {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const viewer = await grantedViewer()
+  if (viewer instanceof Response) return viewer
 
   let body: unknown
   try {
@@ -36,24 +33,32 @@ export async function PUT(req: Request) {
     return Response.json({ error: 'Send showRank and vote "want" or "skip".' }, { status: 400 })
   }
 
-  const record = voteRecord(session.profileId, rank, vote)
+  const record = voteRecord(viewer.userId, rank, vote)
   const store = getVoteStore()
   await store.putVote(record)
   return Response.json({ vote: record, persistence: store.kind })
 }
 
 export async function DELETE(req: Request) {
-  const session = await nytTvSession()
-  if (session.status !== 'ok') {
-    return nytTvSessionError(session) ?? Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
+  const viewer = await grantedViewer()
+  if (viewer instanceof Response) return viewer
 
   const rank = rankFrom(new URL(req.url).searchParams.get('rank'))
   if (!rank) return Response.json({ error: 'Send a show rank.' }, { status: 400 })
 
   const store = getVoteStore()
-  await store.deleteVote(session.profileId, rank)
+  await store.deleteVote(viewer.userId, rank)
   return Response.json({ ok: true, persistence: store.kind })
+}
+
+async function grantedViewer(): Promise<NytViewer | Response> {
+  const denied = await clientAccessError(NYT_TV_CLIENT_SLUG)
+  if (denied) return denied
+  const lookup = await lookupViewer()
+  if (lookup.status !== 'ok') {
+    return Response.json({ error: 'Verify your email, then refresh.' }, { status: 403 })
+  }
+  return lookup.viewer
 }
 
 function rankFrom(bodyOrRank: unknown): number | null {

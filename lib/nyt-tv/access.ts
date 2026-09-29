@@ -1,9 +1,16 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { clerkClient, currentUser } from '@clerk/nextjs/server'
+
+import { clientSlugsForUser, isAdminUser } from '@/lib/client-access'
+import type { User } from '@clerk/nextjs/server'
 
 import { pacificDayKey } from './day'
-import { PROFILE_LABELS, type ProfileId, type VoteChoice, type VoteRecord } from './types'
+import { normalizeEmail } from './pairs'
+import type { VoteChoice, VoteRecord } from './types'
 
-/** Nate's verified Tweed address. Override with NYT_TV_NATE_EMAIL. */
+/** Workspace slug. Admission is the Clerk client grant from PR 117, same as Grex and eCS. */
+export const NYT_TV_CLIENT_SLUG = 'nyt-tv-100'
+
+/** Optional bootstrap address. Not an admission gate and not a hardwired pair. */
 export const DEFAULT_NATE_EMAIL = 'nate.beyor@tweedcollective.ai'
 
 type Env = Record<string, string | undefined>
@@ -12,66 +19,106 @@ export function nateEmail(env: Env = process.env): string {
   return (env.NYT_TV_NATE_EMAIL || DEFAULT_NATE_EMAIL).trim().toLowerCase()
 }
 
-/** Jen's address is unknown until NYT_TV_JEN_EMAIL is set. No default. */
+/** Optional partner address for the env bootstrap invite. Not an admission gate. */
 export function jenEmail(env: Env = process.env): string | null {
-  const raw = env.NYT_TV_JEN_EMAIL?.trim().toLowerCase()
-  return raw || null
+  return normalizeEmail(env.NYT_TV_JEN_EMAIL)
 }
 
-export function profileForEmail(email: string | null | undefined, env: Env = process.env): ProfileId | null {
-  if (!email) return null
-  const normalized = email.trim().toLowerCase()
-  if (!normalized) return null
-  if (normalized === nateEmail(env)) return 'nate'
-  const jen = jenEmail(env)
-  if (jen && normalized === jen && jen !== nateEmail(env)) return 'jen'
-  return null
+/** Nate's checklist. Admin, or the verified address in NYT_TV_NATE_EMAIL. */
+export function showsOwnerNotes(input: { isAdmin: boolean; email: string | null }, env: Env = process.env): boolean {
+  if (input.isAdmin) return true
+  const email = normalizeEmail(input.email)
+  return email != null && email === nateEmail(env)
 }
 
-/** Both allowlisted inboxes. Jen is omitted until her env var is set. */
-export function digestRecipients(env: Env = process.env): string[] {
-  const recipients = [nateEmail(env)]
-  const jen = jenEmail(env)
-  if (jen && jen !== nateEmail(env)) recipients.push(jen)
-  return recipients
+export interface NytViewer {
+  userId: string
+  email: string
+  isOwner: boolean
 }
 
-export type NytTvSession =
-  | { status: 'ok'; profileId: ProfileId; email: string; label: string }
+export type ViewerLookup =
   | { status: 'signed-out' }
-  | { status: 'unverified'; email: string | null }
-  | { status: 'denied'; email: string | null }
+  | { status: 'unverified'; userId: string; email: string | null }
+  | { status: 'ok'; viewer: NytViewer }
 
-export function nytTvSessionError(session: NytTvSession): Response | null {
-  if (session.status === 'ok') return null
-  if (session.status === 'signed-out') {
-    return Response.json({ error: 'Sign in required.' }, { status: 401 })
-  }
-  if (session.status === 'unverified') {
-    return Response.json({ error: 'Verify your email, then refresh.' }, { status: 403 })
-  }
-  return Response.json({ error: 'This account is not on the NYT TV list.' }, { status: 403 })
-}
-
-export async function nytTvSession(): Promise<NytTvSession> {
+export async function lookupViewer(): Promise<ViewerLookup> {
   const user = await currentUser()
   if (!user) return { status: 'signed-out' }
-
   const primary = user.primaryEmailAddress
-  const email = primary?.emailAddress ?? null
-  if (!primary || primary.verification?.status !== 'verified' || !email) {
-    return { status: 'unverified', email }
+  const email = normalizeEmail(primary?.emailAddress)
+  const verified = primary?.verification?.status === 'verified' && email != null
+  if (!verified || !email) return { status: 'unverified', userId: user.id, email }
+  return {
+    status: 'ok',
+    viewer: {
+      userId: user.id,
+      email,
+      isOwner: showsOwnerNotes({ isAdmin: isAdminUser(user), email }),
+    },
   }
-
-  const profileId = profileForEmail(email)
-  if (!profileId) return { status: 'denied', email }
-
-  return { status: 'ok', profileId, email, label: PROFILE_LABELS[profileId] }
 }
 
-export function voteRecord(profileId: ProfileId, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {
+/**
+ * Adds nyt-tv-100 to public metadata when a partner's verified email matches
+ * an invite. Admins already pass clientSlugsForUser and skip this.
+ */
+export async function grantNytClientSlug(user: User): Promise<void> {
+  if (clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG)) return
+  const current = Array.isArray(user.publicMetadata?.clientSlugs)
+    ? user.publicMetadata.clientSlugs.filter((slug): slug is string => typeof slug === 'string')
+    : []
+  if (current.includes(NYT_TV_CLIENT_SLUG)) return
+  const client = await clerkClient()
+  await client.users.updateUserMetadata(user.id, {
+    publicMetadata: {
+      ...user.publicMetadata,
+      clientSlugs: [...current, NYT_TV_CLIENT_SLUG],
+    },
+  })
+}
+
+/** A Clerk account that already uses this email. `hasAccess` means the nyt-tv-100 grant or admin. */
+export interface PartnerAccount {
+  userId: string
+  email: string
+  hasAccess: boolean
+}
+
+/**
+ * Looks up a verified Clerk user for this email. Missing account, unverified
+ * address, or a Clerk error returns null so the caller can store a pending invite.
+ */
+export async function lookupAccountByEmail(email: string): Promise<PartnerAccount | null> {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return null
+  try {
+    const client = await clerkClient()
+    const list = await client.users.getUserList({ emailAddress: [normalized], limit: 5 })
+    for (const user of list.data) {
+      if (!verifiedAddress(user, normalized)) continue
+      return {
+        userId: user.id,
+        email: normalized,
+        hasAccess: clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG),
+      }
+    }
+    return null
+  } catch (error) {
+    console.warn('[nyt-tv-100] partner lookup failed', error)
+    return null
+  }
+}
+
+function verifiedAddress(user: User, email: string): boolean {
+  return user.emailAddresses.some(
+    (entry) => normalizeEmail(entry.emailAddress) === email && entry.verification?.status === 'verified'
+  )
+}
+
+export function voteRecord(userId: string, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {
   return {
-    profileId,
+    userId,
     showRank,
     vote,
     updatedAt: at.toISOString(),
