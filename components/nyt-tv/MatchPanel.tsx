@@ -28,13 +28,13 @@ export function MatchPanel({
         )
       ) : status === 'pending' ? (
         <p className="mt-2 text-sm text-stone">
-          No shared list until {partnerEmail ?? 'your partner'} confirms. You can swipe now.
+          No shared list until {partnerEmail ?? 'your partner'} joins. You can swipe now.
         </p>
       ) : status === 'incoming' ? (
         <p className="mt-2 text-sm text-stone">Confirm the pair to see what you both want. You can swipe now.</p>
       ) : (
         <p className="mt-2 text-sm text-stone">
-          Pair with someone who has already opened this watchlist to see the overlap.
+          Invite a partner to see what you both want. You can swipe before they join.
         </p>
       )}
     </section>

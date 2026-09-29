@@ -16,7 +16,7 @@ import { SwipeDeck } from '../components/nyt-tv/SwipeDeck'
 import { cronRequestAuthorized } from '../lib/nyt-tv/cronAuth'
 import { pacificDayKey } from '../lib/nyt-tv/day'
 import { buildDigest, digestHtml, digestText, voteInDigest, votesForMembers } from '../lib/nyt-tv/digest'
-import { bindInvite, bootstrapInvite, removePair, requestPair } from '../lib/nyt-tv/pairing'
+import { bindInvite, bootstrapInvite, claimInviteForMember, removePair, requestPair } from '../lib/nyt-tv/pairing'
 import { confirmedPair, decideBind, invitePath, wantOverlap } from '../lib/nyt-tv/pairs'
 import { allShows, deckShows, shuffleDeck } from '../lib/nyt-tv/shows'
 import { createFileVoteStore, parseVote } from '../lib/nyt-tv/store'
@@ -281,10 +281,10 @@ async function main() {
       onUnpair: async () => undefined,
     })
   )
-  check('landing pair field is the solo header', soloHeader.includes('Partner email') && soloHeader.includes('Request pair'))
+  check('landing pair field is the solo header', soloHeader.includes('Partner email') && soloHeader.includes('>Invite<'))
   check(
-    'pending header shows the partner and the link and is not paired',
-    pendingHeader.includes('Invite pending for jen@example.com') &&
+    'pending header is waiting for them to join',
+    pendingHeader.includes('Waiting for jen@example.com to join') &&
       pendingHeader.includes('not paired yet') &&
       pendingHeader.includes('/clients/nyt-tv-100/join/invite-token') &&
       pendingHeader.includes('Copy link') &&
@@ -390,34 +390,22 @@ async function main() {
         dayKey: '2026-09-29',
       })?.showRank === 1 && parseVote({ userId: 'user_nate', showRank: 2, vote: 'skip', updatedAt: '2026-09-29T12:00:00.000Z', dayKey: '2026-09-29' })?.vote === 'skip'
     )
-    const unknown = await requestPair(store, { userId: 'user_nate', email: DEFAULT_NATE_EMAIL }, 'Jen@example.com')
+    const created = await requestPair(store, { userId: 'user_nate', email: DEFAULT_NATE_EMAIL }, 'Jen@example.com', {
+      now: new Date('2026-09-29T12:00:00.000Z'),
+    })
     check(
-      'unknown email is a clear error and does not create a pair',
-      !unknown.ok && unknown.ok === false && unknown.status === 404 && unknown.error.includes('opened this watchlist') && (await store.listPairs()).length === 0
-    )
-    await store.rememberUser({ userId: 'user_jen', email: 'Jen@example.com', seenAt: '2026-09-29T11:00:00.000Z' })
-    await store.rememberUser({ userId: 'user_nate', email: DEFAULT_NATE_EMAIL, seenAt: '2026-09-29T11:05:00.000Z' })
-    const created = await requestPair(
-      store,
-      { userId: 'user_nate', email: DEFAULT_NATE_EMAIL },
-      'Jen@example.com',
-      new Date('2026-09-29T12:00:00.000Z')
-    )
-    check(
-      'request starts pending for a known partner',
+      'an email with no account yet is a pending invite',
       created.ok &&
         created.pair.status === 'pending' &&
         created.pair.inviteEmail === 'jen@example.com' &&
-        created.pair.partnerUserId === 'user_jen' &&
-        confirmedPair(created.pair) === null
+        created.pair.partnerUserId === null &&
+        confirmedPair(created.pair) === null &&
+        (await store.getPendingInviteByEmail('jen@example.com'))?.id === created.pair.id
     )
-    const incoming = await store.getIncomingPair('user_jen')
-    check('partner sees a pending invite, not an active pair', incoming?.id === (created.ok ? created.pair.id : '') && incoming?.status === 'pending')
-    await store.rememberUser({ userId: 'user_c', email: 'c@example.com', seenAt: '2026-09-29T11:30:00.000Z' })
     const blocked = await requestPair(store, { userId: 'user_jen', email: 'jen@example.com' }, 'c@example.com')
     check(
-      'an open request has to be confirmed or declined before a different pair',
-      !blocked.ok && blocked.ok === false && blocked.status === 409 && (await store.getIncomingPair('user_jen')) != null
+      'someone already invited cannot start a different pair',
+      !blocked.ok && blocked.ok === false && blocked.status === 409 && (await store.getPendingInviteByEmail('jen@example.com')) != null
     )
     const token = created.ok ? created.pair.inviteToken : ''
     const pendingVote = voteRecord('user_nate', 3, 'want', new Date('2026-09-29T12:05:00.000Z'))
@@ -440,13 +428,27 @@ async function main() {
         Boolean(confirmed?.pairedAt)
     )
     check('incoming index clears once the pair is active', (await store.getIncomingPair('user_jen')) == null)
-    await store.rememberUser({ userId: 'user_a', email: 'a@example.com', seenAt: '2026-09-29T12:10:00.000Z' })
-    await store.rememberUser({ userId: 'user_b', email: 'b@example.com', seenAt: '2026-09-29T12:11:00.000Z' })
     const asked = await requestPair(store, { userId: 'user_a', email: 'a@example.com' }, 'b@example.com')
     const mutual = await requestPair(store, { userId: 'user_b', email: 'b@example.com' }, 'a@example.com')
     check(
-      'the other person entering your email confirms a separate couple',
+      'entering the inviter email confirms a separate couple',
       asked.ok && asked.pair.status === 'pending' && mutual.ok && mutual.pair.status === 'active' && mutual.pair.id !== bound.pair?.id
+    )
+    const immediate = await requestPair(store, { userId: 'user_p', email: 'p@example.com' }, 'Q@example.com', {
+      partner: { userId: 'user_q', email: 'q@example.com', hasAccess: true },
+    })
+    const immediatePair = immediate.ok ? confirmedPair(immediate.pair) : null
+    check(
+      'an existing account with access is paired immediately',
+      immediate.ok && immediatePair?.aUserId === 'user_p' && immediatePair.bUserId === 'user_q' && immediatePair.bEmail === 'q@example.com'
+    )
+    const waiting = await requestPair(store, { userId: 'user_r', email: 'r@example.com' }, 's@example.com', {
+      partner: { userId: 'user_s', email: 's@example.com', hasAccess: false },
+    })
+    const joined = await claimInviteForMember(store, { userId: 'user_s', email: 's@example.com' })
+    check(
+      'first session binds a pending invite for that email',
+      waiting.ok && waiting.pair.status === 'pending' && waiting.pair.partnerUserId === 'user_s' && joined?.status === 'active' && joined.members.length === 2
     )
     const taken = await requestPair(store, { userId: 'user_nate', email: DEFAULT_NATE_EMAIL }, 'a@example.com')
     check('an active person cannot start a second pair', !taken.ok && taken.ok === false && taken.status === 409)
@@ -463,32 +465,39 @@ async function main() {
     await store.deleteVote('user_jen', 14)
     check('delete removes one swipe', (await store.listVotes('user_jen')).length === 0 && (await store.listVotes()).length === 2)
     const bootDir = await mkdtemp(path.join(os.tmpdir(), 'nyt-boot-'))
+    const bootNowDir = await mkdtemp(path.join(os.tmpdir(), 'nyt-boot-now-'))
     try {
       const boot = createFileVoteStore(bootDir)
-      const missingPartner = await bootstrapInvite(
-        boot,
-        { userId: 'user_nate', email: DEFAULT_NATE_EMAIL },
-        { NYT_TV_JEN_EMAIL: 'Jen@example.com' }
-      )
-      check('env bootstrap does nothing until the partner has opened the watchlist', missingPartner == null && (await boot.listPairs()).length === 0)
-      await boot.rememberUser({ userId: 'user_jen', email: 'jen@example.com', seenAt: '2026-09-29T11:00:00.000Z' })
       const bootstrapped = await bootstrapInvite(
         boot,
         { userId: 'user_nate', email: DEFAULT_NATE_EMAIL },
         { NYT_TV_JEN_EMAIL: 'Jen@example.com' }
       )
       check(
-        'env bootstrap creates one pending invite and does not bind',
+        'env bootstrap stores a pending invite before that person has an account',
         bootstrapped?.status === 'pending' &&
           bootstrapped.inviteEmail === 'jen@example.com' &&
           bootstrapped.members.length === 1 &&
-          bootstrapped.partnerUserId === 'user_jen' &&
+          bootstrapped.partnerUserId === null &&
           invitePath(bootstrapped.inviteToken).startsWith('/clients/nyt-tv-100/join/')
       )
       const skipped = await bootstrapInvite(boot, { userId: 'user_other', email: 'other@example.com' }, { NYT_TV_JEN_EMAIL: 'Jen@example.com' })
       check('env bootstrap ignores everyone except the nate address', skipped == null)
+      const bootNow = createFileVoteStore(bootNowDir)
+      const pairedNow = await bootstrapInvite(
+        bootNow,
+        { userId: 'user_nate', email: DEFAULT_NATE_EMAIL },
+        { NYT_TV_JEN_EMAIL: 'Jen@example.com' },
+        new Date('2026-09-29T12:00:00.000Z'),
+        { userId: 'user_jen', email: 'jen@example.com', hasAccess: true }
+      )
+      check(
+        'env bootstrap pairs immediately when that account already has access',
+        pairedNow?.status === 'active' && pairedNow.members.length === 2
+      )
     } finally {
       await rm(bootDir, { recursive: true, force: true })
+      await rm(bootNowDir, { recursive: true, force: true })
     }
     await store.markDigestSent({ sentAt: '2026-09-30T03:00:00.000Z', dayKey: '2026-09-29', recipients: [DEFAULT_NATE_EMAIL] })
     const marker = await store.getDigestSent()

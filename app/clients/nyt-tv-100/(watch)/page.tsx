@@ -5,8 +5,8 @@ import { redirect } from 'next/navigation'
 import { MatchPanel } from '@/components/nyt-tv/MatchPanel'
 import { PairHeader } from '@/components/nyt-tv/PairHeader'
 import { SwipeDeck } from '@/components/nyt-tv/SwipeDeck'
-import { lookupViewer } from '@/lib/nyt-tv/access'
-import { bootstrapInvite, loadPairView } from '@/lib/nyt-tv/pairing'
+import { jenEmail, lookupAccountByEmail, lookupViewer } from '@/lib/nyt-tv/access'
+import { bootstrapInvite, claimInviteForMember, loadPairView } from '@/lib/nyt-tv/pairing'
 import { wantOverlap } from '@/lib/nyt-tv/pairs'
 import { SHOW_PACK, allShows, deckShows, shuffleDeck } from '@/lib/nyt-tv/shows'
 import { getVoteStore } from '@/lib/nyt-tv/store'
@@ -40,7 +40,15 @@ export default async function NytTvPage() {
     email: viewer.email,
     seenAt: new Date().toISOString(),
   })
-  await bootstrapInvite(store, viewer)
+  await claimInviteForMember(store, viewer)
+  const bootstrapEmail = jenEmail()
+  await bootstrapInvite(
+    store,
+    viewer,
+    process.env,
+    new Date(),
+    bootstrapEmail ? await lookupAccountByEmail(bootstrapEmail) : null
+  )
   const view = await loadPairView(store, viewer.userId)
   const myVotes = await store.listVotes(viewer.userId)
   const partnerId = view.pair?.members.find((member) => member.userId !== viewer.userId)?.userId

@@ -1,5 +1,5 @@
 import { clientAccessError } from '@/lib/client-access'
-import { NYT_TV_CLIENT_SLUG, lookupViewer } from '@/lib/nyt-tv/access'
+import { NYT_TV_CLIENT_SLUG, lookupAccountByEmail, lookupViewer } from '@/lib/nyt-tv/access'
 import { requestPair } from '@/lib/nyt-tv/pairing'
 import { confirmedPair, invitePath, partnerEmail } from '@/lib/nyt-tv/pairs'
 import { getVoteStore } from '@/lib/nyt-tv/store'
@@ -27,7 +27,9 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Send an email address.' }, { status: 400 })
   }
 
-  const result = await requestPair(getVoteStore(), lookup.viewer, email)
+  const result = await requestPair(getVoteStore(), lookup.viewer, email, {
+    partner: await lookupAccountByEmail(email),
+  })
   if (!result.ok) return Response.json({ error: result.error }, { status: result.status })
 
   return Response.json({

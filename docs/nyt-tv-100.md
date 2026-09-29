@@ -10,20 +10,20 @@ Admins can open the workspace without a slug grant. Anyone else needs `clientSlu
 
 ## Pairing
 
-Email is the source of truth. Either person enters the partner's verified address. That address has to belong to someone who has already opened this watchlist (they are in the directory written on each visit). An unknown email returns a clear error and does not create a pair.
+The initiator enters a partner email. It is stored as a pending invite (normalized). They do not need a Clerk account yet.
+
+- If that email already belongs to a verified Clerk user with `nyt-tv-100` access (or an admin), the pair is active immediately.
+- Otherwise the header says "Waiting for {email} to join". On that person's first session after they verify the email and can open the watchlist (`clientSlugs` or admin), the invite binds. The join link still grants the slug when they do not have it yet: `/clients/nyt-tv-100/join/<token>` (18 random bytes, base64url; the email is not in the URL). Entering the inviter's email does the same bind.
 
 The header is always visible:
 
-- **Solo:** email field, "Request pair". The deck is already there.
-- **Pending:** "Invite pending for {email}". You are not paired yet. Copy the link, or they can enter your email. No shared list until they confirm.
-- **Incoming:** "{email} asked to pair", with Confirm. You are not paired yet.
+- **Solo:** email field, "Invite". The deck is already there.
+- **Pending:** "Waiting for {email} to join". You are not paired yet. You can swipe. No shared list until they join.
 - **Active:** "Paired with {email}", plus Unpair. Unpair deletes the couple and leaves each person's swipes on their account.
 
-The link is `/clients/nyt-tv-100/join/<token>`. The token is 18 random bytes, base64url. The partner's email is not in the URL. They sign up or sign in, verify that email, and the join page binds them. A different email does not bind and does not get the workspace slug. Confirming by entering the inviter's email does the same bind.
+An active pair is `{ aUserId, bUserId, aEmail, bEmail, pairedAt }`. Couples are independent. A person is in at most one pair. A second invite to an email that is already pending is rejected.
 
-An active pair is `{ aUserId, bUserId, aEmail, bEmail, pairedAt }`. Couples are independent. A person is in at most one pair.
-
-`NYT_TV_NATE_EMAIL` (default `nate.beyor@tweedcollective.ai`) and `NYT_TV_JEN_EMAIL` are optional bootstrap only. If the Nate address signs in and the Jen address is already in the directory, one pending invite is created. It does not bind, and it does nothing if that partner has never opened the watchlist. Neither variable admits anyone.
+`NYT_TV_NATE_EMAIL` (default `nate.beyor@tweedcollective.ai`) and `NYT_TV_JEN_EMAIL` are optional bootstrap only. If the Nate address signs in, one invite is created for the Jen address even if she has no account. If that account already has access, bootstrap pairs immediately. Neither variable admits anyone.
 
 ## How swipes persist
 

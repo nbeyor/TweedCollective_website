@@ -1,4 +1,4 @@
-import { jenEmail, nateEmail } from './access'
+import { jenEmail, nateEmail, type PartnerAccount } from './access'
 import {
   buildPendingPair,
   confirmedPair,
@@ -32,102 +32,140 @@ export interface PairView {
   pair: PairRecord | null
 }
 
-const UNKNOWN_EMAIL =
-  'No one with that email has opened this watchlist yet. Ask them to sign in once, then try again.'
+export interface RequestPairOptions {
+  now?: Date
+  /** Clerk account for the invited email, when one exists. Null means they have not signed up. */
+  partner?: PartnerAccount | null
+}
 
 /**
- * Ask to pair with someone who has already opened the watchlist.
- * Same pending request is returned again. If they already asked you, this confirms the pair.
+ * Enter a partner email. If that account already has watchlist access, the pair is active now.
+ * Otherwise a pending invite is stored and binds on their first eligible session.
  */
 export async function requestPair(
   store: VoteStore,
   viewer: PairViewer,
   rawEmail: string,
-  now = new Date()
+  options: RequestPairOptions = {}
 ): Promise<InviteResult> {
+  const now = options.now ?? new Date()
   const inviteEmail = normalizeEmail(rawEmail)
   if (!inviteEmail) return { ok: false, error: 'Enter a valid email address.', status: 400 }
   if (inviteEmail === viewer.email) return { ok: false, error: "Enter your partner's email, not your own.", status: 400 }
 
-  const partnerUser = await store.findUserByEmail(inviteEmail)
-  if (!partnerUser || partnerUser.userId === viewer.userId) {
-    return { ok: false, error: UNKNOWN_EMAIL, status: 404 }
-  }
+  const partner = options.partner && options.partner.email === inviteEmail ? options.partner : null
+  if (partner?.userId === viewer.userId) return { ok: false, error: "Enter your partner's email, not your own.", status: 400 }
 
   const viewerPair = await store.getPairForUser(viewer.userId)
   if (viewerPair?.status === 'active') {
     return { ok: false, error: 'You are already paired. Unpair first to choose someone else.', status: 409 }
   }
 
-  const partnerPair = await store.getPairForUser(partnerUser.userId)
-  if (partnerPair?.status === 'active') {
-    return { ok: false, error: 'That person is already paired with someone else.', status: 409 }
-  }
-
-  const incoming = await store.getIncomingPair(viewer.userId)
-  const partnerInvitedViewer =
-    partnerPair?.status === 'pending' &&
-    partnerPair.inviteEmail === viewer.email &&
-    partnerPair.members[0]?.userId === partnerUser.userId
-  const incomingFromPartner = incoming?.status === 'pending' && incoming.members[0]?.userId === partnerUser.userId
-
-  if (partnerInvitedViewer || incomingFromPartner) {
-    const source = partnerInvitedViewer && partnerPair ? partnerPair : incoming
-    if (!source) return { ok: false, error: 'That invite is no longer pending.', status: 409 }
+  if (partner?.hasAccess) {
+    const partnerPair = await store.getPairForUser(partner.userId)
+    if (partnerPair?.status === 'active') {
+      return { ok: false, error: 'That person is already paired with someone else.', status: 409 }
+    }
+    if (partnerPair?.status === 'pending' && partnerPair.inviteEmail === viewer.email) {
+      return activatePair(store, partnerPair, viewer, now, viewerPair)
+    }
+    if (partnerPair && partnerPair.id !== viewerPair?.id) {
+      return { ok: false, error: 'That person already has a pending invite.', status: 409 }
+    }
+    const base = pendingFor(viewer, inviteEmail, partner.userId, now, viewerPair)
     const pairedAt = now.toISOString()
-    const next = withPartner(
-      source,
-      { userId: viewer.userId, email: viewer.email, joinedAt: pairedAt },
-      pairedAt
-    )
-    if (viewerPair && viewerPair.id !== source.id) await store.deletePair(viewerPair)
-    await store.savePair(next)
+    const next = withPartner(base, { userId: partner.userId, email: inviteEmail, joinedAt: pairedAt }, pairedAt)
+    await store.savePair(next, rotatedToken(viewerPair, next))
     return { ok: true, pair: next }
   }
 
-  if (incoming) {
-    const from = incoming.members[0]?.email ?? 'someone else'
+  const invitedMe = await store.getPendingInviteByEmail(viewer.email)
+  if (invitedMe && invitedMe.members[0]?.email === inviteEmail) {
+    return activatePair(store, invitedMe, viewer, now, viewerPair)
+  }
+  if (invitedMe && invitedMe.members[0]?.userId !== viewer.userId) {
+    const from = invitedMe.members[0]?.email ?? 'someone else'
     return {
       ok: false,
-      error: `You already have a pair request from ${from}. Confirm or decline it first.`,
+      error: `Waiting for you to join ${from}'s invite. Open the watchlist to pair, or ask them to cancel it.`,
       status: 409,
     }
   }
 
-  if (partnerPair?.status === 'pending') {
-    return { ok: false, error: 'That person already has a pending pair with someone else.', status: 409 }
+  const reserved = await store.getPendingInviteByEmail(inviteEmail)
+  if (reserved && reserved.id !== viewerPair?.id) {
+    return { ok: false, error: 'That email already has a pending invite.', status: 409 }
   }
 
   if (viewerPair?.status === 'pending' && viewerPair.inviteEmail === inviteEmail) {
-    if (viewerPair.partnerUserId === partnerUser.userId) return { ok: true, pair: viewerPair }
-    const next: PairRecord = { ...viewerPair, partnerUserId: partnerUser.userId }
+    const partnerUserId = partner?.userId ?? viewerPair.partnerUserId
+    if (partnerUserId === viewerPair.partnerUserId) return { ok: true, pair: viewerPair }
+    const next: PairRecord = { ...viewerPair, partnerUserId }
     await store.savePair(next)
     return { ok: true, pair: next }
   }
 
-  if (viewerPair?.status === 'pending') {
-    const next = buildPendingPair({
-      id: viewerPair.id,
-      inviterUserId: viewer.userId,
-      inviterEmail: viewer.email,
-      inviteEmail,
-      partnerUserId: partnerUser.userId,
-      now,
-    })
-    next.createdAt = viewerPair.createdAt
-    await store.savePair(next, viewerPair.inviteToken)
-    return { ok: true, pair: next }
-  }
+  const next = pendingFor(viewer, inviteEmail, partner?.userId ?? null, now, viewerPair)
+  await store.savePair(next, rotatedToken(viewerPair, next))
+  return { ok: true, pair: next }
+}
 
-  const pair = buildPendingPair({
+function pendingFor(
+  viewer: PairViewer,
+  inviteEmail: string,
+  partnerUserId: string | null,
+  now: Date,
+  existing: PairRecord | null
+): PairRecord {
+  const next = buildPendingPair({
+    id: existing?.status === 'pending' ? existing.id : undefined,
+    token: existing?.status === 'pending' && existing.inviteEmail === inviteEmail ? existing.inviteToken : undefined,
     inviterUserId: viewer.userId,
     inviterEmail: viewer.email,
     inviteEmail,
-    partnerUserId: partnerUser.userId,
+    partnerUserId,
     now,
   })
-  await store.savePair(pair)
-  return { ok: true, pair }
+  if (existing?.status === 'pending') next.createdAt = existing.createdAt
+  return next
+}
+
+function rotatedToken(existing: PairRecord | null, next: PairRecord): string | undefined {
+  if (existing?.status === 'pending' && existing.inviteToken !== next.inviteToken) return existing.inviteToken
+  return undefined
+}
+
+async function activatePair(
+  store: VoteStore,
+  source: PairRecord,
+  viewer: PairViewer,
+  now: Date,
+  viewerPair: PairRecord | null
+): Promise<InviteResult> {
+  const pairedAt = now.toISOString()
+  const next = withPartner(source, { userId: viewer.userId, email: viewer.email, joinedAt: pairedAt }, pairedAt)
+  if (viewerPair && viewerPair.id !== source.id) await store.deletePair(viewerPair)
+  await store.savePair(next)
+  return { ok: true, pair: next }
+}
+
+/**
+ * First session after the partner verifies this email and can open the watchlist.
+ * Binds a pending invite addressed to them. Does nothing if they already have a pair.
+ */
+export async function claimInviteForMember(
+  store: VoteStore,
+  viewer: PairViewer,
+  now = new Date()
+): Promise<PairRecord | null> {
+  const existing = await store.getPairForUser(viewer.userId)
+  if (existing) return existing
+  const pending = await store.getPendingInviteByEmail(viewer.email)
+  if (!pending || pending.members.some((member) => member.userId === viewer.userId)) return pending
+  const pairedAt = now.toISOString()
+  const next = withPartner(pending, { userId: viewer.userId, email: viewer.email, joinedAt: pairedAt }, pairedAt)
+  await store.savePair(next)
+  return next
 }
 
 export async function bindInvite(
@@ -158,13 +196,22 @@ export async function bindInvite(
 
 export async function removePair(
   store: VoteStore,
-  userId: string
+  userId: string,
+  email?: string | null
 ): Promise<{ ok: true } | { ok: false; error: string; status: number }> {
   const own = await store.getPairForUser(userId)
-  const incoming = own ? null : await store.getIncomingPair(userId)
-  const pair = own ?? incoming
+  if (own) {
+    const involved = own.members.some((member) => member.userId === userId)
+    if (!involved) return { ok: false, error: 'You are not in a pair.', status: 404 }
+    await store.deletePair(own)
+    return { ok: true }
+  }
+  const pending = email ? await store.getPendingInviteByEmail(email) : null
+  const incoming = pending ? null : await store.getIncomingPair(userId)
+  const pair = pending ?? incoming
   if (!pair) return { ok: false, error: 'You are not in a pair.', status: 404 }
-  const involved = pair.members.some((member) => member.userId === userId) || pair.partnerUserId === userId
+  const involved =
+    pair.inviteEmail === email || pair.partnerUserId === userId || pair.members.some((member) => member.userId === userId)
   if (!involved) return { ok: false, error: 'You are not in a pair.', status: 404 }
   await store.deletePair(pair)
   return { ok: true }
@@ -204,23 +251,25 @@ export async function loadPairView(store: VoteStore, userId: string): Promise<Pa
 }
 
 /**
- * Optional env bootstrap. When the signed-in address is NYT_TV_NATE_EMAIL,
- * NYT_TV_JEN_EMAIL is set, and that partner has already opened the watchlist,
- * create one pending invite. It does not bind them.
+ * Optional env bootstrap. When the signed-in address is NYT_TV_NATE_EMAIL and
+ * NYT_TV_JEN_EMAIL is set, create one invite for that address. If that account
+ * already has access, the pair is active. Otherwise it stays pending until they join.
  */
 export async function bootstrapInvite(
   store: VoteStore,
   viewer: PairViewer,
   env: Env = process.env,
-  now = new Date()
+  now = new Date(),
+  partner: PartnerAccount | null = null
 ): Promise<PairRecord | null> {
   if (viewer.email !== nateEmail(env)) return null
-  const partner = jenEmail(env)
-  if (!partner || partner === viewer.email) return null
+  const partnerEmail = jenEmail(env)
+  if (!partnerEmail || partnerEmail === viewer.email) return null
   const existing = await store.getPairForUser(viewer.userId)
   if (existing) return existing
-  const known = await store.findUserByEmail(partner)
-  if (!known) return null
-  const created = await requestPair(store, viewer, partner, now)
+  const created = await requestPair(store, viewer, partnerEmail, {
+    now,
+    partner: partner && partner.email === partnerEmail ? partner : null,
+  })
   return created.ok ? created.pair : null
 }

@@ -1,5 +1,5 @@
 import { clientAccessError } from '@/lib/client-access'
-import { NYT_TV_CLIENT_SLUG, lookupViewer } from '@/lib/nyt-tv/access'
+import { NYT_TV_CLIENT_SLUG, lookupAccountByEmail, lookupViewer } from '@/lib/nyt-tv/access'
 import { loadPairView, removePair, requestPair } from '@/lib/nyt-tv/pairing'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   }
 
   const store = getVoteStore()
-  const result = await requestPair(store, viewer, email)
+  const result = await requestPair(store, viewer, email, { partner: await lookupAccountByEmail(email) })
   if (!result.ok) return Response.json({ error: result.error }, { status: result.status })
   const view = await loadPairView(store, viewer.userId)
   return Response.json(publicPair(view))
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 export async function DELETE() {
   const viewer = await grantedViewer()
   if (viewer instanceof Response) return viewer
-  const result = await removePair(getVoteStore(), viewer.userId)
+  const result = await removePair(getVoteStore(), viewer.userId, viewer.email)
   if (!result.ok) return Response.json({ error: result.error }, { status: result.status })
   return Response.json({ ok: true, status: 'solo' })
 }

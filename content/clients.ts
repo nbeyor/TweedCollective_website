@@ -78,15 +78,14 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
   {
     // Couples watchlist. Admission is the Clerk client grant (admins, or
     // clientSlugs: ["nyt-tv-100"]). Anyone with that grant can swipe.
-    // Pairing is by verified email. A partner who opens an invite link for
-    // their verified email is granted that slug. NYT_TV_JEN_EMAIL only
-    // bootstraps a pending invite after that address has opened the watchlist.
+    // An invite is an email. It binds when that person verifies and has access,
+    // or immediately if they already do. NYT_TV_JEN_EMAIL only bootstraps one invite.
     slug: 'nyt-tv-100',
     name: 'NYT 100 TV',
     deliverables: [
       {
         title: 'Watchlist swipe',
-        description: 'Swipe the NYT 100, then pair by email. Right is want, left is skip.',
+        description: 'Swipe the NYT 100 and invite a partner by email. Right is want, left is skip.',
         href: '/clients/nyt-tv-100',
         kind: 'dashboard',
         date: '2026-09',

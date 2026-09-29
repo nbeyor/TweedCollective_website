@@ -1,7 +1,7 @@
 import { clerkClient, currentUser } from '@clerk/nextjs/server'
-import type { User } from '@clerk/nextjs/server'
 
 import { clientSlugsForUser, isAdminUser } from '@/lib/client-access'
+import type { User } from '@clerk/nextjs/server'
 
 import { pacificDayKey } from './day'
 import { normalizeEmail } from './pairs'
@@ -76,6 +76,44 @@ export async function grantNytClientSlug(user: User): Promise<void> {
       clientSlugs: [...current, NYT_TV_CLIENT_SLUG],
     },
   })
+}
+
+/** A Clerk account that already uses this email. `hasAccess` means the nyt-tv-100 grant or admin. */
+export interface PartnerAccount {
+  userId: string
+  email: string
+  hasAccess: boolean
+}
+
+/**
+ * Looks up a verified Clerk user for this email. Missing account, unverified
+ * address, or a Clerk error returns null so the caller can store a pending invite.
+ */
+export async function lookupAccountByEmail(email: string): Promise<PartnerAccount | null> {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return null
+  try {
+    const client = await clerkClient()
+    const list = await client.users.getUserList({ emailAddress: [normalized], limit: 5 })
+    for (const user of list.data) {
+      if (!verifiedAddress(user, normalized)) continue
+      return {
+        userId: user.id,
+        email: normalized,
+        hasAccess: clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG),
+      }
+    }
+    return null
+  } catch (error) {
+    console.warn('[nyt-tv-100] partner lookup failed', error)
+    return null
+  }
+}
+
+function verifiedAddress(user: User, email: string): boolean {
+  return user.emailAddresses.some(
+    (entry) => normalizeEmail(entry.emailAddress) === email && entry.verification?.status === 'verified'
+  )
 }
 
 export function voteRecord(userId: string, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {

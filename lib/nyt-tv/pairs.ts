@@ -96,7 +96,7 @@ export function buildPendingPair(input: {
   inviterUserId: string
   inviterEmail: string
   inviteEmail: string
-  partnerUserId: string
+  partnerUserId: string | null
   now?: Date
 }): PairRecord {
   const now = (input.now ?? new Date()).toISOString()

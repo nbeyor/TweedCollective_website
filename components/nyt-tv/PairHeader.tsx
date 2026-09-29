@@ -151,10 +151,10 @@ export function PairHeaderView({
           </>
         ) : status === 'pending' && partnerEmail ? (
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Invite pending for {partnerEmail}</h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Waiting for {partnerEmail} to join</h1>
             <p className="mt-1 text-sm text-stone">
-              You&apos;re not paired yet. Send this link, or ask them to enter your email. You can swipe now. There is no
-              shared list until they confirm.
+              You&apos;re not paired yet. The pair starts on their first visit after they verify this email and have
+              access. You can swipe now.
             </p>
             <div className="mt-3 flex items-center gap-2">
               <input
@@ -198,10 +198,10 @@ export function PairHeaderView({
           </>
         ) : (
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Pair with your partner</h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Invite your partner</h1>
             <p className="mt-1 text-sm text-stone">
-              Enter the email they use to sign in. They need to have opened this watchlist. You&apos;re signed in as{' '}
-              {viewerEmail}.
+              Enter their email. If they already have access, you are paired now. Otherwise this waits until they join.
+              You&apos;re signed in as {viewerEmail}.
             </p>
             <form onSubmit={(event) => void onSubmit(event)} className="mt-3 flex items-center gap-2">
               <label className="sr-only" htmlFor="partner-email">
@@ -223,7 +223,7 @@ export function PairHeaderView({
                 disabled={busy}
                 className="h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
               >
-                {busy ? 'Sending' : 'Request pair'}
+                {busy ? 'Sending' : 'Invite'}
               </button>
             </form>
           </>

@@ -32,6 +32,8 @@ export interface VoteStore {
   rememberUser(user: DirectoryUser): Promise<void>
   findUserByEmail(email: string): Promise<DirectoryUser | null>
   getIncomingPair(userId: string): Promise<PairRecord | null>
+  /** Pending invite whose target email is this address. Null once the pair is active. */
+  getPendingInviteByEmail(email: string): Promise<PairRecord | null>
 }
 
 const tails = new Map<string, Promise<unknown>>()
@@ -108,6 +110,7 @@ export function createFileVoteStore(dir: string): VoteStore {
   const userIndexPath = (userId: string) => path.join(dir, 'user-pairs', `${userId}.json`)
   const inviteIndexPath = (token: string) => path.join(dir, 'invite-index', `${token}.json`)
   const incomingPath = (userId: string) => path.join(dir, 'incoming', `${userId}.json`)
+  const inviteEmailPath = (email: string) => path.join(dir, 'invite-emails', `${emailIndexKey(email)}.json`)
   const directoryUserPath = (userId: string) => path.join(dir, 'directory', 'users', `${userId}.json`)
   const directoryEmailPath = (email: string) => path.join(dir, 'directory', 'emails', `${emailIndexKey(email)}.json`)
 
@@ -230,6 +233,10 @@ export function createFileVoteStore(dir: string): VoteStore {
         } else if (pair.partnerUserId) {
           await clearIncoming(pair.partnerUserId, pair.id)
         }
+        if (previous?.inviteEmail && previous.inviteEmail !== pair.inviteEmail) {
+          await clearInviteEmail(previous.inviteEmail, pair.id)
+        }
+        await writeInviteEmail(pair)
       })
     },
     deletePair(pair) {
@@ -243,6 +250,7 @@ export function createFileVoteStore(dir: string): VoteStore {
         }
         await rm(inviteIndexPath(pair.inviteToken), { force: true })
         if (pair.partnerUserId) await clearIncoming(pair.partnerUserId, pair.id)
+        await clearInviteEmail(pair.inviteEmail, pair.id)
       })
     },
     rememberUser(user) {
@@ -275,11 +283,35 @@ export function createFileVoteStore(dir: string): VoteStore {
       if (!pair || pair.status !== 'pending' || pair.partnerUserId !== userId) return null
       return pair
     },
+    async getPendingInviteByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ pairId?: string }>(inviteEmailPath(normalized))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairPath(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.inviteEmail !== normalized) return null
+      return pair
+    },
   }
 
   async function clearIncoming(userId: string, pairId: string) {
     const index = await readJson<{ pairId?: string }>(incomingPath(userId))
     if (index?.pairId === pairId) await rm(incomingPath(userId), { force: true })
+  }
+
+  async function clearInviteEmail(email: string, pairId: string) {
+    const normalized = normalizeEmail(email)
+    if (!normalized) return
+    const index = await readJson<{ pairId?: string }>(inviteEmailPath(normalized))
+    if (index?.pairId === pairId) await rm(inviteEmailPath(normalized), { force: true })
+  }
+
+  async function writeInviteEmail(pair: PairRecord) {
+    if (pair.status === 'pending') {
+      await writeJson(inviteEmailPath(pair.inviteEmail), { pairId: pair.id })
+      return
+    }
+    await clearInviteEmail(pair.inviteEmail, pair.id)
   }
 }
 
@@ -324,6 +356,10 @@ function inviteIndexKey(token: string): string {
 
 function incomingKey(userId: string): string {
   return `nyt-tv-100/incoming/${userId}.json`
+}
+
+function inviteEmailKey(email: string): string {
+  return `nyt-tv-100/invite-emails/${emailIndexKey(email)}.json`
 }
 
 function directoryUserKey(userId: string): string {
@@ -462,6 +498,10 @@ function createBlobVoteStore(token: string): VoteStore {
         } else if (pair.partnerUserId) {
           await clearIncoming(pair.partnerUserId, pair.id)
         }
+        if (previous?.inviteEmail && previous.inviteEmail !== pair.inviteEmail) {
+          await clearInviteEmail(previous.inviteEmail, pair.id)
+        }
+        await writeInviteEmail(pair)
       })
     },
     deletePair(pair) {
@@ -475,6 +515,7 @@ function createBlobVoteStore(token: string): VoteStore {
         }
         await delKey(inviteIndexKey(pair.inviteToken))
         if (pair.partnerUserId) await clearIncoming(pair.partnerUserId, pair.id)
+        await clearInviteEmail(pair.inviteEmail, pair.id)
       })
     },
     rememberUser(user) {
@@ -507,6 +548,15 @@ function createBlobVoteStore(token: string): VoteStore {
       if (!pair || pair.status !== 'pending' || pair.partnerUserId !== userId) return null
       return pair
     },
+    async getPendingInviteByEmail(email) {
+      const normalized = normalizeEmail(email)
+      if (!normalized) return null
+      const index = await readJson<{ pairId?: string }>(inviteEmailKey(normalized))
+      if (!index?.pairId) return null
+      const pair = parsePair(await readJson(pairKey(index.pairId)))
+      if (!pair || pair.status !== 'pending' || pair.inviteEmail !== normalized) return null
+      return pair
+    },
   }
 
   async function delKey(key: string) {
@@ -517,5 +567,20 @@ function createBlobVoteStore(token: string): VoteStore {
   async function clearIncoming(userId: string, pairId: string) {
     const index = await readJson<{ pairId?: string }>(incomingKey(userId))
     if (index?.pairId === pairId) await delKey(incomingKey(userId))
+  }
+
+  async function clearInviteEmail(email: string, pairId: string) {
+    const normalized = normalizeEmail(email)
+    if (!normalized) return
+    const index = await readJson<{ pairId?: string }>(inviteEmailKey(normalized))
+    if (index?.pairId === pairId) await delKey(inviteEmailKey(normalized))
+  }
+
+  async function writeInviteEmail(pair: PairRecord) {
+    if (pair.status === 'pending') {
+      await writeJson(inviteEmailKey(pair.inviteEmail), { pairId: pair.id })
+      return
+    }
+    await clearInviteEmail(pair.inviteEmail, pair.id)
   }
 }
