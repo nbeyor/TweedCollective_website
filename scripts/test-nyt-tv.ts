@@ -138,6 +138,7 @@ async function main() {
       nateHtml.includes('Seen') &&
       nateHtml.includes('Want') &&
       nateHtml.includes('Skip') &&
+      !nateHtml.includes('overflow-y-auto') &&
       /<h2[^>]*text-charcoal[^>]*>Breaking Bad<\/h2>/.test(nateHtml)
   )
   const wireFirst = jenDeck.filter((show) => show.rank === 2 || show.rank === 1).sort((a, b) => b.rank - a.rank)
@@ -323,6 +324,27 @@ async function main() {
   check(
     'invite controls stay at a 44px touch height',
     pendingEmailTag.includes('h-11') && soloHeader.includes('h-11') && !pendingHeader.includes('h-10')
+  )
+  const detailsTag = (html: string) => {
+    const idAt = html.indexOf('id="pair-details"')
+    const open = html.lastIndexOf('<', idAt)
+    const close = html.indexOf('>', idAt)
+    return open >= 0 && close > open ? html.slice(open, close + 1) : ''
+  }
+  check(
+    'pending pair controls start collapsed and solo invite stays open',
+    detailsTag(pendingHeader).includes('hidden') &&
+      pendingHeader.includes('aria-expanded="false"') &&
+      pendingHeader.includes('Details') &&
+      !detailsTag(soloHeader).includes('hidden') &&
+      soloHeader.includes('>Invite<')
+  )
+  check(
+    'active and incoming pair chrome starts collapsed',
+    detailsTag(activeHeader).includes('hidden') &&
+      activeHeader.includes('aria-expanded="false"') &&
+      detailsTag(incomingHeader).includes('hidden') &&
+      incomingHeader.includes('>Confirm<')
   )
   check(
     'incoming header asks to confirm and is not paired',
