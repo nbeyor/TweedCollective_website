@@ -1,6 +1,7 @@
 import { clientAccessError } from '@/lib/client-access'
 import { NYT_TV_CLIENT_SLUG, lookupViewer } from '@/lib/nyt-tv/access'
-import type { DigestScope } from '@/lib/nyt-tv/digest'
+import { pacificDayKey } from '@/lib/nyt-tv/day'
+import { buildDigest, digestText, type DigestScope } from '@/lib/nyt-tv/digest'
 import { composeDigestForPair, digestSendEnabled } from '@/lib/nyt-tv/runDigest'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 
@@ -18,16 +19,36 @@ export async function GET(req: Request) {
   }
 
   const scope: DigestScope = new URL(req.url).searchParams.get('scope') === 'all' ? 'all' : 'since-last'
-  const pair = await getVoteStore().getPairForUser(lookup.viewer.userId)
-  const composed = await composeDigestForPair(pair, scope)
+  const store = getVoteStore()
+  const pair = await store.getPairForUser(lookup.viewer.userId)
+  if (pair?.status === 'active') {
+    const composed = await composeDigestForPair(pair, scope)
+    return Response.json({
+      scope,
+      sendEnabled: digestSendEnabled(),
+      recipients: composed.recipients,
+      persistence: composed.persistence,
+      lastSentAt: composed.lastSentAt,
+      digest: composed.digest,
+      text: composed.text,
+    })
+  }
 
+  const marker = await store.getDigestSent()
+  const digest = buildDigest({
+    dayKey: pacificDayKey(),
+    votes: await store.listVotes(lookup.viewer.userId),
+    members: [{ userId: lookup.viewer.userId, label: lookup.viewer.email }],
+    lastSentAt: marker?.sentAt ?? null,
+    scope,
+  })
   return Response.json({
     scope,
     sendEnabled: digestSendEnabled(),
-    recipients: composed.recipients,
-    persistence: composed.persistence,
-    lastSentAt: composed.lastSentAt,
-    digest: composed.digest,
-    text: composed.text,
+    recipients: [],
+    persistence: store.kind,
+    lastSentAt: marker?.sentAt ?? null,
+    digest,
+    text: digestText(digest),
   })
 }

@@ -3,13 +3,11 @@ export type VoteChoice = 'want' | 'skip'
 export type OwnerStatus = 'seen' | 'partial' | 'not_seen' | 'skip' | 'unchecked'
 
 /**
- * One swipe. The show is `showRank` (NYT rank, stable). `userId` is the
- * Clerk user, so two people never overwrite each other. `pairId` says which
- * couple the swipe belongs to.
+ * One swipe on the signed-in Clerk account. The show is `showRank`
+ * (NYT rank, stable). Pairing does not move or copy these rows.
  */
 export interface VoteRecord {
   userId: string
-  pairId: string
   showRank: number
   vote: VoteChoice
   updatedAt: string

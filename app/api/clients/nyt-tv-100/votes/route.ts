@@ -3,7 +3,6 @@ import { NYT_TV_CLIENT_SLUG, lookupViewer, voteRecord, type NytViewer } from '@/
 import { showByRank } from '@/lib/nyt-tv/shows'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 import { isVoteChoice } from '@/lib/nyt-tv/types'
-import type { PairRecord } from '@/lib/nyt-tv/pairs'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,16 +12,13 @@ export async function GET() {
   if (viewer instanceof Response) return viewer
 
   const store = getVoteStore()
-  const pair = await store.getPairForUser(viewer.userId)
-  const votes = (await store.listVotes(viewer.userId)).filter((vote) => !pair || vote.pairId === pair.id)
-  return Response.json({ userId: viewer.userId, pairId: pair?.id ?? null, persistence: store.kind, votes })
+  const votes = await store.listVotes(viewer.userId)
+  return Response.json({ userId: viewer.userId, persistence: store.kind, votes })
 }
 
 export async function PUT(req: Request) {
   const viewer = await grantedViewer()
   if (viewer instanceof Response) return viewer
-  const pair = await requirePair(viewer)
-  if (pair instanceof Response) return pair
 
   let body: unknown
   try {
@@ -37,7 +33,7 @@ export async function PUT(req: Request) {
     return Response.json({ error: 'Send showRank and vote "want" or "skip".' }, { status: 400 })
   }
 
-  const record = voteRecord(viewer.userId, pair.id, rank, vote)
+  const record = voteRecord(viewer.userId, rank, vote)
   const store = getVoteStore()
   await store.putVote(record)
   return Response.json({ vote: record, persistence: store.kind })
@@ -63,14 +59,6 @@ async function grantedViewer(): Promise<NytViewer | Response> {
     return Response.json({ error: 'Verify your email, then refresh.' }, { status: 403 })
   }
   return lookup.viewer
-}
-
-async function requirePair(viewer: NytViewer): Promise<PairRecord | Response> {
-  const pair = await getVoteStore().getPairForUser(viewer.userId)
-  if (!pair) {
-    return Response.json({ error: 'Create an invite before swiping.' }, { status: 409 })
-  }
-  return pair
 }
 
 function rankFrom(bodyOrRank: unknown): number | null {

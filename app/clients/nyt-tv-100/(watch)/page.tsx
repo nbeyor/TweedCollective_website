@@ -2,12 +2,13 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
+import { MatchPanel } from '@/components/nyt-tv/MatchPanel'
 import { PairHeader } from '@/components/nyt-tv/PairHeader'
 import { SwipeDeck } from '@/components/nyt-tv/SwipeDeck'
 import { lookupViewer } from '@/lib/nyt-tv/access'
-import { bootstrapInvite } from '@/lib/nyt-tv/pairing'
-import { invitePath, partnerEmail } from '@/lib/nyt-tv/pairs'
-import { SHOW_PACK, deckShows, shuffleDeck } from '@/lib/nyt-tv/shows'
+import { bootstrapInvite, loadPairView } from '@/lib/nyt-tv/pairing'
+import { wantOverlap } from '@/lib/nyt-tv/pairs'
+import { SHOW_PACK, allShows, deckShows, shuffleDeck } from '@/lib/nyt-tv/shows'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 
 export const metadata: Metadata = {
@@ -34,34 +35,37 @@ export default async function NytTvPage() {
 
   const { viewer } = lookup
   const store = getVoteStore()
-  const pair = (await store.getPairForUser(viewer.userId)) ?? (await bootstrapInvite(store, viewer))
-  const partner = partnerEmail(pair, viewer.userId)
-  const status = !pair ? 'solo' : pair.status === 'active' ? 'active' : 'pending'
+  await store.rememberUser({
+    userId: viewer.userId,
+    email: viewer.email,
+    seenAt: new Date().toISOString(),
+  })
+  await bootstrapInvite(store, viewer)
+  const view = await loadPairView(store, viewer.userId)
+  const myVotes = await store.listVotes(viewer.userId)
+  const partnerId = view.pair?.members.find((member) => member.userId !== viewer.userId)?.userId
+  const matches =
+    view.status === 'active' && partnerId
+      ? wantOverlap(myVotes, await store.listVotes(partnerId), allShows())
+      : []
 
   return (
     <>
       <PairHeader
         viewerEmail={viewer.email}
-        status={status}
-        partnerEmail={partner}
-        invitePath={pair?.status === 'pending' ? invitePath(pair.inviteToken) : null}
+        status={view.status}
+        partnerEmail={view.partnerEmail}
+        invitePath={view.invitePath}
       />
-      {pair ? (
-        <SwipeDeck
-          userId={viewer.userId}
-          pairId={pair.id}
-          profileLabel={viewer.email}
-          shows={shuffleDeck(deckShows(viewer.isOwner))}
-          initialVotes={(await store.listVotes(viewer.userId)).filter((vote) => vote.pairId === pair.id)}
-          persistence={store.kind}
-          source={SHOW_PACK.source}
-        />
-      ) : (
-        <p className="mx-auto max-w-lg px-4 py-10 text-center text-sm leading-relaxed text-stone">
-          Create the invite to start swiping. The link is how your partner joins. Your votes save on your account as
-          soon as it exists.
-        </p>
-      )}
+      <MatchPanel status={view.status} partnerEmail={view.partnerEmail} shows={matches} />
+      <SwipeDeck
+        userId={viewer.userId}
+        profileLabel={viewer.email}
+        shows={shuffleDeck(deckShows(viewer.isOwner))}
+        initialVotes={myVotes}
+        persistence={store.kind}
+        source={SHOW_PACK.source}
+      />
     </>
   )
 }

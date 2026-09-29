@@ -44,6 +44,12 @@ export type DigestScope = 'since-last' | 'all'
  * - `since-last` before any successful send: every swipe so far. Dry runs do not
  *   advance the marker, so turning email on later still includes earlier days.
  */
+/** Votes that belong to this couple. Identity is the Clerk user id, not a pair id on the swipe. */
+export function votesForMembers(userIds: string[], votes: VoteRecord[]): VoteRecord[] {
+  const ids = new Set(userIds)
+  return votes.filter((vote) => ids.has(vote.userId))
+}
+
 export function voteInDigest(vote: VoteRecord, dayKey: string, lastSentAt: string | null, scope: DigestScope): boolean {
   if (scope === 'all') return true
   if (lastSentAt) return vote.updatedAt > lastSentAt

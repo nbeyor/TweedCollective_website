@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 import { pacificDayKey } from './day'
-import { buildDigest, digestHtml, digestText, type Digest, type DigestScope } from './digest'
+import { buildDigest, digestHtml, digestText, votesForMembers, type Digest, type DigestScope } from './digest'
 import type { PairRecord } from './pairs'
 import { getVoteStore, type VoteStore } from './store'
 
@@ -42,7 +42,10 @@ function bundleFor(pair: PairRecord, votes: Awaited<ReturnType<VoteStore['listVo
   const digest = buildDigest({
     dayKey: pacificDayKey(now),
     generatedAt: now.toISOString(),
-    votes: votes.filter((vote) => vote.pairId === pair.id),
+    votes: votesForMembers(
+      pair.members.map((member) => member.userId),
+      votes
+    ),
     members: pair.members.map((member) => ({ userId: member.userId, label: member.email })),
     lastSentAt,
     scope,
@@ -106,20 +109,30 @@ export async function runDigest(options?: { scope?: DigestScope; now?: Date }): 
   const lastSentAt = marker?.sentAt ?? null
   const [pairs, votes] = await Promise.all([store.listPairs(), store.listVotes()])
   const bundles = pairs
+    .filter((pair) => pair.status === 'active')
     .map((pair) => bundleFor(pair, votes, scope, now, lastSentAt))
     .filter((bundle) => bundle.digest.activityCount > 0)
 
   const text = bundles.map((bundle) => bundle.text).join('\n\n') || 'No swipes in this digest.'
   const html = bundles.map((bundle) => bundle.html).join('\n')
   const recipients = Array.from(new Set(bundles.flatMap((bundle) => bundle.recipients)))
-  const digest = buildDigest({
-    dayKey: pacificDayKey(now),
-    generatedAt: now.toISOString(),
-    votes: bundles.flatMap((bundle) => votes.filter((vote) => vote.pairId === bundle.pairId)),
-    members: bundles.flatMap((bundle) => bundle.digest.profiles.map((profile) => ({ userId: profile.userId, label: profile.label }))),
-    lastSentAt,
-    scope,
-  })
+  const activityCount = bundles.reduce((sum, bundle) => sum + bundle.digest.activityCount, 0)
+  const first = bundles[0]?.digest
+  const digest: Digest = first
+    ? {
+        ...first,
+        profiles: bundles.flatMap((bundle) => bundle.digest.profiles),
+        bothWanted: bundles.length === 1 ? first.bothWanted : [],
+        activityCount,
+      }
+    : buildDigest({
+        dayKey: pacificDayKey(now),
+        generatedAt: now.toISOString(),
+        votes: [],
+        members: [],
+        lastSentAt,
+        scope,
+      })
 
   const base = {
     digest,

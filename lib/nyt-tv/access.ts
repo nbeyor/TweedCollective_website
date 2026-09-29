@@ -78,16 +78,9 @@ export async function grantNytClientSlug(user: User): Promise<void> {
   })
 }
 
-export function voteRecord(
-  userId: string,
-  pairId: string,
-  showRank: number,
-  vote: VoteChoice,
-  at: Date = new Date()
-): VoteRecord {
+export function voteRecord(userId: string, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {
   return {
     userId,
-    pairId,
     showRank,
     vote,
     updatedAt: at.toISOString(),

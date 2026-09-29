@@ -1,7 +1,7 @@
 import { clientAccessError } from '@/lib/client-access'
 import { NYT_TV_CLIENT_SLUG, lookupViewer } from '@/lib/nyt-tv/access'
-import { createOrUpdateInvite } from '@/lib/nyt-tv/pairing'
-import { invitePath } from '@/lib/nyt-tv/pairs'
+import { requestPair } from '@/lib/nyt-tv/pairing'
+import { confirmedPair, invitePath, partnerEmail } from '@/lib/nyt-tv/pairs'
 import { getVoteStore } from '@/lib/nyt-tv/store'
 
 export const runtime = 'nodejs'
@@ -27,12 +27,13 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Send an email address.' }, { status: 400 })
   }
 
-  const result = await createOrUpdateInvite(getVoteStore(), lookup.viewer, email)
+  const result = await requestPair(getVoteStore(), lookup.viewer, email)
   if (!result.ok) return Response.json({ error: result.error }, { status: result.status })
 
   return Response.json({
     status: result.pair.status,
-    partnerEmail: result.pair.inviteEmail,
-    invitePath: invitePath(result.pair.inviteToken),
+    partnerEmail: partnerEmail(result.pair, lookup.viewer.userId) ?? result.pair.inviteEmail,
+    invitePath: result.pair.status === 'pending' ? invitePath(result.pair.inviteToken) : null,
+    confirmed: confirmedPair(result.pair),
   })
 }

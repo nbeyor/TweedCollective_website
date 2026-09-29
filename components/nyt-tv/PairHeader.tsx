@@ -3,26 +3,37 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+export type PairHeaderStatus = 'solo' | 'pending' | 'incoming' | 'active'
+
 export interface PairHeaderProps {
   viewerEmail: string
-  status: 'solo' | 'pending' | 'active'
+  status: PairHeaderStatus
   partnerEmail: string | null
   invitePath: string | null
 }
 
 export function PairHeader(props: PairHeaderProps) {
   const router = useRouter()
+
+  async function postEmail(email: string) {
+    const res = await fetch('/api/clients/nyt-tv-100/pair', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    const body = (await res.json().catch(() => null)) as { error?: string } | null
+    if (!res.ok) throw new Error(body?.error || 'Could not pair with that email.')
+    router.refresh()
+  }
+
   return (
     <PairHeaderView
       {...props}
-      onCreate={async (email) => {
-        const res = await fetch('/api/clients/nyt-tv-100/invites', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ email }),
-        })
+      onCreate={postEmail}
+      onUnpair={async () => {
+        const res = await fetch('/api/clients/nyt-tv-100/pair', { method: 'DELETE' })
         const body = (await res.json().catch(() => null)) as { error?: string } | null
-        if (!res.ok) throw new Error(body?.error || 'Could not create that invite.')
+        if (!res.ok) throw new Error(body?.error || 'Could not unpair.')
         router.refresh()
       }}
     />
@@ -35,7 +46,11 @@ export function PairHeaderView({
   partnerEmail,
   invitePath,
   onCreate,
-}: PairHeaderProps & { onCreate: (email: string) => Promise<void> }) {
+  onUnpair,
+}: PairHeaderProps & {
+  onCreate: (email: string) => Promise<void>
+  onUnpair: () => Promise<void>
+}) {
   const [email, setEmail] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -59,7 +74,33 @@ export function PairHeaderView({
       await onCreate(email)
       setEmail('')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not create that invite.')
+      setError(err instanceof Error ? err.message : 'Could not pair with that email.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function confirm() {
+    if (busy || !partnerEmail) return
+    setBusy(true)
+    setError(null)
+    try {
+      await onCreate(partnerEmail)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not confirm that pair.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function unpair() {
+    if (busy) return
+    setBusy(true)
+    setError(null)
+    try {
+      await onUnpair()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not unpair.')
     } finally {
       setBusy(false)
     }
@@ -84,12 +125,36 @@ export function PairHeaderView({
           <>
             <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Paired with {partnerEmail}</h1>
             <p className="mt-1 text-sm text-stone">You&apos;re signed in as {viewerEmail}. Swipes stay on your account.</p>
+            <button
+              type="button"
+              onClick={() => void unpair()}
+              disabled={busy}
+              className="mt-3 h-10 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40"
+            >
+              {busy ? 'Unpairing' : 'Unpair'}
+            </button>
+          </>
+        ) : status === 'incoming' && partnerEmail ? (
+          <>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">{partnerEmail} asked to pair</h1>
+            <p className="mt-1 text-sm text-stone">
+              You&apos;re not paired yet. Confirm to share a want list. You can swipe now either way.
+            </p>
+            <button
+              type="button"
+              onClick={() => void confirm()}
+              disabled={busy}
+              className="mt-3 h-11 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
+            >
+              {busy ? 'Confirming' : 'Confirm'}
+            </button>
           </>
         ) : status === 'pending' && partnerEmail ? (
           <>
             <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Invite pending for {partnerEmail}</h1>
             <p className="mt-1 text-sm text-stone">
-              Send this link. You can swipe now. Their swipes start when they open it and verify {partnerEmail}.
+              You&apos;re not paired yet. Send this link, or ask them to enter your email. You can swipe now. There is no
+              shared list until they confirm.
             </p>
             <div className="mt-3 flex items-center gap-2">
               <input
@@ -133,9 +198,10 @@ export function PairHeaderView({
           </>
         ) : (
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Invite your partner</h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Pair with your partner</h1>
             <p className="mt-1 text-sm text-stone">
-              Enter their email. You&apos;ll get a link to send. You&apos;re signed in as {viewerEmail}.
+              Enter the email they use to sign in. They need to have opened this watchlist. You&apos;re signed in as{' '}
+              {viewerEmail}.
             </p>
             <form onSubmit={(event) => void onSubmit(event)} className="mt-3 flex items-center gap-2">
               <label className="sr-only" htmlFor="partner-email">
@@ -157,7 +223,7 @@ export function PairHeaderView({
                 disabled={busy}
                 className="h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
               >
-                {busy ? 'Sending' : 'Create invite'}
+                {busy ? 'Sending' : 'Request pair'}
               </button>
             </form>
           </>
@@ -171,4 +237,3 @@ export function PairHeaderView({
     </section>
   )
 }
-

@@ -6,7 +6,6 @@ import type { DeckShow, VoteChoice, VoteRecord } from '@/lib/nyt-tv/types'
 
 interface SwipeDeckProps {
   userId: string
-  pairId: string
   profileLabel: string
   shows: DeckShow[]
   initialVotes: VoteRecord[]
@@ -22,7 +21,7 @@ function toMap(votes: VoteRecord[]): VoteMap {
   return map
 }
 
-export function SwipeDeck({ userId, pairId, profileLabel, shows, initialVotes, persistence, source }: SwipeDeckProps) {
+export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persistence, source }: SwipeDeckProps) {
   const [votes, setVotes] = useState<VoteMap>(() => toMap(initialVotes))
   const [view, setView] = useState<'deck' | 'list'>('deck')
   const [dx, setDx] = useState(0)
@@ -78,7 +77,6 @@ export function SwipeDeck({ userId, pairId, profileLabel, shows, initialVotes, p
         ...currentVotes,
         [rank]: {
           userId,
-          pairId,
           showRank: rank,
           vote,
           updatedAt: new Date().toISOString(),
@@ -106,7 +104,7 @@ export function SwipeDeck({ userId, pairId, profileLabel, shows, initialVotes, p
         unlock()
       }
     },
-    [pairId, unlock, userId]
+    [unlock, userId]
   )
 
   const undo = useCallback(async (rank?: number) => {
