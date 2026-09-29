@@ -15,6 +15,7 @@
     "test:grounding": "tsx scripts/test-strategist-grounding.ts",
     "test:grex-mms": "tsx scripts/test-grex-mms.ts",
     "test:nyt-tv": "tsx scripts/test-nyt-tv.ts",
+    "wipe:nyt-tv": "tsx scripts/wipe-nyt-tv.ts",
     "lint": "next lint"
   },
   "dependencies": {

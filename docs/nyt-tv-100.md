@@ -29,7 +29,18 @@ An active pair is `{ aUserId, bUserId, aEmail, bEmail, pairedAt }`. Couples are 
 
 Each swipe is `{ userId, showRank, vote: 'want' | 'skip', updatedAt, dayKey }` on the Clerk user id. The API body is still `{ showRank, vote }`. `showRank` is the NYT rank and does not change when the deck is shuffled. `dayKey` is the America/Los_Angeles date of the swipe. Pairing does not copy or move these rows. Older rows that still carry a `pairId` still load; that field is ignored.
 
-The store is the Vercel Blob the repo already uses (`BLOB_READ_WRITE_TOKEN`), under `nyt-tv-100/`. One private blob per user and rank. Pair records, the email directory, and incoming-invite indexes live beside them. A blob wipe is safe; nothing here depends on the old `nate` / `jen` profile keys.
+The store is the Vercel Blob the repo already uses (`BLOB_READ_WRITE_TOKEN`). Every user-state object is a private blob under the single prefix `nyt-tv-100/`:
+
+- `nyt-tv-100/votes/${userId}/${showRank}.json` — one swipe. Legacy rows are `nyt-tv-100/votes/nate/` and `nyt-tv-100/votes/jen/`.
+- `nyt-tv-100/pairs/${pairId}.json` — pending invite or active pair
+- `nyt-tv-100/user-pairs/${userId}.json`
+- `nyt-tv-100/invite-index/${token}.json`
+- `nyt-tv-100/incoming/${userId}.json`
+- `nyt-tv-100/invite-emails/${emailKey}.json`
+- `nyt-tv-100/directory/users/${userId}.json` and `nyt-tv-100/directory/emails/${emailKey}.json`
+- `nyt-tv-100/digest-sent.json`
+
+Show copy in `content/nyt-tv-100/shows.json` is not in the blob store. Clerk `clientSlugs` are not in the blob store.
 
 If `BLOB_READ_WRITE_TOKEN` is missing, the app falls back to a JSON file (`.data/nyt-tv-100` locally, `/tmp/nyt-tv-100` on Vercel). That disk is not shared across devices or instances. The deck shows a warning in that mode. Set the existing Blob token in the deployment for real use. `NYT_TV_DATA_DIR` overrides the file path for local tests.
 
@@ -77,3 +88,18 @@ Each card leads with the show title, then the one-line description, then a short
 The page shuffles the deck once per request with Fisher–Yates (`Math.random` in `shuffleDeck`). That array is the order for the mount. Swipes, undo, and a focus reload of votes filter that same array by `showRank`; they do not draw a new order. A refresh or a new visit does. The "Your list" view stays sorted by rank so a decision is easy to find.
 
 Pro and con lines were written for this deck from each show's public reputation and the existing one-line description. They are short, balanced, and avoid plot spoilers where the description already gives the premise.
+
+## Wipe user state
+
+After this pairing model ships, wipe production so the next sign-in is a first run: no votes, no pairs, no pending invites, no directory, no digest marker. The helper deletes the whole `nyt-tv-100/` prefix (legacy `nate` and `jen` vote keys included) plus the file fallbacks `.data/nyt-tv-100`, `/tmp/nyt-tv-100`, and `NYT_TV_DATA_DIR` when that folder is named `nyt-tv-100`. It does not change Clerk grants, show copy, or env vars.
+
+From a shell that has the production blob token:
+
+```bash
+npx tsx scripts/wipe-nyt-tv.ts
+BLOB_READ_WRITE_TOKEN=... npx tsx scripts/wipe-nyt-tv.ts --yes
+```
+
+The first command only lists. `--yes` deletes. If `--yes` is set and `BLOB_READ_WRITE_TOKEN` is missing, the script still removes local files and exits 1 so a blob wipe is not reported as done. `npm run wipe:nyt-tv` is the same dry-run.
+
+Leave `NYT_TV_JEN_EMAIL` unset on Production if Nate's next visit should be an empty invite field. With that variable set, his first sign-in creates one pending invite for that address. The wipe itself does not leave a pair behind.

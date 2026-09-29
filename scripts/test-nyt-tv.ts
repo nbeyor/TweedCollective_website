@@ -4,7 +4,7 @@
  * Run with: npm run test:nyt-tv
  */
 
-import { mkdtemp, rm } from 'fs/promises'
+import { access, mkdir, mkdtemp, rm, writeFile } from 'fs/promises'
 import os from 'os'
 import path from 'path'
 import React from 'react'
@@ -20,6 +20,7 @@ import { bindInvite, bootstrapInvite, claimInviteForMember, removePair, requestP
 import { confirmedPair, decideBind, invitePath, wantOverlap } from '../lib/nyt-tv/pairs'
 import { allShows, deckShows, shuffleDeck } from '../lib/nyt-tv/shows'
 import { createFileVoteStore, parseVote } from '../lib/nyt-tv/store'
+import { defaultFileStateDirs, wipeNytTvState } from '../lib/nyt-tv/wipe'
 import type { VoteRecord } from '../lib/nyt-tv/types'
 
 let failures = 0
@@ -504,6 +505,110 @@ async function main() {
     check('digest marker round-trips', marker?.dayKey === '2026-09-29' && marker.recipients[0] === DEFAULT_NATE_EMAIL)
   } finally {
     await rm(dir, { recursive: true, force: true })
+  }
+
+  const wipeRoot = await mkdtemp(path.join(os.tmpdir(), 'nyt-wipe-'))
+  const dataDir = path.join(wipeRoot, 'store', 'nyt-tv-100')
+  const projectData = path.join(wipeRoot, 'project', '.data', 'nyt-tv-100')
+  const unsafe = path.join(wipeRoot, 'not-the-store')
+  try {
+    const wipeStore = createFileVoteStore(dataDir)
+    await wipeStore.putVote(voteRecord('nate', 1, 'want', new Date('2026-09-29T12:00:00.000Z')))
+    await wipeStore.putVote(voteRecord('jen', 2, 'skip', new Date('2026-09-29T12:00:00.000Z')))
+    await wipeStore.putVote(voteRecord('user_clerk', 3, 'want', new Date('2026-09-29T12:00:00.000Z')))
+    const invited = await requestPair(wipeStore, { userId: 'user_clerk', email: 'a@example.com' }, 'b@example.com')
+    check('wipe fixture has a pending invite', invited.ok && (await wipeStore.listPairs()).length === 1)
+    await mkdir(projectData, { recursive: true })
+    await writeFile(path.join(projectData, 'votes-leftover.json'), '{}')
+    await mkdir(unsafe, { recursive: true })
+    await writeFile(path.join(unsafe, 'keep.txt'), 'keep')
+
+    const deleted: string[][] = []
+    const pages = [
+      {
+        blobs: [
+          { pathname: 'nyt-tv-100/votes/nate/1.json', url: 'https://blob.example/nate' },
+          { pathname: 'nyt-tv-100/votes/jen/2.json', url: 'https://blob.example/jen' },
+          { pathname: 'other-app/secret.json', url: 'https://blob.example/secret' },
+        ],
+        hasMore: true,
+        cursor: 'next',
+      },
+      {
+        blobs: [
+          { pathname: 'nyt-tv-100/pairs/pair_old.json', url: 'https://blob.example/pair' },
+          { pathname: 'nyt-tv-100/digest-sent.json', url: 'https://blob.example/digest' },
+        ],
+        hasMore: false,
+      },
+    ]
+    let pageIndex = 0
+    const blob = {
+      async list() {
+        const page = pages[pageIndex]
+        pageIndex += 1
+        return page ?? { blobs: [], hasMore: false }
+      },
+      async del(urls: string[]) {
+        deleted.push(urls)
+      },
+    }
+    const dirs = [dataDir, projectData, unsafe]
+    const dry = await wipeNytTvState({ dryRun: true, token: 'token', fileDirs: dirs, blob })
+    check(
+      'dry-run lists legacy and current blob keys and deletes nothing',
+      dry.blobDeleted === 0 &&
+        deleted.length === 0 &&
+        dry.blobPathnames.includes('nyt-tv-100/votes/nate/1.json') &&
+        dry.blobPathnames.includes('nyt-tv-100/votes/jen/2.json') &&
+        dry.blobPathnames.includes('nyt-tv-100/pairs/pair_old.json') &&
+        dry.blobPathnames.includes('nyt-tv-100/digest-sent.json') &&
+        !dry.blobPathnames.includes('other-app/secret.json') &&
+        (await wipeStore.listVotes()).length === 3 &&
+        (await wipeStore.listPairs()).length === 1
+    )
+    pageIndex = 0
+    const wiped = await wipeNytTvState({ dryRun: false, token: 'token', fileDirs: dirs, blob })
+    const removedUrls = deleted.flat()
+    let dataGone = false
+    try {
+      await access(dataDir)
+    } catch {
+      dataGone = true
+    }
+    let projectGone = false
+    try {
+      await access(projectData)
+    } catch {
+      projectGone = true
+    }
+    let unsafeKept = false
+    try {
+      await access(path.join(unsafe, 'keep.txt'))
+      unsafeKept = true
+    } catch {
+      unsafeKept = false
+    }
+    check(
+      'wipe deletes the nyt-tv-100 prefix, file fallbacks, and nothing else',
+      wiped.blobDeleted === 4 &&
+        removedUrls.includes('https://blob.example/nate') &&
+        removedUrls.includes('https://blob.example/jen') &&
+        !removedUrls.includes('https://blob.example/secret') &&
+        dataGone &&
+        projectGone &&
+        unsafeKept &&
+        wiped.fileDirs.some((dir) => dir.skipped != null)
+    )
+    const layout = defaultFileStateDirs('/app', { NYT_TV_DATA_DIR: '/custom/nyt-tv-100' })
+    check(
+      'file wipe covers .data, /tmp, and NYT_TV_DATA_DIR',
+      layout.includes(path.resolve('/app/.data/nyt-tv-100')) &&
+        layout.includes(path.resolve('/tmp/nyt-tv-100')) &&
+        layout.includes(path.resolve('/custom/nyt-tv-100'))
+    )
+  } finally {
+    await rm(wipeRoot, { recursive: true, force: true })
   }
 
   const previousSecret = process.env.CRON_SECRET
