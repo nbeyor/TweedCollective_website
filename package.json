@@ -14,6 +14,7 @@
     "test:intake": "tsx scripts/test-strategist-intake.ts",
     "test:grounding": "tsx scripts/test-strategist-grounding.ts",
     "test:grex-mms": "tsx scripts/test-grex-mms.ts",
+    "test:nyt-tv": "tsx scripts/test-nyt-tv.ts",
     "lint": "next lint"
   },
   "dependencies": {

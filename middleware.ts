@@ -1,4 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { cronRequestAuthorized } from "@/lib/nyt-tv/cronAuth";
+
+/** Cron has no Clerk session. Admitted only with Bearer CRON_SECRET — not a public page. */
+const NYT_TV_DIGEST_PATH = "/api/clients/nyt-tv-100/digest";
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -32,6 +36,13 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  if (
+    req.nextUrl.pathname === NYT_TV_DIGEST_PATH &&
+    cronRequestAuthorized(req.headers.get("authorization"))
+  ) {
+    return;
+  }
+
   // Protect all routes except public ones
   if (!isPublicRoute(req)) {
     await auth.protect();

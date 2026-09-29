@@ -1,0 +1,715 @@
+{
+  "title": "NYT 100 Best TV Shows of the 21st Century",
+  "source": "New York Times industry poll (Sep 2026); shows premiered on/after 2000-01-01",
+  "public_list_url": "https://www.inkl.com/news/nyt-names-100-best-tv-shows-of-the-21st-century-check-full-list",
+  "owner_flags_note": "status/notes are Nate Beyor's Personal Admin checklist as of 2026-09-27; only ranks 1-20 decided; 21-100 still unchecked",
+  "status_values": [
+    "seen",
+    "partial",
+    "not_seen",
+    "skip",
+    "unchecked"
+  ],
+  "shows": [
+    {
+      "rank": 1,
+      "title": "Breaking Bad",
+      "description": "A New Mexico chemistry teacher with cancer turns to cooking meth to secure his family's future.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 2,
+      "title": "The Wire",
+      "description": "An ensemble crime epic that maps Baltimore through cops, dealers, schools, politics, and the press.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 3,
+      "title": "Mad Men",
+      "description": "1960s Madison Avenue ad men chase clients, status, and identity as America remakes itself.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 4,
+      "title": "Succession",
+      "description": "A media dynasty's heirs claw for control as their ruthless father refuses to let go.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 5,
+      "title": "Fleabag",
+      "description": "A wry London woman breaks the fourth wall while navigating grief, desire, and family chaos.",
+      "status": "partial",
+      "notes": "Started; keep on watchlist"
+    },
+    {
+      "rank": 6,
+      "title": "Game of Thrones",
+      "description": "Noble houses battle for the Iron Throne in a fantasy world of betrayal, dragons, and winter.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 7,
+      "title": "Veep",
+      "description": "A foul-mouthed U.S. vice president and her staff scramble through political farce and failure.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 8,
+      "title": "30 Rock",
+      "description": "A sketch-show showrunner juggles NBC chaos, eccentric stars, and corporate absurdity.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 9,
+      "title": "Curb Your Enthusiasm",
+      "description": "Larry David plays a heightened version of himself, turning social etiquette into endless conflict.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 10,
+      "title": "Atlanta",
+      "description": "A Princeton dropout manages his cousin's rap career in a surreal, sharp portrait of Black Atlanta.",
+      "status": "partial",
+      "notes": "Mostly seen; Nate would finish, Jen would not"
+    },
+    {
+      "rank": 11,
+      "title": "The Office (U.S.)",
+      "description": "A mockumentary about the awkward staff of a Scranton paper company and their clueless boss.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 12,
+      "title": "Arrested Development",
+      "description": "A wealthy family collapses into schemes and secrets after the patriarch is jailed for fraud.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 13,
+      "title": "Girls",
+      "description": "Four young women in New York stumble through work, sex, friendship, and growing up.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 14,
+      "title": "Friday Night Lights",
+      "description": "A Texas high-school football town lives and breathes every Friday under the lights.",
+      "status": "not_seen",
+      "notes": ""
+    },
+    {
+      "rank": 15,
+      "title": "Six Feet Under",
+      "description": "A dysfunctional L.A. funeral-home family grapples with death, love, and who they want to be.",
+      "status": "seen",
+      "notes": "Would revisit"
+    },
+    {
+      "rank": 16,
+      "title": "The Office (U.K.)",
+      "description": "Ricky Gervais's original mockumentary about a bleak British office and its desperate manager.",
+      "status": "skip",
+      "notes": "Won't watch"
+    },
+    {
+      "rank": 17,
+      "title": "The Americans",
+      "description": "Two Soviet spies pose as a suburban American couple while raising kids who don't know the truth.",
+      "status": "seen",
+      "notes": ""
+    },
+    {
+      "rank": 18,
+      "title": "I May Destroy You",
+      "description": "A writer rebuilds her life and art after a sexual assault she can't fully remember.",
+      "status": "not_seen",
+      "notes": ""
+    },
+    {
+      "rank": 19,
+      "title": "Chernobyl",
+      "description": "A limited series on the 1986 nuclear disaster and the covers-ups that made it worse.",
+      "status": "not_seen",
+      "notes": ""
+    },
+    {
+      "rank": 20,
+      "title": "The Crown",
+      "description": "A dramatized chronicle of Queen Elizabeth II's reign and the private costs of public duty.",
+      "status": "skip",
+      "notes": "Doubt he'd watch"
+    },
+    {
+      "rank": 21,
+      "title": "The White Lotus",
+      "description": "Vacationers at a luxury resort collide in dark comedy about class, privilege, and desire.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 22,
+      "title": "Lost",
+      "description": "Plane-crash survivors on a mysterious island face monsters, flashbacks, and each other.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 23,
+      "title": "The Comeback",
+      "description": "A faded sitcom star claws back into Hollywood in a cringe-comedy of fame and humiliation.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 24,
+      "title": "Deadwood",
+      "description": "A lawless Dakota gold camp builds itself into a town through violence, deals, and dirty talk.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 25,
+      "title": "The Leftovers",
+      "description": "After 2% of the world's people vanish, the leftover struggle with faith, grief, and meaning.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 26,
+      "title": "Black Mirror",
+      "description": "Anthology stories about technology's dark, twisted edges and what we do with it.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 27,
+      "title": "Better Call Saul",
+      "description": "Jimmy McGill's slow-burn transformation into criminal lawyer Saul Goodman before Breaking Bad.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 28,
+      "title": "Band of Brothers",
+      "description": "A WWII miniseries following Easy Company from training through Europe to war's end.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 29,
+      "title": "Key & Peele",
+      "description": "Sketch comedy that skewers race, politics, and pop culture with surgical absurdity.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 30,
+      "title": "Severance",
+      "description": "Office workers surgically split work and home selves, then start asking what the company hides.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 31,
+      "title": "Survivor",
+      "description": "Castaways compete in challenges and alliances until one is the sole survivor.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 32,
+      "title": "Andor",
+      "description": "A Star Wars spy thriller about how ordinary people become rebels against the Empire.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 33,
+      "title": "Enlightened",
+      "description": "A corporate whistleblower tries to remake her life and company after a very public meltdown.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 34,
+      "title": "Schitt's Creek",
+      "description": "A rich family loses everything and rebuilds in a tiny town they once bought as a joke.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 35,
+      "title": "True Detective (Season 1)",
+      "description": "Two Louisiana detectives hunt a ritual killer across years of obsession and damaged lives.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 36,
+      "title": "The Pitt",
+      "description": "A high-pressure hospital drama tracking one chaotic ER shift and the people holding it together.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 37,
+      "title": "Battlestar Galactica",
+      "description": "Survivors of a robot apocalypse flee through space while debating what it means to be human.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 38,
+      "title": "Homeland",
+      "description": "A bipolar CIA officer suspects a rescued POW has been turned into a terrorist asset.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 39,
+      "title": "Watchmen",
+      "description": "A remix of the comic that digs into American racism, power, and masked vigilantism.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 40,
+      "title": "Adolescence",
+      "description": "A contemporary drama centered on teenage life, identity, and the pressures of growing up.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 41,
+      "title": "Louie",
+      "description": "Louis C.K.'s semi-autobiographical comedy about stand-up, parenting, and awkward encounters.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 42,
+      "title": "Hacks",
+      "description": "A legendary comic and a young writer forge a prickly partnership in the Vegas comedy world.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 43,
+      "title": "Peaky Blinders",
+      "description": "A post-WWI Birmingham gang rises from the streets into organized crime and politics.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 44,
+      "title": "BoJack Horseman",
+      "description": "An animated washed-up sitcom horse confronts depression, fame, and whether people can change.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 45,
+      "title": "Happy Valley",
+      "description": "A Yorkshire police sergeant hunts criminals while protecting her family from old wounds.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 46,
+      "title": "Broad City",
+      "description": "Two best friends bounce through New York in a chaotic, affectionate comedy of millennial life.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 47,
+      "title": "Twin Peaks: The Return",
+      "description": "David Lynch revisits Twin Peaks decades later in a surreal, unsettling continuation.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 48,
+      "title": "House of Cards",
+      "description": "A ruthless politician and his wife climb Washington's ladder through manipulation and murder.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 49,
+      "title": "Normal People",
+      "description": "Two Irish teens fall into an intense, on-and-off romance from school through university.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 50,
+      "title": "Parks and Recreation",
+      "description": "An earnest parks official and her quirky colleagues try to make a small town better.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 51,
+      "title": "The Good Place",
+      "description": "A woman wakes in the afterlife and must learn what it actually means to be a good person.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 52,
+      "title": "Downton Abbey",
+      "description": "An English aristocratic household and its servants navigate class and change before WWII.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 53,
+      "title": "Stranger Things",
+      "description": "1980s kids in Indiana battle supernatural horrors from a parallel dimension.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 54,
+      "title": "The Bureau",
+      "description": "French intelligence officers run covert ops abroad while their private lives unravel at home.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 55,
+      "title": "Insecure",
+      "description": "A young Black woman in L.A. navigates friendship, dating, and figuring herself out.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 56,
+      "title": "Nathan for You",
+      "description": "A fake business consultant pitches absurd \"improvements\" to real small businesses.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 57,
+      "title": "I Think You Should Leave",
+      "description": "Short, chaotic sketch comedy that escalates ordinary situations into pure nonsense.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 58,
+      "title": "Chappelle's Show",
+      "description": "Dave Chappelle's sketch series that became a cultural phenomenon in the early 2000s.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 59,
+      "title": "PEN15",
+      "description": "Two adult actresses play seventh-graders in a painfully funny middle-school comedy.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 60,
+      "title": "Peep Show",
+      "description": "A British sitcom filmed POV-style as two flatmates spiral through social anxiety and bad choices.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 61,
+      "title": "RuPaul's Drag Race",
+      "description": "Drag queens compete in challenges and runways for the crown of America's Next Drag Superstar.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 62,
+      "title": "Slow Horses",
+      "description": "Misfit MI5 agents in a dead-end department stumble into real, dangerous spy work.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 63,
+      "title": "The Thick of It",
+      "description": "A blistering British political satire about spin, incompetence, and verbal warfare.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 64,
+      "title": "Anthony Bourdain: Parts Unknown",
+      "description": "Bourdain travels the world through food, culture, and the stories people tell at the table.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 65,
+      "title": "Mare of Easttown",
+      "description": "A small-town Pennsylvania detective investigates a murder while her own life falls apart.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 66,
+      "title": "The Rehearsal",
+      "description": "Nathan Fielder builds elaborate rehearsals to help people practice high-stakes real-life moments.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 67,
+      "title": "The Handmaid's Tale",
+      "description": "In a theocratic dystopia, fertile women are forced into reproductive slavery.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 68,
+      "title": "Ozark",
+      "description": "A financial advisor launders cartel money in the Missouri Ozarks and drags his family under.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 69,
+      "title": "Anthony Bourdain: No Reservations",
+      "description": "Bourdain's earlier travel series eating his way through cities and cultures worldwide.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 70,
+      "title": "The Shield",
+      "description": "A corrupt strike-team cop and his crew blur every line while policing L.A.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 71,
+      "title": "Beef (Season 1)",
+      "description": "A road-rage encounter spirals into an obsession that consumes two strangers' lives.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 72,
+      "title": "Squid Game",
+      "description": "Desperate contestants play deadly children's games for a massive cash prize in South Korea.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 73,
+      "title": "Barry",
+      "description": "A hitman takes an acting class and discovers he might prefer the stage to murder.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 74,
+      "title": "The Bear",
+      "description": "A fine-dining chef inherits his family's chaotic Chicago sandwich shop and tries to save it.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 75,
+      "title": "Ted Lasso",
+      "description": "An relentlessly optimistic American coaches a struggling English soccer club.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 76,
+      "title": "Somebody Somewhere",
+      "description": "A woman returns to Kansas and finds unexpected community, grief, and belonging.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 77,
+      "title": "Modern Family",
+      "description": "Three related households collide in a warm mockumentary sitcom about contemporary family life.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 78,
+      "title": "It's Always Sunny in Philadelphia",
+      "description": "Five narcissistic friends run a dive bar and invent new ways to be terrible people.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 79,
+      "title": "The Good Wife",
+      "description": "A politician's wife returns to law practice after a public sex scandal destroys their life.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 80,
+      "title": "How To with John Wilson",
+      "description": "John Wilson wanders New York with a camera, turning mundane how-tos into odd human portraits.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 81,
+      "title": "The Queen's Gambit",
+      "description": "An orphaned chess prodigy rises through the male-dominated 1960s chess world while fighting addiction.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 82,
+      "title": "Better Things",
+      "description": "A single-mom actress juggles daughters, career, and the mess of everyday life.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 83,
+      "title": "Justified",
+      "description": "A U.S. Marshal returns to Kentucky and crosses paths with criminals who know him too well.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 84,
+      "title": "Planet Earth",
+      "description": "Landmark nature documentary series capturing wildlife and landscapes across the globe.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 85,
+      "title": "The Great British Baking Show",
+      "description": "Amateur bakers compete in a tent with cakes, pastry, and polite British tension.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 86,
+      "title": "Shogun",
+      "description": "An English sailor washes into feudal Japan and is pulled into a war for the shogunate.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 87,
+      "title": "Reservation Dogs",
+      "description": "Indigenous teens on a reservation scheme, grieve, and chase a way out\u2014or a way through.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 88,
+      "title": "Dexter",
+      "description": "A blood-spatter analyst moonlights as a serial killer who only targets other killers.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 89,
+      "title": "Baby Reindeer",
+      "description": "A comedian is stalked after a small kindness, in a raw story drawn from real events.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 90,
+      "title": "Eastbound & Down",
+      "description": "A washed-up MLB pitcher returns home as a gym teacher and refuses to accept obscurity.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 91,
+      "title": "Catastrophe",
+      "description": "A fling becomes a relationship when an American and an Irish woman get unexpectedly pregnant.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 92,
+      "title": "The Night Of",
+      "description": "A young man accused of murder navigates Rikers and a grinding New York criminal case.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 93,
+      "title": "Station Eleven",
+      "description": "After a flu collapses civilization, a traveling theater troupe and survivors cling to art and memory.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 94,
+      "title": "The Diplomat",
+      "description": "A U.S. ambassador to the U.K. juggles crises, marriage, and Washington power games.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 95,
+      "title": "House",
+      "description": "A brilliant, abrasive diagnostician solves medical mysteries no one else can.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 96,
+      "title": "Halt and Catch Fire",
+      "description": "Ambitious misfits chase the next computing revolution through the 1980s and '90s.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 97,
+      "title": "Community",
+      "description": "A disbarred lawyer joins a study group at a ridiculous community college.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 98,
+      "title": "The OA",
+      "description": "A blind woman returns with her sight and a story of captivity, near-death, and another dimension.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 99,
+      "title": "Gilmore Girls",
+      "description": "A mother and daughter navigate life, love, and witty banter in a quirky Connecticut town.",
+      "status": "unchecked",
+      "notes": ""
+    },
+    {
+      "rank": 100,
+      "title": "Scandal",
+      "description": "A D.C. fixer and her team manage crises for the powerful while hiding plenty of their own.",
+      "status": "unchecked",
+      "notes": ""
+    }
+  ]
+}
