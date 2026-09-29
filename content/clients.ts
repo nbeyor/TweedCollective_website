@@ -76,6 +76,22 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
     ],
   },
   {
+    // Weekend utility for two people. The page itself allows NYT_TV_NATE_EMAIL
+    // and NYT_TV_JEN_EMAIL — it does not use the clientSlugs grant. The entry
+    // is here so the link shows up in an admin's workspace list.
+    slug: 'nyt-tv-100',
+    name: 'NYT 100 TV',
+    deliverables: [
+      {
+        title: 'Watchlist swipe',
+        description: 'Nate and Jen mark the NYT 100. Right is want, left is skip.',
+        href: '/clients/nyt-tv-100',
+        kind: 'dashboard',
+        date: '2026-09',
+      },
+    ],
+  },
+  {
     // Prototype workspace: clickable demo of the GREX consumer fact-checking
     // product — three surface simulations (browser, screenshot, MCP), a
     // shared explanation page, brand exploration, and a live verify endpoint.

@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 export default function SignInPage() {
   const searchParams = useSearchParams()
   const redirectUrl = searchParams.get('redirect_url') || '/insights'
+  const signUpUrl = `/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`
 
   return (
     <div className="pt-28 min-h-screen flex items-center justify-center bg-void">
@@ -18,7 +19,7 @@ export default function SignInPage() {
           <div className="bg-cream rounded-2xl p-8 shadow-xl border border-stone/20">
             <SignIn 
               fallbackRedirectUrl={redirectUrl}
-              signUpUrl="/sign-up"
+              signUpUrl={signUpUrl}
               appearance={{
                 elements: {
                   rootBox: "mx-auto w-full",
