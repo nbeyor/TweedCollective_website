@@ -27,16 +27,73 @@ export function PairHeader(props: PairHeaderProps) {
   }
 
   return (
-    <PairHeaderView
-      {...props}
-      onCreate={postEmail}
-      onUnpair={async () => {
-        const res = await fetch('/api/clients/nyt-tv-100/pair', { method: 'DELETE' })
-        const body = (await res.json().catch(() => null)) as { error?: string } | null
-        if (!res.ok) throw new Error(body?.error || 'Could not unpair.')
-        router.refresh()
-      }}
-    />
+    <PairHeaderBoundary {...props}>
+      <PairHeaderView
+        {...props}
+        onCreate={postEmail}
+        onUnpair={async () => {
+          const res = await fetch('/api/clients/nyt-tv-100/pair', { method: 'DELETE' })
+          const body = (await res.json().catch(() => null)) as { error?: string } | null
+          if (!res.ok) throw new Error(body?.error || 'Could not unpair.')
+          router.refresh()
+        }}
+      />
+    </PairHeaderBoundary>
+  )
+}
+
+/**
+ * Mobile Safari throws NotFoundError if React removes the email field while it
+ * is focused or autofilled. That commit error hits the root error boundary and
+ * blanks the page, including the deck. Keep the failure inside the header.
+ */
+export class PairHeaderBoundary extends React.Component<
+  PairHeaderProps & { children: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false }
+
+  static getDerivedStateFromError(): { failed: boolean } {
+    return { failed: true }
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error('[nyt-tv-100] pair header failed', error)
+  }
+
+  render() {
+    if (this.state.failed) {
+      const { children: _children, ...props } = this.props
+      return <PairHeaderFallback {...props} />
+    }
+    return this.props.children
+  }
+}
+
+function PairHeaderFallback({ viewerEmail, status, partnerEmail, invitePath }: PairHeaderProps) {
+  const title =
+    status === 'active' && partnerEmail
+      ? `Paired with ${partnerEmail}`
+      : status === 'incoming' && partnerEmail
+        ? `${partnerEmail} asked to pair`
+        : status === 'pending' && partnerEmail
+          ? `Waiting for ${partnerEmail} to join`
+          : 'Invite your partner'
+  const body =
+    status === 'pending'
+      ? "You're not paired yet. You can swipe now."
+      : `You're signed in as ${viewerEmail}. You can swipe now.`
+  return (
+    <section className="sticky top-0 z-30 border-b border-slate/80 bg-void/95 px-4 py-4 backdrop-blur">
+      <div className="mx-auto w-full max-w-lg">
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">Your pair</p>
+        <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">{title}</h1>
+        <p className="mt-1 text-sm text-stone">{body}</p>
+        {status === 'pending' && invitePath ? (
+          <p className="mt-3 break-all font-mono text-xs text-cream">{invitePath}</p>
+        ) : null}
+      </div>
+    </section>
   )
 }
 
@@ -106,6 +163,8 @@ export function PairHeaderView({
     }
   }
 
+  const showPending = status === 'pending' && Boolean(partnerEmail)
+
   async function copyLink() {
     if (!link) return
     try {
@@ -149,14 +208,28 @@ export function PairHeaderView({
               {busy ? 'Confirming' : 'Confirm'}
             </button>
           </>
-        ) : status === 'pending' && partnerEmail ? (
+        ) : (
+          // Solo and pending share this tree. Invite success used to swap in a
+          // new form, and mobile Safari threw NotFoundError while removing the
+          // focused email field. That became the root client-side exception.
           <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Waiting for {partnerEmail} to join</h1>
+            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">
+              {showPending && partnerEmail ? `Waiting for ${partnerEmail} to join` : 'Invite your partner'}
+            </h1>
             <p className="mt-1 text-sm text-stone">
-              You&apos;re not paired yet. The pair starts on their first visit after they verify this email and have
-              access. You can swipe now.
+              {showPending ? (
+                <>
+                  You&apos;re not paired yet. The pair starts on their first visit after they verify this email and have
+                  access. You can swipe now.
+                </>
+              ) : (
+                <>
+                  Enter their email. If they already have access, you are paired now. Otherwise this waits until they
+                  join. You&apos;re signed in as {viewerEmail}.
+                </>
+              )}
             </p>
-            <div className="mt-3 flex items-center gap-2">
+            <div className={`mt-3 items-center gap-2 ${showPending ? 'flex' : 'hidden'}`}>
               <input
                 readOnly
                 value={link}
@@ -173,39 +246,8 @@ export function PairHeaderView({
               </button>
             </div>
             <form onSubmit={(event) => void onSubmit(event)} className="mt-3 flex items-center gap-2">
-              <label className="sr-only" htmlFor="replace-partner-email">
-                Different partner email
-              </label>
-              <input
-                id="replace-partner-email"
-                type="email"
-                required
-                autoComplete="email"
-                inputMode="email"
-                placeholder="Different email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="h-10 min-w-0 flex-1 rounded-xl border border-slate bg-carbon px-3 text-sm text-cream placeholder:text-stone"
-              />
-              <button
-                type="submit"
-                disabled={busy}
-                className="h-10 shrink-0 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40"
-              >
-                {busy ? 'Updating' : 'Update invite'}
-              </button>
-            </form>
-          </>
-        ) : (
-          <>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-cream">Invite your partner</h1>
-            <p className="mt-1 text-sm text-stone">
-              Enter their email. If they already have access, you are paired now. Otherwise this waits until they join.
-              You&apos;re signed in as {viewerEmail}.
-            </p>
-            <form onSubmit={(event) => void onSubmit(event)} className="mt-3 flex items-center gap-2">
               <label className="sr-only" htmlFor="partner-email">
-                Partner email
+                {showPending ? 'Different partner email' : 'Partner email'}
               </label>
               <input
                 id="partner-email"
@@ -213,17 +255,21 @@ export function PairHeaderView({
                 required
                 autoComplete="email"
                 inputMode="email"
-                placeholder="partner@email.com"
+                placeholder={showPending ? 'Different email' : 'partner@email.com'}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="h-11 min-w-0 flex-1 rounded-xl border border-slate bg-carbon px-3 text-sm text-cream placeholder:text-stone"
+                className={`min-w-0 flex-1 rounded-xl border border-slate bg-carbon px-3 text-sm text-cream placeholder:text-stone ${showPending ? 'h-10' : 'h-11'}`}
               />
               <button
                 type="submit"
                 disabled={busy}
-                className="h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40"
+                className={
+                  showPending
+                    ? 'h-10 shrink-0 rounded-xl border border-slate px-3 text-sm text-stone disabled:opacity-40'
+                    : 'h-11 shrink-0 rounded-xl bg-sage px-4 text-sm font-medium text-cream disabled:opacity-40'
+                }
               >
-                {busy ? 'Sending' : 'Invite'}
+                {busy ? (showPending ? 'Updating' : 'Sending') : showPending ? 'Update invite' : 'Invite'}
               </button>
             </form>
           </>
