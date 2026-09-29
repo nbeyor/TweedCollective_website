@@ -2,10 +2,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { DeckShow, ProfileId, VoteChoice, VoteRecord } from '@/lib/nyt-tv/types'
+import type { DeckShow, VoteChoice, VoteRecord } from '@/lib/nyt-tv/types'
 
 interface SwipeDeckProps {
-  profileId: ProfileId
+  userId: string
+  pairId: string
   profileLabel: string
   shows: DeckShow[]
   initialVotes: VoteRecord[]
@@ -21,7 +22,7 @@ function toMap(votes: VoteRecord[]): VoteMap {
   return map
 }
 
-export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persistence, source }: SwipeDeckProps) {
+export function SwipeDeck({ userId, pairId, profileLabel, shows, initialVotes, persistence, source }: SwipeDeckProps) {
   const [votes, setVotes] = useState<VoteMap>(() => toMap(initialVotes))
   const [view, setView] = useState<'deck' | 'list'>('deck')
   const [dx, setDx] = useState(0)
@@ -76,7 +77,8 @@ export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persis
       setVotes((currentVotes) => ({
         ...currentVotes,
         [rank]: {
-          profileId,
+          userId,
+          pairId,
           showRank: rank,
           vote,
           updatedAt: new Date().toISOString(),
@@ -104,7 +106,7 @@ export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persis
         unlock()
       }
     },
-    [profileId, unlock]
+    [pairId, unlock, userId]
   )
 
   const undo = useCallback(async (rank?: number) => {
@@ -271,7 +273,7 @@ export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persis
       )}
 
       {view === 'deck' ? (
-        <div className="relative mx-auto h-[min(440px,calc(100dvh-17rem))] min-h-[320px] w-full max-w-md">
+        <div className="relative mx-auto h-[min(560px,calc(100dvh-15rem))] min-h-[420px] w-full max-w-md">
           <div className="absolute inset-x-3 top-3 bottom-2 rounded-3xl border border-slate bg-graphite" />
           {current ? (
             <div
@@ -287,21 +289,34 @@ export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persis
                   transform,
                   transition: dragging ? 'none' : 'transform 180ms ease',
                 }}
+                aria-labelledby="nyt-card-title"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-mono text-xs tracking-[0.14em] text-sage">#{current.rank}</p>
+                <div className="min-h-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 id="nyt-card-title" className="text-balance text-[2rem] font-semibold leading-[1.1] tracking-tight text-charcoal">
+                      {current.title}
+                    </h2>
                     {current.ownerBadge && (
-                      <span className="rounded-full bg-sage/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-sage">
+                      <span className="mt-1 shrink-0 rounded-full bg-sage/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-sage">
                         {current.ownerBadge}
                       </span>
                     )}
                   </div>
-                  <h2 className="mt-4 text-[1.75rem] font-semibold leading-tight tracking-tight">{current.title}</h2>
-                  <p className="mt-3 text-base leading-relaxed text-charcoal/80">{current.description}</p>
+                  <p className="mt-2 font-mono text-[11px] tracking-[0.14em] text-sage">#{current.rank}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-charcoal/70">{current.description}</p>
+                  <dl className="mt-4 space-y-2.5 border-t border-charcoal/10 pt-4">
+                    <div className="grid grid-cols-[2.5rem_1fr] gap-x-2">
+                      <dt className="pt-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-sage">Pro</dt>
+                      <dd className="text-sm leading-snug text-charcoal/90">{current.reviewPro}</dd>
+                    </div>
+                    <div className="grid grid-cols-[2.5rem_1fr] gap-x-2">
+                      <dt className="pt-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-rust">Con</dt>
+                      <dd className="text-sm leading-snug text-charcoal/90">{current.reviewCon}</dd>
+                    </div>
+                  </dl>
                   {current.ownerNotes && <p className="mt-4 text-sm italic text-charcoal/60">{current.ownerNotes}</p>}
                 </div>
-                <div className="flex items-center justify-between text-xs font-medium uppercase tracking-[0.14em]">
+                <div className="mt-4 flex items-center justify-between text-xs font-medium uppercase tracking-[0.14em]">
                   <span className={dx < -24 ? 'text-rust' : 'text-charcoal/35'}>Skip</span>
                   <span className={dx > 24 ? 'text-sage' : 'text-charcoal/35'}>Want</span>
                 </div>
@@ -316,7 +331,9 @@ export function SwipeDeck({ profileId, profileLabel, shows, initialVotes, persis
             </div>
           )}
           <p className="sr-only" aria-live="polite">
-            {current ? `${current.rank}. ${current.title}. ${current.description}` : 'All shows reviewed.'}
+            {current
+              ? `${current.title}. Rank ${current.rank}. ${current.description} Pro: ${current.reviewPro} Con: ${current.reviewCon}`
+              : 'All shows reviewed.'}
           </p>
         </div>
       ) : (

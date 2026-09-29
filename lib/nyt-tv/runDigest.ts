@@ -1,9 +1,9 @@
 import { Resend } from 'resend'
 
-import { digestRecipients } from './access'
 import { pacificDayKey } from './day'
 import { buildDigest, digestHtml, digestText, type Digest, type DigestScope } from './digest'
-import { getVoteStore } from './store'
+import type { PairRecord } from './pairs'
+import { getVoteStore, type VoteStore } from './store'
 
 export interface DigestRun {
   digest: Digest
@@ -14,6 +14,14 @@ export interface DigestRun {
   recipients: string[]
   persistence: 'blob' | 'file'
   lastSentAt: string | null
+}
+
+interface PairBundle {
+  pairId: string
+  digest: Digest
+  text: string
+  html: string
+  recipients: string[]
 }
 
 export function digestSendEnabled(env: Record<string, string | undefined> = process.env): boolean {
@@ -30,53 +38,102 @@ export function digestDryRunReason(env: Record<string, string | undefined> = pro
   return null
 }
 
-export async function composeDigest(scope: DigestScope = 'since-last', now = new Date()): Promise<{
+function bundleFor(pair: PairRecord, votes: Awaited<ReturnType<VoteStore['listVotes']>>, scope: DigestScope, now: Date, lastSentAt: string | null): PairBundle {
+  const digest = buildDigest({
+    dayKey: pacificDayKey(now),
+    generatedAt: now.toISOString(),
+    votes: votes.filter((vote) => vote.pairId === pair.id),
+    members: pair.members.map((member) => ({ userId: member.userId, label: member.email })),
+    lastSentAt,
+    scope,
+  })
+  return {
+    pairId: pair.id,
+    digest,
+    text: digestText(digest),
+    html: digestHtml(digest),
+    recipients: pair.members.map((member) => member.email),
+  }
+}
+
+export async function composeDigestForPair(
+  pair: PairRecord | null,
+  scope: DigestScope = 'since-last',
+  now = new Date()
+): Promise<{
   digest: Digest
   text: string
   html: string
+  recipients: string[]
   lastSentAt: string | null
   persistence: 'blob' | 'file'
 }> {
   const store = getVoteStore()
   const marker = await store.getDigestSent()
-  const votes = await store.listVotes()
-  const digest = buildDigest({
-    dayKey: pacificDayKey(now),
-    generatedAt: now.toISOString(),
-    votes,
-    lastSentAt: marker?.sentAt ?? null,
-    scope,
-  })
-  return {
-    digest,
-    text: digestText(digest),
-    html: digestHtml(digest),
-    lastSentAt: marker?.sentAt ?? null,
-    persistence: store.kind,
+  const lastSentAt = marker?.sentAt ?? null
+  if (!pair) {
+    const digest = buildDigest({
+      dayKey: pacificDayKey(now),
+      generatedAt: now.toISOString(),
+      votes: [],
+      members: [],
+      lastSentAt,
+      scope,
+    })
+    return {
+      digest,
+      text: digestText(digest),
+      html: digestHtml(digest),
+      recipients: [],
+      lastSentAt,
+      persistence: store.kind,
+    }
   }
+  const votes = await store.listVotes()
+  const bundle = bundleFor(pair, votes, scope, now, lastSentAt)
+  return { ...bundle, lastSentAt, persistence: store.kind }
 }
 
 /**
- * Builds the digest and either sends it or logs it.
- * A dry run does not advance the "last sent" marker, so a later real send
- * still includes those swipes. An empty digest is logged and not mailed.
+ * One email per couple, only to that couple. A dry run does not advance the
+ * sent marker. No swipes means nothing is mailed.
  */
 export async function runDigest(options?: { scope?: DigestScope; now?: Date }): Promise<DigestRun> {
-  const composed = await composeDigest(options?.scope ?? 'since-last', options?.now ?? new Date())
-  const recipients = digestRecipients()
+  const store = getVoteStore()
+  const now = options?.now ?? new Date()
+  const scope = options?.scope ?? 'since-last'
+  const marker = await store.getDigestSent()
+  const lastSentAt = marker?.sentAt ?? null
+  const [pairs, votes] = await Promise.all([store.listPairs(), store.listVotes()])
+  const bundles = pairs
+    .map((pair) => bundleFor(pair, votes, scope, now, lastSentAt))
+    .filter((bundle) => bundle.digest.activityCount > 0)
+
+  const text = bundles.map((bundle) => bundle.text).join('\n\n') || 'No swipes in this digest.'
+  const html = bundles.map((bundle) => bundle.html).join('\n')
+  const recipients = Array.from(new Set(bundles.flatMap((bundle) => bundle.recipients)))
+  const digest = buildDigest({
+    dayKey: pacificDayKey(now),
+    generatedAt: now.toISOString(),
+    votes: bundles.flatMap((bundle) => votes.filter((vote) => vote.pairId === bundle.pairId)),
+    members: bundles.flatMap((bundle) => bundle.digest.profiles.map((profile) => ({ userId: profile.userId, label: profile.label }))),
+    lastSentAt,
+    scope,
+  })
+
   const base = {
-    digest: composed.digest,
-    text: composed.text,
-    html: composed.html,
+    digest,
+    text,
+    html,
     recipients,
-    persistence: composed.persistence,
-    lastSentAt: composed.lastSentAt,
+    persistence: store.kind,
+    lastSentAt,
   }
 
-  console.log(`[nyt-tv-100] digest persistence=${composed.persistence} activity=${composed.digest.activityCount}`)
-  console.log(composed.text)
+  console.log(`[nyt-tv-100] digest persistence=${store.kind} pairs=${bundles.length} activity=${digest.activityCount}`)
+  console.log(text)
 
-  if (composed.digest.activityCount === 0) {
+  if (digest.activityCount === 0) {
     return { ...base, mode: 'skipped', reason: 'No swipes in this digest. Nothing was emailed.' }
   }
 
@@ -91,26 +148,29 @@ export async function runDigest(options?: { scope?: DigestScope; now?: Date }): 
 
   const from = process.env.RESEND_FROM_EMAIL?.trim() || 'Tweed Collective <onboarding@resend.dev>'
   const resend = new Resend(process.env.RESEND_API_KEY)
-  const result = await resend.emails.send({
-    from,
-    to: recipients,
-    subject: `NYT 100 watchlist — ${composed.digest.dayLabel}`,
-    html: composed.html,
-    text: composed.text,
-  })
-
-  if (result.error) {
-    throw new Error(result.error.message || 'Resend rejected the digest')
+  const sentRecipients: string[] = []
+  for (const bundle of bundles) {
+    if (bundle.recipients.length === 0) continue
+    const result = await resend.emails.send({
+      from,
+      to: bundle.recipients,
+      subject: `NYT 100 watchlist — ${bundle.digest.dayLabel}`,
+      html: bundle.html,
+      text: bundle.text,
+    })
+    if (result.error) {
+      throw new Error(result.error.message || 'Resend rejected the digest')
+    }
+    sentRecipients.push(...bundle.recipients)
+    console.log(`[nyt-tv-100] digest emailed pair=${bundle.pairId} to ${bundle.recipients.join(', ')} id=${result.data?.id ?? 'unknown'}`)
   }
 
   const sentAt = new Date().toISOString()
-  await getVoteStore().markDigestSent({
+  await store.markDigestSent({
     sentAt,
-    dayKey: composed.digest.dayKey,
-    recipients,
+    dayKey: digest.dayKey,
+    recipients: sentRecipients,
   })
 
-  console.log(`[nyt-tv-100] digest emailed to ${recipients.join(', ')} id=${result.data?.id ?? 'unknown'}`)
-
-  return { ...base, mode: 'sent', reason: 'Emailed.', lastSentAt: sentAt }
+  return { ...base, recipients: sentRecipients, mode: 'sent', reason: 'Emailed.', lastSentAt: sentAt }
 }

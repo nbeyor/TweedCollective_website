@@ -76,16 +76,16 @@ export const CLIENT_CONFIGS: ClientConfig[] = [
     ],
   },
   {
-    // Weekend utility for two people. Admission is the normal client workspace
-    // grant: admins, or publicMetadata clientSlugs: ["nyt-tv-100"] (Jen gets
-    // that slug from the admin panel after signup). NYT_TV_JEN_EMAIL is the
-    // digest address and an optional profile hint, not the admission gate.
+    // Couples watchlist. Admission is the Clerk client grant (admins, or
+    // clientSlugs: ["nyt-tv-100"]). A partner who opens an invite link for
+    // their verified email is granted that slug. NYT_TV_JEN_EMAIL only
+    // bootstraps a pending invite for NYT_TV_NATE_EMAIL.
     slug: 'nyt-tv-100',
     name: 'NYT 100 TV',
     deliverables: [
       {
         title: 'Watchlist swipe',
-        description: 'Nate and Jen mark the NYT 100. Right is want, left is skip.',
+        description: 'Invite a partner and swipe the NYT 100. Right is want, left is skip.',
         href: '/clients/nyt-tv-100',
         kind: 'dashboard',
         date: '2026-09',

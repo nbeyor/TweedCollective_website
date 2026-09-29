@@ -1,6 +1,11 @@
 import { formatDayKey } from './day'
 import { allShows, type Show } from './shows'
-import { PROFILE_IDS, PROFILE_LABELS, type ProfileId, type VoteChoice, type VoteRecord } from './types'
+import type { VoteChoice, VoteRecord } from './types'
+
+export interface DigestMember {
+  userId: string
+  label: string
+}
 
 export interface DigestLine {
   rank: number
@@ -13,7 +18,7 @@ export interface DigestLine {
 }
 
 export interface ProfileDigest {
-  profileId: ProfileId
+  userId: string
   label: string
   wants: DigestLine[]
   skips: DigestLine[]
@@ -49,6 +54,7 @@ export function buildDigest(input: {
   dayKey: string
   generatedAt?: string
   votes: VoteRecord[]
+  members: DigestMember[]
   lastSentAt?: string | null
   scope?: DigestScope
   shows?: Show[]
@@ -60,29 +66,25 @@ export function buildDigest(input: {
   const byRank = new Map(shows.map((show) => [show.rank, show]))
   const included = input.votes.filter((vote) => voteInDigest(vote, dayKey, lastSentAt, scope))
 
-  const profiles = PROFILE_IDS.map((profileId) => {
+  const profiles = input.members.map((member) => {
     const lines = included
-      .filter((vote) => vote.profileId === profileId)
+      .filter((vote) => vote.userId === member.userId)
       .map((vote) => toLine(vote, byRank, dayKey))
       .filter((line): line is DigestLine => line !== null)
       .sort((a, b) => a.rank - b.rank)
     return {
-      profileId,
-      label: PROFILE_LABELS[profileId],
+      userId: member.userId,
+      label: member.label,
       wants: lines.filter((line) => line.vote === 'want'),
       skips: lines.filter((line) => line.vote === 'skip'),
     }
   })
 
-  const wantRanks = new Map<ProfileId, Set<number>>()
-  for (const profile of profiles) {
-    wantRanks.set(profile.profileId, new Set(profile.wants.map((line) => line.rank)))
-  }
-  const nateWants = wantRanks.get('nate') ?? new Set<number>()
-  const jenWants = wantRanks.get('jen') ?? new Set<number>()
-  const bothWanted = profiles
-    .find((profile) => profile.profileId === 'nate')
-    ?.wants.filter((line) => jenWants.has(line.rank) && nateWants.has(line.rank)) ?? []
+  const wantSets = profiles.map((profile) => new Set(profile.wants.map((line) => line.rank)))
+  const bothWanted =
+    profiles.length >= 2
+      ? profiles[0].wants.filter((line) => wantSets.every((set) => set.has(line.rank)))
+      : []
 
   const activityCount = profiles.reduce((sum, profile) => sum + profile.wants.length + profile.skips.length, 0)
 

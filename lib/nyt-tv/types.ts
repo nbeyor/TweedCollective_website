@@ -1,14 +1,15 @@
-export const PROFILE_IDS = ['nate', 'jen'] as const
-
-export type ProfileId = (typeof PROFILE_IDS)[number]
-
 export type VoteChoice = 'want' | 'skip'
 
 export type OwnerStatus = 'seen' | 'partial' | 'not_seen' | 'skip' | 'unchecked'
 
-/** One swipe. `dayKey` is the America/Los_Angeles calendar date of `updatedAt`. */
+/**
+ * One swipe. The show is `showRank` (NYT rank, stable). `userId` is the
+ * Clerk user, so two people never overwrite each other. `pairId` says which
+ * couple the swipe belongs to.
+ */
 export interface VoteRecord {
-  profileId: ProfileId
+  userId: string
+  pairId: string
   showRank: number
   vote: VoteChoice
   updatedAt: string
@@ -19,18 +20,13 @@ export interface DeckShow {
   rank: number
   title: string
   description: string
-  /** Nate's prior checklist label. Null for Jen, and for unchecked rows. */
+  /** One-line case for watching. */
+  reviewPro: string
+  /** One-line case for skipping. */
+  reviewCon: string
+  /** Nate's checklist label. Null for everyone else, and for unchecked rows. */
   ownerBadge: string | null
   ownerNotes: string | null
-}
-
-export const PROFILE_LABELS: Record<ProfileId, string> = {
-  nate: 'Nate',
-  jen: 'Jen',
-}
-
-export function isProfileId(value: unknown): value is ProfileId {
-  return value === 'nate' || value === 'jen'
 }
 
 export function isVoteChoice(value: unknown): value is VoteChoice {

@@ -1,14 +1,16 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { clerkClient, currentUser } from '@clerk/nextjs/server'
+import type { User } from '@clerk/nextjs/server'
 
 import { clientSlugsForUser, isAdminUser } from '@/lib/client-access'
 
 import { pacificDayKey } from './day'
-import { PROFILE_LABELS, type ProfileId, type VoteChoice, type VoteRecord } from './types'
+import { normalizeEmail } from './pairs'
+import type { VoteChoice, VoteRecord } from './types'
 
-/** Workspace slug. Admission is the normal Clerk client grant, same as Grex and eCS. */
+/** Workspace slug. Admission is the Clerk client grant from PR 117, same as Grex and eCS. */
 export const NYT_TV_CLIENT_SLUG = 'nyt-tv-100'
 
-/** Nate's verified Tweed address. Override with NYT_TV_NATE_EMAIL. */
+/** Optional bootstrap address. Not an admission gate and not a hardwired pair. */
 export const DEFAULT_NATE_EMAIL = 'nate.beyor@tweedcollective.ai'
 
 type Env = Record<string, string | undefined>
@@ -17,85 +19,75 @@ export function nateEmail(env: Env = process.env): string {
   return (env.NYT_TV_NATE_EMAIL || DEFAULT_NATE_EMAIL).trim().toLowerCase()
 }
 
-/** Jen's digest address. Optional profile hint. Not an admission gate. */
+/** Optional partner address for the env bootstrap invite. Not an admission gate. */
 export function jenEmail(env: Env = process.env): string | null {
-  const raw = env.NYT_TV_JEN_EMAIL?.trim().toLowerCase()
-  return raw || null
+  return normalizeEmail(env.NYT_TV_JEN_EMAIL)
 }
 
-/**
- * Email hint only. Unknown addresses stay unassigned here; workspace access
- * decides admission, and `profileForSubject` assigns the deck after that.
- */
-export function profileForEmail(email: string | null | undefined, env: Env = process.env): ProfileId | null {
-  if (!email) return null
-  const normalized = email.trim().toLowerCase()
-  if (!normalized) return null
-  if (normalized === nateEmail(env)) return 'nate'
-  const jen = jenEmail(env)
-  if (jen && normalized === jen && jen !== nateEmail(env)) return 'jen'
-  return null
+/** Nate's checklist. Admin, or the verified address in NYT_TV_NATE_EMAIL. */
+export function showsOwnerNotes(input: { isAdmin: boolean; email: string | null }, env: Env = process.env): boolean {
+  if (input.isAdmin) return true
+  const email = normalizeEmail(input.email)
+  return email != null && email === nateEmail(env)
 }
 
-/** Digest inboxes. Jen is omitted until NYT_TV_JEN_EMAIL is set. Not the admission gate. */
-export function digestRecipients(env: Env = process.env): string[] {
-  const recipients = [nateEmail(env)]
-  const jen = jenEmail(env)
-  if (jen && jen !== nateEmail(env)) recipients.push(jen)
-  return recipients
+export interface NytViewer {
+  userId: string
+  email: string
+  isOwner: boolean
 }
 
-/** Signed-in user, after client-workspace access has already been decided. */
-export interface ProfileSubject {
-  isAdmin: boolean
-  email: string | null
-  verified: boolean
-  hasClientAccess: boolean
-}
+export type ViewerLookup =
+  | { status: 'signed-out' }
+  | { status: 'unverified'; userId: string; email: string | null }
+  | { status: 'ok'; viewer: NytViewer }
 
-/**
- * Deck profile once the workspace grant exists.
- * Nate: admin, or a verified primary email matching NYT_TV_NATE_EMAIL.
- * Jen: verified primary email matching NYT_TV_JEN_EMAIL, or any granted user who is not Nate.
- */
-export function profileForSubject(subject: ProfileSubject, env: Env = process.env): ProfileId | null {
-  const verifiedEmail = subject.verified ? subject.email?.trim().toLowerCase() || null : null
-  const nate = nateEmail(env)
-  if (subject.isAdmin || (verifiedEmail != null && verifiedEmail === nate)) return 'nate'
-
-  const jen = jenEmail(env)
-  if (jen && verifiedEmail != null && verifiedEmail === jen && jen !== nate) return 'jen'
-  if (subject.hasClientAccess) return 'jen'
-  return null
-}
-
-export type NytTvProfile = {
-  profileId: ProfileId
-  email: string | null
-  label: string
-}
-
-/** Profile for the signed-in Clerk user. Null when nobody is signed in or no deck fits. */
-export async function nytTvProfile(): Promise<NytTvProfile | null> {
+export async function lookupViewer(): Promise<ViewerLookup> {
   const user = await currentUser()
-  if (!user) return null
-
+  if (!user) return { status: 'signed-out' }
   const primary = user.primaryEmailAddress
-  const email = primary?.emailAddress ?? null
-  const profileId = profileForSubject({
-    isAdmin: isAdminUser(user),
-    email,
-    verified: primary?.verification?.status === 'verified',
-    hasClientAccess: clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG),
-  })
-  if (!profileId) return null
-
-  return { profileId, email, label: PROFILE_LABELS[profileId] }
+  const email = normalizeEmail(primary?.emailAddress)
+  const verified = primary?.verification?.status === 'verified' && email != null
+  if (!verified || !email) return { status: 'unverified', userId: user.id, email }
+  return {
+    status: 'ok',
+    viewer: {
+      userId: user.id,
+      email,
+      isOwner: showsOwnerNotes({ isAdmin: isAdminUser(user), email }),
+    },
+  }
 }
 
-export function voteRecord(profileId: ProfileId, showRank: number, vote: VoteChoice, at: Date = new Date()): VoteRecord {
+/**
+ * Adds nyt-tv-100 to public metadata when a partner's verified email matches
+ * an invite. Admins already pass clientSlugsForUser and skip this.
+ */
+export async function grantNytClientSlug(user: User): Promise<void> {
+  if (clientSlugsForUser(user).includes(NYT_TV_CLIENT_SLUG)) return
+  const current = Array.isArray(user.publicMetadata?.clientSlugs)
+    ? user.publicMetadata.clientSlugs.filter((slug): slug is string => typeof slug === 'string')
+    : []
+  if (current.includes(NYT_TV_CLIENT_SLUG)) return
+  const client = await clerkClient()
+  await client.users.updateUserMetadata(user.id, {
+    publicMetadata: {
+      ...user.publicMetadata,
+      clientSlugs: [...current, NYT_TV_CLIENT_SLUG],
+    },
+  })
+}
+
+export function voteRecord(
+  userId: string,
+  pairId: string,
+  showRank: number,
+  vote: VoteChoice,
+  at: Date = new Date()
+): VoteRecord {
   return {
-    profileId,
+    userId,
+    pairId,
     showRank,
     vote,
     updatedAt: at.toISOString(),
