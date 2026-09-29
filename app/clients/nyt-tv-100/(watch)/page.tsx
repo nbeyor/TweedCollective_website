@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { MatchPanel } from '@/components/nyt-tv/MatchPanel'
 import { PairHeader } from '@/components/nyt-tv/PairHeader'
 import { SwipeDeck } from '@/components/nyt-tv/SwipeDeck'
+import { WatchFrame } from '@/components/nyt-tv/WatchFrame'
 import { jenEmail, lookupAccountByEmail, lookupViewer } from '@/lib/nyt-tv/access'
 import { bootstrapInvite, claimInviteForMember, loadPairView } from '@/lib/nyt-tv/pairing'
 import { wantOverlap } from '@/lib/nyt-tv/pairs'
@@ -58,7 +59,7 @@ export default async function NytTvPage() {
       : []
 
   return (
-    <>
+    <WatchFrame>
       <PairHeader
         viewerEmail={viewer.email}
         status={view.status}
@@ -74,7 +75,7 @@ export default async function NytTvPage() {
         persistence={store.kind}
         source={SHOW_PACK.source}
       />
-    </>
+    </WatchFrame>
   )
 }
 

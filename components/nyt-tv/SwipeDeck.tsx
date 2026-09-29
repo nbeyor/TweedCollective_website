@@ -30,6 +30,8 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const dragStart = useRef<{ x: number; y: number } | null>(null)
+  const dragAxis = useRef<'x' | 'y' | null>(null)
+  const dxRef = useRef(0)
   const busyRef = useRef(false)
   const votesRef = useRef(votes)
   const leaveTimer = useRef<number | null>(null)
@@ -71,6 +73,7 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
     async (rank: number, vote: VoteChoice) => {
       setError(null)
       setLeaving(null)
+      dxRef.current = 0
       setDx(0)
       const previous = votesRef.current[rank]
       setVotes((currentVotes) => ({
@@ -175,22 +178,42 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (busy || leaving || !current) return
     dragStart.current = { x: event.clientX, y: event.clientY }
-    setDragging(true)
-    event.currentTarget.setPointerCapture(event.pointerId)
+    dragAxis.current = null
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (!dragging || !dragStart.current) return
-    setDx(event.clientX - dragStart.current.x)
+    if (!dragStart.current || busy || leaving) return
+    const x = event.clientX - dragStart.current.x
+    const y = event.clientY - dragStart.current.y
+    if (!dragAxis.current) {
+      if (Math.abs(x) < 8 && Math.abs(y) < 8) return
+      dragAxis.current = Math.abs(x) > Math.abs(y) ? 'x' : 'y'
+      if (dragAxis.current === 'y') {
+        dragStart.current = null
+        return
+      }
+      setDragging(true)
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }
+    if (dragAxis.current === 'x') {
+      dxRef.current = x
+      setDx(x)
+    }
   }
 
   function onPointerUp() {
-    if (!dragging) return
-    setDragging(false)
+    const horizontal = dragAxis.current === 'x'
+    const offset = dxRef.current
+    dragAxis.current = null
     dragStart.current = null
-    if (dx > 96) choose('want')
-    else if (dx < -96) choose('skip')
-    else setDx(0)
+    setDragging(false)
+    if (!horizontal) return
+    if (offset > 96) choose('want')
+    else if (offset < -96) choose('skip')
+    else {
+      dxRef.current = 0
+      setDx(0)
+    }
   }
 
   const transform = leaving
@@ -205,46 +228,37 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
     .sort((a, b) => a.showRank - b.showRank)
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-6">
-      <div className="mb-5 flex items-start justify-between gap-3">
-        <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">NYT 100</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-cream">Watch together</h1>
-          <p className="mt-1 text-sm text-stone">Swipe right to want it, left to skip.</p>
-        </div>
-        <span className="shrink-0 rounded-full border border-sage/40 bg-sage/15 px-3 py-1 text-sm text-sage-light">
-          {profileLabel}
-        </span>
-      </div>
-
-      <div className="mb-4 flex items-center justify-between gap-3 text-sm text-stone">
-        <p>
-          <span className="text-cream">{remaining.length}</span> left
-          <span className="mx-2 text-zinc">·</span>
-          <span className="text-sage-light">{wantCount} want</span>
-          <span className="mx-2 text-zinc">·</span>
-          <span className="text-rust">{skipCount} skip</span>
-        </p>
+    <div className="mx-auto flex min-h-0 w-full max-w-lg flex-1 flex-col px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
+      <p className="sr-only">Signed in as {profileLabel}. Swipe right to want a show, left to skip.</p>
+      <div className="mb-2 flex shrink-0 items-center justify-between gap-2">
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-sage-light">NYT 100</p>
         <div className="flex rounded-full border border-slate bg-carbon p-0.5">
           <button
             type="button"
             onClick={() => setView('deck')}
-            className={`rounded-full px-3 py-1 text-xs ${view === 'deck' ? 'bg-slate text-cream' : 'text-stone'}`}
+            className={`min-h-11 rounded-full px-3 text-sm ${view === 'deck' ? 'bg-slate text-cream' : 'text-stone'}`}
           >
             Cards
           </button>
           <button
             type="button"
             onClick={() => setView('list')}
-            className={`rounded-full px-3 py-1 text-xs ${view === 'list' ? 'bg-slate text-cream' : 'text-stone'}`}
+            className={`min-h-11 rounded-full px-3 text-sm ${view === 'list' ? 'bg-slate text-cream' : 'text-stone'}`}
           >
             Your list
           </button>
         </div>
       </div>
+      <p className="mb-2 shrink-0 text-sm text-stone">
+        <span className="text-cream">{remaining.length}</span> left
+        <span className="mx-1.5 text-zinc">·</span>
+        <span className="text-sage-light">{wantCount} want</span>
+        <span className="mx-1.5 text-zinc">·</span>
+        <span className="text-rust">{skipCount} skip</span>
+      </p>
 
       <div
-        className="mb-4 h-1 overflow-hidden rounded-full bg-slate"
+        className="mb-2 h-1 shrink-0 overflow-hidden rounded-full bg-slate"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={shows.length}
@@ -258,40 +272,40 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
       </div>
 
       {persistence === 'file' && (
-        <p className="mb-4 rounded-lg border border-gold/30 bg-gold/10 px-3 py-2 text-xs leading-relaxed text-gold-light">
+        <p className="mb-2 shrink-0 rounded-lg border border-gold/30 bg-gold/10 px-3 py-2 text-xs leading-relaxed text-gold-light">
           Swipes are on this server&apos;s disk only. Set <span className="font-mono">BLOB_READ_WRITE_TOKEN</span> so
           they follow you across devices.
         </p>
       )}
 
       {error && (
-        <p className="mb-4 rounded-lg border border-rust/40 bg-rust/10 px-3 py-2 text-sm text-cream" role="alert">
+        <p className="mb-2 shrink-0 rounded-lg border border-rust/40 bg-rust/10 px-3 py-2 text-sm text-cream" role="alert">
           {error}
         </p>
       )}
 
       {view === 'deck' ? (
-        <div className="relative mx-auto h-[min(560px,calc(100dvh-15rem))] min-h-[420px] w-full max-w-md">
+        <div className="relative mx-auto min-h-0 w-full max-w-md flex-1">
           <div className="absolute inset-x-3 top-3 bottom-2 rounded-3xl border border-slate bg-graphite" />
           {current ? (
             <div
-              className="absolute inset-0 touch-none select-none"
+              className="absolute inset-0 touch-pan-y select-none"
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onPointerCancel={onPointerUp}
             >
               <article
-                className="flex h-full cursor-grab flex-col justify-between rounded-3xl border border-pearl/80 bg-cream px-6 py-6 text-charcoal shadow-2xl active:cursor-grabbing"
+                className="flex h-full min-h-0 cursor-grab flex-col rounded-3xl border border-pearl/80 bg-cream px-5 py-4 text-charcoal shadow-2xl active:cursor-grabbing"
                 style={{
                   transform,
                   transition: dragging ? 'none' : 'transform 180ms ease',
                 }}
                 aria-labelledby="nyt-card-title"
               >
-                <div className="min-h-0">
+                <div className="min-h-0 flex-1 overflow-y-auto">
                   <div className="flex items-start justify-between gap-3">
-                    <h2 id="nyt-card-title" className="text-balance text-[2rem] font-semibold leading-[1.1] tracking-tight text-charcoal">
+                    <h2 id="nyt-card-title" className="text-balance text-2xl font-semibold leading-tight tracking-tight text-charcoal">
                       {current.title}
                     </h2>
                     {current.ownerBadge && (
@@ -314,7 +328,7 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
                   </dl>
                   {current.ownerNotes && <p className="mt-4 text-sm italic text-charcoal/60">{current.ownerNotes}</p>}
                 </div>
-                <div className="mt-4 flex items-center justify-between text-xs font-medium uppercase tracking-[0.14em]">
+                <div className="mt-3 flex shrink-0 items-center justify-between text-xs font-medium uppercase tracking-[0.14em]">
                   <span className={dx < -24 ? 'text-rust' : 'text-charcoal/35'}>Skip</span>
                   <span className={dx > 24 ? 'text-sage' : 'text-charcoal/35'}>Want</span>
                 </div>
@@ -335,10 +349,12 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
           </p>
         </div>
       ) : (
-        <VoteList wants={wants} skips={skips} shows={shows} onUndo={(rank) => void undo(rank)} disabled={busy} />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <VoteList wants={wants} skips={skips} shows={shows} onUndo={(rank) => void undo(rank)} disabled={busy} />
+        </div>
       )}
 
-      <div className="mt-5 grid grid-cols-3 gap-3">
+      <div className="mt-3 grid shrink-0 grid-cols-3 gap-3">
         <button
           type="button"
           onClick={() => choose('skip')}
@@ -364,8 +380,7 @@ export function SwipeDeck({ userId, profileLabel, shows, initialVotes, persisten
           Want
         </button>
       </div>
-      <p className="mt-3 text-center text-[11px] text-stone">Arrow keys work too. U undoes the last swipe.</p>
-      <p className="mt-6 text-center text-[11px] leading-relaxed text-stone/80">{source}</p>
+      <p className="mt-2 shrink-0 text-center text-[10px] leading-snug text-stone/80">{source}</p>
     </div>
   )
 }
@@ -385,7 +400,7 @@ function VoteList({
 }) {
   const byRank = new Map(shows.map((show) => [show.rank, show]))
   return (
-    <div className="max-h-[440px] space-y-5 overflow-y-auto pr-1">
+    <div className="space-y-5 pr-1">
       <VoteGroup label="Want" votes={wants} byRank={byRank} onUndo={onUndo} disabled={disabled} />
       <VoteGroup label="Skip" votes={skips} byRank={byRank} onUndo={onUndo} disabled={disabled} />
     </div>
@@ -426,7 +441,7 @@ function VoteGroup({
                   type="button"
                   onClick={() => onUndo(vote.showRank)}
                   disabled={disabled}
-                  className="shrink-0 text-xs text-stone underline-offset-2 hover:text-cream hover:underline disabled:opacity-40"
+                  className="min-h-11 shrink-0 px-2 text-sm text-stone underline-offset-2 hover:text-cream hover:underline disabled:opacity-40"
                 >
                   Undo
                 </button>

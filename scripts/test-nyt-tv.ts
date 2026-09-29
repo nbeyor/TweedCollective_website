@@ -7,11 +7,13 @@
 import { access, mkdir, mkdtemp, rm, writeFile } from 'fs/promises'
 import os from 'os'
 import path from 'path'
-import React from 'react'
+import React, { act } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { JSDOM } from 'jsdom'
 
 import { DEFAULT_NATE_EMAIL, showsOwnerNotes, voteRecord } from '../lib/nyt-tv/access'
-import { PairHeaderView } from '../components/nyt-tv/PairHeader'
+import { PairHeaderBoundary, PairHeaderView } from '../components/nyt-tv/PairHeader'
 import { SwipeDeck } from '../components/nyt-tv/SwipeDeck'
 import { cronRequestAuthorized } from '../lib/nyt-tv/cronAuth'
 import { pacificDayKey } from '../lib/nyt-tv/day'
@@ -21,7 +23,7 @@ import { confirmedPair, decideBind, invitePath, wantOverlap } from '../lib/nyt-t
 import { allShows, deckShows, shuffleDeck } from '../lib/nyt-tv/shows'
 import { createFileVoteStore, parseVote } from '../lib/nyt-tv/store'
 import { defaultFileStateDirs, wipeNytTvState } from '../lib/nyt-tv/wipe'
-import type { VoteRecord } from '../lib/nyt-tv/types'
+import type { DeckShow, VoteRecord } from '../lib/nyt-tv/types'
 
 let failures = 0
 let checks = 0
@@ -91,6 +93,7 @@ async function main() {
     seeded.map((show) => show.rank).join(',') === seededAgain.map((show) => show.rank).join(',') &&
       new Set(seeded.map((show) => show.rank)).size === 100
   )
+  check('shuffle of an empty deck is empty', shuffleDeck([]).length === 0)
   check(
     'shuffle does not walk NYT rank',
     seeded.map((show) => show.rank).join(',') !== jenDeck.map((show) => show.rank).join(',')
@@ -284,12 +287,42 @@ async function main() {
   )
   check('landing pair field is the solo header', soloHeader.includes('Partner email') && soloHeader.includes('>Invite<'))
   check(
+    'solo and pending keep the same email field',
+    soloHeader.includes('id="partner-email"') &&
+      pendingHeader.includes('id="partner-email"') &&
+      !pendingHeader.includes('replace-partner-email')
+  )
+  const pendingWithoutEmail = renderToStaticMarkup(
+    React.createElement(PairHeaderView, {
+      viewerEmail: DEFAULT_NATE_EMAIL,
+      status: 'pending',
+      partnerEmail: null,
+      invitePath: null,
+      onCreate: async () => undefined,
+      onUnpair: async () => undefined,
+    })
+  )
+  check(
+    'pending without a partner email stays on the invite field',
+    pendingWithoutEmail.includes('Invite your partner') && pendingWithoutEmail.includes('id="partner-email"')
+  )
+  check(
     'pending header is waiting for them to join',
     pendingHeader.includes('Waiting for jen@example.com to join') &&
       pendingHeader.includes('not paired yet') &&
       pendingHeader.includes('/clients/nyt-tv-100/join/invite-token') &&
       pendingHeader.includes('Copy link') &&
       pendingHeader.includes('Update invite')
+  )
+  const pendingEmailTag = (() => {
+    const idAt = pendingHeader.indexOf('id="partner-email"')
+    const open = pendingHeader.lastIndexOf('<input', idAt)
+    const close = pendingHeader.indexOf('>', idAt)
+    return open >= 0 && close > open ? pendingHeader.slice(open, close + 1) : ''
+  })()
+  check(
+    'invite controls stay at a 44px touch height',
+    pendingEmailTag.includes('h-11') && soloHeader.includes('h-11') && !pendingHeader.includes('h-10')
   )
   check(
     'incoming header asks to confirm and is not paired',
@@ -619,8 +652,206 @@ async function main() {
   if (previousSecret === undefined) delete process.env.CRON_SECRET
   else process.env.CRON_SECRET = previousSecret
 
+  checkPostInviteClient()
+
   console.log(`\n${checks - failures} passed, ${failures} failed`)
   if (failures > 0) process.exit(1)
+}
+
+/**
+ * Mobile Chromium throws NotFoundError from Node.removeChild when a focused or
+ * autofilled node is removed during commit. router.refresh() after invite used
+ * to unmount the email form, and that exception reached the root error boundary.
+ * Other engines that throw on focused-node removal hit the same path. Solo and
+ * pending must keep that input node and leave the deck mounted.
+ */
+function checkPostInviteClient() {
+  const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
+    url: 'https://tweedcollective.ai/clients/nyt-tv-100',
+  })
+  const globals = globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  const previousAct = globals.IS_REACT_ACT_ENVIRONMENT
+  // Node 22 exposes navigator as a getter-only property. Define the DOM
+  // globals jsdom needs without assigning through that getter.
+  for (const [key, value] of [
+    ['window', dom.window],
+    ['document', dom.window.document],
+    ['navigator', dom.window.navigator],
+    ['HTMLElement', dom.window.HTMLElement],
+    ['Node', dom.window.Node],
+  ] as const) {
+    Object.defineProperty(globalThis, key, { value, configurable: true, writable: true })
+  }
+  globals.IS_REACT_ACT_ENVIRONMENT = true
+
+  const shows = deckShows(true).slice(0, 1)
+  const card = shows[0]
+  const noop = async () => undefined
+  const solo = {
+    viewerEmail: DEFAULT_NATE_EMAIL,
+    status: 'solo' as const,
+    partnerEmail: null,
+    invitePath: null,
+    onCreate: noop,
+    onUnpair: noop,
+  }
+  const pending = {
+    ...solo,
+    status: 'pending' as const,
+    partnerEmail: 'jen@example.com',
+    invitePath: '/clients/nyt-tv-100/join/invite-token',
+  }
+
+  let root: Root | null = null
+  const origRemoveChild = dom.window.Node.prototype.removeChild
+  try {
+    const mount = dom.window.document.getElementById('root')
+    if (!mount || !card) {
+      check('post-invite client mounted', false, 'missing root or show')
+      return
+    }
+    root = createRoot(mount)
+    const tree = (headerProps: typeof solo | typeof pending, crashHeader = false) =>
+      React.createElement(
+        'div',
+        null,
+        React.createElement(PairHeaderBoundary, {
+          ...headerProps,
+          children: crashHeader
+            ? React.createElement(function Crash() {
+                throw new Error('header blew up')
+              })
+            : React.createElement(PairHeaderView, headerProps),
+        }),
+        React.createElement(SwipeDeck, {
+          userId: 'user_nate',
+          profileLabel: DEFAULT_NATE_EMAIL,
+          shows,
+          initialVotes: [],
+          persistence: 'blob',
+          source: 'NYT industry poll',
+        })
+      )
+
+    act(() => {
+      root?.render(tree(solo))
+    })
+    const emailInput = dom.window.document.getElementById('partner-email')
+    const form = emailInput?.parentElement
+    if (form) {
+      const extra = dom.window.document.createElement('div')
+      extra.textContent = 'autofill'
+      form.insertBefore(extra, emailInput)
+    }
+    // Same NotFoundError mobile Chromium raises if commit removes a focused form.
+    dom.window.Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
+      if (child instanceof dom.window.HTMLFormElement) {
+        throw new dom.window.DOMException('The object can not be found here.', 'NotFoundError')
+      }
+      return origRemoveChild.call(this, child) as T
+    }
+
+    let transitionThrew = false
+    try {
+      act(() => {
+        root?.render(tree(pending))
+      })
+    } catch (error) {
+      transitionThrew = true
+      check(
+        'post-invite update does not throw',
+        false,
+        error instanceof Error ? error.message.split('\n')[0] : String(error)
+      )
+    }
+    const text = dom.window.document.body.textContent ?? ''
+    if (!transitionThrew) check('post-invite update does not throw', true)
+    check(
+      'post-invite shows waiting and the same email field',
+      text.includes('Waiting for jen@example.com to join') &&
+        dom.window.document.getElementById('partner-email') === emailInput &&
+        text.includes('You can swipe now.')
+    )
+    check(
+      'post-invite keeps the swipe card mounted',
+      Boolean(card.title) && text.includes(card.title) && text.includes(card.reviewPro) && text.includes(card.reviewCon)
+    )
+
+    const missingReview = {
+      rank: 9,
+      title: 'Curb Your Enthusiasm',
+      description: 'Social discomfort.',
+      reviewPro: undefined,
+      reviewCon: undefined,
+      ownerBadge: null,
+      ownerNotes: null,
+    }
+    let missingThrew = false
+    try {
+      act(() => {
+        root?.render(
+          React.createElement(SwipeDeck, {
+            userId: 'user_nate',
+            profileLabel: DEFAULT_NATE_EMAIL,
+            shows: [missingReview] as unknown as DeckShow[],
+            initialVotes: [],
+            persistence: 'blob',
+            source: 'NYT industry poll',
+          })
+        )
+      })
+    } catch {
+      missingThrew = true
+    }
+    check(
+      'card renders when pro and con are missing',
+      !missingThrew && (dom.window.document.body.textContent ?? '').includes('Curb Your Enthusiasm')
+    )
+    let emptyThrew = false
+    try {
+      act(() => {
+        root?.render(
+          React.createElement(SwipeDeck, {
+            userId: 'user_nate',
+            profileLabel: DEFAULT_NATE_EMAIL,
+            shows: shuffleDeck([]),
+            initialVotes: [],
+            persistence: 'blob',
+            source: 'NYT industry poll',
+          })
+        )
+      })
+    } catch {
+      emptyThrew = true
+    }
+    check(
+      'empty shuffled deck renders the finished state',
+      !emptyThrew && (dom.window.document.body.textContent ?? '').includes("You're through the list.")
+    )
+
+    let crashThrew = false
+    try {
+      act(() => {
+        root?.render(tree(pending, true))
+      })
+    } catch {
+      crashThrew = true
+    }
+    const afterCrash = dom.window.document.body.textContent ?? ''
+    check(
+      'a header render error leaves the deck up',
+      !crashThrew &&
+        afterCrash.includes('Waiting for jen@example.com to join') &&
+        afterCrash.includes('You can swipe now.') &&
+        afterCrash.includes(card.title)
+    )
+  } finally {
+    dom.window.Node.prototype.removeChild = origRemoveChild
+    act(() => {
+      root?.unmount()
+    })
+    globals.IS_REACT_ACT_ENVIRONMENT = previousAct
+  }
 }
 
 main().catch((error) => {
